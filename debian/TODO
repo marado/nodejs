@@ -6,6 +6,6 @@ http://groups.google.com/group/nodejs/browse_thread/thread/b49eeba96bfd4b4
 added upstream, so the corresponding debian/patches/cares-disable-mx.patch must
 be removed when 1.7.2 is released and available as a debian package.
 
-- support nodejs shebang, notice lintian maintainers ?
-- add a "js" alternative ?
+- DONE : add a "js" alternative ?
 
+- support nodejs shebang, notice lintian maintainers ?
