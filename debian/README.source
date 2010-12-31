@@ -1,0 +1,9 @@
+git-buildpackage
+================
+
+Upstream tarball sometimes contains *.orig files that are left over by
+upstream patches. Since dh_clean will remove them, to prevent git-buildpackage
+from complaining, import tarball with :
+
+	git-import-orig --filter=*.orig --filter-pristine-tar ../node-v0.2.6.tar.gz
+
