@@ -1,7 +1,7 @@
 .\" Generated with Ronnjs/v0.1
 .\" http://github.com/kapouer/ronnjs/
 .
-.TH "NODE" "1" "September 2010" "" ""
+.TH "NODE" "1" "November 2010" "" ""
 .
 .SH "NAME"
 \fBnode\fR \-\- evented I/O for V8 JavaScript
@@ -1114,10 +1114,6 @@ the process terminated due to receipt of a signal, \fBsignal\fR is the string na
 of the signal, otherwise \fBnull\fR\|\.
 .
 .P
-After this event is emitted, the \fB\'output\'\fR and \fB\'error\'\fR callbacks will no
-longer be made\.
-.
-.P
 See \fBwaitpid(2)\fR\|\.
 .
 .SS "child\.stdin"
@@ -1293,7 +1289,7 @@ There is a second optional argument to specify several options\. The default opt
 { encoding: \'utf8\'
 , timeout: 0
 , maxBuffer: 200*1024
-, killSignal: \'SIGKILL\'
+, killSignal: \'SIGTERM\'
 , cwd: null
 , env: null
 }
@@ -1304,7 +1300,7 @@ There is a second optional argument to specify several options\. The default opt
 .
 .P
 If \fBtimeout\fR is greater than 0, then it will kill the child process
-if it runs longer than \fBtimeout\fR milliseconds\. The child process is killed with \fBkillSignal\fR (default: \fB\'SIGKILL\'\fR)\. \fBmaxBuffer\fR specifies the largest
+if it runs longer than \fBtimeout\fR milliseconds\. The child process is killed with \fBkillSignal\fR (default: \fB\'SIGTERM\'\fR)\. \fBmaxBuffer\fR specifies the largest
 amount of data allowed on stdout or stderr \- if this value is exceeded then
 the child process is killed\.
 .

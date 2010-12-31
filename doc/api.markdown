@@ -912,9 +912,6 @@ normally, `code` is the final exit code of the process, otherwise `null`. If
 the process terminated due to receipt of a signal, `signal` is the string name
 of the signal, otherwise `null`.
 
-After this event is emitted, the `'output'` and `'error'` callbacks will no
-longer be made.
-
 See `waitpid(2)`.
 
 ### child.stdin
@@ -1058,14 +1055,14 @@ There is a second optional argument to specify several options. The default opti
     { encoding: 'utf8'
     , timeout: 0
     , maxBuffer: 200*1024
-    , killSignal: 'SIGKILL'
+    , killSignal: 'SIGTERM'
     , cwd: null
     , env: null
     }
 
 If `timeout` is greater than 0, then it will kill the child process
 if it runs longer than `timeout` milliseconds. The child process is killed with
-`killSignal` (default: `'SIGKILL'`). `maxBuffer` specifies the largest
+`killSignal` (default: `'SIGTERM'`). `maxBuffer` specifies the largest
 amount of data allowed on stdout or stderr - if this value is exceeded then
 the child process is killed.
 
