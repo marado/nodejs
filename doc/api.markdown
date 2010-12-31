@@ -860,8 +860,9 @@ Experimental
 
 Read the data from `readableStream` and send it to the `writableStream`.
 When `writeableStream.write(data)` returns `false` `readableStream` will be
-paused until the `drain` event occurs on the `writableStream`. `callback` is
-called when `writableStream` is closed.
+paused until the `drain` event occurs on the `writableStream`. `callback` gets
+an error as its only argument and is called when `writableStream` is closed or
+when an error occurs.
 
 
 ## Timers
@@ -1447,19 +1448,6 @@ See pwrite(2).
 The callback will be given two arguments `(err, written)` where `written`
 specifies how many _bytes_ were written.
 
-### fs.write(fd, str, position, encoding='utf8', [callback])
-
-Write the entire string `str` using the given `encoding` to the file specified
-by `fd`.
-
-`position` refers to the offset from the beginning of the file where this data
-should be written. If `position` is `null`, the data will be written at the
-current position.
-See pwrite(2).
-
-The callback will be given two arguments `(err, written)` where `written`
-specifies how many _bytes_ were written.
-
 ### fs.writeSync(fd, buffer, offset, length, position)
 
 Synchronous version of buffer-based `fs.write()`. Returns the number of bytes written.
@@ -1482,19 +1470,6 @@ Read data from the file specified by `fd`.
 If `position` is `null`, data will be read from the current file position.
 
 The callback is given the two arguments, `(err, bytesRead)`.
-
-### fs.read(fd, length, position, encoding, [callback])
-
-Read data from the file specified by `fd`.
-
-`length` is an integer specifying the number of bytes to read.
-
-`position` is an integer specifying where to begin reading from in the file.
-If `position` is `null`, data will be read from the current file position.
-
-`encoding` is the desired encoding of the string of data read in from `fd`.
-
-The callback is given the three arguments, `(err, str, bytesRead)`.
 
 ### fs.readSync(fd, buffer, offset, length, position)
 
@@ -1606,6 +1581,12 @@ An example to read the last 10 bytes of a file which is 100 bytes long:
 ## fs.WriteStream
 
 `WriteStream` is a `Writable Stream`.
+
+### Event: 'open'
+
+`function (fd) { }`
+
+ `fd` is the file descriptor used by the WriteStream.
 
 ### fs.createWriteStream(path, [options])
 
@@ -1868,7 +1849,7 @@ Example:
 This method must only be called once on a message and it must
 be called before `response.end()` is called.
 
-### response.write(chunk, encoding='ascii')
+### response.write(chunk, encoding='utf8')
 
 This method must be called after `writeHead` was
 called. It sends a chunk of the response body. This method may
@@ -1876,7 +1857,7 @@ be called multiple times to provide successive parts of the body.
 
 `chunk` can be a string or a buffer. If `chunk` is a string,
 the second parameter specifies how to encode it into a byte stream.
-By default the `encoding` is `'ascii'`.
+By default the `encoding` is `'utf8'`.
 
 **Note**: This is the raw HTTP body and has nothing to do with
 higher-level multi-part body encodings that may be used.
@@ -2029,7 +2010,7 @@ Emitted when a response is received to this request. This event is emitted only 
 `response` argument will be an instance of `http.ClientResponse`.
 
 
-### request.write(chunk, encoding='ascii')
+### request.write(chunk, encoding='utf8')
 
 Sends a chunk of the body.  By calling this method
 many times, the user can stream a request body to a
@@ -2041,10 +2022,8 @@ The `chunk` argument should be an array of integers
 or a string.
 
 The `encoding` argument is optional and only
-applies when `chunk` is a string. The encoding
-argument should be either `'utf8'` or
-`'ascii'`. By default the body uses ASCII encoding,
-as it is faster.
+applies when `chunk` is a string.
+
 
 ### request.end([data], [encoding])
 
@@ -2227,7 +2206,7 @@ See `connect()`.
 
 `function () { }`
 
-Emitted when a stream connection successfully establishes a HTTPS handshake with its peer.
+Emitted when a stream connection successfully establishes an SSL handshake with its peer.
 
 
 ### Event: 'data'
@@ -2316,9 +2295,9 @@ received.
 
 ### stream.setSecure([credentials])
 
-Enables HTTPS support for the stream, with the crypto module credentials specifying the private key and certificate of the stream, and optionally the CA certificates for use in peer authentication.
+Enables SSL support for the stream, with the crypto module credentials specifying the private key and certificate of the stream, and optionally the CA certificates for use in peer authentication.
 
-If the credentials hold one ore more CA certificates, then the stream will request for the peer to submit a client certificate as part of the HTTPS connection handshake. The validity and content of this can be accessed via verifyPeer() and getPeerCertificate().
+If the credentials hold one ore more CA certificates, then the stream will request for the peer to submit a client certificate as part of the SSL connection handshake. The validity and content of this can be accessed via verifyPeer() and getPeerCertificate().
 
 ### stream.verifyPeer()
 
@@ -3286,3 +3265,49 @@ All Node addons must export a function called `init` with this signature:
 
 For the moment, that is all the documentation on addons. Please see
 <http://github.com/ry/node_postgres> for a real example.
+
+
+## Appendix - Third Party Modules
+
+There are many third party modules for Node. At the time of writing, August
+2010, the master repository of modules is
+http://github.com/ry/node/wiki/modules[the wiki page].
+
+This appendix is intended as a SMALL guide to new-comers to help them
+quickly find what are considered to be quality modules. It is not intended
+to be a complete list.  There may be better more complete modules found
+elsewhere.
+
+- Module Installer: [npm](http://github.com/isaacs/npm)
+
+- HTTP Middleware: [Connect](http://github.com/senchalabs/connect)
+
+- Web Framework: [Express](http://github.com/visionmedia/express)
+
+- Web Sockets: [Socket.IO](http://github.com/LearnBoost/Socket.IO-node)
+
+- HTML Parsing: [HTML5](http://github.com/aredridel/html5)
+
+- [mDNS/Zeroconf/Bonjour](http://github.com/agnat/node_mdns)
+
+- [RabbitMQ, AMQP](http://github.com/ry/node-amqp)
+
+- [mysql](http://github.com/felixge/node-mysql)
+
+- Serialization: [msgpack](http://github.com/pgriess/node-msgpack)
+
+- Scraping: [Apricot](http://github.com/silentrob/Apricot)
+
+- Debugger: [ndb](http://github.com/smtlaissezfaire/ndb) is a CLI debugger
+  [inspector](http://github.com/dannycoates/node-inspector) is a web based
+  tool.
+
+- [pcap binding](http://github.com/mranney/node_pcap)
+
+- [ncurses](http://github.com/mscdex/node-ncurses)
+
+- Testing/TDD/BDD: [vows](http://vowsjs.org/),
+  [expresso](http://github.com/visionmedia/expresso),
+  [mjsunit.runner](http://github.com/tmpvar/mjsunit.runner)
+
+Patches to this list are welcome.

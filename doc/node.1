@@ -1,7 +1,7 @@
 .\" Generated with Ronnjs/v0.1
 .\" http://github.com/kapouer/ronnjs/
 .
-.TH "NODE" "1" "August 2010" "" ""
+.TH "NODE" "1" "September 2010" "" ""
 .
 .SH "NAME"
 \fBnode\fR \-\- evented I/O for V8 JavaScript
@@ -1067,8 +1067,9 @@ Experimental
 .P
 Read the data from \fBreadableStream\fR and send it to the \fBwritableStream\fR\|\.
 When \fBwriteableStream\.write(data)\fR returns \fBfalse\fR \fBreadableStream\fR will be
-paused until the \fBdrain\fR event occurs on the \fBwritableStream\fR\|\. \fBcallback\fR is
-called when \fBwritableStream\fR is closed\.
+paused until the \fBdrain\fR event occurs on the \fBwritableStream\fR\|\. \fBcallback\fR gets
+an error as its only argument and is called when \fBwritableStream\fR is closed or
+when an error occurs\.
 .
 .SH "Timers"
 .
@@ -1714,20 +1715,6 @@ See pwrite(2)\.
 The callback will be given two arguments \fB(err, written)\fR where \fBwritten\fR
 specifies how many \fIbytes\fR were written\.
 .
-.SS "fs\.write(fd, str, position, encoding=\'utf8\', [callback])"
-Write the entire string \fBstr\fR using the given \fBencoding\fR to the file specified
-by \fBfd\fR\|\.
-.
-.P
-\fBposition\fR refers to the offset from the beginning of the file where this data
-should be written\. If \fBposition\fR is \fBnull\fR, the data will be written at the
-current position\.
-See pwrite(2)\.
-.
-.P
-The callback will be given two arguments \fB(err, written)\fR where \fBwritten\fR
-specifies how many \fIbytes\fR were written\.
-.
 .SS "fs\.writeSync(fd, buffer, offset, length, position)"
 Synchronous version of buffer\-based \fBfs\.write()\fR\|\. Returns the number of bytes written\.
 .
@@ -1752,22 +1739,6 @@ If \fBposition\fR is \fBnull\fR, data will be read from the current file positio
 .
 .P
 The callback is given the two arguments, \fB(err, bytesRead)\fR\|\.
-.
-.SS "fs\.read(fd, length, position, encoding, [callback])"
-Read data from the file specified by \fBfd\fR\|\.
-.
-.P
-\fBlength\fR is an integer specifying the number of bytes to read\.
-.
-.P
-\fBposition\fR is an integer specifying where to begin reading from in the file\.
-If \fBposition\fR is \fBnull\fR, data will be read from the current file position\.
-.
-.P
-\fBencoding\fR is the desired encoding of the string of data read in from \fBfd\fR\|\.
-.
-.P
-The callback is given the three arguments, \fB(err, str, bytesRead)\fR\|\.
 .
 .SS "fs\.readSync(fd, buffer, offset, length, position)"
 Synchronous version of buffer\-based \fBfs\.read\fR\|\. Returns the number of \fBbytesRead\fR\|\.
@@ -1923,6 +1894,12 @@ fs\.createReadStream(\'sample\.txt\', {start: 90, end: 99});
 .
 .SH "fs\.WriteStream"
 \fBWriteStream\fR is a \fBWritable Stream\fR\|\.
+.
+.SS "Event: \'open\'"
+\fBfunction (fd) { }\fR
+.
+.P
+ \fBfd\fR is the file descriptor used by the WriteStream\.
 .
 .SS "fs\.createWriteStream(path, [options])"
 Returns a new WriteStream object (See \fBWritable Stream\fR)\.
@@ -2221,7 +2198,7 @@ response\.writeHead(200, {
 This method must only be called once on a message and it must
 be called before \fBresponse\.end()\fR is called\.
 .
-.SS "response\.write(chunk, encoding=\'ascii\')"
+.SS "response\.write(chunk, encoding=\'utf8\')"
 This method must be called after \fBwriteHead\fR was
 called\. It sends a chunk of the response body\. This method may
 be called multiple times to provide successive parts of the body\.
@@ -2229,7 +2206,7 @@ be called multiple times to provide successive parts of the body\.
 .P
 \fBchunk\fR can be a string or a buffer\. If \fBchunk\fR is a string,
 the second parameter specifies how to encode it into a byte stream\.
-By default the \fBencoding\fR is \fB\'ascii\'\fR\|\.
+By default the \fBencoding\fR is \fB\'utf8\'\fR\|\.
 .
 .P
 \fBNote\fR: This is the raw HTTP body and has nothing to do with
@@ -2399,7 +2376,7 @@ This is an \fBEventEmitter\fR with the following events:
 .P
 Emitted when a response is received to this request\. This event is emitted only once\. The \fBresponse\fR argument will be an instance of \fBhttp\.ClientResponse\fR\|\.
 .
-.SS "request\.write(chunk, encoding=\'ascii\')"
+.SS "request\.write(chunk, encoding=\'utf8\')"
 Sends a chunk of the body\.  By calling this method
 many times, the user can stream a request body to a
 server\-\-in that case it is suggested to use the \fB[\'Transfer\-Encoding\', \'chunked\']\fR header line when
@@ -2411,9 +2388,7 @@ or a string\.
 .
 .P
 The \fBencoding\fR argument is optional and only
-applies when \fBchunk\fR is a string\. The encoding
-argument should be either \fB\'utf8\'\fR or \fB\'ascii\'\fR\|\. By default the body uses ASCII encoding,
-as it is faster\.
+applies when \fBchunk\fR is a string\.
 .
 .SS "request\.end([data], [encoding])"
 Finishes sending the request\. If any parts of the body are
@@ -2594,7 +2569,7 @@ See \fBconnect()\fR\|\.
 \fBfunction () { }\fR
 .
 .P
-Emitted when a stream connection successfully establishes a HTTPS handshake with its peer\.
+Emitted when a stream connection successfully establishes an SSL handshake with its peer\.
 .
 .SS "Event: \'data\'"
 \fBfunction (data) { }\fR
@@ -2675,10 +2650,10 @@ Sets the encoding (either \fB\'ascii\'\fR, \fB\'utf8\'\fR, or \fB\'base64\'\fR) 
 received\.
 .
 .SS "stream\.setSecure([credentials])"
-Enables HTTPS support for the stream, with the crypto module credentials specifying the private key and certificate of the stream, and optionally the CA certificates for use in peer authentication\.
+Enables SSL support for the stream, with the crypto module credentials specifying the private key and certificate of the stream, and optionally the CA certificates for use in peer authentication\.
 .
 .P
-If the credentials hold one ore more CA certificates, then the stream will request for the peer to submit a client certificate as part of the HTTPS connection handshake\. The validity and content of this can be accessed via verifyPeer() and getPeerCertificate()\.
+If the credentials hold one ore more CA certificates, then the stream will request for the peer to submit a client certificate as part of the SSL connection handshake\. The validity and content of this can be accessed via verifyPeer() and getPeerCertificate()\.
 .
 .SS "stream\.verifyPeer()"
 Returns true or false depending on the validity of the peers\'s certificate in the context of the defined or default list of trusted CA certificates\.
@@ -3820,3 +3795,62 @@ extern \'C\' void init (Handle<Object> target)
 .
 .P
 For the moment, that is all the documentation on addons\. Please see \fIhttp://github\.com/ry/node_postgres\fR for a real example\.
+.
+.SH "Appendix \- Third Party Modules"
+There are many third party modules for Node\. At the time of writing, August
+2010, the master repository of modules is
+http://github\.com/ry/node/wiki/modules[the wiki page]\.
+.
+.P
+This appendix is intended as a SMALL guide to new\-comers to help them
+quickly find what are considered to be quality modules\. It is not intended
+to be a complete list\.  There may be better more complete modules found
+elsewhere\.
+.
+.IP "\(bu" 4
+Module Installer: npm \fIhttp://github\.com/isaacs/npm\fR
+.
+.IP "\(bu" 4
+HTTP Middleware: Connect \fIhttp://github\.com/senchalabs/connect\fR
+.
+.IP "\(bu" 4
+Web Framework: Express \fIhttp://github\.com/visionmedia/express\fR
+.
+.IP "\(bu" 4
+Web Sockets: Socket\.IO \fIhttp://github\.com/LearnBoost/Socket\.IO\-node\fR
+.
+.IP "\(bu" 4
+HTML Parsing: HTML5 \fIhttp://github\.com/aredridel/html5\fR
+.
+.IP "\(bu" 4
+mDNS/Zeroconf/Bonjour \fIhttp://github\.com/agnat/node_mdns\fR
+.
+.IP "\(bu" 4
+RabbitMQ, AMQP \fIhttp://github\.com/ry/node\-amqp\fR
+.
+.IP "\(bu" 4
+mysql \fIhttp://github\.com/felixge/node\-mysql\fR
+.
+.IP "\(bu" 4
+Serialization: msgpack \fIhttp://github\.com/pgriess/node\-msgpack\fR
+.
+.IP "\(bu" 4
+Scraping: Apricot \fIhttp://github\.com/silentrob/Apricot\fR
+.
+.IP "\(bu" 4
+Debugger: ndb \fIhttp://github\.com/smtlaissezfaire/ndb\fR is a CLI debugger inspector \fIhttp://github\.com/dannycoates/node\-inspector\fR is a web based
+tool\.
+.
+.IP "\(bu" 4
+pcap binding \fIhttp://github\.com/mranney/node_pcap\fR
+.
+.IP "\(bu" 4
+ncurses \fIhttp://github\.com/mscdex/node\-ncurses\fR
+.
+.IP "\(bu" 4
+Testing/TDD/BDD: vows \fIhttp://vowsjs\.org/\fR, expresso \fIhttp://github\.com/visionmedia/expresso\fR, mjsunit\.runner \fIhttp://github\.com/tmpvar/mjsunit\.runner\fR
+.
+.IP "" 0
+.
+.P
+Patches to this list are welcome\.
