@@ -1,8 +1,6 @@
 nodejs for Debian
 ---------------
 
-Warning: the API is expected to change until nodejs reaches version 0.2
-
 node-waf is in nodejs-dev package, to build a module using waf, do :
 /usr/bin/nodejs-waf configure build
 

@@ -30,9 +30,9 @@
  #endif /* NODE_CONFIG_H */
 --- a/src/node.js
 +++ b/src/node.js
-@@ -135,7 +135,7 @@
-   var pathModule = createInternalModule('path', pathFn);
-   var path = pathModule.exports;
+@@ -350,7 +350,7 @@
+ 
+   var path = requireNative("path");
  
 -  var modulePaths = [path.join(process.execPath, "..", "..", "lib", "node")];
 +  var modulePaths = [path.join(process.execPath, "..", "..", "lib", "nodejs")];

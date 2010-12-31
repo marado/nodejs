@@ -9,7 +9,7 @@ Subject: [PATCH] paths for package nodejs
 
 --- a/wscript
 +++ b/wscript
-@@ -563,8 +563,8 @@
+@@ -566,8 +566,8 @@
      bld.install_files('${PREFIX}/share/man/man1/', 'doc/node.1')
  
    bld.install_files('${PREFIX}/bin/', 'bin/*', chmod=0755)

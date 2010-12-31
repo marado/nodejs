@@ -17,6 +17,7 @@ clean:
 	rm -f node_g
 	rm -f doc/nodejs.1
 	rm -f .lock-wscript
+	rm -f test/fixtures/hello.txt
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp
