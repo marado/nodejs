@@ -8,7 +8,7 @@ Subject: [PATCH] rename node.1 to nodejs.1
 
 --- a/wscript
 +++ b/wscript
-@@ -562,8 +562,8 @@
+@@ -572,8 +572,8 @@
  
    # Only install the man page if it exists.
    # Do 'make doc install' to build and install it.

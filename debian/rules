@@ -18,6 +18,9 @@ clean:
 	rm -f doc/nodejs.1
 	rm -f .lock-wscript
 	rm -f test/fixtures/hello.txt
+	rm -f test/fixtures/cycles/folder/cycles
+	# make test uses test/tmp
+	rm -rf test/tmp
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp

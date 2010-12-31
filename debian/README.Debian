@@ -1,17 +1,46 @@
 nodejs for Debian
----------------
+=================
 
-node-waf is in nodejs-dev package, to build a module using waf, do :
-/usr/bin/nodejs-waf configure build
+node renamed to nodejs
+----------------------
 
-To install such a module, be root and do :
-/usr/bin/nodejs-waf install
+Upstream "node" binary is renamed to "nodejs", see bug #597571.
 
-Modules path : /usr/lib/nodejs/
-Module 'foo' is searched in that order :
-/usr/lib/nodejs/foo.js
-/usr/lib/nodejs/foo.node
-/usr/lib/nodejs/foo/index.js
-/usr/lib/nodejs/foo/index.addon
+Users can create a link to nodejs :
+ln -s /usr/bin/nodejs ~/bin/node
 
- -- Jérémy Lal <kapouer@melix.org>  Fri, 07 May 2010 18:13:57 +0200
+Or it is root's responsability to create a link to nodejs :
+ln -s /usr/bin/nodejs /usr/local/bin/node
+
+Warning : if "node" package is installed, there could be a confusion
+with /usr/sbin/node
+
+
+modules
+-------
+
+The global search path for modules is
+/usr/lib/nodejs
+
+Future packages of nodejs modules will use that directory,
+so it should be used wisely.
+
+man nodejs(1) for more information about NODE_PATH.
+
+
+node-waf renamed to nodejs-waf
+------------------------------
+
+For consistency, node-waf is also renamed to nodejs-waf, and is
+available in nodejs-dev package.
+
+Users can create a link to nodejs-waf :
+ln -s /usr/bin/nodejs-waf ~/bin/node-waf
+
+Or it is root's responsability to create a link to nodejs-waf :
+ln -s /usr/bin/nodejs-waf /usr/local/bin/node-waf
+
+See nodejs-waf(1) and nodejs(1) for more information.
+
+
+ -- Jérémy Lal <kapouer@melix.org>  Sat, 02 Oct 2010 20:22:57 +0200

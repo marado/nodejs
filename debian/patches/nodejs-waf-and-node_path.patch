@@ -30,12 +30,12 @@
  #endif /* NODE_CONFIG_H */
 --- a/src/node.js
 +++ b/src/node.js
-@@ -350,7 +350,7 @@
- 
-   var path = requireNative("path");
+@@ -146,7 +146,7 @@
+   var pathModule = createInternalModule('path', pathFn);
+   var path = pathModule.exports;
  
 -  var modulePaths = [path.join(process.execPath, "..", "..", "lib", "node")];
-+  var modulePaths = [path.join(process.execPath, "..", "..", "lib", "nodejs")];
++  var modulePaths = ["/usr/local/lib/nodejs", "/usr/lib/nodejs"];
  
    if (process.env["HOME"]) {
      modulePaths.unshift(path.join(process.env["HOME"], ".node_libraries"));

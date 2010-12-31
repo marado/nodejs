@@ -1,6 +1,0 @@
-nodejs for Debian
----------------
-
-Node has been renamed : it is too generic a name,
-and it conflicts with /usr/sbin/node from "node" package.
-
