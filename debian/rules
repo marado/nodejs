@@ -1,41 +1,31 @@
 #!/usr/bin/make -f
-# -*- makefile -*-
 
-config.status:
-	dh_testdir
-	PREFIX="/usr" ./configure --debug --shared-v8 --shared-cares --shared-libev
-	touch $@
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/autotools.mk
 
-build: build-stamp
+DEB_CONFIGURE_NORMAL_ARGS = ""
+DEB_CONFIGURE_EXTRA_FLAGS = --debug --shared-v8 --shared-cares --shared-libev
+DEB_CONFIGURE_SCRIPT_ENV += PREFIX="/usr"
+DEB_DESTDIR = $(CURDIR)/debian/nodejs
+DEB_MAKE_CLEAN_TARGET = clean
+DEB_MAKE_CHECK_TARGET = test
 
-build-stamp: config.status
-	dh_testdir
-	$(MAKE)
-
-clean:
+clean::
+	# remove links to binaries
 	rm -f node
 	rm -f node_g
 	rm -f doc/nodejs.1
+	# waf files
 	rm -f .lock-wscript
+	rm -rf build
+	# make test creates some files and folders
 	rm -f test/fixtures/hello.txt
 	rm -f test/fixtures/cycles/folder/cycles
-	# make test uses test/tmp
 	rm -rf test/tmp
-	dh_testdir
-	dh_testroot
-	rm -f build-stamp
-	$(MAKE) clean || true
 	# first make fails, and creates *.pyc files
 	find . -name "*.pyc" -delete
-	rm -rf build
-	rm -f config.status
-	dh_clean 
 
-install: build
-	dh_testdir
-	dh_testroot
-	dh_prep  
-	dh_installdirs
+build/nodejs::
 	# Rename man page to NODEJS
 	# rename binaries to nodejs, nodejs-waf, where possible
 	sed \
@@ -47,38 +37,23 @@ install: build
 		-e 's/ node$$/ nodejs/g' \
 		-e "s/\\\'node\\\'/\\\'nodejs\\\'/g" \
 		doc/node.1 > doc/nodejs.1
-	# Add here commands to install the package
-	DESTDIR=$(CURDIR)/debian/nodejs $(MAKE) install
+
+install/nodejs::	
 	# don't install node-repl
 	rm -f $(CURDIR)/debian/nodejs/usr/bin/node-repl
-	# rename and install binaries in nodejs, nodejs-dbg
+	# rename and install binaries in nodejs
 	mv $(CURDIR)/debian/nodejs/usr/bin/node $(CURDIR)/debian/nodejs/usr/bin/nodejs
+
+install/nodejs-dbg::
+	# rename and install binaries in nodejs-dbg
 	mv $(CURDIR)/debian/nodejs/usr/bin/node_g $(CURDIR)/debian/nodejs-dbg/usr/lib/debug/usr/bin/nodejs
+
+install/nodejs-dev::
+	# we have completion for nodejs-waf
+	dh_bash-completion
 	# headers for nodejs-dev
 	mv $(CURDIR)/debian/nodejs/usr/include/node/* $(CURDIR)/debian/nodejs-dev/usr/include/nodejs/
 	rm -rf $(CURDIR)/debian/nodejs/usr/include
 	# waf for nodejs-dev
 	mv $(CURDIR)/debian/nodejs/usr/bin/node-waf $(CURDIR)/debian/nodejs-dev/usr/bin/nodejs-waf
 	mv $(CURDIR)/debian/nodejs/usr/share/nodejs/wafadmin $(CURDIR)/debian/nodejs-dev/usr/share/nodejs/
-
-# Build architecture-dependent files here.
-binary-arch: install
-	dh_testdir
-	dh_testroot
-	dh_installchangelogs 
-	dh_installdocs
-	dh_installexamples
-	dh_installman
-	dh_bash-completion
-	dh_link
-	dh_strip --dbg-package=nodejs-dbg
-	dh_compress
-	dh_fixperms
-	dh_installdeb
-	dh_shlibdeps
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
-
-binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install 

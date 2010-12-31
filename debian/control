@@ -3,7 +3,7 @@ Section: web
 Priority: extra
 Maintainer: Jérémy Lal <kapouer@melix.org>
 Uploaders: Dave Beckett <dajobe@debian.org>
-Build-Depends: debhelper (>= 7), python, libev-dev (>= 3.9), libv8-dev (>= 2.2.24), scons (>= 1.2.0), libc-ares-dev (>= 1.7.3), binutils, libssl-dev (>= 0.9.8), pkg-config, bash-completion
+Build-Depends: debhelper (>= 7), cdbs, python, libev-dev (>= 3.9), libv8-dev (>= 2.2.24), scons (>= 1.2.0), libc-ares-dev (>= 1.7.3), binutils, libssl-dev (>= 0.9.8), pkg-config, bash-completion
 Standards-Version: 3.9.1
 Homepage: http://nodejs.org/
 Vcs-Browser: http://git.debian.org/?p=collab-maint/nodejs.git
