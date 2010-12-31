@@ -15,7 +15,7 @@ callbacks = { open: 0, end: 0, close: 0, destroy: 0 };
 
 paused = false;
 
-file = fs.createReadStream(fn);
+file = fs.ReadStream(fn);
 
 file.addListener('open', function(fd) {
   file.length = 0;
@@ -96,3 +96,17 @@ file4.addListener('data', function(data) {
 file4.addListener('end', function(data) {
 	assert.equal(contentRead, 'yz');
 });
+
+try {
+  fs.createReadStream(rangeFile, {start: 10, end: 2});
+  assert.fail('Creating a ReadStream with incorrect range limits must throw.');
+} catch(e) {
+  assert.equal(e.message, 'start must be <= end');
+}
+
+try {
+  fs.createReadStream(rangeFile, {start: 2});
+  assert.fail('Creating a ReadStream with a only one range limits must throw.');
+} catch(e) {
+  assert.equal(e.message, 'Both start and end are needed for range streaming.');
+}
