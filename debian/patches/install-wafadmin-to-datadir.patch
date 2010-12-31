@@ -1,0 +1,22 @@
+From: =?UTF-8?q?J=C3=A9r=C3=A9my=20Lal?= <kapouer@melix.org>
+Date: Fri, 1 Jan 2010 20:11:03 +0100
+Subject: [PATCH] paths for package nodejs
+
+---
+ src/node.js |    3 ++-
+ wscript     |    4 +++-
+ 2 files changed, 5 insertions(+), 2 deletions(-)
+
+--- a/wscript
++++ b/wscript
+@@ -563,8 +563,8 @@
+     bld.install_files('${PREFIX}/share/man/man1/', 'doc/node.1')
+ 
+   bld.install_files('${PREFIX}/bin/', 'bin/*', chmod=0755)
+-  bld.install_files('${PREFIX}/lib/node/wafadmin', 'tools/wafadmin/*.py')
+-  bld.install_files('${PREFIX}/lib/node/wafadmin/Tools', 'tools/wafadmin/Tools/*.py')
++  bld.install_files('${PREFIX}/share/nodejs/wafadmin', 'tools/wafadmin/*.py')
++  bld.install_files('${PREFIX}/share/nodejs/wafadmin/Tools', 'tools/wafadmin/Tools/*.py')
+ 
+ def shutdown():
+   Options.options.debug

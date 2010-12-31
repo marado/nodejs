@@ -1,0 +1,17 @@
+Description: libv8_g does not exists in libv8 debian package.
+ Debug build of node links against debug build of libv8,
+ which is not available in debian package.
+
+Author: Jérémy Lal <kapouer@melix.org>
+
+--- a/wscript
++++ b/wscript
+@@ -213,7 +213,7 @@
+       conf.fatal("Cannot find v8")
+ 
+     if o.debug:
+-      if not conf.check_cxx(lib=o.shared_v8_libname + '_g', header_name='v8.h',
++      if not conf.check_cxx(lib=o.shared_v8_libname, header_name='v8.h',
+                             uselib_store='V8_G',
+                             includes=v8_includes,
+                             libpath=v8_libpath):

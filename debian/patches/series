@@ -1,0 +1,5 @@
+install-wafadmin-to-datadir.patch
+node_addon-paths-and-ev_multiplicity.patch
+install-man-nodejs.patch
+nodejs-waf-and-node_path.patch
+no-v8-debug-lib.patch

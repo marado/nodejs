@@ -1,0 +1,41 @@
+--- a/bin/node-waf
++++ b/bin/node-waf
+@@ -1,11 +1,12 @@
+ #!/usr/bin/env python
+ import os, sys
+ 
+-
+ join = os.path.join
+-bindir = os.path.dirname(os.path.realpath(__file__))
+-prefix = join(bindir, "..")
+-wafdir = join(prefix, "lib", "node")
++if os.environ.has_key('PREFIX_NODE'):
++	prefix = os.environ['PREFIX_NODE']
++else:
++	prefix = "/usr"
++wafdir = join(prefix, "share", "nodejs")
+ 
+ w = join(wafdir, 'wafadmin')
+ t = join(w, 'Tools')
+--- a/src/node_config.h.in
++++ b/src/node_config.h.in
+@@ -1,7 +1,7 @@
+ #ifndef NODE_CONFIG_H
+ #define NODE_CONFIG_H
+ 
+-#define NODE_CFLAGS "@CCFLAGS@ @CPPFLAGS@ -I@PREFIX@/include/node"
++#define NODE_CFLAGS "@CCFLAGS@ @CPPFLAGS@ -I@PREFIX@/include/nodejs"
+ #define NODE_PREFIX "@PREFIX@"
+ 
+ #endif /* NODE_CONFIG_H */
+--- a/src/node.js
++++ b/src/node.js
+@@ -135,7 +135,7 @@
+   var pathModule = createInternalModule('path', pathFn);
+   var path = pathModule.exports;
+ 
+-  var modulePaths = [path.join(process.execPath, "..", "..", "lib", "node")];
++  var modulePaths = [path.join(process.execPath, "..", "..", "lib", "nodejs")];
+ 
+   if (process.env["HOME"]) {
+     modulePaths.unshift(path.join(process.env["HOME"], ".node_libraries"));
