@@ -1,8 +1,11 @@
 #!/usr/bin/make -f
 
+include /usr/share/cdbs/1/rules/upstream-tarball.mk
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/autotools.mk
 
+DEB_UPSTREAM_URL = http://nodejs.org/dist
+DEB_UPSTREAM_TARBALL_BASENAME = node-v$(DEB_UPSTREAM_TARBALL_VERSION)
 DEB_CONFIGURE_NORMAL_ARGS = ""
 DEB_CONFIGURE_EXTRA_FLAGS = --debug --shared-v8 --shared-cares --shared-libev
 DEB_CONFIGURE_SCRIPT_ENV += PREFIX="/usr"
