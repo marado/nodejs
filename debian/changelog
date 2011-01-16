@@ -1,5 +1,6 @@
 nodejs (0.2.6-1) experimental; urgency=low
 
+  [ Jérémy Lal ]
   * New upstream release.
   * nodejs is an alternative to js. (Closes: #597572)
   * Explain the node-to-nodejs renaming in README.Debian,
@@ -10,8 +11,22 @@ nodejs (0.2.6-1) experimental; urgency=low
     Custom paths can be set through NODE_PATH.
     The reason is to support future npm package, giving higher
     priority to modules installed by npm as root.
+  * Repackage using CDBS.  Enable regression testing.
+  * Add a note about importing upstream tarball in README.source.
+  * Update TODO
 
- -- Jérémy Lal <kapouer@melix.org>  Fri, 31 Dec 2010 09:40:17 +0100
+  [ Jonas Smedegaard ]
+  * Add myself as uploader.
+  * Limit watch file to stable releases.
+  * Enable CDBS build-dependency autoresolving.
+  * Tighten build-dependency on cdbs to versions properly supporting
+    debhelper compat level 7.
+  * Tighten build-dependency on debhelper to versions fully supporting
+    compat level 7.
+  * Build-depend on dh-buildinfo to include buildinfo hints with binary
+    packages for easier troubleshooting.
+
+ -- Jonas Smedegaard <dr@jones.dk>  Sun, 16 Jan 2011 06:18:01 +0100
 
 nodejs (0.2.2-1) experimental; urgency=low
 
