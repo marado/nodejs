@@ -13,6 +13,10 @@ DEB_DESTDIR = $(CURDIR)/debian/nodejs
 DEB_MAKE_CLEAN_TARGET = clean
 DEB_MAKE_CHECK_TARGET = test
 
+# upstream patched those files and let the original along, ignore them :
+DEB_CLEAN_EXCLUDE = deps/v8/src/SConscript.orig deps/v8/src/platform.h.orig
+
+
 clean::
 	# remove links to binaries
 	rm -f node
