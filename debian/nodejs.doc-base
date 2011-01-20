@@ -1,7 +1,7 @@
 Document: nodejs-api
-Title: Nodejs API Manual
+Title: Node API Manual
 Author: Ryan Dahl
-Abstract: This manual describes the API and command-line usage of Nodejs.
+Abstract: This manual describes the API and command-line usage of Node.
 Section: Programming
 
 Format: HTML

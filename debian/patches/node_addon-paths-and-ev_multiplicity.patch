@@ -19,15 +19,6 @@ http://github.com/ry/node/commit/ffb4b47367cab304ec947ec4ebb0a6c0dc8028b7
  
    # with symbols
    conf.env.append_value('CCFLAGS', ['-g'])
-@@ -43,7 +42,7 @@
-   found = os.path.exists(conf.env['NODE_PATH'])
-   conf.check_message('node path', '', found, conf.env['NODE_PATH'])
- 
--  found = os.path.exists(join(prefix, 'bin', 'node'))
-+  found = os.path.exists(join(prefix, 'bin', 'nodejs'))
-   conf.check_message('node prefix', '', found, prefix)
- 
-   ## On Cygwin we need to link to the generated symbol definitions
 @@ -57,7 +56,7 @@
      nodePath = None
      if not os.environ.has_key('NODE_PATH'):

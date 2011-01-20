@@ -3,8 +3,8 @@ nodejs (0.2.6-1) experimental; urgency=low
   [ Jérémy Lal ]
   * New upstream release.
   * nodejs is an alternative to js. (Closes: #597572)
-  * Explain the node-to-nodejs renaming in README.Debian,
-    and how one could work around it. (Closes: #597571)
+  * Use upstream binary names for node and node-waf,
+    conflicts with node package. (Closes: #597571)
   * Global modules search paths :
     /usr/local/lib/nodejs
     /usr/lib/nodejs

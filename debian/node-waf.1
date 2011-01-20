@@ -1,18 +1,18 @@
-.TH nodejs-waf 1 "11 July 2010"
+.TH node-waf 1 "11 July 2010"
 .
 .SH NAME
 .
-nodejs-waf - WAF helper for building nodejs modules
+node-waf - WAF helper for building node modules
 .
 .SH SYNOPSIS
-.B nodejs-waf [\fICOMMAND\fR]
+.B node-waf [\fICOMMAND\fR]
 .
 .SH DESCRIPTION
 .PP
 Helper for the waf build system that is included in nodejs-dev package.
 .P
 Typical usage is :
-\fInodejs-waf\fP \fBconfigure\fR \fBbuild\fR
+\fInode-waf\fP \fBconfigure\fR \fBbuild\fR
 .
 .SH ENVIRONMENT VARIABLE
 .P
@@ -23,8 +23,8 @@ If $HOME is set, it defaults to $HOME/.node_libraries, else to /usr/lib/nodejs.
 .SH COMMANDS
 .TP
 \fBdistclean\fR
-Removes all files created by \fInodejs-waf\fP.
-This may be useful when using a new nodejs release.
+Removes all files created by \fInode-waf\fP.
+This may be useful when using a new node release.
 .TP
 \fBclean\fR
 .TP
@@ -40,4 +40,4 @@ Uninstall module from NODE_PATH.
 .
 .SH "SEE ALSO"
 .
-.BR nodejs(1)
+.BR node(1)

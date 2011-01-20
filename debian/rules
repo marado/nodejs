@@ -21,7 +21,6 @@ clean::
 	# remove links to binaries
 	rm -f node
 	rm -f node_g
-	rm -f doc/nodejs.1
 	# waf files
 	rm -f .lock-wscript
 	rm -rf build
@@ -32,28 +31,13 @@ clean::
 	# first make fails, and creates *.pyc files
 	find . -name "*.pyc" -delete
 
-build/nodejs::
-	# Rename man page to NODEJS
-	# rename binaries to nodejs, nodejs-waf, where possible
-	sed \
-		-e 's/"NODE"/"NODEJS"/g' \
-		-e "s/\\\fBnode\\\/\\\fBnodejs\\\/g" \
-		-e "s/\\\fBnode /\\\fBnodejs /g" \
-		-e 's/> node/> nodejs/g' \
-		-e "s/ node / nodejs /g" \
-		-e 's/ node$$/ nodejs/g' \
-		-e "s/\\\'node\\\'/\\\'nodejs\\\'/g" \
-		doc/node.1 > doc/nodejs.1
-
 install/nodejs::	
 	# don't install node-repl
 	rm -f $(CURDIR)/debian/nodejs/usr/bin/node-repl
-	# rename and install binaries in nodejs
-	mv $(CURDIR)/debian/nodejs/usr/bin/node $(CURDIR)/debian/nodejs/usr/bin/nodejs
 
 install/nodejs-dbg::
 	# rename and install binaries in nodejs-dbg
-	mv $(CURDIR)/debian/nodejs/usr/bin/node_g $(CURDIR)/debian/nodejs-dbg/usr/lib/debug/usr/bin/nodejs
+	mv $(CURDIR)/debian/nodejs/usr/bin/node_g $(CURDIR)/debian/nodejs-dbg/usr/lib/debug/usr/bin/node
 
 install/nodejs-dev::
 	# we have completion for nodejs-waf
@@ -62,5 +46,5 @@ install/nodejs-dev::
 	mv $(CURDIR)/debian/nodejs/usr/include/node/* $(CURDIR)/debian/nodejs-dev/usr/include/nodejs/
 	rm -rf $(CURDIR)/debian/nodejs/usr/include
 	# waf for nodejs-dev
-	mv $(CURDIR)/debian/nodejs/usr/bin/node-waf $(CURDIR)/debian/nodejs-dev/usr/bin/nodejs-waf
+	mv $(CURDIR)/debian/nodejs/usr/bin/node-waf $(CURDIR)/debian/nodejs-dev/usr/bin/
 	mv $(CURDIR)/debian/nodejs/usr/share/nodejs/wafadmin $(CURDIR)/debian/nodejs-dev/usr/share/nodejs/
