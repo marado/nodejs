@@ -4,7 +4,7 @@ Priority: extra
 Maintainer: Jérémy Lal <kapouer@melix.org>
 Uploaders: Dave Beckett <dajobe@debian.org>,
  Jonas Smedegaard <dr@jones.dk>
-Build-Depends: cdbs (>= 0.4.85~),
+Build-Depends: cdbs (>= 0.4.70~),
  debhelper (>= 7.0.1),
  dh-buildinfo,
  python, libev-dev (>= 3.9), libv8-dev (>= 2.2.24), scons (>= 1.2.0), libc-ares-dev (>= 1.7.3), binutils, libssl-dev (>= 0.9.8), pkg-config, bash-completion
@@ -31,6 +31,7 @@ Description: Development files for Node.js
 Package: nodejs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Conflicts: node
 Description: Node.js event-based server-side javascript engine
  Node.js is similar in design to and influenced by systems like
  Ruby's Event Machine or Python's Twisted.
