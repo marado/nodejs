@@ -1,4 +1,5 @@
 Description: FHS paths for nodejs
+ Add /usr/local/lib/nodejs for user-installed modules.
 Forwarded: not-needed
 Author: Jérémy Lal <kapouer@melix.org>
 Last-Update: 2010-01-01
