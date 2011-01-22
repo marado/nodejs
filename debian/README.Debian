@@ -1,8 +1,8 @@
 nodejs for Debian
 =================
 
-modules
--------
+packaged modules
+----------------
 
 The global search path for modules is
 /usr/lib/nodejs
@@ -10,7 +10,19 @@ The global search path for modules is
 Future packages of node modules will use that directory,
 so it should be used wisely.
 
-man node(1) for more information about NODE_PATH.
+
+user modules
+------------
+
+Another global search path for modules is
+/usr/local/lib/nodejs
+
+Modules installed by root user should go in that directory,
+as well as modules installed by npm (the node package manager),
+when run as root.
 
 
- -- Jérémy Lal <kapouer@melix.org>  Sat, 02 Oct 2010 20:22:57 +0200
+See node(1) for more information about NODE_PATH.
+
+
+ -- Jérémy Lal <kapouer@melix.org>  Sun, 23 Jan 2011 00:23:54 +0200

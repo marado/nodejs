@@ -8,8 +8,8 @@ be removed when 1.7.2 is released and available as a debian package.
 
 - DONE : add a "js" alternative ?
 
-- support nodejs shebang, notice lintian maintainers ?
+- NOT NEEDED (never released) : Remove nodejs alternative
 
-- Remove nodejs alternative
+- DONE : Update README.Debian to explain /usr/local/lib/nodejs for modules installed manually or by npm.
 
-- Update README.Debian to explain /usr/local/lib/nodejs for modules installed manually or by npm.
+- support node shebang, notice lintian maintainers ?
