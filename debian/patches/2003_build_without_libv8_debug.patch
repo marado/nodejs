@@ -1,9 +1,9 @@
-Description: libv8_g does not exists in libv8 debian package.
- Debug build of node links against debug build of libv8,
- which is not available in debian package.
-
+Description: Build node_g without libv8 debug version
+ libv8 package does not provide it.
+Forwarded: not-needed
 Author: Jérémy Lal <kapouer@melix.org>
-
+Last-Update: 2010-01-01
+---
 --- a/wscript
 +++ b/wscript
 @@ -222,7 +222,7 @@

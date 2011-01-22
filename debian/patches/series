@@ -1,5 +1,4 @@
-install-wafadmin-to-datadir.patch
-node_addon-paths-and-ev_multiplicity.patch
-nodejs-waf-and-node_path.patch
-no-v8-debug-lib.patch
-2001_avoid_tty-needing_test.patch
+2001_FHS_paths_for_nodejs.patch
+2002_node-waf_libev_compatibility.patch
+2003_build_without_libv8_debug.patch
+2004_avoid_tty-needing_test.patch

@@ -1,0 +1,17 @@
+Description: Remove EV_MULTIPLICITY=0 because it is incompatible with debian libev default value.
+ http://groups.google.com/group/nodejs/search?group=nodejs&q=ev_multiplicity
+ http://github.com/ry/node/commit/ffb4b47367cab304ec947ec4ebb0a6c0dc8028b7
+Forwarded: not-needed
+Author: Jérémy Lal <kapouer@melix.org>
+Last-Update: 2010-01-01
+---
+--- a/tools/wafadmin/Tools/node_addon.py
++++ b/tools/wafadmin/Tools/node_addon.py
+@@ -30,7 +30,6 @@
+   conf.env['LIBPATH_NODE'] = lib
+   conf.env['CPPPATH_NODE'] = join(prefix, 'include', 'nodejs')
+   conf.env['CPPFLAGS_NODE'] = '-D_GNU_SOURCE'
+-  conf.env['CPPFLAGS_NODE'] = '-DEV_MULTIPLICITY=0'
+ 
+   # with symbols
+   conf.env.append_value('CCFLAGS', ['-g'])
