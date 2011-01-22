@@ -1,6 +1,5 @@
 Description: Remove EV_MULTIPLICITY=0 because it is incompatible with debian libev default value.
- http://groups.google.com/group/nodejs/search?group=nodejs&q=ev_multiplicity
- http://github.com/ry/node/commit/ffb4b47367cab304ec947ec4ebb0a6c0dc8028b7
+ Upstream is ok with that, but did not fix node_addon.py, and now is dropping waf usage.
 Forwarded: not-needed
 Author: Jérémy Lal <kapouer@melix.org>
 Last-Update: 2010-01-01
