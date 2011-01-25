@@ -4,12 +4,12 @@ Priority: extra
 Maintainer: Jérémy Lal <kapouer@melix.org>
 Uploaders: Dave Beckett <dajobe@debian.org>,
  Jonas Smedegaard <dr@jones.dk>
-Build-Depends: cdbs (>= 0.4.85~),
+Build-Depends: cdbs (>= 0.4.70~),
  debhelper (>= 7.0.1),
  dh-buildinfo,
  python,
  libev-dev (>= 3.9),
- libv8-dev (>= 2.2.24),
+ libv8-dev (>= 2.5.9.9),
  scons (>= 1.2.0),
  libc-ares-dev (>= 1.7.3),
  binutils,
@@ -29,7 +29,7 @@ Depends: nodejs (= ${binary:Version}),
  ${misc:Depends},
  python,
  libev-dev (>= 3.9),
- libv8-dev (>= 2.2.24),
+ libv8-dev (>= 2.5.9.9),
  libc-ares-dev (>= 1.7.3),
  libssl-dev (>= 0.9.8)
 Description: Development files for Node.js
@@ -64,7 +64,7 @@ Section: debug
 Architecture: any
 Depends: ${misc:Depends},
  nodejs (= ${binary:Version})
-Suggests: libv8-dbg (>= 2.2.24)
+Suggests: libv8-dbg (>= 2.5.9.9)
 Description: Node.js event-based server-side javascript engine (debug)
  Node.js is similar in design to and influenced by systems like
  Ruby's Event Machine or Python's Twisted.
