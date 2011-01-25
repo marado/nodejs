@@ -1,3 +1,12 @@
+nodejs (0.2.6-2) experimental; urgency=low
+
+  * Build-depends on libv8-2.5.9.9-2.
+    (Closes: #610527, #607319, #605447, #597784)
+  * Refactor patches, DEP-3 format.
+  * Explain modules search paths in README.Debian.
+
+ -- Jérémy Lal <kapouer@melix.org>  Tue, 25 Jan 2011 14:48:32 +0100
+
 nodejs (0.2.6-1) experimental; urgency=low
 
   [ Jérémy Lal ]
