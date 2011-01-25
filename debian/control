@@ -4,7 +4,7 @@ Priority: extra
 Maintainer: Jérémy Lal <kapouer@melix.org>
 Uploaders: Dave Beckett <dajobe@debian.org>,
  Jonas Smedegaard <dr@jones.dk>
-Build-Depends: cdbs (>= 0.4.70~),
+Build-Depends: cdbs (>= 0.4.85~),
  debhelper (>= 7.0.1),
  dh-buildinfo,
  python,
@@ -64,7 +64,7 @@ Section: debug
 Architecture: any
 Depends: ${misc:Depends},
  nodejs (= ${binary:Version})
-Suggests: libv8-dbg (>= 2.5.9.9)
+Suggests: libv8-dbg
 Description: Node.js event-based server-side javascript engine (debug)
  Node.js is similar in design to and influenced by systems like
  Ruby's Event Machine or Python's Twisted.
