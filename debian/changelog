@@ -1,3 +1,9 @@
+nodejs (0.2.6-3) experimental; urgency=low
+
+  * Disable simple/test-dgram-multicast test that fails on sbuild. 
+
+ -- Jérémy Lal <kapouer@melix.org>  Tue, 25 Jan 2011 23:35:09 +0100
+
 nodejs (0.2.6-2) experimental; urgency=low
 
   [ Jérémy Lal ]
