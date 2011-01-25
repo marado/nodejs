@@ -3,7 +3,6 @@ Description: Build node_g without libv8 debug version
 Forwarded: not-needed
 Author: Jérémy Lal <kapouer@melix.org>
 Last-Update: 2010-01-01
----
 --- a/wscript
 +++ b/wscript
 @@ -222,7 +222,7 @@

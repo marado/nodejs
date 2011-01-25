@@ -3,7 +3,6 @@ Description: Remove EV_MULTIPLICITY=0 because it is incompatible with debian lib
 Forwarded: not-needed
 Author: Jérémy Lal <kapouer@melix.org>
 Last-Update: 2010-01-01
----
 --- a/tools/wafadmin/Tools/node_addon.py
 +++ b/tools/wafadmin/Tools/node_addon.py
 @@ -30,7 +30,6 @@

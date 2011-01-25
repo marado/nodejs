@@ -3,7 +3,6 @@ Description: FHS paths for nodejs
 Forwarded: not-needed
 Author: Jérémy Lal <kapouer@melix.org>
 Last-Update: 2010-01-01
----
 --- a/wscript
 +++ b/wscript
 @@ -579,8 +579,8 @@
