@@ -3,3 +3,4 @@
 2003_build_without_libv8_debug.patch
 2004_avoid_tty-needing_test.patch
 2005_avoid_multicast_test.patch
+2006_avoid_unpack_test.patch
