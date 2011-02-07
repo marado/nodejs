@@ -1,7 +1,7 @@
 nodejs (0.2.6-4) experimental; urgency=low
 
   * Disable simple/test-buffer Buffer.unpack test that fails on ARM.
-    The pack/unpack functions are deprecated, and not documented. 
+    The pack/unpack functions are deprecated, and not documented.
 
  -- Jérémy Lal <kapouer@melix.org>  Fri, 04 Feb 2011 00:00:12 +0100
 
