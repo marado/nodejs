@@ -1,13 +1,13 @@
-nodejs (0.2.6-4) UNRELEASED; urgency=low
+nodejs (0.2.6-4) unstable; urgency=low
 
   [ Jérémy Lal ]
   * Disable simple/test-buffer Buffer.unpack test that fails on ARM.
     The pack/unpack functions are deprecated, and not documented.
 
   [ Jonas Smedegaard ]
-  * Drop done TODO items.
+  * Drop done items from TODO.
 
- -- Jonas Smedegaard <dr@jones.dk>  Mon, 07 Feb 2011 21:58:43 +0100
+ -- Jonas Smedegaard <dr@jones.dk>  Mon, 07 Feb 2011 23:39:40 +0100
 
 nodejs (0.2.6-3) experimental; urgency=low
 
