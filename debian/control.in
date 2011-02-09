@@ -1,8 +1,9 @@
 Source: nodejs
 Section: web
 Priority: extra
-Maintainer: Jérémy Lal <kapouer@melix.org>
-Uploaders: Dave Beckett <dajobe@debian.org>,
+Maintainer: Debian Javascript Maintainers <pkg-javascript-devel@lists.alioth.debian.org>
+Uploaders: Jérémy Lal <kapouer@melix.org>,
+ Dave Beckett <dajobe@debian.org>,
  Jonas Smedegaard <dr@jones.dk>
 Build-Depends: @cdbs@,
  python,
