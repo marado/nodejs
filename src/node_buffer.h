@@ -4,6 +4,7 @@
 #include <node.h>
 #include <node_object_wrap.h>
 #include <v8.h>
+#include <assert.h>
 
 namespace node {
 
@@ -12,65 +13,98 @@ namespace node {
  * individual bytes with [] and slice it into substrings or sub-buffers
  * without copying memory.
  *
- * // return an ascii encoded string - no memory iscopied
- * buffer.asciiSlide(0, 3)
- *
- * // returns another buffer - no memory is copied
- * buffer.slice(0, 3)
- *
- * Interally, each javascript buffer object is backed by a "struct buffer"
- * object.  These "struct buffer" objects are either a root buffer (in the
- * case that buffer->root == NULL) or slice objects (in which case
- * buffer->root != NULL).  A root buffer is only GCed once all its slices
- * are GCed.
+ * // return an ascii encoded string - no memory is copied
+ * buffer.asciiSlice(0, 3)
+ */
+
+/*
+   The C++ API for Buffer changed radically between v0.2 and v0.3, in fact
+   it was the reason for bumping the version. In v0.2 JavaScript Buffers and
+   C++ Buffers were in one-to-one correspondence via ObjectWrap. We found
+   that it was faster to expose the C++ Buffers to JavaScript as a
+   "SlowBuffer" which is used as a private backend to pure JavaScript
+   "Buffer" objects - a 'Buffer' in v0.3 might look like this:
+
+   { _parent: s,
+     _offset: 520,
+     length: 5 }
+
+   Migrating code C++ Buffer code from v0.2 to v0.3 is difficult. Here are
+   some tips:
+    - buffer->data() calls should become Buffer::Data(buffer) calls.
+    - buffer->length() calls should become Buffer::Length(buffer) calls. 
+    - There should not be any ObjectWrap::Unwrap<Buffer>() calls. You should
+      not be storing pointers to Buffer objects at all - as they are
+      now considered internal structures. Instead consider making a
+      JavaScript reference to the buffer.
+
+   See the source code node-png as an example of a module which successfully
+   compiles on both v0.2 and v0.3 while making heavy use of the C++ Buffer
+   API.
+
  */
 
 
-struct Blob_;
-
 class Buffer : public ObjectWrap {
  public:
+
+  static bool HasInstance(v8::Handle<v8::Value> val);
+
+  static inline char* Data(v8::Handle<v8::Object> obj) {
+    return (char*)obj->GetIndexedPropertiesExternalArrayData();
+  }
+
+  static inline char* Data(Buffer *b) {
+    return Buffer::Data(b->handle_);
+  }
+
+  static inline size_t Length(v8::Handle<v8::Object> obj) {
+    return (size_t)obj->GetIndexedPropertiesExternalArrayDataLength();
+  }
+
+  static inline size_t Length(Buffer *b) {
+    return Buffer::Length(b);
+  }
+
+
   ~Buffer();
+
+  typedef void (*free_callback)(char *data, void *hint);
+
+  // C++ API for constructing fast buffer
+  static v8::Handle<v8::Object> New(v8::Handle<v8::String> string);
 
   static void Initialize(v8::Handle<v8::Object> target);
   static Buffer* New(size_t length); // public constructor
-  static inline bool HasInstance(v8::Handle<v8::Value> val) {
-    if (!val->IsObject()) return false;
-    v8::Local<v8::Object> obj = val->ToObject();
-    return constructor_template->HasInstance(obj);
-  }
+  static Buffer* New(char *data, size_t len); // public constructor
+  static Buffer* New(char *data, size_t length,
+                     free_callback callback, void *hint); // public constructor
 
-  char* data();
-  size_t length() const { return length_; }
-  struct Blob_* blob() const { return blob_; }
-
-  int AsciiWrite(char *string, int offset, int length);
-  int Utf8Write(char *string, int offset, int length);
-
- private:
+  private:
   static v8::Persistent<v8::FunctionTemplate> constructor_template;
 
   static v8::Handle<v8::Value> New(const v8::Arguments &args);
-  static v8::Handle<v8::Value> Slice(const v8::Arguments &args);
   static v8::Handle<v8::Value> BinarySlice(const v8::Arguments &args);
   static v8::Handle<v8::Value> AsciiSlice(const v8::Arguments &args);
   static v8::Handle<v8::Value> Base64Slice(const v8::Arguments &args);
   static v8::Handle<v8::Value> Utf8Slice(const v8::Arguments &args);
+  static v8::Handle<v8::Value> Ucs2Slice(const v8::Arguments &args);
   static v8::Handle<v8::Value> BinaryWrite(const v8::Arguments &args);
   static v8::Handle<v8::Value> Base64Write(const v8::Arguments &args);
   static v8::Handle<v8::Value> AsciiWrite(const v8::Arguments &args);
   static v8::Handle<v8::Value> Utf8Write(const v8::Arguments &args);
+  static v8::Handle<v8::Value> Ucs2Write(const v8::Arguments &args);
   static v8::Handle<v8::Value> ByteLength(const v8::Arguments &args);
   static v8::Handle<v8::Value> MakeFastBuffer(const v8::Arguments &args);
-  static v8::Handle<v8::Value> Unpack(const v8::Arguments &args);
   static v8::Handle<v8::Value> Copy(const v8::Arguments &args);
 
-  Buffer(size_t length);
-  Buffer(Buffer *parent, size_t start, size_t end);
+  Buffer(v8::Handle<v8::Object> wrapper, size_t length);
+  void Replace(char *data, size_t length, free_callback callback, void *hint);
 
-  size_t off_; // offset inside blob_
-  size_t length_; // length inside blob_
-  struct Blob_ *blob_;
+  size_t length_;
+  char* data_;
+  free_callback callback_;
+  void* callback_hint_;
 };
 
 

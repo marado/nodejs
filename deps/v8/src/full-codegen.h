@@ -31,33 +31,15 @@
 #include "v8.h"
 
 #include "ast.h"
+#include "code-stubs.h"
+#include "codegen.h"
 #include "compiler.h"
 
 namespace v8 {
 namespace internal {
 
-class FullCodeGenSyntaxChecker: public AstVisitor {
- public:
-  FullCodeGenSyntaxChecker() : has_supported_syntax_(true) {}
-
-  void Check(FunctionLiteral* fun);
-
-  bool has_supported_syntax() { return has_supported_syntax_; }
-
- private:
-  void VisitDeclarations(ZoneList<Declaration*>* decls);
-  void VisitStatements(ZoneList<Statement*>* stmts);
-
-  // AST node visit functions.
-#define DECLARE_VISIT(type) virtual void Visit##type(type* node);
-  AST_NODE_LIST(DECLARE_VISIT)
-#undef DECLARE_VISIT
-
-  bool has_supported_syntax_;
-
-  DISALLOW_COPY_AND_ASSIGN(FullCodeGenSyntaxChecker);
-};
-
+// Forward declarations.
+class JumpPatchSite;
 
 // AST node visitor which can tell whether a given statement will be breakable
 // when the code is compiled by the full compiler in the debugger. This means
@@ -89,19 +71,39 @@ class BreakableStatementChecker: public AstVisitor {
 
 class FullCodeGenerator: public AstVisitor {
  public:
+  enum State {
+    NO_REGISTERS,
+    TOS_REG
+  };
+
   explicit FullCodeGenerator(MacroAssembler* masm)
       : masm_(masm),
         info_(NULL),
         nesting_stack_(NULL),
         loop_depth_(0),
-        location_(kStack),
-        true_label_(NULL),
-        false_label_(NULL) {
+        context_(NULL),
+        bailout_entries_(0),
+        stack_checks_(2),  // There's always at least one.
+        forward_bailout_stack_(NULL),
+        forward_bailout_pending_(NULL) {
   }
 
-  static Handle<Code> MakeCode(CompilationInfo* info);
+  static bool MakeCode(CompilationInfo* info);
 
   void Generate(CompilationInfo* info);
+  void PopulateDeoptimizationData(Handle<Code> code);
+
+  class StateField : public BitField<State, 0, 8> { };
+  class PcField    : public BitField<unsigned, 8, 32-8> { };
+
+  static const char* State2String(State state) {
+    switch (state) {
+      case NO_REGISTERS: return "NO_REGISTERS";
+      case TOS_REG: return "TOS_REG";
+    }
+    UNREACHABLE();
+    return NULL;
+  }
 
  private:
   class Breakable;
@@ -254,49 +256,64 @@ class FullCodeGenerator: public AstVisitor {
     DISALLOW_COPY_AND_ASSIGN(ForIn);
   };
 
-  enum Location {
-    kAccumulator,
-    kStack
+  // The forward bailout stack keeps track of the expressions that can
+  // bail out to just before the control flow is split in a child
+  // node. The stack elements are linked together through the parent
+  // link when visiting expressions in test contexts after requesting
+  // bailout in child forwarding.
+  class ForwardBailoutStack BASE_EMBEDDED {
+   public:
+    ForwardBailoutStack(Expression* expr, ForwardBailoutStack* parent)
+        : expr_(expr), parent_(parent) { }
+
+    Expression* expr() const { return expr_; }
+    ForwardBailoutStack* parent() const { return parent_; }
+
+   private:
+    Expression* const expr_;
+    ForwardBailoutStack* const parent_;
   };
 
+  enum ConstantOperand {
+    kNoConstants,
+    kLeftConstant,
+    kRightConstant
+  };
+
+  // Type of a member function that generates inline code for a native function.
+  typedef void (FullCodeGenerator::*InlineFunctionGenerator)
+      (ZoneList<Expression*>*);
+
+  static const InlineFunctionGenerator kInlineFunctionGenerators[];
+
+  // A platform-specific utility to overwrite the accumulator register
+  // with a GC-safe value.
+  void ClearAccumulator();
+
+  // Compute the frame pointer relative offset for a given local or
+  // parameter slot.
   int SlotOffset(Slot* slot);
 
-  // Emit code to convert a pure value (in a register, slot, as a literal,
-  // or on top of the stack) into the result expected according to an
-  // expression context.
-  void Apply(Expression::Context context, Register reg);
+  // Determine whether or not to inline the smi case for the given
+  // operation.
+  bool ShouldInlineSmiCase(Token::Value op);
 
-  // Slot cannot have type Slot::LOOKUP.
-  void Apply(Expression::Context context, Slot* slot);
-
-  void Apply(Expression::Context context, Literal* lit);
-  void ApplyTOS(Expression::Context context);
-
-  // Emit code to discard count elements from the top of stack, then convert
-  // a pure value into the result expected according to an expression
-  // context.
-  void DropAndApply(int count, Expression::Context context, Register reg);
-
-  // Set up branch labels for a test expression.
-  void PrepareTest(Label* materialize_true,
-                   Label* materialize_false,
-                   Label** if_true,
-                   Label** if_false);
-
-  // Emit code to convert pure control flow to a pair of labels into the
-  // result expected according to an expression context.
-  void Apply(Expression::Context context,
-             Label* materialize_true,
-             Label* materialize_false);
-
-  // Emit code to convert constant control flow (true or false) into
-  // the result expected according to an expression context.
-  void Apply(Expression::Context context, bool flag);
+  // Compute which (if any) of the operands is a compile-time constant.
+  ConstantOperand GetConstantOperand(Token::Value op,
+                                     Expression* left,
+                                     Expression* right);
 
   // Helper function to convert a pure value into a test context.  The value
   // is expected on the stack or the accumulator, depending on the platform.
   // See the platform-specific implementation for details.
-  void DoTest(Expression::Context context);
+  void DoTest(Label* if_true, Label* if_false, Label* fall_through);
+
+  // Helper function to split control flow and avoid a branch to the
+  // fall-through label if it is set up.
+  void Split(Condition cc,
+             Label* if_true,
+             Label* if_false,
+             Label* fall_through);
 
   void Move(Slot* dst, Register source, Register scratch1, Register scratch2);
   void Move(Register dst, Slot* source);
@@ -306,82 +323,84 @@ class FullCodeGenerator: public AstVisitor {
   // register.
   MemOperand EmitSlotSearch(Slot* slot, Register scratch);
 
+  // Forward the bailout responsibility for the given expression to
+  // the next child visited (which must be in a test context).
+  void ForwardBailoutToChild(Expression* expr);
+
   void VisitForEffect(Expression* expr) {
-    Expression::Context saved_context = context_;
-    context_ = Expression::kEffect;
-    Visit(expr);
-    context_ = saved_context;
+    EffectContext context(this);
+    HandleInNonTestContext(expr, NO_REGISTERS);
   }
 
-  void VisitForValue(Expression* expr, Location where) {
-    Expression::Context saved_context = context_;
-    Location saved_location = location_;
-    context_ = Expression::kValue;
-    location_ = where;
-    Visit(expr);
-    context_ = saved_context;
-    location_ = saved_location;
+  void VisitForAccumulatorValue(Expression* expr) {
+    AccumulatorValueContext context(this);
+    HandleInNonTestContext(expr, TOS_REG);
   }
 
-  void VisitForControl(Expression* expr, Label* if_true, Label* if_false) {
-    Expression::Context saved_context = context_;
-    Label* saved_true = true_label_;
-    Label* saved_false = false_label_;
-    context_ = Expression::kTest;
-    true_label_ = if_true;
-    false_label_ = if_false;
-    Visit(expr);
-    context_ = saved_context;
-    true_label_ = saved_true;
-    false_label_ = saved_false;
+  void VisitForStackValue(Expression* expr) {
+    StackValueContext context(this);
+    HandleInNonTestContext(expr, NO_REGISTERS);
   }
 
-  void VisitForValueControl(Expression* expr,
-                            Location where,
-                            Label* if_true,
-                            Label* if_false) {
-    Expression::Context saved_context = context_;
-    Location saved_location = location_;
-    Label* saved_true = true_label_;
-    Label* saved_false = false_label_;
-    context_ = Expression::kValueTest;
-    location_ = where;
-    true_label_ = if_true;
-    false_label_ = if_false;
-    Visit(expr);
-    context_ = saved_context;
-    location_ = saved_location;
-    true_label_ = saved_true;
-    false_label_ = saved_false;
+  void VisitForControl(Expression* expr,
+                       Label* if_true,
+                       Label* if_false,
+                       Label* fall_through) {
+    TestContext context(this, if_true, if_false, fall_through);
+    VisitInTestContext(expr);
+    // Forwarding bailouts to children is a one shot operation. It
+    // should have been processed at this point.
+    ASSERT(forward_bailout_pending_ == NULL);
   }
 
-  void VisitForControlValue(Expression* expr,
-                            Location where,
-                            Label* if_true,
-                            Label* if_false) {
-    Expression::Context saved_context = context_;
-    Location saved_location = location_;
-    Label* saved_true = true_label_;
-    Label* saved_false = false_label_;
-    context_ = Expression::kTestValue;
-    location_ = where;
-    true_label_ = if_true;
-    false_label_ = if_false;
-    Visit(expr);
-    context_ = saved_context;
-    location_ = saved_location;
-    true_label_ = saved_true;
-    false_label_ = saved_false;
-  }
+  void HandleInNonTestContext(Expression* expr, State state);
+  void VisitInTestContext(Expression* expr);
 
   void VisitDeclarations(ZoneList<Declaration*>* declarations);
   void DeclareGlobals(Handle<FixedArray> pairs);
+
+  // Try to perform a comparison as a fast inlined literal compare if
+  // the operands allow it.  Returns true if the compare operations
+  // has been matched and all code generated; false otherwise.
+  bool TryLiteralCompare(Token::Value op,
+                         Expression* left,
+                         Expression* right,
+                         Label* if_true,
+                         Label* if_false,
+                         Label* fall_through);
+
+  // Bailout support.
+  void PrepareForBailout(AstNode* node, State state);
+  void PrepareForBailoutForId(int id, State state);
+
+  // Record a call's return site offset, used to rebuild the frame if the
+  // called function was inlined at the site.
+  void RecordJSReturnSite(Call* call);
+
+  // Prepare for bailout before a test (or compare) and branch.  If
+  // should_normalize, then the following comparison will not handle the
+  // canonical JS true value so we will insert a (dead) test against true at
+  // the actual bailout target from the optimized code. If not
+  // should_normalize, the true and false labels are ignored.
+  void PrepareForBailoutBeforeSplit(State state,
+                                    bool should_normalize,
+                                    Label* if_true,
+                                    Label* if_false);
 
   // Platform-specific code for a variable, constant, or function
   // declaration.  Functions have an initial value.
   void EmitDeclaration(Variable* variable,
                        Variable::Mode mode,
                        FunctionLiteral* function);
+
+  // Platform-specific code for checking the stack limit at the back edge of
+  // a loop.
+  void EmitStackCheck(IterationStatement* stmt);
+  // Record the OSR AST id corresponding to a stack check in the code.
+  void RecordStackCheck(int osr_ast_id);
+  // Emit a table of stack check ids and pcs into the code stream.  Return
+  // the offset of the start of the table.
+  unsigned EmitStackCheckTable();
 
   // Platform-specific return sequence
   void EmitReturnSequence();
@@ -391,52 +410,31 @@ class FullCodeGenerator: public AstVisitor {
   void EmitCallWithIC(Call* expr, Handle<Object> name, RelocInfo::Mode mode);
   void EmitKeyedCallWithIC(Call* expr, Expression* key, RelocInfo::Mode mode);
 
-
   // Platform-specific code for inline runtime calls.
+  InlineFunctionGenerator FindInlineFunctionGenerator(Runtime::FunctionId id);
+
   void EmitInlineRuntimeCall(CallRuntime* expr);
-  void EmitIsSmi(ZoneList<Expression*>* arguments);
-  void EmitIsNonNegativeSmi(ZoneList<Expression*>* arguments);
-  void EmitIsObject(ZoneList<Expression*>* arguments);
-  void EmitIsSpecObject(ZoneList<Expression*>* arguments);
-  void EmitIsUndetectableObject(ZoneList<Expression*>* arguments);
-  void EmitIsFunction(ZoneList<Expression*>* arguments);
-  void EmitIsArray(ZoneList<Expression*>* arguments);
-  void EmitIsRegExp(ZoneList<Expression*>* arguments);
-  void EmitIsConstructCall(ZoneList<Expression*>* arguments);
-  void EmitIsStringWrapperSafeForDefaultValueOf(
-      ZoneList<Expression*>* arguments);
-  void EmitObjectEquals(ZoneList<Expression*>* arguments);
-  void EmitArguments(ZoneList<Expression*>* arguments);
-  void EmitArgumentsLength(ZoneList<Expression*>* arguments);
-  void EmitClassOf(ZoneList<Expression*>* arguments);
-  void EmitValueOf(ZoneList<Expression*>* arguments);
-  void EmitSetValueOf(ZoneList<Expression*>* arguments);
-  void EmitNumberToString(ZoneList<Expression*>* arguments);
-  void EmitStringCharFromCode(ZoneList<Expression*>* arguments);
-  void EmitStringCharCodeAt(ZoneList<Expression*>* arguments);
-  void EmitStringCharAt(ZoneList<Expression*>* arguments);
-  void EmitStringCompare(ZoneList<Expression*>* arguments);
-  void EmitStringAdd(ZoneList<Expression*>* arguments);
-  void EmitLog(ZoneList<Expression*>* arguments);
-  void EmitRandomHeapNumber(ZoneList<Expression*>* arguments);
-  void EmitSubString(ZoneList<Expression*>* arguments);
-  void EmitRegExpExec(ZoneList<Expression*>* arguments);
-  void EmitMathPow(ZoneList<Expression*>* arguments);
-  void EmitMathSin(ZoneList<Expression*>* arguments);
-  void EmitMathCos(ZoneList<Expression*>* arguments);
-  void EmitMathSqrt(ZoneList<Expression*>* arguments);
-  void EmitCallFunction(ZoneList<Expression*>* arguments);
-  void EmitRegExpConstructResult(ZoneList<Expression*>* arguments);
-  void EmitSwapElements(ZoneList<Expression*>* arguments);
-  void EmitGetFromCache(ZoneList<Expression*>* arguments);
-  void EmitIsRegExpEquivalent(ZoneList<Expression*>* arguments);
+
+#define EMIT_INLINE_RUNTIME_CALL(name, x, y) \
+  void Emit##name(ZoneList<Expression*>* arguments);
+  INLINE_FUNCTION_LIST(EMIT_INLINE_RUNTIME_CALL)
+  INLINE_RUNTIME_FUNCTION_LIST(EMIT_INLINE_RUNTIME_CALL)
+#undef EMIT_INLINE_RUNTIME_CALL
 
   // Platform-specific code for loading variables.
-  void EmitVariableLoad(Variable* expr, Expression::Context context);
+  void EmitLoadGlobalSlotCheckExtensions(Slot* slot,
+                                         TypeofState typeof_state,
+                                         Label* slow);
+  MemOperand ContextSlotOperandCheckExtensions(Slot* slot, Label* slow);
+  void EmitDynamicLoadFromSlotFastCase(Slot* slot,
+                                       TypeofState typeof_state,
+                                       Label* slow,
+                                       Label* done);
+  void EmitVariableLoad(Variable* expr);
 
   // Platform-specific support for allocating a new closure based on
   // the given function info.
-  void EmitNewClosure(Handle<SharedFunctionInfo> info);
+  void EmitNewClosure(Handle<SharedFunctionInfo> info, bool pretenure);
 
   // Platform-specific support for compiling assignments.
 
@@ -450,17 +448,52 @@ class FullCodeGenerator: public AstVisitor {
 
   // Apply the compound assignment operator. Expects the left operand on top
   // of the stack and the right one in the accumulator.
-  void EmitBinaryOp(Token::Value op, Expression::Context context);
+  void EmitBinaryOp(Token::Value op,
+                    OverwriteMode mode);
+
+  // Helper functions for generating inlined smi code for certain
+  // binary operations.
+  void EmitInlineSmiBinaryOp(Expression* expr,
+                             Token::Value op,
+                             OverwriteMode mode,
+                             Expression* left,
+                             Expression* right,
+                             ConstantOperand constant);
+
+  void EmitConstantSmiBinaryOp(Expression* expr,
+                               Token::Value op,
+                               OverwriteMode mode,
+                               bool left_is_constant_smi,
+                               Smi* value);
+
+  void EmitConstantSmiBitOp(Expression* expr,
+                            Token::Value op,
+                            OverwriteMode mode,
+                            Smi* value);
+
+  void EmitConstantSmiShiftOp(Expression* expr,
+                              Token::Value op,
+                              OverwriteMode mode,
+                              Smi* value);
+
+  void EmitConstantSmiAdd(Expression* expr,
+                          OverwriteMode mode,
+                          bool left_is_constant_smi,
+                          Smi* value);
+
+  void EmitConstantSmiSub(Expression* expr,
+                          OverwriteMode mode,
+                          bool left_is_constant_smi,
+                          Smi* value);
 
   // Assign to the given expression as if via '='. The right-hand-side value
   // is expected in the accumulator.
-  void EmitAssignment(Expression* expr);
+  void EmitAssignment(Expression* expr, int bailout_ast_id);
 
   // Complete a variable assignment.  The right-hand-side value is expected
   // in the accumulator.
   void EmitVariableAssignment(Variable* var,
-                              Token::Value op,
-                              Expression::Context context);
+                              Token::Value op);
 
   // Complete a named property assignment.  The receiver is expected on top
   // of the stack and the right-hand-side value in the accumulator.
@@ -470,14 +503,6 @@ class FullCodeGenerator: public AstVisitor {
   // expected on top of the stack and the right-hand-side value in the
   // accumulator.
   void EmitKeyedPropertyAssignment(Assignment* expr);
-
-  // Helper for compare operations. Expects the null-value in a register.
-  void EmitNullCompare(bool strict,
-                       Register obj,
-                       Register null_const,
-                       Label* if_true,
-                       Label* if_false,
-                       Register scratch);
 
   void SetFunctionPosition(FunctionLiteral* fun);
   void SetReturnPosition(FunctionLiteral* fun);
@@ -500,13 +525,27 @@ class FullCodeGenerator: public AstVisitor {
 
   MacroAssembler* masm() { return masm_; }
 
+  class ExpressionContext;
+  const ExpressionContext* context() { return context_; }
+  void set_new_context(const ExpressionContext* context) { context_ = context; }
+
   Handle<Script> script() { return info_->script(); }
   bool is_eval() { return info_->is_eval(); }
+  StrictModeFlag strict_mode_flag() {
+    return function()->strict_mode() ? kStrictMode : kNonStrictMode;
+  }
   FunctionLiteral* function() { return info_->function(); }
   Scope* scope() { return info_->scope(); }
 
   static Register result_register();
   static Register context_register();
+
+  // Helper for calling an IC stub.
+  void EmitCallIC(Handle<Code> ic, RelocInfo::Mode mode);
+
+  // Calling an IC stub with a patch site. Passing NULL for patch_site
+  // indicates no inlined smi code and emits a nop after the IC call.
+  void EmitCallIC(Handle<Code> ic, JumpPatchSite* patch_site);
 
   // Set fields in the stack frame. Offsets are the frame pointer relative
   // offsets defined in, e.g., StandardFrameConstants.
@@ -523,17 +562,211 @@ class FullCodeGenerator: public AstVisitor {
   // Handles the shortcutted logical binary operations in VisitBinaryOperation.
   void EmitLogicalOperation(BinaryOperation* expr);
 
+  void VisitForTypeofValue(Expression* expr);
+
+  struct BailoutEntry {
+    unsigned id;
+    unsigned pc_and_state;
+  };
+
+
+  class ExpressionContext BASE_EMBEDDED {
+   public:
+    explicit ExpressionContext(FullCodeGenerator* codegen)
+        : masm_(codegen->masm()), old_(codegen->context()), codegen_(codegen) {
+      codegen->set_new_context(this);
+    }
+
+    virtual ~ExpressionContext() {
+      codegen_->set_new_context(old_);
+    }
+
+    // Convert constant control flow (true or false) to the result expected for
+    // this expression context.
+    virtual void Plug(bool flag) const = 0;
+
+    // Emit code to convert a pure value (in a register, slot, as a literal,
+    // or on top of the stack) into the result expected according to this
+    // expression context.
+    virtual void Plug(Register reg) const = 0;
+    virtual void Plug(Slot* slot) const = 0;
+    virtual void Plug(Handle<Object> lit) const = 0;
+    virtual void Plug(Heap::RootListIndex index) const = 0;
+    virtual void PlugTOS() const = 0;
+
+    // Emit code to convert pure control flow to a pair of unbound labels into
+    // the result expected according to this expression context.  The
+    // implementation will bind both labels unless it's a TestContext, which
+    // won't bind them at this point.
+    virtual void Plug(Label* materialize_true,
+                      Label* materialize_false) const = 0;
+
+    // Emit code to discard count elements from the top of stack, then convert
+    // a pure value into the result expected according to this expression
+    // context.
+    virtual void DropAndPlug(int count, Register reg) const = 0;
+
+    // For shortcutting operations || and &&.
+    virtual void EmitLogicalLeft(BinaryOperation* expr,
+                                 Label* eval_right,
+                                 Label* done) const = 0;
+
+    // Set up branch labels for a test expression.  The three Label** parameters
+    // are output parameters.
+    virtual void PrepareTest(Label* materialize_true,
+                             Label* materialize_false,
+                             Label** if_true,
+                             Label** if_false,
+                             Label** fall_through) const = 0;
+
+    virtual void HandleExpression(Expression* expr) const = 0;
+
+    // Returns true if we are evaluating only for side effects (ie if the result
+    // will be discarded).
+    virtual bool IsEffect() const { return false; }
+
+    // Returns true if we are branching on the value rather than materializing
+    // it.  Only used for asserts.
+    virtual bool IsTest() const { return false; }
+
+   protected:
+    FullCodeGenerator* codegen() const { return codegen_; }
+    MacroAssembler* masm() const { return masm_; }
+    MacroAssembler* masm_;
+
+   private:
+    const ExpressionContext* old_;
+    FullCodeGenerator* codegen_;
+  };
+
+  class AccumulatorValueContext : public ExpressionContext {
+   public:
+    explicit AccumulatorValueContext(FullCodeGenerator* codegen)
+        : ExpressionContext(codegen) { }
+
+    virtual void Plug(bool flag) const;
+    virtual void Plug(Register reg) const;
+    virtual void Plug(Label* materialize_true, Label* materialize_false) const;
+    virtual void Plug(Slot* slot) const;
+    virtual void Plug(Handle<Object> lit) const;
+    virtual void Plug(Heap::RootListIndex) const;
+    virtual void PlugTOS() const;
+    virtual void DropAndPlug(int count, Register reg) const;
+    virtual void EmitLogicalLeft(BinaryOperation* expr,
+                                 Label* eval_right,
+                                 Label* done) const;
+    virtual void PrepareTest(Label* materialize_true,
+                             Label* materialize_false,
+                             Label** if_true,
+                             Label** if_false,
+                             Label** fall_through) const;
+    virtual void HandleExpression(Expression* expr) const;
+  };
+
+  class StackValueContext : public ExpressionContext {
+   public:
+    explicit StackValueContext(FullCodeGenerator* codegen)
+        : ExpressionContext(codegen) { }
+
+    virtual void Plug(bool flag) const;
+    virtual void Plug(Register reg) const;
+    virtual void Plug(Label* materialize_true, Label* materialize_false) const;
+    virtual void Plug(Slot* slot) const;
+    virtual void Plug(Handle<Object> lit) const;
+    virtual void Plug(Heap::RootListIndex) const;
+    virtual void PlugTOS() const;
+    virtual void DropAndPlug(int count, Register reg) const;
+    virtual void EmitLogicalLeft(BinaryOperation* expr,
+                                 Label* eval_right,
+                                 Label* done) const;
+    virtual void PrepareTest(Label* materialize_true,
+                             Label* materialize_false,
+                             Label** if_true,
+                             Label** if_false,
+                             Label** fall_through) const;
+    virtual void HandleExpression(Expression* expr) const;
+  };
+
+  class TestContext : public ExpressionContext {
+   public:
+    explicit TestContext(FullCodeGenerator* codegen,
+                         Label* true_label,
+                         Label* false_label,
+                         Label* fall_through)
+        : ExpressionContext(codegen),
+          true_label_(true_label),
+          false_label_(false_label),
+          fall_through_(fall_through) { }
+
+    static const TestContext* cast(const ExpressionContext* context) {
+      ASSERT(context->IsTest());
+      return reinterpret_cast<const TestContext*>(context);
+    }
+
+    Label* true_label() const { return true_label_; }
+    Label* false_label() const { return false_label_; }
+    Label* fall_through() const { return fall_through_; }
+
+    virtual void Plug(bool flag) const;
+    virtual void Plug(Register reg) const;
+    virtual void Plug(Label* materialize_true, Label* materialize_false) const;
+    virtual void Plug(Slot* slot) const;
+    virtual void Plug(Handle<Object> lit) const;
+    virtual void Plug(Heap::RootListIndex) const;
+    virtual void PlugTOS() const;
+    virtual void DropAndPlug(int count, Register reg) const;
+    virtual void EmitLogicalLeft(BinaryOperation* expr,
+                                 Label* eval_right,
+                                 Label* done) const;
+    virtual void PrepareTest(Label* materialize_true,
+                             Label* materialize_false,
+                             Label** if_true,
+                             Label** if_false,
+                             Label** fall_through) const;
+    virtual void HandleExpression(Expression* expr) const;
+    virtual bool IsTest() const { return true; }
+
+   private:
+    Label* true_label_;
+    Label* false_label_;
+    Label* fall_through_;
+  };
+
+  class EffectContext : public ExpressionContext {
+   public:
+    explicit EffectContext(FullCodeGenerator* codegen)
+        : ExpressionContext(codegen) { }
+
+    virtual void Plug(bool flag) const;
+    virtual void Plug(Register reg) const;
+    virtual void Plug(Label* materialize_true, Label* materialize_false) const;
+    virtual void Plug(Slot* slot) const;
+    virtual void Plug(Handle<Object> lit) const;
+    virtual void Plug(Heap::RootListIndex) const;
+    virtual void PlugTOS() const;
+    virtual void DropAndPlug(int count, Register reg) const;
+    virtual void EmitLogicalLeft(BinaryOperation* expr,
+                                 Label* eval_right,
+                                 Label* done) const;
+    virtual void PrepareTest(Label* materialize_true,
+                             Label* materialize_false,
+                             Label** if_true,
+                             Label** if_false,
+                             Label** fall_through) const;
+    virtual void HandleExpression(Expression* expr) const;
+    virtual bool IsEffect() const { return true; }
+  };
+
   MacroAssembler* masm_;
   CompilationInfo* info_;
-
   Label return_label_;
   NestedStatement* nesting_stack_;
   int loop_depth_;
-
-  Expression::Context context_;
-  Location location_;
-  Label* true_label_;
-  Label* false_label_;
+  const ExpressionContext* context_;
+  ZoneList<BailoutEntry> bailout_entries_;
+  ZoneList<BailoutEntry> stack_checks_;
+  ForwardBailoutStack* forward_bailout_stack_;
+  ForwardBailoutStack* forward_bailout_pending_;
 
   friend class NestedStatement;
 

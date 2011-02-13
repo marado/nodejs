@@ -5,11 +5,18 @@
 #include <ares.h>
 
 #include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
 
-#include <arpa/nameser.h>
-#include <arpa/inet.h>
+#ifdef __POSIX__
+# include <sys/socket.h>
+# include <netdb.h>
+
+# include <arpa/nameser.h>
+# include <arpa/inet.h>
+#endif
+
+#ifdef __MINGW32__
+# include <nameser.h>
+#endif
 
 #ifdef __OpenBSD__
 # ifndef ns_t_a
@@ -17,34 +24,24 @@
 # endif
 #endif  // __OpenBSD__
 
+/*
+ * HACK to use inet_pton/inet_ntop from c-ares because mingw32 doesn't have it
+ * This trick is used in node_net.cc as well
+ * TODO fixme
+ */
+#ifdef __MINGW32__
+  extern "C" {
+#   include <inet_net_pton.h>
+#   include <inet_ntop.h>
+  }
+
+# define inet_pton ares_inet_pton
+# define inet_ntop ares_inet_ntop
+#endif
+
 namespace node {
 
 using namespace v8;
-
-
-static Handle<Value> IsIP(const Arguments& args) {
-  HandleScope scope;
-
-  if (!args[0]->IsString()) {
-    return scope.Close(Integer::New(4));
-  }
-
-  String::Utf8Value s(args[0]->ToString());
-
-  // avoiding buffer overflows in the following strcat
-  // 2001:0db8:85a3:08d3:1319:8a2e:0370:7334
-  // 39 = max ipv6 address.
-  if (s.length() > INET6_ADDRSTRLEN) {
-    return scope.Close(Integer::New(0));
-  }
-
-  struct sockaddr_in6 a;
-
-  if (inet_pton(AF_INET, *s, &(a.sin6_addr)) > 0) return scope.Close(Integer::New(4));
-  if (inet_pton(AF_INET6, *s, &(a.sin6_addr)) > 0) return scope.Close(Integer::New(6));
-
-  return scope.Close(Integer::New(0));
-}
 
 
 class Channel : public ObjectWrap {
@@ -63,7 +60,7 @@ class Channel : public ObjectWrap {
 
   ares_channel channel;
 
-  static void SockStateCb(void *data, int sock, int read, int write);
+  static void SockStateCb(void *data, ares_socket_t sock, int read, int write);
   static void QueryCb(void *arg, int status, int timeouts, unsigned char* abuf, int alen);
 };
 
@@ -123,6 +120,7 @@ void Cares::Initialize(Handle<Object> target) {
   target->Set(String::NewSymbol("PTR"), Integer::New(ns_t_ptr));
   target->Set(String::NewSymbol("TXT"), Integer::New(ns_t_txt));
   target->Set(String::NewSymbol("SRV"), Integer::New(ns_t_srv));
+  target->Set(String::NewSymbol("CNAME"), Integer::New(ns_t_cname));
 
   target->Set(String::NewSymbol("NODATA"), Integer::New(ARES_ENODATA));
   target->Set(String::NewSymbol("FORMERR"), Integer::New(ARES_EFORMERR));
@@ -138,8 +136,6 @@ void Cares::Initialize(Handle<Object> target) {
   target->Set(String::NewSymbol("NOTIMP"), Integer::New(ARES_ENOTIMP));
   target->Set(String::NewSymbol("EREFUSED"), Integer::New(ARES_EREFUSED));
   target->Set(String::NewSymbol("SERVFAIL"), Integer::New(ARES_ESERVFAIL));
-
-  NODE_SET_METHOD(target, "isIP", IsIP);
 
   Channel::Initialize(target);
 }
@@ -339,6 +335,29 @@ static void ParseAnswerAAAA(QueryArg *arg, unsigned char* abuf, int alen) {
   cb_call(arg->js_cb, 2, argv);
 }
 
+
+static void ParseAnswerCNAME(QueryArg *arg, unsigned char* abuf, int alen) {
+  HandleScope scope;
+
+  hostent* host;
+
+  int status = ares_parse_a_reply(abuf, alen, &host, NULL, NULL);
+  if (status != ARES_SUCCESS) {
+    ResolveError(arg->js_cb, status);
+    return;
+  }
+
+  // a CNAME lookup always returns a single record but
+  // it's probably best to follow the common API here
+  Local<Array> addresses = Array::New(1);
+  addresses->Set(0, String::New(host->h_name));
+  ares_free_hostent(host);
+
+  Local<Value> argv[2] = { Local<Value>::New(Null()), addresses };
+  cb_call(arg->js_cb, 2, argv);
+}
+
+
 static void ParseAnswerMX(QueryArg *arg, unsigned char* abuf, int alen) {
   HandleScope scope;
 
@@ -486,6 +505,10 @@ void Channel::Initialize(Handle<Object> target) {
 
 
 Handle<Value> Channel::New(const Arguments& args) {
+  if (!args.IsConstructCall()) {
+    return FromConstructorTemplate(constructor_template, args);
+  }
+
   HandleScope scope;
 
   struct ares_options options;
@@ -564,6 +587,10 @@ Handle<Value> Channel::Query(const Arguments& args) {
 
     case ns_t_srv:
       parse_cb = ParseAnswerSRV;
+      break;
+
+    case ns_t_cname:
+      parse_cb = ParseAnswerCNAME;
       break;
 
     case ns_t_ptr:
@@ -734,7 +761,7 @@ Handle<Value> Channel::ProcessFD(const Arguments& args) {
 }
 
 
-void Channel::SockStateCb(void *data, int sock, int read, int write) {
+void Channel::SockStateCb(void *data, ares_socket_t sock, int read, int write) {
   Channel *c = static_cast<Channel*>(data);
   HandleScope scope;
 

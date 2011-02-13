@@ -25,8 +25,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef V8_OBJECTS_ITERATION_H_
-#define V8_OBJECTS_ITERATION_H_
+#ifndef V8_OBJECTS_VISITING_H_
+#define V8_OBJECTS_VISITING_H_
 
 // This file provides base classes and auxiliary methods for defining
 // static object visitors used during GC.
@@ -50,6 +50,7 @@ class StaticVisitorBase : public AllStatic {
     kVisitShortcutCandidate,
     kVisitByteArray,
     kVisitFixedArray,
+    kVisitGlobalContext,
 
     // For data objects, JS objects and structs along with generic visitor which
     // can visit object of any size we provide visitors specialized by
@@ -100,10 +101,14 @@ class StaticVisitorBase : public AllStatic {
     kVisitMap,
     kVisitPropertyCell,
     kVisitSharedFunctionInfo,
+    kVisitJSFunction,
 
     kVisitorIdCount,
     kMinObjectSizeInWords = 2
   };
+
+  // Visitor ID should fit in one byte.
+  STATIC_ASSERT(kVisitorIdCount <= 256);
 
   // Determine which specialized visitor should be used for given instance type
   // and instance type.
@@ -141,7 +146,7 @@ class VisitorDispatchTable {
   }
 
   void Register(StaticVisitorBase::VisitorId id, Callback callback) {
-    ASSERT((0 <= id) && (id < StaticVisitorBase::kVisitorIdCount));
+    ASSERT(id < StaticVisitorBase::kVisitorIdCount);  // id is unsigned.
     callbacks_[id] = callback;
   }
 
@@ -181,9 +186,9 @@ class VisitorDispatchTable {
 template<typename StaticVisitor>
 class BodyVisitorBase : public AllStatic {
  public:
-  static inline void IteratePointers(HeapObject* object,
+  INLINE(static void IteratePointers(HeapObject* object,
                                      int start_offset,
-                                     int end_offset) {
+                                     int end_offset)) {
     Object** start_slot = reinterpret_cast<Object**>(object->address() +
                                                      start_offset);
     Object** end_slot = reinterpret_cast<Object**>(object->address() +
@@ -198,13 +203,16 @@ class FlexibleBodyVisitor : public BodyVisitorBase<StaticVisitor> {
  public:
   static inline ReturnType Visit(Map* map, HeapObject* object) {
     int object_size = BodyDescriptor::SizeOf(map, object);
-    IteratePointers(object, BodyDescriptor::kStartOffset, object_size);
+    BodyVisitorBase<StaticVisitor>::IteratePointers(
+        object, BodyDescriptor::kStartOffset, object_size);
     return static_cast<ReturnType>(object_size);
   }
 
   template<int object_size>
   static inline ReturnType VisitSpecialized(Map* map, HeapObject* object) {
-    IteratePointers(object, BodyDescriptor::kStartOffset, object_size);
+    ASSERT(BodyDescriptor::SizeOf(map, object) == object_size);
+    BodyVisitorBase<StaticVisitor>::IteratePointers(
+        object, BodyDescriptor::kStartOffset, object_size);
     return static_cast<ReturnType>(object_size);
   }
 };
@@ -214,9 +222,8 @@ template<typename StaticVisitor, typename BodyDescriptor, typename ReturnType>
 class FixedBodyVisitor : public BodyVisitorBase<StaticVisitor> {
  public:
   static inline ReturnType Visit(Map* map, HeapObject* object) {
-    IteratePointers(object,
-                    BodyDescriptor::kStartOffset,
-                    BodyDescriptor::kEndOffset);
+    BodyVisitorBase<StaticVisitor>::IteratePointers(
+        object, BodyDescriptor::kStartOffset, BodyDescriptor::kEndOffset);
     return static_cast<ReturnType>(BodyDescriptor::kSize);
   }
 };
@@ -257,6 +264,11 @@ class StaticNewSpaceVisitor : public StaticVisitorBase {
                                          FixedArray::BodyDescriptor,
                                          int>::Visit);
 
+    table_.Register(kVisitGlobalContext,
+                    &FixedBodyVisitor<StaticVisitor,
+                                      Context::ScavengeBodyDescriptor,
+                                      int>::Visit);
+
     table_.Register(kVisitByteArray, &VisitByteArray);
 
     table_.Register(kVisitSharedFunctionInfo,
@@ -268,6 +280,10 @@ class StaticNewSpaceVisitor : public StaticVisitorBase {
 
     table_.Register(kVisitSeqTwoByteString, &VisitSeqTwoByteString);
 
+    table_.Register(kVisitJSFunction,
+                    &JSObjectVisitor::
+                        template VisitSpecialized<JSFunction::kSize>);
+
     table_.RegisterSpecializations<DataObjectVisitor,
                                    kVisitDataObject,
                                    kVisitDataObjectGeneric>();
@@ -275,8 +291,8 @@ class StaticNewSpaceVisitor : public StaticVisitorBase {
                                    kVisitJSObject,
                                    kVisitJSObjectGeneric>();
     table_.RegisterSpecializations<StructVisitor,
-        kVisitStruct,
-        kVisitStructGeneric>();
+                                   kVisitStruct,
+                                   kVisitStructGeneric>();
   }
 
   static inline int IterateBody(Map* map, HeapObject* obj) {
@@ -336,6 +352,7 @@ VisitorDispatchTable<typename StaticNewSpaceVisitor<StaticVisitor>::Callback>
 void Code::CodeIterateBody(ObjectVisitor* v) {
   int mode_mask = RelocInfo::kCodeTargetMask |
                   RelocInfo::ModeMask(RelocInfo::EMBEDDED_OBJECT) |
+                  RelocInfo::ModeMask(RelocInfo::GLOBAL_PROPERTY_CELL) |
                   RelocInfo::ModeMask(RelocInfo::EXTERNAL_REFERENCE) |
                   RelocInfo::ModeMask(RelocInfo::JS_RETURN) |
                   RelocInfo::ModeMask(RelocInfo::DEBUG_BREAK_SLOT) |
@@ -345,9 +362,8 @@ void Code::CodeIterateBody(ObjectVisitor* v) {
   // the heap compaction in the next statement.
   RelocIterator it(this, mode_mask);
 
-  IteratePointers(v,
-                  kRelocationInfoOffset,
-                  kRelocationInfoOffset + kPointerSize);
+  IteratePointer(v, kRelocationInfoOffset);
+  IteratePointer(v, kDeoptimizationDataOffset);
 
   for (; !it.done(); it.next()) {
     it.rinfo()->Visit(v);
@@ -359,6 +375,7 @@ template<typename StaticVisitor>
 void Code::CodeIterateBody() {
   int mode_mask = RelocInfo::kCodeTargetMask |
                   RelocInfo::ModeMask(RelocInfo::EMBEDDED_OBJECT) |
+                  RelocInfo::ModeMask(RelocInfo::GLOBAL_PROPERTY_CELL) |
                   RelocInfo::ModeMask(RelocInfo::EXTERNAL_REFERENCE) |
                   RelocInfo::ModeMask(RelocInfo::JS_RETURN) |
                   RelocInfo::ModeMask(RelocInfo::DEBUG_BREAK_SLOT) |
@@ -370,6 +387,8 @@ void Code::CodeIterateBody() {
 
   StaticVisitor::VisitPointer(
       reinterpret_cast<Object**>(this->address() + kRelocationInfoOffset));
+  StaticVisitor::VisitPointer(
+      reinterpret_cast<Object**>(this->address() + kDeoptimizationDataOffset));
 
   for (; !it.done(); it.next()) {
     it.rinfo()->template Visit<StaticVisitor>();
@@ -379,4 +398,4 @@ void Code::CodeIterateBody() {
 
 } }  // namespace v8::internal
 
-#endif  // V8_OBJECTS_ITERATION_H_
+#endif  // V8_OBJECTS_VISITING_H_
