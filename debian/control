@@ -1,15 +1,16 @@
 Source: nodejs
 Section: web
 Priority: extra
-Maintainer: Jérémy Lal <kapouer@melix.org>
-Uploaders: Dave Beckett <dajobe@debian.org>,
+Maintainer: Debian Javascript Maintainers <pkg-javascript-devel@lists.alioth.debian.org>
+Uploaders: Jérémy Lal <kapouer@melix.org>,
+ Dave Beckett <dajobe@debian.org>,
  Jonas Smedegaard <dr@jones.dk>
 Build-Depends: cdbs (>= 0.4.85~),
  debhelper (>= 7.0.1),
  dh-buildinfo,
  python,
  libev-dev (>= 3.9),
- libv8-dev (>= 2.5.9.9),
+ libv8-dev (>= 3.0.12.9),
  scons (>= 1.2.0),
  libc-ares-dev (>= 1.7.3),
  binutils,
@@ -29,7 +30,7 @@ Depends: nodejs (= ${binary:Version}),
  ${misc:Depends},
  python,
  libev-dev (>= 3.9),
- libv8-dev (>= 2.5.9.9),
+ libv8-dev (>= 3.0.12.9),
  libc-ares-dev (>= 1.7.3),
  libssl-dev (>= 0.9.8)
 Description: Development files for Node.js
