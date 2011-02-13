@@ -1,3 +1,9 @@
+nodejs (0.4.0-1) UNRELEASED; urgency=low
+
+  * New upstream release
+
+ -- Jérémy Lal <kapouer@melix.org>  Sat, 12 Feb 2011 02:11:47 +0100
+
 nodejs (0.2.6-4) unstable; urgency=low
 
   [ Jérémy Lal ]
