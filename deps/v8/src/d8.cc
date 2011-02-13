@@ -486,7 +486,7 @@ void Shell::Initialize() {
 
   // Start the debugger agent if requested.
   if (i::FLAG_debugger_agent) {
-    v8::Debug::EnableAgent("d8 shell", i::FLAG_debugger_port);
+    v8::Debug::EnableAgent("d8 shell", i::FLAG_debugger_port, true);
   }
 
   // Start the in-process debugger if requested.
@@ -599,7 +599,8 @@ void Shell::RunShell() {
 class ShellThread : public i::Thread {
  public:
   ShellThread(int no, i::Vector<const char> files)
-    : no_(no), files_(files) { }
+    : Thread("d8:ShellThread"),
+      no_(no), files_(files) { }
   virtual void Run();
  private:
   int no_;

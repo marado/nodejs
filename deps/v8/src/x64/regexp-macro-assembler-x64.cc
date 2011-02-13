@@ -32,11 +32,9 @@
 #include "serialize.h"
 #include "unicode.h"
 #include "log.h"
-#include "ast.h"
 #include "regexp-stack.h"
 #include "macro-assembler.h"
 #include "regexp-macro-assembler.h"
-#include "x64/macro-assembler-x64.h"
 #include "x64/regexp-macro-assembler-x64.h"
 
 namespace v8 {
@@ -147,7 +145,6 @@ int RegExpMacroAssemblerX64::stack_limit_slack()  {
 
 void RegExpMacroAssemblerX64::AdvanceCurrentPosition(int by) {
   if (by != 0) {
-    Label inside_string;
     __ addq(rdi, Immediate(by * char_size()));
   }
 }
@@ -226,9 +223,7 @@ void RegExpMacroAssemblerX64::CheckCharacters(Vector<const uc16> str,
   // If input is ASCII, don't even bother calling here if the string to
   // match contains a non-ascii character.
   if (mode_ == ASCII) {
-    for (int i = 0; i < str.length(); i++) {
-      ASSERT(str[i] <= String::kMaxAsciiCharCodeU);
-    }
+    ASSERT(String::IsAscii(str.start(), str.length()));
   }
 #endif
   int byte_length = str.length() * char_size();
@@ -693,7 +688,7 @@ bool RegExpMacroAssemblerX64::CheckSpecialCharacterClass(uc16 type,
 
 void RegExpMacroAssemblerX64::Fail() {
   ASSERT(FAILURE == 0);  // Return value for failure is zero.
-  __ xor_(rax, rax);  // zero rax.
+  __ Set(rax, 0);
   __ jmp(&exit_label_);
 }
 
@@ -1055,6 +1050,19 @@ void RegExpMacroAssemblerX64::ReadStackPointerFromRegister(int reg) {
 }
 
 
+void RegExpMacroAssemblerX64::SetCurrentPositionFromEnd(int by) {
+  NearLabel after_position;
+  __ cmpq(rdi, Immediate(-by * char_size()));
+  __ j(greater_equal, &after_position);
+  __ movq(rdi, Immediate(-by * char_size()));
+  // On RegExp code entry (where this operation is used), the character before
+  // the current position is expected to be already loaded.
+  // We have advanced the position, so it's safe to read backwards.
+  LoadCurrentCharacterUnchecked(-1, 1);
+  __ bind(&after_position);
+}
+
+
 void RegExpMacroAssemblerX64::SetRegister(int register_index, int to) {
   ASSERT(register_index >= num_saved_registers_);  // Reserved for positions!
   __ movq(register_location(register_index), Immediate(to));
@@ -1159,7 +1167,7 @@ int RegExpMacroAssemblerX64::CheckStackGuardState(Address* return_address,
   ASSERT(*return_address <=
       re_code->instruction_start() + re_code->instruction_size());
 
-  Object* result = Execution::HandleStackGuardInterrupt();
+  MaybeObject* result = Execution::HandleStackGuardInterrupt();
 
   if (*code_handle != re_code) {  // Return address no longer valid
     intptr_t delta = *code_handle - re_code;

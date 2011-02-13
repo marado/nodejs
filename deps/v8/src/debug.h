@@ -29,10 +29,10 @@
 #define V8_DEBUG_H_
 
 #include "assembler.h"
-#include "code-stubs.h"
 #include "debug-agent.h"
 #include "execution.h"
 #include "factory.h"
+#include "flags.h"
 #include "hashmap.h"
 #include "platform.h"
 #include "string-stream.h"
@@ -237,6 +237,7 @@ class Debug {
   static void FloodWithOneShot(Handle<SharedFunctionInfo> shared);
   static void FloodHandlerWithOneShot();
   static void ChangeBreakOnException(ExceptionBreakType type, bool enable);
+  static bool IsBreakOnException(ExceptionBreakType type);
   static void PrepareStep(StepAction step_action, int step_count);
   static void ClearStepping();
   static bool StepNextContinue(BreakLocationIterator* break_location_iterator,
@@ -332,8 +333,7 @@ class Debug {
     k_after_break_target_address,
     k_debug_break_return_address,
     k_debug_break_slot_address,
-    k_restarter_frame_function_pointer,
-    k_register_address
+    k_restarter_frame_function_pointer
   };
 
   // Support for setting the address to jump to when returning from break point.
@@ -773,6 +773,15 @@ class Debugger {
       }
     }
 
+    if (((event == v8::BeforeCompile) || (event == v8::AfterCompile)) &&
+        !FLAG_debug_compile_events) {
+      return false;
+
+    } else if ((event == v8::ScriptCollected) &&
+               !FLAG_debug_script_collected_events) {
+      return false;
+    }
+
     // Currently argument event is not used.
     return !compiling_natives_ && Debugger::IsDebuggerActive();
   }
@@ -953,10 +962,7 @@ class DisableBreak BASE_EMBEDDED {
 // code.
 class Debug_Address {
  public:
-  Debug_Address(Debug::AddressId id, int reg = 0)
-    : id_(id), reg_(reg) {
-    ASSERT(reg == 0 || id == Debug::k_register_address);
-  }
+  explicit Debug_Address(Debug::AddressId id) : id_(id) { }
 
   static Debug_Address AfterBreakTarget() {
     return Debug_Address(Debug::k_after_break_target_address);
@@ -970,10 +976,6 @@ class Debug_Address {
     return Debug_Address(Debug::k_restarter_frame_function_pointer);
   }
 
-  static Debug_Address Register(int reg) {
-    return Debug_Address(Debug::k_register_address, reg);
-  }
-
   Address address() const {
     switch (id_) {
       case Debug::k_after_break_target_address:
@@ -985,8 +987,6 @@ class Debug_Address {
       case Debug::k_restarter_frame_function_pointer:
         return reinterpret_cast<Address>(
             Debug::restarter_frame_function_pointer_address());
-      case Debug::k_register_address:
-        return reinterpret_cast<Address>(Debug::register_address(reg_));
       default:
         UNREACHABLE();
         return NULL;
@@ -994,7 +994,6 @@ class Debug_Address {
   }
  private:
   Debug::AddressId id_;
-  int reg_;
 };
 
 // The optional thread that Debug Agent may use to temporary call V8 to process

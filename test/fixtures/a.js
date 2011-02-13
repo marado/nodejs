@@ -1,23 +1,25 @@
-var c = require("./b/c");
+var c = require('./b/c');
 
-common.debug("load fixtures/a.js");
+console.error('load fixtures/a.js');
 
-var string = "A";
+var string = 'A';
 
 exports.SomeClass = c.SomeClass;
 
-exports.A = function () {
+exports.A = function() {
   return string;
 };
 
-exports.C = function () {
+exports.C = function() {
   return c.C();
 };
 
-exports.D = function () {
+exports.D = function() {
   return c.D();
 };
 
-process.addListener("exit", function () {
-  string = "A done";
+exports.number = 42;
+
+process.addListener('exit', function() {
+  string = 'A done';
 });

@@ -1,7 +1,7 @@
 /*
  * libevent compatibility header, only core events supported
  *
- * Copyright (c) 2007,2008 Marc Alexander Lehmann <libev@schmorp.de>
+ * Copyright (c) 2007,2008,2010 Marc Alexander Lehmann <libev@schmorp.de>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modifica-
@@ -46,6 +46,16 @@
 # include "ev.h"
 #endif
 
+#ifndef EVLOOP_NONBLOCK
+# define EVLOOP_NONBLOCK EVRUN_NOWAIT
+#endif
+#ifndef EVLOOP_ONESHOT
+# define EVLOOP_ONESHOT EVRUN_ONCE
+#endif
+#ifndef EV_TIMEOUT
+# define EV_TIMEOUT EV_TIMER
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -85,6 +95,8 @@ struct event
   short ev_events;
 };
 
+#define EV_READ                    EV_READ
+#define EV_WRITE                   EV_WRITE
 #define EV_PERSIST                 0x10
 
 #define EVENT_SIGNAL(ev)           ((int) (ev)->ev_fd)

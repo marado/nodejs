@@ -1,4 +1,4 @@
-// Copyright 2007-2008 the V8 project authors. All rights reserved.
+// Copyright 2010 the V8 project authors. All rights reserved.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -28,7 +28,9 @@
 #ifndef V8_V8_COUNTERS_H_
 #define V8_V8_COUNTERS_H_
 
+#include "allocation.h"
 #include "counters.h"
+#include "v8globals.h"
 
 namespace v8 {
 namespace internal {
@@ -45,14 +47,7 @@ namespace internal {
   /* Total compilation times. */                                      \
   HT(compile, V8.Compile)                                             \
   HT(compile_eval, V8.CompileEval)                                    \
-  HT(compile_lazy, V8.CompileLazy)                                    \
-  /* Individual compiler passes. */                                   \
-  HT(rewriting, V8.Rewriting)                                         \
-  HT(usage_analysis, V8.UsageAnalysis)                                \
-  HT(variable_allocation, V8.VariableAllocation)                      \
-  HT(ast_optimization, V8.ASTOptimization)                            \
-  HT(code_generation, V8.CodeGeneration)                              \
-  HT(deferred_code_generation, V8.DeferredCodeGeneration)
+  HT(compile_lazy, V8.CompileLazy)
 
 
 // WARNING: STATS_COUNTER_LIST_* is a very large macro that is causing MSVC
@@ -67,6 +62,7 @@ namespace internal {
   SC(pcre_mallocs, V8.PcreMallocCount)                                \
   /* OS Memory allocated */                                           \
   SC(memory_allocated, V8.OsMemoryAllocated)                          \
+  SC(normalized_maps, V8.NormalizedMaps)                              \
   SC(props_to_dictionary, V8.ObjectPropertiesToDictionary)            \
   SC(elements_to_dictionary, V8.ObjectElementsToDictionary)           \
   SC(alive_after_last_gc, V8.AliveAfterLastGC)                        \
@@ -84,6 +80,11 @@ namespace internal {
   SC(compilation_cache_misses, V8.CompilationCacheMisses)             \
   SC(regexp_cache_hits, V8.RegExpCacheHits)                           \
   SC(regexp_cache_misses, V8.RegExpCacheMisses)                       \
+  SC(string_ctor_calls, V8.StringConstructorCalls)                    \
+  SC(string_ctor_conversions, V8.StringConstructorConversions)        \
+  SC(string_ctor_cached_number, V8.StringConstructorCachedNumber)     \
+  SC(string_ctor_string_value, V8.StringConstructorStringValue)       \
+  SC(string_ctor_gc_required, V8.StringConstructorGCRequired)         \
   /* Amount of evaled source code. */                                 \
   SC(total_eval_size, V8.TotalEvalSize)                               \
   /* Amount of loaded source code. */                                 \
@@ -92,6 +93,8 @@ namespace internal {
   SC(total_parse_size, V8.TotalParseSize)                             \
   /* Amount of source code skipped over using preparsing. */          \
   SC(total_preparse_skipped, V8.TotalPreparseSkipped)                 \
+  /* Number of symbol lookups skipped using preparsing */             \
+  SC(total_preparse_symbols_skipped, V8.TotalPreparseSymbolSkipped)   \
   /* Amount of compiled source code. */                               \
   SC(total_compile_size, V8.TotalCompileSize)                         \
   /* Amount of source code compiled with the old codegen. */          \
@@ -101,7 +104,10 @@ namespace internal {
   /* Number of contexts created from scratch. */                      \
   SC(contexts_created_from_scratch, V8.ContextsCreatedFromScratch)    \
   /* Number of contexts created by partial snapshot. */               \
-  SC(contexts_created_by_snapshot, V8.ContextsCreatedBySnapshot)
+  SC(contexts_created_by_snapshot, V8.ContextsCreatedBySnapshot)      \
+  /* Number of code objects found from pc. */                         \
+  SC(pc_to_code, V8.PcToCode)                                         \
+  SC(pc_to_code_cached, V8.PcToCodeCached)
 
 
 #define STATS_COUNTER_LIST_2(SC)                                      \
@@ -120,6 +126,8 @@ namespace internal {
      V8.GCCompactorCausedByWeakHandles)                               \
   SC(gc_last_resort_from_js, V8.GCLastResortFromJS)                   \
   SC(gc_last_resort_from_handles, V8.GCLastResortFromHandles)         \
+  SC(map_slow_to_fast_elements, V8.MapSlowToFastElements)             \
+  SC(map_fast_to_slow_elements, V8.MapFastToSlowElements)             \
   /* How is the generic keyed-load stub used? */                      \
   SC(keyed_load_generic_smi, V8.KeyedLoadGenericSmi)                  \
   SC(keyed_load_generic_symbol, V8.KeyedLoadGenericSymbol)            \
@@ -148,13 +156,33 @@ namespace internal {
   SC(named_load_inline_miss, V8.NamedLoadInlineMiss)                  \
   SC(named_load_global_inline, V8.NamedLoadGlobalInline)              \
   SC(named_load_global_inline_miss, V8.NamedLoadGlobalInlineMiss)     \
+  SC(dont_delete_hint_hit, V8.DontDeleteHintHit)                      \
+  SC(dont_delete_hint_miss, V8.DontDeleteHintMiss)                    \
+  SC(named_load_global_stub, V8.NamedLoadGlobalStub)                  \
+  SC(named_load_global_stub_miss, V8.NamedLoadGlobalStubMiss)         \
   SC(keyed_store_field, V8.KeyedStoreField)                           \
+  SC(named_store_inline_field, V8.NamedStoreInlineField)              \
   SC(keyed_store_inline, V8.KeyedStoreInline)                         \
+  SC(named_load_inline_generic, V8.NamedLoadInlineGeneric)            \
+  SC(named_load_inline_field, V8.NamedLoadInlineFast)                 \
+  SC(keyed_load_inline_generic, V8.KeyedLoadInlineGeneric)            \
+  SC(keyed_load_inline_fast, V8.KeyedLoadInlineFast)                  \
+  SC(named_load_full, V8.NamedLoadFull)                               \
+  SC(keyed_load_full, V8.KeyedLoadFull)                               \
+  SC(keyed_store_inline_generic, V8.KeyedStoreInlineGeneric)          \
+  SC(keyed_store_inline_fast, V8.KeyedStoreInlineFast)                \
+  SC(named_store_inline_generic, V8.NamedStoreInlineGeneric)          \
+  SC(named_store_inline_fast, V8.NamedStoreInlineFast)                \
+  SC(keyed_store_full, V8.KeyedStoreFull)                             \
+  SC(named_store_full, V8.NamedStoreFull)                             \
   SC(keyed_store_inline_miss, V8.KeyedStoreInlineMiss)                \
   SC(named_store_global_inline, V8.NamedStoreGlobalInline)            \
   SC(named_store_global_inline_miss, V8.NamedStoreGlobalInlineMiss)   \
   SC(store_normal_miss, V8.StoreNormalMiss)                           \
   SC(store_normal_hit, V8.StoreNormalHit)                             \
+  SC(cow_arrays_created_stub, V8.COWArraysCreatedStub)                \
+  SC(cow_arrays_created_runtime, V8.COWArraysCreatedRuntime)          \
+  SC(cow_arrays_converted, V8.COWArraysConverted)                     \
   SC(call_miss, V8.CallMiss)                                          \
   SC(keyed_call_miss, V8.KeyedCallMiss)                               \
   SC(load_miss, V8.LoadMiss)                                          \
@@ -189,6 +217,7 @@ namespace internal {
   SC(string_add_runtime_ext_to_ascii, V8.StringAddRuntimeExtToAscii)  \
   SC(sub_string_runtime, V8.SubStringRuntime)                         \
   SC(sub_string_native, V8.SubStringNative)                           \
+  SC(string_add_make_two_char, V8.StringAddMakeTwoChar)               \
   SC(string_compare_native, V8.StringCompareNative)                   \
   SC(string_compare_runtime, V8.StringCompareRuntime)                 \
   SC(regexp_entry_runtime, V8.RegExpEntryRuntime)                     \
@@ -210,7 +239,17 @@ namespace internal {
   SC(math_sqrt, V8.MathSqrt)                                          \
   SC(math_tan, V8.MathTan)                                            \
   SC(transcendental_cache_hit, V8.TranscendentalCacheHit)             \
-  SC(transcendental_cache_miss, V8.TranscendentalCacheMiss)
+  SC(transcendental_cache_miss, V8.TranscendentalCacheMiss)           \
+  SC(stack_interrupts, V8.StackInterrupts)                            \
+  SC(runtime_profiler_ticks, V8.RuntimeProfilerTicks)                 \
+  SC(other_ticks, V8.OtherTicks)                                      \
+  SC(js_opt_ticks, V8.JsOptTicks)                                     \
+  SC(js_non_opt_ticks, V8.JsNonoptTicks)                              \
+  SC(js_other_ticks, V8.JsOtherTicks)                                 \
+  SC(smi_checks_removed, V8.SmiChecksRemoved)                         \
+  SC(map_checks_removed, V8.MapChecksRemoved)                         \
+  SC(quote_json_char_count, V8.QuoteJsonCharacterCount)               \
+  SC(quote_json_char_recount, V8.QuoteJsonCharacterReCount)
 
 
 // This file contains all the v8 counters that are in use.

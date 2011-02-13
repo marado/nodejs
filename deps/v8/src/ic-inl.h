@@ -75,7 +75,7 @@ Code* IC::GetTargetAtAddress(Address address) {
 
 
 void IC::SetTargetAtAddress(Address address, Code* target) {
-  ASSERT(target->is_inline_cache_stub());
+  ASSERT(target->is_inline_cache_stub() || target->is_compare_ic_stub());
   Assembler::set_target_address_at(address, target->instruction_start());
 }
 
@@ -108,10 +108,10 @@ InlineCacheHolderFlag IC::GetCodeCacheForObject(JSObject* object,
 }
 
 
-Map* IC::GetCodeCacheMap(Object* object, InlineCacheHolderFlag holder) {
+JSObject* IC::GetCodeCacheHolder(Object* object, InlineCacheHolderFlag holder) {
   Object* map_owner = (holder == OWN_MAP ? object : object->GetPrototype());
   ASSERT(map_owner->IsJSObject());
-  return JSObject::cast(map_owner)->map();
+  return JSObject::cast(map_owner);
 }
 
 
