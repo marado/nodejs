@@ -1,28 +1,47 @@
 Description: FHS paths for nodejs
+ Use /usr/lib/nodejs for packaged modules.
  Add /usr/local/lib/nodejs for user-installed modules.
+ Use /usr/include/nodejs for headers.
+ 
 Forwarded: not-needed
 Author: Jérémy Lal <kapouer@melix.org>
-Last-Update: 2010-01-01
---- a/wscript
-+++ b/wscript
-@@ -579,8 +579,8 @@
-     bld.install_files('${PREFIX}/share/man/man1/', 'doc/node.1')
+Last-Update: 2011-02-13
+--- a/src/node_config.h.in
++++ b/src/node_config.h.in
+@@ -1,7 +1,7 @@
+ #ifndef NODE_CONFIG_H
+ #define NODE_CONFIG_H
  
-   bld.install_files('${PREFIX}/bin/', 'bin/*', chmod=0755)
--  bld.install_files('${PREFIX}/lib/node/wafadmin', 'tools/wafadmin/*.py')
--  bld.install_files('${PREFIX}/lib/node/wafadmin/Tools', 'tools/wafadmin/Tools/*.py')
-+  bld.install_files('${PREFIX}/share/nodejs/wafadmin', 'tools/wafadmin/*.py')
-+  bld.install_files('${PREFIX}/share/nodejs/wafadmin/Tools', 'tools/wafadmin/Tools/*.py')
+-#define NODE_CFLAGS "@CCFLAGS@ @CPPFLAGS@ -I@PREFIX@/include/node"
++#define NODE_CFLAGS "@CCFLAGS@ @CPPFLAGS@ -I@PREFIX@/include/nodejs"
+ #define NODE_PREFIX "@PREFIX@"
  
- def shutdown():
-   Options.options.debug
---- a/bin/node-waf
-+++ b/bin/node-waf
-@@ -1,11 +1,12 @@
- #!/usr/bin/env python
- import os, sys
+ #endif /* NODE_CONFIG_H */
+--- a/tools/wafadmin/Tools/node_addon.py
++++ b/tools/wafadmin/Tools/node_addon.py
+@@ -28,7 +28,7 @@
+   lib = join(prefix, 'lib')
  
--
+   conf.env['LIBPATH_NODE'] = lib
+-  conf.env['CPPPATH_NODE'] = join(prefix, 'include', 'node')
++  conf.env['CPPPATH_NODE'] = join(prefix, 'include', 'nodejs')
+ 
+   conf.env.append_value('CPPFLAGS_NODE', '-D_GNU_SOURCE')
+   conf.env.append_value('CPPFLAGS_NODE', '-DEV_MULTIPLICITY=0')
+@@ -64,7 +64,7 @@
+     nodePath = None
+     if not os.environ.has_key('NODE_PATH'):
+         if not os.environ.has_key('HOME'):
+-            nodePath = join(get_prefix(), 'lib', 'node')
++            nodePath = join(get_prefix(), 'lib', 'nodejs')
+         else:
+             nodePath = join(os.environ['HOME'], '.node_libraries')
+     else:
+--- a/tools/node-waf
++++ b/tools/node-waf
+@@ -3,9 +3,11 @@
+ 
+ 
  join = os.path.join
 -bindir = os.path.dirname(os.path.realpath(__file__))
 -prefix = join(bindir, "..")
@@ -35,53 +54,25 @@ Last-Update: 2010-01-01
  
  w = join(wafdir, 'wafadmin')
  t = join(w, 'Tools')
---- a/src/node_config.h.in
-+++ b/src/node_config.h.in
+--- a/lib/module.js
++++ b/lib/module.js
+@@ -396,7 +396,7 @@
+ };
+ 
+ Module._initPaths = function() {
+-  var paths = [path.resolve(process.execPath, '..', '..', 'lib', 'node')];
++  var paths = ['/usr/local/lib/nodejs', '/usr/lib/nodejs'];
+ 
+   if (process.env['HOME']) {
+     paths.unshift(path.resolve(process.env['HOME'], '.node_libraries'));
+--- a/tools/nodejs.pc.in
++++ b/tools/nodejs.pc.in
 @@ -1,7 +1,7 @@
- #ifndef NODE_CONFIG_H
- #define NODE_CONFIG_H
+ version=@VERSION@
+ prefix=@PREFIX@
+ libdir=${prefix}/lib
+-includedir=${prefix}/include/node
++includedir=${prefix}/include/nodejs
  
--#define NODE_CFLAGS "@CCFLAGS@ @CPPFLAGS@ -I@PREFIX@/include/node"
-+#define NODE_CFLAGS "@CCFLAGS@ @CPPFLAGS@ -I@PREFIX@/include/nodejs"
- #define NODE_PREFIX "@PREFIX@"
- 
- #endif /* NODE_CONFIG_H */
---- a/src/node.js
-+++ b/src/node.js
-@@ -146,7 +146,7 @@
-   var pathModule = createInternalModule('path', pathFn);
-   var path = pathModule.exports;
- 
--  var modulePaths = [path.join(process.execPath, "..", "..", "lib", "node")];
-+  var modulePaths = ["/usr/local/lib/nodejs", "/usr/lib/nodejs"];
- 
-   if (process.env["HOME"]) {
-     modulePaths.unshift(path.join(process.env["HOME"], ".node_libraries"));
-
---- a/tools/wafadmin/Tools/node_addon.py
-+++ b/tools/wafadmin/Tools/node_addon.py
-@@ -28,7 +28,7 @@
-   lib = join(prefix, 'lib')
- 
-   conf.env['LIBPATH_NODE'] = lib
--  conf.env['CPPPATH_NODE'] = join(prefix, 'include', 'node')
-+  conf.env['CPPPATH_NODE'] = join(prefix, 'include', 'nodejs')
-   conf.env['CPPFLAGS_NODE'] = '-D_GNU_SOURCE'
-   conf.env['CPPFLAGS_NODE'] = '-DEV_MULTIPLICITY=0'
- 
-@@ -57,7 +57,7 @@
-     nodePath = None
-     if not os.environ.has_key('NODE_PATH'):
-         if not os.environ.has_key('HOME'):
--            nodePath = join(get_prefix(), 'lib', 'node')
-+            nodePath = join(get_prefix(), 'lib', 'nodejs')
-         else:
-             nodePath = join(os.environ['HOME'], '.node_libraries')
-     else:
-@@ -70,4 +70,4 @@
-         prefix = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..'))
-     else:
-         prefix = os.environ['PREFIX_NODE']
--    return prefix
-\ No newline at end of file
-+    return prefix
+ Name: nodejs
+ Description: Evented I/O for V8 JavaScript.
