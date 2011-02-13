@@ -46,7 +46,7 @@ File: lib/assert.js
 Copyright: 2009 Thomas Robinson <280north.com>
 License: Expat
 
-Files: deps/v8/*
+Files: deps/v8/*, tools/test.py, tools/run-valgrind.py, tools/js2c.py
 Copyright: 2006-2009 the V8 Project Authors <v8-dev@googlegroups.com>
 License: BSD-3-clause
  Redistribution and use in source and binary forms, with or without
@@ -190,41 +190,9 @@ Files: tools/scons
 Copyright: (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 The SCons Foundation
 License: Expat
 
-Files: tools/ronnjs/bin/ronn.js, tools/ronnjs/lib/ronn.js
-Copyright: 2010 Jérémy Lal <kapouer@melix.org>, 2009 Ryan Tomayko <tomayko.com/about>
-License: Expat
-
-Files: tools/lib/ext/markdown.js
+Files: tools/doctool/markdown.js
 Copyright: 2009-2010 Dominic Baggott, 2009-2010 Ash Berlin
 License: Expat
-
-Files: tools/lib/ext/opts.js
-Copyright: 2010 Joey Mazzarelli <mazzarelli@gmail.com>. All rights reserved.
-License: BSD-2-clause
-  Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions are met:
- .
-    1. Redistributions of source code must retain the above copyright notice,
-     this list of conditions and the following disclaimer.
- .
-    2. Redistributions in binary form must reproduce the above copyright notice,
-     this list of conditions and the following disclaimer in the documentation
-     and/or other materials provided with the distribution.
- .
-  THIS SOFTWARE IS PROVIDED BY JOEY MAZZARELLI 'AS IS' AND ANY EXPRESS OR IMPLIED
-  WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
-  EVENT SHALL JOEY MAZZARELLI OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
-  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
-  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- .
-  The views and conclusions contained in the software and documentation are those
-  of the authors and should not be interpreted as representing official policies,
-  either expressed or implied, of Joey Mazzarelli.
 
 Files: tools/waf-light
  tools/wafadmin/*
@@ -248,10 +216,39 @@ Copyright: © 2005-2009, Thomas Nagy <tnagy1024@gmail.com>
     © 2007, Gustavo Carneiro
     © 2007, Brant Young
 License: BSD-3-clause
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions
+    are met:
+ .
+    1. Redistributions of source code must retain the above copyright
+       notice, this list of conditions and the following disclaimer.
+ .
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
+ .
+    3. The name of the author may not be used to endorse or promote products
+       derived from this software without specific prior written permission.
+ .
+    THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR
+    IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
+    INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+    SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+    HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+    STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+    IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
 
 Files: tools/wafadmin/pproc.py
 Copyright: (c) 2003-2005 by Peter Astrand <astrand@lysator.liu.se>
 License: Python-CNRI
+
+Files: tools/closure_linter
+Copyright: (c) 2010 The Closure Linter Authors
+License: Apache-2.0
 
 License: Expat
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -311,9 +308,9 @@ License: OpenBSD
  MERCHANTABILITY OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR
  PURPOSE.
 
-License: BSD-3-clause
- On Debian systems, full text of the BSD 3 clause license can be found
- in `/usr/share/common-licenses/BSD'
+License: Apache-2.0
+ On Debian systems, full text of the Apache-2.0 license can be found
+ in `/usr/share/common-licenses/Apache-2.0'
 
 License: GPL-2+
     This program is free software; you can redistribute it and/or modify
