@@ -11,8 +11,9 @@ DEB_CONFIGURE_EXTRA_FLAGS = --debug --shared-v8 --shared-cares --shared-libev
 DEB_CONFIGURE_SCRIPT_ENV += PREFIX="/usr"
 DEB_DESTDIR = $(CURDIR)/debian/tmp
 DEB_MAKE_CLEAN_TARGET = clean
-# temporary : ignore regression test errors
-DEB_MAKE_CHECK_TARGET = -i test
+#  * relax regression tests when targeted experimental suite
+exp-relax-check := $(if $(shell dpkg-parsechangelog | grep -Fx 'Distribution: experimental'),-i)
+DEB_MAKE_CHECK_TARGET = $(exp-relax-check) test
 
 
 # properly clean files from build, waf, test, python
