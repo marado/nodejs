@@ -95,7 +95,7 @@ First, `/node_modules` is never appended to a folder already ending in
 `/node_modules`.
 
 Second, if the file calling `require()` is already inside a `node_modules`
-heirarchy, then the top-most `node_modules` folder is treated as the
+hierarchy, then the top-most `node_modules` folder is treated as the
 root of the search tree.
 
 For example, if the file at
@@ -211,6 +211,10 @@ a colon-delimited list of absolute paths.  In the previous example,
 the `NODE_PATH` environment variable might have been set to:
 
     /home/micheil/.node_modules:/usr/local/lib/node_modules
+
+Loading from the `require.paths` locations is only performed if the
+module could not be found using the `node_modules` algorithm above.
+Global modules are lower priority than bundled dependencies.
 
 #### **Note:** Please Avoid Modifying `require.paths`
 
