@@ -362,8 +362,10 @@ you need to compare <code>curr.mtime</code> and `prev.mtime.</p>
 
 <pre><code>{ flags: 'r',
   encoding: null,
+  fd: null,
   mode: 0666,
-  bufferSize: 4096 }</code></pre>
+  bufferSize: 64 * 1024
+}</code></pre>
 
 <p><code>options</code> can include <code>start</code> and <code>end</code> values to read a range of bytes from
 the file instead of the entire file.  Both <code>start</code> and <code>end</code> are inclusive and

@@ -4,10 +4,15 @@ The `net` module provides you with an asynchronous network wrapper. It contains
 methods for creating both servers and clients (called streams). You can include
 this module with `require("net");`
 
-### net.createServer(connectionListener)
+### net.createServer([options], [connectionListener])
 
 Creates a new TCP server. The `connectionListener` argument is
 automatically set as a listener for the `'connection'` event.
+
+`options` is an object with the following defaults:
+
+    { allowHalfOpen: false
+    }
 
 ### net.createConnection(arguments...)
 
@@ -170,7 +175,7 @@ socket is established. If there is a problem connecting, the `'connect'`
 event will not be emitted, the `'error'` event will be emitted with
 the exception.
 
-The `callback` paramenter will be added as an listener for the 'connect'
+The `callback` parameter will be added as an listener for the 'connect'
 event.
 
 
