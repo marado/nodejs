@@ -7,7 +7,7 @@ Uploaders: Jérémy Lal <kapouer@melix.org>,
  Jonas Smedegaard <dr@jones.dk>
 Build-Depends: @cdbs@,
  python,
- libev-dev (>= 3.9),
+ libev-dev (>= 4.0),
  libv8-dev (>= 3.0.12.23),
  scons (>= 1.2.0),
  libc-ares-dev (>= 1.7.3),
@@ -27,7 +27,7 @@ Architecture: any
 Depends: nodejs (= ${binary:Version}),
  ${misc:Depends},
  python,
- libev-dev (>= 3.9),
+ libev-dev (>= 4.0),
  libv8-dev (>= 3.0.12.23),
  libc-ares-dev (>= 1.7.3),
  libssl-dev (>= 0.9.8)
