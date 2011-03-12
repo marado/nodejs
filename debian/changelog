@@ -1,9 +1,13 @@
-nodejs (0.4.2-1) UNRELEASED; urgency=low
+nodejs (0.4.2-1) experimental; urgency=low
 
   * New upstream release
-  * Enable regression tests, without failing when targeted experimental.
 
- -- Jérémy Lal <kapouer@melix.org>  Sat, 12 Feb 2011 02:11:47 +0100
+  [ Jérémy Lal ]
+  * Enable regression tests, without failing when targeted experimental.
+  * Unfuzz patches.
+  * Tighten build-dependency on libev-dev, to match new upstream source.
+
+ -- Jonas Smedegaard <dr@jones.dk>  Sat, 12 Mar 2011 10:45:08 +0100
 
 nodejs (0.2.6-4) unstable; urgency=low
 
