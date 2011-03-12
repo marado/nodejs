@@ -1,7 +1,7 @@
 nodejs (0.4.2-1) UNRELEASED; urgency=low
 
   * New upstream release
-  * Only relax regression checking when targeted experimental.
+  * Enable regression tests, without failing when targeted experimental.
 
  -- Jérémy Lal <kapouer@melix.org>  Sat, 12 Feb 2011 02:11:47 +0100
 
