@@ -14,6 +14,11 @@ automatically set as a listener for the `'connection'` event.
     { allowHalfOpen: false
     }
 
+If `allowHalfOpen` is `true`, then the socket won't automatically send FIN
+packet when the other end of the socket sends a FIN packet. The socket becomes
+non-readable, but still writable. You should call the end() method explicitly.
+See `'end'` event for more information.
+
 ### net.createConnection(arguments...)
 
 Construct a new socket object and opens a socket to the given location. When
@@ -157,6 +162,21 @@ user and used as a client (with `connect()`) or they can be created by Node
 and passed to the user through the `'connection'` event of a server.
 
 `net.Socket` instances are EventEmitters with the following events:
+
+#### new net.Socket([options])
+
+Construct a new socket object.
+
+`options` is an object with the following defaults:
+
+    { fd: null
+      type: null
+      allowHalfOpen: false
+    }
+
+`fd` allows you to specify the existing file descriptor of socket. `type`
+specified underlying protocol. It can be `'tcp4'`, `'tcp6'`, or `'unix'`.
+About `allowHalfOpen`, refer to `createServer()` and `'end'` event.
 
 #### socket.connect(port, [host], [callback])
 #### socket.connect(path, [callback])
