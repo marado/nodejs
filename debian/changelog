@@ -1,6 +1,7 @@
 nodejs (0.4.3-1) UNRELEASED; urgency=low
 
-  * New upstream release 
+  * New upstream release
+  * Unfuzz patches
 
  -- Jérémy Lal <kapouer@melix.org>  Fri, 18 Mar 2011 23:27:31 +0100
 
