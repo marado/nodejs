@@ -8,7 +8,7 @@ Author: Jérémy Lal <kapouer@melix.org>
 Last-Update: 2011-02-13
 --- a/src/node_config.h.in
 +++ b/src/node_config.h.in
-@@ -1,7 +1,7 @@
+@@ -22,7 +22,7 @@
  #ifndef NODE_CONFIG_H
  #define NODE_CONFIG_H
  
@@ -56,7 +56,7 @@ Last-Update: 2011-02-13
  t = join(w, 'Tools')
 --- a/lib/module.js
 +++ b/lib/module.js
-@@ -406,7 +406,7 @@
+@@ -427,7 +427,7 @@
  };
  
  Module._initPaths = function() {

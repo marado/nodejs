@@ -4,7 +4,7 @@ Author: Jérémy Lal <kapouer@melix.org>
 Last-Update: 2011-02-13
 --- a/wscript
 +++ b/wscript
-@@ -436,7 +436,6 @@
+@@ -460,7 +460,6 @@
    # LFS
    conf.env.append_value('CPPFLAGS',  '-D_LARGEFILE_SOURCE')
    conf.env.append_value('CPPFLAGS',  '-D_FILE_OFFSET_BITS=64')
