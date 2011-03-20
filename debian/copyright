@@ -7,10 +7,6 @@ Files: *
 Copyright: Joyent, Inc. and other Node contributors.
 License: Expat
 
-Files: debian/*
-Copyright: 2009-2010 Jérémy Lal <kapouer@melix.org>
-License: Expat
-
 Files: deps/libeio/*
  deps/libev/*
 Copyright: 2007,2008 Marc Alexander Lehmann
@@ -148,6 +144,10 @@ Files: src/platform_darwin_proctitle.cc
  tools/cpplint.py
 Copyright: 2009-2010, Google Inc.
 License: BSD-3-clause~Google
+
+Files: debian/*
+Copyright: 2009-2010 Jérémy Lal <kapouer@melix.org>
+License: Expat
 
 License: Expat
     Permission is hereby granted, free of charge, to any person obtaining a copy
