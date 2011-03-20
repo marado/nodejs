@@ -4,7 +4,7 @@ Source: http://tinyclouds.org/node/
 Upstream-Contact: Ryan Lienhart Dahl <ry@tinyclouds.org>
 
 Files: *
-Copyright: Joyent, Inc. and other Node contributors. All rights reserved.
+Copyright: Joyent, Inc. and other Node contributors.
 License: Expat
 
 Files: debian/*
