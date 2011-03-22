@@ -36,7 +36,9 @@ Copyright:
             Greg Hudson <ghudson@mit.edu>
 License: MIT
 
-Files: deps/c-ares/bitncmp.c, deps/c-ares/inet_net_pton.c, deps/c-ares/inet_ntop.c
+Files: deps/c-ares/bitncmp.c
+ deps/c-ares/inet_net_pton.c
+ deps/c-ares/inet_ntop.c
 Copyright: 1996 by Internet Software Consortium
 License: ISC
 
@@ -44,7 +46,9 @@ File: lib/assert.js
 Copyright: 2009 Thomas Robinson <280north.com>
 License: Expat
 
-Files: deps/v8/*, tools/test.py, tools/js2c.py
+Files: deps/v8/*
+ tools/test.py
+ tools/js2c.py
 Copyright: 2006-2009 the V8 Project Authors <v8-dev@googlegroups.com>
 License: BSD-3-clause~Google
 
