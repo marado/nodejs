@@ -70,7 +70,7 @@ License: BSD-3-clause~Sun
 
 Files: deps/v8/src/third-party/dtoa/*
 Copyright: 1991, 2000, 2001 by David M. Gay at Lucent Technologies
-License: OpenBSD
+License: OpenBSD~Lucent
 
 Files: deps/v8/src/third-party/valgrind/valgrind.h
 Copyright: 2000-2007 Julian Seward
@@ -333,7 +333,7 @@ License: ISC
  ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
  SOFTWARE.
 
-License: OpenBSD
+License: OpenBSD~Lucent
  Permission to use, copy, modify, and distribute this software for any
  purpose without fee is hereby granted, provided that this entire
  notice is included in all copies of any software which is or includes
