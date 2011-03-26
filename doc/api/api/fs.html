@@ -247,6 +247,10 @@ See pwrite(2).</p>
 <p>The callback will be given two arguments <code>(err, written)</code> where <code>written</code>
 specifies how many <em>bytes</em> were written.</p>
 
+<p>Note that it is unsafe to use <code>fs.write</code> multiple times on the same file
+without waiting for the callback. For this scenario,
+<code>fs.createWriteStream</code> is strongly recommended.</p>
+
 <h3 id="fs.writeSync">fs.writeSync(fd, buffer, offset, length, position)</h3>
 
 <p>Synchronous version of buffer-based <code>fs.write()</code>. Returns the number of bytes
@@ -305,7 +309,8 @@ returns a buffer.</p>
 
 <h3 id="fs.writeFile">fs.writeFile(filename, data, encoding='utf8', [callback])</h3>
 
-<p>Asynchronously writes data to a file. <code>data</code> can be a string or a buffer.</p>
+<p>Asynchronously writes data to a file, replacing the file if it already exists.
+<code>data</code> can be a string or a buffer.</p>
 
 <p>Example:</p>
 
