@@ -1,4 +1,4 @@
-nodejs (0.4.3-1) UNRELEASED; urgency=low
+nodejs (0.4.4-1) UNRELEASED; urgency=low
 
   * New upstream release
   * Unfuzz patches
