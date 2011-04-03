@@ -242,7 +242,7 @@ passed as the second parameter to the <code>'request'</code> event. It is a <cod
 <h3 id="response.writeContinue">response.writeContinue()</h3>
 
 <p>Sends a HTTP/1.1 100 Continue message to the client, indicating that
-the request body should be sent. See the the <code>checkContinue</code> event on
+the request body should be sent. See the <a href="#event_checkContinue_">checkContinue</a> event on
 <code>Server</code>.</p>
 
 <h3 id="response.writeHead">response.writeHead(statusCode, [reasonPhrase], [headers])</h3>
@@ -447,7 +447,7 @@ agent. The <code>http.getAgent()</code> function allows you to access the agents
 isn't being listened for, clients receiving an upgrade header will have their
 connections closed.</p>
 
-<p>See the description of the <code>upgrade</code> event for <code>http.Server</code> for further details.</p>
+<p>See the description of the <a href="http.html#event_upgrade_">upgrade event</a> for <code>http.Server</code> for further details.</p>
 
 <h3 id="event_continue_">Event: 'continue'</h3>
 
@@ -472,7 +472,7 @@ the client should send the request body.</p>
 <h2 id="http.ClientRequest">http.ClientRequest</h2>
 
 <p>This object is created internally and returned from <code>http.request()</code>.  It
-represents an <em>in-progress</em> request whose header has already been queued.  The 
+represents an <em>in-progress</em> request whose header has already been queued.  The
 header is still mutable using the <code>setHeader(name, value)</code>, <code>getHeader(name)</code>,
 <code>removeHeader(name)</code> API.  The actual header will be sent along with the first
 data chunk or when closing the connection.</p>
