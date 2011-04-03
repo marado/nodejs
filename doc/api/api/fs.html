@@ -99,7 +99,7 @@ to the completion callback.</p>
 <h3 id="fs.stat">fs.stat(path, [callback])</h3>
 
 <p>Asynchronous stat(2). The callback gets two arguments <code>(err, stats)</code> where
-<code>stats</code> is a <code>fs.Stats</code> object. It looks like this:</p>
+<code>stats</code> is a <a href="#fs.Stats">`fs.Stats`</a> object. It looks like this:</p>
 
 <pre><code>{ dev: 2049,
   ino: 305352,
@@ -115,7 +115,7 @@ to the completion callback.</p>
   mtime: '2009-06-29T11:11:40Z',
   ctime: '2009-06-29T11:11:40Z' }</code></pre>
 
-<p>See the <code>fs.Stats</code> section below for more information.</p>
+<p>See the <a href="#fs.Stats">fs.Stats</a> section below for more information.</p>
 
 <h3 id="fs.lstat">fs.lstat(path, [callback])</h3>
 
@@ -244,8 +244,8 @@ should be written. If <code>position</code> is <code>null</code>, the data will 
 current position.
 See pwrite(2).</p>
 
-<p>The callback will be given two arguments <code>(err, written)</code> where <code>written</code>
-specifies how many <em>bytes</em> were written.</p>
+<p>The callback will be given three arguments <code>(err, written, buffer)</code> where <code>written</code>
+specifies how many <em>bytes</em> were written into <code>buffer</code>.</p>
 
 <p>Note that it is unsafe to use <code>fs.write</code> multiple times on the same file
 without waiting for the callback. For this scenario,
@@ -274,7 +274,7 @@ written.</p>
 <p><code>position</code> is an integer specifying where to begin reading from in the file.
 If <code>position</code> is <code>null</code>, data will be read from the current file position.</p>
 
-<p>The callback is given the two arguments, <code>(err, bytesRead)</code>.</p>
+<p>The callback is given the three arguments, <code>(err, bytesRead, buffer)</code>.</p>
 
 <h3 id="fs.readSync">fs.readSync(fd, buffer, offset, length, position)</h3>
 
