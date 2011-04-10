@@ -3,6 +3,7 @@ nodejs (0.4.5-1) UNRELEASED; urgency=low
   * New upstream release
   * Unfuzz patches
   * Update debian/copyright, now copyright Joyent.
+  * Drop SSL2 methods, see #589706. (Closes: #622065)
 
  -- Jérémy Lal <kapouer@melix.org>  Fri, 18 Mar 2011 23:27:31 +0100
 
