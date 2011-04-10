@@ -6,8 +6,8 @@ include /usr/share/cdbs/1/class/autotools.mk
 
 DEB_UPSTREAM_URL = http://nodejs.org/dist
 DEB_UPSTREAM_TARBALL_BASENAME = node-v$(DEB_UPSTREAM_TARBALL_VERSION)
-DEB_CONFIGURE_NORMAL_ARGS =
-DEB_CONFIGURE_EXTRA_FLAGS = --debug --shared-v8 --shared-cares --shared-libev
+DEB_CONFIGURE_NORMAL_ARGS = ""
+DEB_CONFIGURE_EXTRA_FLAGS = --debug --shared-v8 --shared-cares --shared-libev --no-ssl2
 DEB_CONFIGURE_SCRIPT_ENV += PREFIX="/usr"
 DEB_DESTDIR = $(CURDIR)/debian/nodejs
 DEB_MAKE_CLEAN_TARGET = clean
