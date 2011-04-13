@@ -1,0 +1,16 @@
+Description: Disable multicast test
+ It depends too much on network/firewall config.
+Forwarded: not-needed
+Author: Jérémy Lal <kapouer@melix.org>
+Last-Update: 2011-04-13
+--- a/test/simple/test-dgram-multicast.js
++++ b/test/simple/test-dgram-multicast.js
+@@ -18,7 +18,7 @@
+ // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+ // USE OR OTHER DEALINGS IN THE SOFTWARE.
+-
++return;
+ var common = require('../common');
+ var assert = require('assert');
+ 
