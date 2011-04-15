@@ -5,7 +5,7 @@ Author: Jérémy Lal <kapouer@melix.org>
 Last-Update: 2010-01-01
 --- a/wscript
 +++ b/wscript
-@@ -579,8 +579,8 @@
+@@ -588,8 +588,8 @@
      bld.install_files('${PREFIX}/share/man/man1/', 'doc/node.1')
  
    bld.install_files('${PREFIX}/bin/', 'bin/*', chmod=0755)
@@ -57,7 +57,6 @@ Last-Update: 2010-01-01
  
    if (process.env["HOME"]) {
      modulePaths.unshift(path.join(process.env["HOME"], ".node_libraries"));
-
 --- a/tools/wafadmin/Tools/node_addon.py
 +++ b/tools/wafadmin/Tools/node_addon.py
 @@ -28,7 +28,7 @@
