@@ -1,3 +1,22 @@
+nodejs (0.2.6-5) unstable; urgency=low
+
+  [ Jonas Smedegaard ]
+  * Update team-maintainance:
+    + Set Debian Javascript Maintainers as maintainer.
+    + Set Jérémy Lal, Dave Beckett and myself as uploaders.
+  * Bump policy compliance to standards-version 3.9.2.
+  * Recompile against newer libv8.
+    Closes: bug#622623. Thanks to Adrian Knoth.
+  * Unfuzz patches.
+
+  [ Jérémy Lal ]
+  * Update git-buildpackage config : add commented lines explaining
+    layout.
+  * Allow Debian-Maintainer uploads.
+  * Add patch 1001 to disable ssl2 methods.
+
+ -- Jonas Smedegaard <dr@jones.dk>  Fri, 15 Apr 2011 23:33:09 +0200
+
 nodejs (0.2.6-4) unstable; urgency=low
 
   [ Jérémy Lal ]
