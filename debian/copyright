@@ -9,7 +9,8 @@ License: Expat
 
 Files: deps/libeio/*
  deps/libev/*
-Copyright: 2007,2008 Marc Alexander Lehmann
+Copyright: 2007-2010, Marc Alexander Lehmann <libeio@schmorp.de>
+ 2007-2011, Marc Alexander Lehmann <libev@schmorp.de>
 License: BSD-2-clause~author or GPL-2+
  Alternatively, the contents of this package may be used under the terms
  of the GNU General Public License ("GPL") version 2 or any later
@@ -22,24 +23,19 @@ License: BSD-2-clause~author or GPL-2+
  this package. If you do not delete the provisions above, a recipient
  may use your version of this file under either the BSD or the GPL.
 
-Files: deps/c-ares
-Copyright:
- 2000-2010  Daniel Stenberg, Dominick Meglio, liren at vivisimo.com, 
-            James Bursa, Duncan Wilcox, Dirk Manske, Dan Fandrich, 
-            Gisle Vanem, Gunter Knauf, Henrik Stoerner, Yang Tse,
-            Nick Mathewson, Alexander Lazic, Andreas Rieke, 
-            Guilherme Balena Versiani, Brad Spencer, Ravi Pratap, 
-            William Ahern, Bram Matthys, Michael Wallner, 
-            Vlad Dinulescu, Brad House, Shmulik Regev, 
-            Ashish Sharma, Brad Spencer
- 1998-2000  Massachusetts Institute of Technology,
-            Greg Hudson <ghudson@mit.edu>
+Files: deps/c-ares/*
+Copyright: 1998,2000,2009-2010, the Massachusetts Institute of Technology
+ 2004-2010, Daniel Stenberg
+ 2004-2010, Daniel Stenberg et al
+ 2005, Dominick Meglio
+ 2009, Jakub Hrozek <jhrozek@redhat.com>
 License: MIT
 
 Files: deps/c-ares/bitncmp.c
  deps/c-ares/inet_net_pton.c
  deps/c-ares/inet_ntop.c
-Copyright: 1996 by Internet Software Consortium
+Copyright: 1996,1999, Internet Software Consortium
+ 2004, Internet Systems Consortium, Inc.
 License: ISC
 
 File: lib/assert.js
@@ -49,7 +45,7 @@ License: Expat
 Files: deps/v8/*
  tools/test.py
  tools/js2c.py
-Copyright: 2006-2009 the V8 Project Authors <v8-dev@googlegroups.com>
+Copyright: 2006-2011, the V8 Project Authors <v8-dev@googlegroups.com>
 License: BSD-3-clause~Google
 
 Files: deps/v8/benchmarks/crypto.js
@@ -57,8 +53,7 @@ Copyright: 2003-2005 Tom Wu
 License: Expat~Wu
 
 Files: deps/v8/benchmark/deltablue.js
-Copyright: 
- 1996 John Maloney and Mario Wolczko
+Copyright: 1996 John Maloney and Mario Wolczko
  2008 the V8 project authors
 License: GPL-2+
 
@@ -67,9 +62,8 @@ Files: deps/v8/src/arm/assembler-arm*
  deps/v8/src/ia32/assembler-ia32*
  deps/v8/src/mips/assembler-mips*
  deps/v8/src/x64/assembler-x64.h
-Copyright: 
- 1994-2006 Sun Microsystems Inc.
- 2006-2008 the V8 Project Authors
+Copyright: 1994-2006, Sun Microsystems Inc.
+ 2006-2011, the V8 Project Authors
 License: BSD-3-clause~Sun
 
 Files: deps/v8/src/third-party/dtoa/*
@@ -77,11 +71,11 @@ Copyright: 1991, 2000, 2001 by David M. Gay at Lucent Technologies
 License: OpenBSD~Lucent
 
 Files: deps/v8/src/third-party/valgrind/valgrind.h
-Copyright: 2000-2007 Julian Seward
+Copyright: 2000-2007, Julian Seward
 License: BSD-4-clause~author
 
 Files: tools/scons
-Copyright: (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 The SCons Foundation
+Copyright: 2001-2008, The SCons Foundation
 License: Expat
 
 Files: tools/doctool/markdown.js
@@ -116,12 +110,12 @@ Copyright: (c) 2003-2005 by Peter Astrand <astrand@lysator.liu.se>
 License: Python-CNRI
 
 Files: tools/closure_linter
-Copyright: (c) 2010 The Closure Linter Authors
+Copyright: (c) 2007-2008,2010, The Closure Linter Authors
 License: Apache-2.0
 
 Files: src/platform_darwin_proctitle.cc
  tools/cpplint.py
-Copyright: 2009-2010, Google Inc.
+Copyright: 2007,2009-2010, Google Inc.
 License: BSD-3-clause~Google
 
 Files: debian/*
