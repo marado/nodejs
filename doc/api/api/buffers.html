@@ -2,6 +2,8 @@
 <html>
 <head>
   <title>buffers - Node.js Manual &amp; Documentation</title>
+  <link type="image/x-icon" rel="icon" href="/favicon.ico" />
+  <link type="image/x-icon" rel="shortcut icon" href="/favicon.ico" />
   <link rel="stylesheet" href="assets/style.css" type="text/css" media="all" />
   <link rel="stylesheet" href="assets/sh.css" type="text/css" media="all"/>
 </head>
@@ -54,14 +56,18 @@ will be removed in future versions of Node.</p></li></ul>
 
 <p>Writes <code>string</code> to the buffer at <code>offset</code> using the given encoding. Returns
 number of octets written.  If <code>buffer</code> did not contain enough space to fit
-the entire string, it will write a partial amount of the string. In the case
-of <code>'utf8'</code> encoding, the method will not write partial characters.</p>
+the entire string, it will write a partial amount of the string.
+The method will not write partial characters.</p>
 
 <p>Example: write a utf8 string into a buffer, then print it</p>
 
 <pre><code>buf = new Buffer(256);
 len = buf.write('\u00bd + \u00bc = \u00be', 0);
 console.log(len + " bytes: " + buf.toString('utf8', 0, len));</code></pre>
+
+<p>The number of characters written (which may be different than the number of
+bytes written) is set in <code>Buffer._charsWritten</code> and will be overwritten the
+next time <code>buf.write()</code> is called.</p>
 
 <h3 id="buffer.toString">buffer.toString(encoding, start=0, end=buffer.length)</h3>
 
