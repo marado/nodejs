@@ -762,6 +762,7 @@ Files: AUTHORS
  doc/api_assets/sh_javascript.min.js
  doc/api_assets/style.css
  doc/cla.html
+ doc/favicon.ico
  doc/node.1
  doc/pipe.css
  doc/sh_javascript.min.js
@@ -769,6 +770,7 @@ Files: AUTHORS
  doc/template.html
  doc/v0.4_announcement.html
  test/CMakeLists.txt
+ test/disabled/GH-670.js
  test/fixtures/agent.crt
  test/fixtures/agent.key
  test/fixtures/cert.pem
@@ -855,8 +857,10 @@ Files: AUTHORS
  test/pummel/test-regress-GH-814.js
  test/pummel/test-regress-GH-814_2.js
  test/simple/simple.status
+ test/simple/test-http-response-readable.js
  test/simple/test-regress-GH-784.js
  test/simple/test-regress-GH-819.js
+ test/simple/test-vm-create-context-circular-reference.js
  tools/closure_linter/PKG-INFO
  tools/closure_linter/README
  tools/closure_linter/closure_linter.egg-info/PKG-INFO
@@ -1052,6 +1056,7 @@ Files: lib/_debugger.js
  test/disabled/tls-client.js
  test/disabled/tls_client.js
  test/disabled/tls_server.js
+ test/fixtures/GH-892-request.js
  test/fixtures/a.js
  test/fixtures/a1.js
  test/fixtures/b/c.js
@@ -1278,6 +1283,7 @@ Files: lib/_debugger.js
  test/simple/test-pump-file2tcp.js
  test/simple/test-querystring.js
  test/simple/test-readdir.js
+ test/simple/test-regress-GH-892.js
  test/simple/test-regression-object-prototype.js
  test/simple/test-repl.js
  test/simple/test-require-cache-without-stat.js
@@ -2021,11 +2027,6 @@ Files: deps/v8/tools/generate-ten-powers.scm
 Copyright: 2010, the V8 project authors.
  2010, the V8 project authors.")
  HOLDERS AND CONTRIBUTORS
-License: UNKNOWN
- FIXME
-
-Files: doc/joyent-logo_orange_nodeorg-01.png
-Copyright: IJc’-P¡½=
 License: UNKNOWN
  FIXME
 

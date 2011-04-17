@@ -1,4 +1,4 @@
-nodejs (0.4.5-1) UNRELEASED; urgency=low
+nodejs (0.4.6-1) unstable; urgency=low
 
   * New upstream release
 
@@ -21,7 +21,7 @@ nodejs (0.4.5-1) UNRELEASED; urgency=low
     Build-depend on devscripts.
   * Add copyright hints.
 
- -- Jonas Smedegaard <dr@jones.dk>  Sun, 17 Apr 2011 04:48:31 +0200
+ -- Jonas Smedegaard <dr@jones.dk>  Sun, 17 Apr 2011 05:05:30 +0200
 
 nodejs (0.4.2-1) experimental; urgency=low
 
@@ -33,6 +33,25 @@ nodejs (0.4.2-1) experimental; urgency=low
   * Tighten build-dependency on libev-dev, to match new upstream source.
 
  -- Jonas Smedegaard <dr@jones.dk>  Sat, 12 Mar 2011 10:45:08 +0100
+
+nodejs (0.2.6-5) unstable; urgency=low
+
+  [ Jonas Smedegaard ]
+  * Update team-maintainance:
+    + Set Debian Javascript Maintainers as maintainer.
+    + Set Jérémy Lal, Dave Beckett and myself as uploaders.
+  * Bump policy compliance to standards-version 3.9.2.
+  * Recompile against newer libv8.
+    Closes: bug#622623. Thanks to Adrian Knoth.
+  * Unfuzz patches.
+
+  [ Jérémy Lal ]
+  * Update git-buildpackage config : add commented lines explaining
+    layout.
+  * Allow Debian-Maintainer uploads.
+  * Add patch 1001 to disable ssl2 methods.
+
+ -- Jonas Smedegaard <dr@jones.dk>  Fri, 15 Apr 2011 23:33:09 +0200
 
 nodejs (0.2.6-4) unstable; urgency=low
 
