@@ -5,7 +5,9 @@ Maintainer: Debian Javascript Maintainers <pkg-javascript-devel@lists.alioth.deb
 Uploaders: Jérémy Lal <kapouer@melix.org>,
  Dave Beckett <dajobe@debian.org>,
  Jonas Smedegaard <dr@jones.dk>
-Build-Depends: cdbs (>= 0.4.85~),
+DM-Upload-Allowed: yes
+Build-Depends: devscripts (>= 2.10.7~),
+ cdbs (>= 0.4.85~),
  debhelper (>= 7.0.1),
  dh-buildinfo,
  python,

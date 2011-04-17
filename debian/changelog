@@ -1,12 +1,27 @@
 nodejs (0.4.5-1) UNRELEASED; urgency=low
 
   * New upstream release
-  * Unfuzz patches
-  * Update debian/copyright, now copyright Joyent.
-  * Drop SSL2 methods, see #589706. (Closes: #622065)
-  * Disable multicast test, depends too much on network config.
 
- -- Jérémy Lal <kapouer@melix.org>  Fri, 18 Mar 2011 23:27:31 +0100
+  [ Jérémy Lal ]
+  * Unfuzz patches.
+  * Update debian/copyright, now copyright Joyent.
+  * Drop SSL2 methods, see #589706.
+    Closes: bug#622065.
+  * Disable multicast test: Too dependent on network config.
+  * Allow Debian-Maintainer uploads.
+
+  [ Jonas Smedegaard ]
+  * Update copyright file:
+    + Fix relabel OpenBSD license as OpenBSD~Lucent: Disclaimer is
+      derived.
+    + Fix comma-delimit files, and (while at it) newline-delimit them
+      for improved readability.
+    + Compact and extend copyright years.
+  * Enable copyright-check.
+    Build-depend on devscripts.
+  * Add copyright hints.
+
+ -- Jonas Smedegaard <dr@jones.dk>  Sun, 17 Apr 2011 04:48:31 +0200
 
 nodejs (0.4.2-1) experimental; urgency=low
 
