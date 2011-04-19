@@ -1,3 +1,10 @@
+nodejs (0.4.6-2) unstable; urgency=low
+
+  * Expect some tests to fail when run without network.
+    Closes: bug#623374.
+
+ -- Jérémy Lal <kapouer@melix.org>  Tue, 19 Apr 2011 22:17:37 +0200
+
 nodejs (0.4.6-1) unstable; urgency=low
 
   * New upstream release
