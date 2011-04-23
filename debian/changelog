@@ -1,3 +1,11 @@
+nodejs (0.4.7-1) unstable; urgency=low
+
+  * New upstream release
+  * debian/watch : remove call to uupdate, it is annoying since
+    updates are done with git-import-orig. 
+
+ -- Jérémy Lal <kapouer@melix.org>  Sat, 23 Apr 2011 15:27:47 +0200
+
 nodejs (0.4.6-2) unstable; urgency=low
 
   * Expect some tests to fail when run without network.
