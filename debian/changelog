@@ -5,7 +5,7 @@ nodejs (0.4.7-1) unstable; urgency=low
   * debian/watch : remove call to uupdate, it is annoying since
     updates are done with git-import-orig. 
 
- -- Jérémy Lal <kapouer@melix.org>  Sat, 23 Apr 2011 15:27:47 +0200
+ -- Jérémy Lal <kapouer@melix.org>  Sat, 23 Apr 2011 18:42:42 +0200
 
 nodejs (0.4.6-2) unstable; urgency=low
 
