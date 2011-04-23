@@ -20,7 +20,7 @@ Build-Depends: devscripts (>= 2.10.7~),
  pkg-config,
  bash-completion,
  curl
-Standards-Version: 3.9.1
+Standards-Version: 3.9.2
 Homepage: http://nodejs.org/
 Vcs-Browser: http://git.debian.org/?p=collab-maint/nodejs.git
 Vcs-Git: git://git.debian.org/git/collab-maint/nodejs.git
