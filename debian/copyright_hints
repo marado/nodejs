@@ -1,4 +1,4 @@
-Format: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?rev=166
+Format: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?rev=174
 Upstream-Name: FIXME
 Upstream-Contact: FIXME
 Source: FIXME
@@ -573,7 +573,7 @@ Files: AUTHORS
  debian/patches/2001_FHS_paths_for_nodejs.patch
  debian/patches/2002_build_without_libv8_debug.patch
  debian/patches/2004_libev_compatibility.patch
- debian/patches/2005_disable_multicast_test.patch
+ debian/patches/2005_expected_failing_tests.patch
  debian/patches/series
  debian/rules
  debian/source/format
@@ -721,6 +721,7 @@ Files: AUTHORS
  doc/api/api/querystring.html
  doc/api/api/readline.html
  doc/api/api/repl.html
+ doc/api/api/stdio.html
  doc/api/api/streams.html
  doc/api/api/string_decoder.html
  doc/api/api/synopsis.html
@@ -750,6 +751,7 @@ Files: AUTHORS
  doc/api/process.markdown
  doc/api/querystring.markdown
  doc/api/repl.markdown
+ doc/api/stdio.markdown
  doc/api/streams.markdown
  doc/api/synopsis.markdown
  doc/api/timers.markdown
@@ -860,6 +862,7 @@ Files: AUTHORS
  test/simple/test-http-response-readable.js
  test/simple/test-regress-GH-784.js
  test/simple/test-regress-GH-819.js
+ test/simple/test-regress-GH-897.js
  test/simple/test-vm-create-context-circular-reference.js
  tools/closure_linter/PKG-INFO
  tools/closure_linter/README
@@ -1919,6 +1922,7 @@ License: MIT/X11 (BSD like)
 Files: deps/http_parser/http_parser.c
 Copyright: (unsigned char)(c | 0x20)
  2009-2010, Ryan Dahl <ry@tinyclouds.org>
+ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  tokens[(unsigned char)c
 License: MIT/X11 (BSD like)
  FIXME
