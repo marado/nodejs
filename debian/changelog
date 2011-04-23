@@ -1,6 +1,7 @@
 nodejs (0.4.7-1) unstable; urgency=low
 
   * New upstream release
+  * Bump policy compliance to standards-version 3.9.2.
   * debian/watch : remove call to uupdate, it is annoying since
     updates are done with git-import-orig. 
 
