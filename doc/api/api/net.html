@@ -16,7 +16,7 @@
       </div>
       <hr />
     </header>
-    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#net">net</a><ul><li><a href="#net.createServer">net.createServer([options], [connectionListener])</a></li><li><a href="#net.createConnection">net.createConnection(arguments...)</a></li><li><a href="#net.Server">net.Server</a><ul><li><a href="#server.listen">server.listen(port, [host], [callback])</a></li><li><a href="#server.listen">server.listen(path, [callback])</a></li><li><a href="#server.listenFD">server.listenFD(fd)</a></li><li><a href="#server.close">server.close()</a></li><li><a href="#server.address">server.address()</a></li><li><a href="#server.maxConnections">server.maxConnections</a></li><li><a href="#server.connections">server.connections</a></li><li><a href="#event_connection_">Event: 'connection'</a></li><li><a href="#event_close_">Event: 'close'</a></li></ul></li><li><a href="#net.Socket">net.Socket</a><ul><li><a href="#new_net.Socket">new net.Socket([options])</a></li><li><a href="#socket.connect">socket.connect(port, [host], [callback])</a></li><li><a href="#socket.connect">socket.connect(path, [callback])</a></li><li><a href="#socket.bufferSize">socket.bufferSize</a></li><li><a href="#socket.setEncoding">socket.setEncoding(encoding=null)</a></li><li><a href="#socket.setSecure">socket.setSecure()</a></li><li><a href="#socket.write">socket.write(data, [encoding], [callback])</a></li><li><a href="#socket.write">socket.write(data, [encoding], [fileDescriptor], [callback])</a></li><li><a href="#socket.end">socket.end([data], [encoding])</a></li><li><a href="#socket.destroy">socket.destroy()</a></li><li><a href="#socket.pause">socket.pause()</a></li><li><a href="#socket.resume">socket.resume()</a></li><li><a href="#socket.setTimeout">socket.setTimeout(timeout, [callback])</a></li><li><a href="#socket.setNoDelay">socket.setNoDelay(noDelay=true)</a></li><li><a href="#socket.setKeepAlive">socket.setKeepAlive(enable=false, [initialDelay])</a></li><li><a href="#socket.remoteAddress">socket.remoteAddress</a></li><li><a href="#event_connect_">Event: 'connect'</a></li><li><a href="#event_data_">Event: 'data'</a></li><li><a href="#event_end_">Event: 'end'</a></li><li><a href="#event_timeout_">Event: 'timeout'</a></li><li><a href="#event_drain_">Event: 'drain'</a></li><li><a href="#event_error_">Event: 'error'</a></li><li><a href="#event_close_">Event: 'close'</a></li></ul></li><li><a href="#net.isIP">net.isIP</a><ul><li><a href="#net.isIP">net.isIP(input)</a></li><li><a href="#net.isIPv4">net.isIPv4(input)</a></li><li><a href="#net.isIPv6">net.isIPv6(input)</a></li></ul></li></ul></li></ul><hr /></div>
+    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#net">net</a><ul><li><a href="#net.createServer">net.createServer([options], [connectionListener])</a></li><li><a href="#net.createConnection">net.createConnection(arguments...)</a></li><li><a href="#net.Server">net.Server</a><ul><li><a href="#server.listen">server.listen(port, [host], [callback])</a></li><li><a href="#server.listen">server.listen(path, [callback])</a></li><li><a href="#server.listenFD">server.listenFD(fd)</a></li><li><a href="#server.pause">server.pause(msecs)</a></li><li><a href="#server.close">server.close()</a></li><li><a href="#server.address">server.address()</a></li><li><a href="#server.maxConnections">server.maxConnections</a></li><li><a href="#server.connections">server.connections</a></li><li><a href="#event_connection_">Event: 'connection'</a></li><li><a href="#event_close_">Event: 'close'</a></li></ul></li><li><a href="#net.Socket">net.Socket</a><ul><li><a href="#new_net.Socket">new net.Socket([options])</a></li><li><a href="#socket.connect">socket.connect(port, [host], [callback])</a></li><li><a href="#socket.connect">socket.connect(path, [callback])</a></li><li><a href="#socket.bufferSize">socket.bufferSize</a></li><li><a href="#socket.setEncoding">socket.setEncoding(encoding=null)</a></li><li><a href="#socket.setSecure">socket.setSecure()</a></li><li><a href="#socket.write">socket.write(data, [encoding], [callback])</a></li><li><a href="#socket.write">socket.write(data, [encoding], [fileDescriptor], [callback])</a></li><li><a href="#socket.end">socket.end([data], [encoding])</a></li><li><a href="#socket.destroy">socket.destroy()</a></li><li><a href="#socket.pause">socket.pause()</a></li><li><a href="#socket.resume">socket.resume()</a></li><li><a href="#socket.setTimeout">socket.setTimeout(timeout, [callback])</a></li><li><a href="#socket.setNoDelay">socket.setNoDelay(noDelay=true)</a></li><li><a href="#socket.setKeepAlive">socket.setKeepAlive(enable=false, [initialDelay])</a></li><li><a href="#socket.address">socket.address()</a></li><li><a href="#socket.remoteAddress">socket.remoteAddress</a></li><li><a href="#event_connect_">Event: 'connect'</a></li><li><a href="#event_data_">Event: 'data'</a></li><li><a href="#event_end_">Event: 'end'</a></li><li><a href="#event_timeout_">Event: 'timeout'</a></li><li><a href="#event_drain_">Event: 'drain'</a></li><li><a href="#event_error_">Event: 'error'</a></li><li><a href="#event_close_">Event: 'close'</a></li></ul></li><li><a href="#net.isIP">net.isIP</a><ul><li><a href="#net.isIP">net.isIP(input)</a></li><li><a href="#net.isIPv4">net.isIPv4(input)</a></li><li><a href="#net.isIPv6">net.isIPv6(input)</a></li></ul></li></ul></li></ul><hr /></div>
 <h2 id="net">net</h2>
 
 <p>The <code>net</code> module provides you with an asynchronous network wrapper. It contains
@@ -116,7 +116,14 @@ when the server has been bound.</p>
 <p>Start a server listening for connections on the given file descriptor.</p>
 
 <p>This file descriptor must have already had the <code>bind(2)</code> and <code>listen(2)</code> system
-calls invoked on it.</p>
+calls invoked on it.  Additionally, it must be set non-blocking; try
+<code>fcntl(fd, F_SETFL, O_NONBLOCK)</code>.</p>
+
+<h4 id="server.pause">server.pause(msecs)</h4>
+
+<p>Stop accepting connections for the given number of milliseconds (default is
+one second).  This could be useful for throttling new connections against
+DoS attacks or other oversubscription.</p>
 
 <h4 id="server.close">server.close()</h4>
 
@@ -126,8 +133,9 @@ event.</p>
 
 <h4 id="server.address">server.address()</h4>
 
-<p>Returns the bound address of the server as seen by the operating system.
-Useful to find which port was assigned when giving getting an OS-assigned address</p>
+<p>Returns the bound address and port of the server as reported by the operating system.
+Useful to find which port was assigned when giving getting an OS-assigned address.
+Returns an object with two properties, e.g. <code>{"address":"127.0.0.1", "port":2121}</code></p>
 
 <p>Example:</p>
 
@@ -304,6 +312,11 @@ Set <code>initialDelay</code> (in milliseconds) to set the delay between the las
 data packet received and the first keepalive probe. Setting 0 for
 initialDelay will leave the value unchanged from the default
 (or previous) setting.</p>
+
+<h4 id="socket.address">socket.address()</h4>
+
+<p>Returns the bound address and port of the socket as reported by the operating system.
+Returns an object with two properties, e.g. <code>{"address":"192.168.57.1", "port":62053}</code></p>
 
 <h4 id="socket.remoteAddress">socket.remoteAddress</h4>
 

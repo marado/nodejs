@@ -16,7 +16,7 @@
       </div>
       <hr />
     </header>
-    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#hTTP">HTTP</a></li><li><a href="#http.Server">http.Server</a><ul><li><a href="#event_request_">Event: 'request'</a></li><li><a href="#event_connection_">Event: 'connection'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#event_checkContinue_">Event: 'checkContinue'</a></li><li><a href="#event_upgrade_">Event: 'upgrade'</a></li><li><a href="#event_clientError_">Event: 'clientError'</a></li><li><a href="#http.createServer">http.createServer(requestListener)</a></li><li><a href="#server.listen">server.listen(port, [hostname], [callback])</a></li><li><a href="#server.listen">server.listen(path, [callback])</a></li><li><a href="#server.close">server.close()</a></li></ul></li><li><a href="#http.ServerRequest">http.ServerRequest</a><ul><li><a href="#event_data_">Event: 'data'</a></li><li><a href="#event_end_">Event: 'end'</a></li><li><a href="#request.method">request.method</a></li><li><a href="#request.url">request.url</a></li><li><a href="#request.headers">request.headers</a></li><li><a href="#request.trailers">request.trailers</a></li><li><a href="#request.httpVersion">request.httpVersion</a></li><li><a href="#request.setEncoding">request.setEncoding(encoding=null)</a></li><li><a href="#request.pause">request.pause()</a></li><li><a href="#request.resume">request.resume()</a></li><li><a href="#request.connection">request.connection</a></li></ul></li><li><a href="#http.ServerResponse">http.ServerResponse</a><ul><li><a href="#response.writeContinue">response.writeContinue()</a></li><li><a href="#response.writeHead">response.writeHead(statusCode, [reasonPhrase], [headers])</a></li><li><a href="#response.statusCode">response.statusCode</a></li><li><a href="#response.setHeader">response.setHeader(name, value)</a></li><li><a href="#response.getHeader">response.getHeader(name)</a></li><li><a href="#response.removeHeader">response.removeHeader(name)</a></li><li><a href="#response.write">response.write(chunk, encoding='utf8')</a></li><li><a href="#response.addTrailers">response.addTrailers(headers)</a></li><li><a href="#response.end">response.end([data], [encoding])</a></li></ul></li><li><a href="#http.request">http.request(options, callback)</a></li><li><a href="#http.get">http.get(options, callback)</a></li><li><a href="#http.Agent">http.Agent</a></li><li><a href="#http.getAgent">http.getAgent(host, port)</a><ul><li><a href="#event_upgrade_">Event: 'upgrade'</a></li><li><a href="#event_continue_">Event: 'continue'</a></li><li><a href="#agent.maxSockets">agent.maxSockets</a></li><li><a href="#agent.sockets">agent.sockets</a></li><li><a href="#agent.queue">agent.queue</a></li></ul></li><li><a href="#http.ClientRequest">http.ClientRequest</a><ul><li><a href="#event_response_">Event 'response'</a></li><li><a href="#request.write">request.write(chunk, encoding='utf8')</a></li><li><a href="#request.end">request.end([data], [encoding])</a></li><li><a href="#request.abort">request.abort()</a></li></ul></li><li><a href="#http.ClientResponse">http.ClientResponse</a><ul><li><a href="#event_data_">Event: 'data'</a></li><li><a href="#event_end_">Event: 'end'</a></li><li><a href="#response.statusCode">response.statusCode</a></li><li><a href="#response.httpVersion">response.httpVersion</a></li><li><a href="#response.headers">response.headers</a></li><li><a href="#response.trailers">response.trailers</a></li><li><a href="#response.setEncoding">response.setEncoding(encoding=null)</a></li><li><a href="#response.pause">response.pause()</a></li><li><a href="#response.resume">response.resume()</a></li></ul></li></ul><hr /></div>
+    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#hTTP">HTTP</a></li><li><a href="#http.Server">http.Server</a><ul><li><a href="#event_request_">Event: 'request'</a></li><li><a href="#event_connection_">Event: 'connection'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#event_checkContinue_">Event: 'checkContinue'</a></li><li><a href="#event_upgrade_">Event: 'upgrade'</a></li><li><a href="#event_clientError_">Event: 'clientError'</a></li><li><a href="#http.createServer">http.createServer([requestListener])</a></li><li><a href="#server.listen">server.listen(port, [hostname], [callback])</a></li><li><a href="#server.listen">server.listen(path, [callback])</a></li><li><a href="#server.close">server.close()</a></li></ul></li><li><a href="#http.ServerRequest">http.ServerRequest</a><ul><li><a href="#event_data_">Event: 'data'</a></li><li><a href="#event_end_">Event: 'end'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#request.method">request.method</a></li><li><a href="#request.url">request.url</a></li><li><a href="#request.headers">request.headers</a></li><li><a href="#request.trailers">request.trailers</a></li><li><a href="#request.httpVersion">request.httpVersion</a></li><li><a href="#request.setEncoding">request.setEncoding(encoding=null)</a></li><li><a href="#request.pause">request.pause()</a></li><li><a href="#request.resume">request.resume()</a></li><li><a href="#request.connection">request.connection</a></li></ul></li><li><a href="#http.ServerResponse">http.ServerResponse</a><ul><li><a href="#response.writeContinue">response.writeContinue()</a></li><li><a href="#response.writeHead">response.writeHead(statusCode, [reasonPhrase], [headers])</a></li><li><a href="#response.statusCode">response.statusCode</a></li><li><a href="#response.setHeader">response.setHeader(name, value)</a></li><li><a href="#response.getHeader">response.getHeader(name)</a></li><li><a href="#response.removeHeader">response.removeHeader(name)</a></li><li><a href="#response.write">response.write(chunk, encoding='utf8')</a></li><li><a href="#response.addTrailers">response.addTrailers(headers)</a></li><li><a href="#response.end">response.end([data], [encoding])</a></li></ul></li><li><a href="#http.request">http.request(options, callback)</a></li><li><a href="#http.get">http.get(options, callback)</a></li><li><a href="#http.Agent">http.Agent</a></li><li><a href="#http.getAgent">http.getAgent(host, port)</a><ul><li><a href="#event_upgrade_">Event: 'upgrade'</a></li><li><a href="#event_continue_">Event: 'continue'</a></li><li><a href="#agent.maxSockets">agent.maxSockets</a></li><li><a href="#agent.sockets">agent.sockets</a></li><li><a href="#agent.queue">agent.queue</a></li></ul></li><li><a href="#http.ClientRequest">http.ClientRequest</a><ul><li><a href="#event_response_">Event 'response'</a></li><li><a href="#request.write">request.write(chunk, encoding='utf8')</a></li><li><a href="#request.end">request.end([data], [encoding])</a></li><li><a href="#request.abort">request.abort()</a></li></ul></li><li><a href="#http.ClientResponse">http.ClientResponse</a><ul><li><a href="#event_data_">Event: 'data'</a></li><li><a href="#event_end_">Event: 'end'</a></li><li><a href="#response.statusCode">response.statusCode</a></li><li><a href="#response.httpVersion">response.httpVersion</a></li><li><a href="#response.headers">response.headers</a></li><li><a href="#response.trailers">response.trailers</a></li><li><a href="#response.setEncoding">response.setEncoding(encoding=null)</a></li><li><a href="#response.pause">response.pause()</a></li><li><a href="#response.resume">response.resume()</a></li></ul></li></ul><hr /></div>
 <h2 id="hTTP">HTTP</h2>
 
 <p>To use the HTTP server and client one must <code>require('http')</code>.</p>
@@ -104,7 +104,7 @@ sent to the server on that socket.</p>
 
 <p>If a client connection emits an 'error' event - it will forwarded here.</p>
 
-<h3 id="http.createServer">http.createServer(requestListener)</h3>
+<h3 id="http.createServer">http.createServer([requestListener])</h3>
 
 <p>Returns a new web server object.</p>
 
@@ -155,8 +155,29 @@ body chunk is a string.  The body encoding is set with
 
 <p><code>function () { }</code></p>
 
-<p>Emitted exactly once for each message. No arguments.  After
-emitted no other events will be emitted on the request.</p>
+<p>Emitted exactly once for each request. After that, no more <code>'data'</code> events
+will be emitted on the request.</p>
+
+<h3 id="event_close_">Event: 'close'</h3>
+
+<p><code>function (err) { }</code></p>
+
+<p>Indicates that the underlaying connection was terminated before
+<code>response.end()</code> was called or able to flush.</p>
+
+<p>The <code>err</code> parameter is always present and indicates the reason for the timeout:</p>
+
+<p><code>err.code === 'timeout'</code> indicates that the underlaying connection timed out.
+This may happen because all incoming connections have a default timeout of 2
+minutes.</p>
+
+<p><code>err.code === 'aborted'</code> means that the client has closed the underlaying
+connection prematurely.</p>
+
+<p>Just like <code>'end'</code>, this event occurs only once per request, and no more <code>'data'</code>
+events will fire afterwards.</p>
+
+<p>Note: <code>'close'</code> can fire after <code>'end'</code>, but not vice versa.</p>
 
 <h3 id="request.method">request.method</h3>
 
@@ -391,6 +412,10 @@ var req = http.request(options, function(res) {
   });
 });
 
+req.on('error', function(e) {
+  console.log('problem with request: ' + e.message);
+});
+
 // write data to request body
 req.write('data\n');
 req.write('data\n');
@@ -443,13 +468,58 @@ agent. The <code>http.getAgent()</code> function allows you to access the agents
 
 <h3 id="event_upgrade_">Event: 'upgrade'</h3>
 
-<p><code>function (request, socket, head)</code></p>
+<p><code>function (response, socket, head)</code></p>
 
-<p>Emitted each time a server responds to a request with an upgrade. If this event
-isn't being listened for, clients receiving an upgrade header will have their
-connections closed.</p>
+<p>Emitted each time a server responds to a request with an upgrade. If this
+event isn't being listened for, clients receiving an upgrade header will have
+their connections closed.</p>
 
-<p>See the description of the <a href="http.html#event_upgrade_">upgrade event</a> for <code>http.Server</code> for further details.</p>
+<p>A client server pair that show you how to listen for the <code>upgrade</code> event using <code>http.getAgent</code>:</p>
+
+<pre><code>var http = require('http');
+var net = require('net');
+
+// Create an HTTP server
+var srv = http.createServer(function (req, res) {
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+  res.end('okay');
+});
+srv.on('upgrade', function(req, socket, upgradeHead) {
+  socket.write('HTTP/1.1 101 Web Socket Protocol Handshake\r\n' +
+               'Upgrade: WebSocket\r\n' +
+               'Connection: Upgrade\r\n' +
+               '\r\n\r\n');
+
+  socket.ondata = function(data, start, end) {
+    socket.write(data.toString('utf8', start, end), 'utf8'); // echo back
+  };
+});
+
+// now that server is running
+srv.listen(1337, '127.0.0.1', function() {
+
+  // make a request
+  var agent = http.getAgent('127.0.0.1', 1337);
+
+  var options = {
+    agent: agent,
+    port: 1337,
+    host: '127.0.0.1',
+    headers: {
+      'Connection': 'Upgrade',
+      'Upgrade': 'websocket'
+    }
+  };
+
+  var req = http.request(options);
+  req.end();
+
+  agent.on('upgrade', function(res, socket, upgradeHead) {
+    console.log('got upgraded!');
+    socket.end();
+    process.exit(0);
+  });
+});</code></pre>
 
 <h3 id="event_continue_">Event: 'continue'</h3>
 
