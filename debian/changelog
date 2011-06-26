@@ -1,3 +1,11 @@
+nodejs (0.4.8-1) UNRELEASED; urgency=low
+
+  * New upstream release
+  * Depends on libv8 3.1.8.22
+  * Refresh debian/patches 
+
+ -- Jérémy Lal <kapouer@melix.org>  Sun, 26 Jun 2011 17:09:02 +0200
+
 nodejs (0.4.7-1) unstable; urgency=low
 
   * New upstream release
