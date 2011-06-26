@@ -3,7 +3,7 @@ Bug-Debian: http://bugs.debian.org/589706
 Bug-Debian: http://bugs.debian.org/622065
 Bug-Node: https://github.com/joyent/node/issues/880
 Author: Jérémy Lal <kapouer@melix.org>
-Last-Update: 2011-04-14
+Last-Update: 2011-06-26
 --- a/src/node_crypto.cc
 +++ b/src/node_crypto.cc
 @@ -98,11 +98,23 @@
@@ -43,16 +43,18 @@ Last-Update: 2011-04-14
 +                , dest='openssl_nov2'
 +                )
 +
-   opt.add_option( '--oprofile'
+   opt.add_option( '--gdb'
                  , action='store_true'
                  , default=False
-@@ -338,6 +345,9 @@
-         conf.fatal("Could not autodetect OpenSSL support. " +
-                    "Make sure OpenSSL development packages are installed. " +
-                    "Use configure --without-ssl to disable this message.")
+@@ -279,6 +286,11 @@
+   if not Options.options.without_ssl:
+     # Don't override explicitly supplied openssl paths with pkg-config results.
+     explicit_openssl = o.openssl_includes or o.openssl_libpath
++
 +    # Disable ssl v2 methods
 +    if o.openssl_nov2:
 +      conf.env.append_value("CPPFLAGS", "-DOPENSSL_NO_SSL2=1")
-   else:
-     Options.options.use_openssl = conf.env["USE_OPENSSL"] = False
- 
++
+     if not explicit_openssl and conf.check_cfg(package='openssl',
+                                                args='--cflags --libs',
+                                                uselib_store='OPENSSL'):
