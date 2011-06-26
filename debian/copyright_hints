@@ -750,6 +750,7 @@ Files: AUTHORS
  doc/api/path.markdown
  doc/api/process.markdown
  doc/api/querystring.markdown
+ doc/api/readline.md
  doc/api/repl.markdown
  doc/api/stdio.markdown
  doc/api/streams.markdown
@@ -854,15 +855,20 @@ Files: AUTHORS
  test/internet/internet.status
  test/message/2100bytes.out
  test/message/hello_world.out
+ test/message/stack_overflow.out
+ test/message/throw_custom_error.out
+ test/message/throw_non_error.out
  test/message/undefined_reference_in_new_context.out
  test/pummel/pummel.status
  test/pummel/test-regress-GH-814.js
  test/pummel/test-regress-GH-814_2.js
  test/simple/simple.status
+ test/simple/test-event-emitter-check-listener-leaks.js
  test/simple/test-http-response-readable.js
  test/simple/test-regress-GH-784.js
  test/simple/test-regress-GH-819.js
  test/simple/test-regress-GH-897.js
+ test/simple/test-stream-pipe-multi.js
  test/simple/test-vm-create-context-circular-reference.js
  tools/closure_linter/PKG-INFO
  tools/closure_linter/README
@@ -1114,6 +1120,9 @@ Files: lib/_debugger.js
  test/fixtures/throws_error3.js
  test/message/2100bytes.js
  test/message/hello_world.js
+ test/message/stack_overflow.js
+ test/message/throw_custom_error.js
+ test/message/throw_non_error.js
  test/message/undefined_reference_in_new_context.js
  test/pummel/test-child-process-spawn-loop.js
  test/pummel/test-exec.js
@@ -1232,6 +1241,7 @@ Files: lib/_debugger.js
  test/simple/test-http-mutable-headers.js
  test/simple/test-http-parser.js
  test/simple/test-http-proxy.js
+ test/simple/test-http-request-aborted.js
  test/simple/test-http-request-end.js
  test/simple/test-http-response-close.js
  test/simple/test-http-server-multiheaders.js
@@ -1239,6 +1249,7 @@ Files: lib/_debugger.js
  test/simple/test-http-set-cookies.js
  test/simple/test-http-set-timeout.js
  test/simple/test-http-set-trailers.js
+ test/simple/test-http-upgrade-agent.js
  test/simple/test-http-upgrade-client.js
  test/simple/test-http-upgrade-client2.js
  test/simple/test-http-upgrade-server.js
@@ -1249,6 +1260,8 @@ Files: lib/_debugger.js
  test/simple/test-https-agent.js
  test/simple/test-https-connecting-to-http.js
  test/simple/test-https-eof-for-eom.js
+ test/simple/test-https-request-aborted.js
+ test/simple/test-https-request-timeout.js
  test/simple/test-https-simple.js
  test/simple/test-init.js
  test/simple/test-listen-fd.js
@@ -1314,6 +1327,7 @@ Files: lib/_debugger.js
  test/simple/test-tls-client-verify.js
  test/simple/test-tls-ext-key-usage.js
  test/simple/test-tls-junk-closes-server.js
+ test/simple/test-tls-request-timeout.js
  test/simple/test-tls-securepair-client.js
  test/simple/test-tls-securepair-server.js
  test/simple/test-tls-server-verify.js
@@ -1922,7 +1936,6 @@ License: MIT/X11 (BSD like)
 Files: deps/http_parser/http_parser.c
 Copyright: (unsigned char)(c | 0x20)
  2009-2010, Ryan Dahl <ry@tinyclouds.org>
- HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  tokens[(unsigned char)c
 License: MIT/X11 (BSD like)
  FIXME
@@ -1987,6 +2000,13 @@ Files: deps/v8/benchmarks/crypto.js
 Copyright: 2003-2005, Tom Wu
  2005, Tom Wu
 License: MIT/X11 (BSD like)
+ FIXME
+
+Files: doc/trademark-policy.pdf
+Copyright: ÃGša‘`2NÂNÒUxL$C£ò¤' ÌªwèQ[ÌzÊ‚d‘mª-ä<gÕOikéÄ€‰@3æDÅÔÔ@ò¥aEdÅ’S9å&êPÕ®öUN{hè(!jp¿¿Ç“Ïµhûý± ?wû—çÉ91"äÈ9èƒ0£ZƒåÉªPó$æÝ¶Þd¿º&¹F5F,Þdy¦6$²ù´%Ï†Ì	Ë°jËÆ-ÇØJÍ+#_
+ ºBî_ÜÞ¾¸ÿ›çÛ[.¿tZy¼‚r‚àq…5ÊÓTzM;Ð-·÷ZO6ÞØñõ+fTtTVš§N²ÙÊbŽik
+ ðÄà8%ÇS¬ˆ%w–5²µkº!@ ´,@¢XÕÚÅš_v
+License: UNKNOWN
  FIXME
 
 Files: deps/v8/benchmarks/v8-logo.png
