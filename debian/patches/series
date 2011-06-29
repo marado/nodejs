@@ -2,4 +2,3 @@
 2002_build_without_libv8_debug.patch
 2004_libev_compatibility.patch
 2005_expected_failing_tests.patch
-1001_no_ssl_v2.patch
