@@ -574,6 +574,7 @@ Files: AUTHORS
  debian/patches/2002_build_without_libv8_debug.patch
  debian/patches/2004_libev_compatibility.patch
  debian/patches/2005_expected_failing_tests.patch
+ debian/patches/2006_use_system_libeio.patch
  debian/patches/series
  debian/rules
  debian/source/format
@@ -851,6 +852,8 @@ Files: AUTHORS
  test/fixtures/test_ca.pem
  test/fixtures/test_cert.pem
  test/fixtures/test_key.pem
+ test/fixtures/test_rsa_privkey.pem
+ test/fixtures/test_rsa_pubkey.pem
  test/fixtures/x.txt
  test/internet/internet.status
  test/message/2100bytes.out
@@ -1173,6 +1176,7 @@ Files: lib/_debugger.js
  test/simple/test-eio-race2.js
  test/simple/test-eio-race4.js
  test/simple/test-error-reporting.js
+ test/simple/test-eval-require.js
  test/simple/test-event-emitter-add-listeners.js
  test/simple/test-event-emitter-modify-in-emit.js
  test/simple/test-event-emitter-num-args.js
@@ -1319,6 +1323,7 @@ Files: lib/_debugger.js
  test/simple/test-stdin-from-file.js
  test/simple/test-stdout-to-file.js
  test/simple/test-stream-pipe-cleanup.js
+ test/simple/test-stream-pipe-error-handling.js
  test/simple/test-stream-pipe-event.js
  test/simple/test-string-decoder.js
  test/simple/test-sync-fileread.js
@@ -1737,8 +1742,8 @@ License: BSD (3 clause)
 Files: deps/http_parser/LICENSE-MIT
  deps/http_parser/http_parser.h
  deps/http_parser/test.c
-Copyright: 2009-2010, Ryan Dahl <ry@tinyclouds.org>
- HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+Copyright: HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ Joyent, Inc. and other Node contributors.
 License: MIT/X11 (BSD like)
  FIXME
 
@@ -1925,18 +1930,18 @@ Copyright: 1996, Internet Software Consortium
 License: ISC
  FIXME
 
+Files: deps/http_parser/http_parser.c
+Copyright: & 0x80))
+ (IS_ALPHANUM || == '.' || == '-')
+ (tokens[(unsigned char)c
+License: MIT/X11 (BSD like)
+ FIXME
+
 Files: src/node_crypto.cc
 Copyright: ( <= '9' ? ( - '0') : <= 'Z' ? ( - 'A' + 10) \
  - 'a' + 10))
  HOLDERS BE LIABLE FOR ANY CLAIM
  Joyent, Inc. and other Node contributors
-License: MIT/X11 (BSD like)
- FIXME
-
-Files: deps/http_parser/http_parser.c
-Copyright: (unsigned char)(c | 0x20)
- 2009-2010, Ryan Dahl <ry@tinyclouds.org>
- tokens[(unsigned char)c
 License: MIT/X11 (BSD like)
  FIXME
 
