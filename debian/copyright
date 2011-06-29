@@ -7,6 +7,10 @@ Files: *
 Copyright: Joyent, Inc. and other Node contributors.
 License: Expat
 
+Files: deps/http_parser.c
+Copyright: Igor Sysoev, Joyent, Inc. and other Node contributors.
+License: Expat
+
 Files: deps/libeio/*
  deps/libev/*
 Copyright: 2007-2010, Marc Alexander Lehmann <libeio@schmorp.de>
