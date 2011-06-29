@@ -16,7 +16,7 @@
       </div>
       <hr />
     </header>
-    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#modules">Modules</a><ul><li><a href="#core_Modules">Core Modules</a></li><li><a href="#file_Modules">File Modules</a></li><li><a href="#loading_from_node_modules_Folders">Loading from `node_modules` Folders</a><ul><li><a href="#optimizations_to_the_node_modules_Lookup_Process">Optimizations to the `node_modules` Lookup Process</a></li></ul></li><li><a href="#folders_as_Modules">Folders as Modules</a></li><li><a href="#caching">Caching</a><ul><li><a href="#module_Caching_Caveats">Module Caching Caveats</a></li></ul></li><li><a href="#module.exports">module.exports</a></li><li><a href="#all_Together...">All Together...</a></li><li><a href="#loading_from_the_require.paths_Folders">Loading from the `require.paths` Folders</a><ul><li><a href="#note_Please_Avoid_Modifying_require.paths_">Note:** Please Avoid Modifying `require.paths`</a><ul><li><a href="#setting_require.paths_to_some_other_value_does_nothing.">Setting `require.paths` to some other value does nothing.</a></li><li><a href="#putting_relative_paths_in_require.paths_is..._weird.">Putting relative paths in `require.paths` is... weird.</a></li><li><a href="#zero_Isolation">Zero Isolation</a></li></ul></li></ul></li><li><a href="#accessing_the_main_module">Accessing the main module</a></li></ul></li><li><a href="#addenda_Package_Manager_Tips">Addenda: Package Manager Tips</a></li></ul><hr /></div>
+    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#modules">Modules</a><ul><li><a href="#core_Modules">Core Modules</a></li><li><a href="#file_Modules">File Modules</a></li><li><a href="#loading_from_node_modules_Folders">Loading from `node_modules` Folders</a></li><li><a href="#folders_as_Modules">Folders as Modules</a></li><li><a href="#caching">Caching</a><ul><li><a href="#module_Caching_Caveats">Module Caching Caveats</a></li></ul></li><li><a href="#module.exports">module.exports</a></li><li><a href="#all_Together...">All Together...</a></li><li><a href="#loading_from_the_require.paths_Folders">Loading from the `require.paths` Folders</a><ul><li><a href="#note_Please_Avoid_Modifying_require.paths_">Note:** Please Avoid Modifying `require.paths`</a><ul><li><a href="#setting_require.paths_to_some_other_value_does_nothing.">Setting `require.paths` to some other value does nothing.</a></li><li><a href="#putting_relative_paths_in_require.paths_is..._weird.">Putting relative paths in `require.paths` is... weird.</a></li><li><a href="#zero_Isolation">Zero Isolation</a></li></ul></li></ul></li><li><a href="#accessing_the_main_module">Accessing the main module</a></li><li><a href="#accessing_the_main_module">Accessing the main module</a></li></ul></li><li><a href="#addenda_Package_Manager_Tips">Addenda: Package Manager Tips</a></li></ul><hr /></div>
 <h2 id="modules">Modules</h2>
 
 <p>Node has a simple module loading system.  In Node, files and modules are in
@@ -87,8 +87,7 @@ parent directory of the current module, and adds <code>/node_modules</code>, and
 attempts to load the module from that location.</p>
 
 <p>If it is not found there, then it moves to the parent directory, and so
-on, until either the module is found, or the root of the tree is
-reached.</p>
+on, until the root of the tree is reached.</p>
 
 <p>For example, if the file at <code>'/home/ry/projects/foo.js'</code> called
 <code>require('bar.js')</code>, then node would look in the following locations, in
@@ -98,26 +97,6 @@ this order:</p>
 
 <p>This allows programs to localize their dependencies, so that they do not
 clash.</p>
-
-<h4 id="optimizations_to_the_node_modules_Lookup_Process">Optimizations to the `node_modules` Lookup Process</h4>
-
-<p>When there are many levels of nested dependencies, it is possible for
-these file trees to get fairly long.  The following optimizations are thus
-made to the process.</p>
-
-<p>First, <code>/node_modules</code> is never appended to a folder already ending in
-<code>/node_modules</code>.</p>
-
-<p>Second, if the file calling <code>require()</code> is already inside a <code>node_modules</code>
-hierarchy, then the top-most <code>node_modules</code> folder is treated as the
-root of the search tree.</p>
-
-<p>For example, if the file at
-<code>'/home/ry/projects/foo/node_modules/bar/node_modules/baz/quux.js'</code>
-called <code>require('asdf.js')</code>, then node would search the following
-locations:</p>
-
-<ul><li><code>/home/ry/projects/foo/node_modules/bar/node_modules/baz/node_modules/asdf.js</code></li><li><code>/home/ry/projects/foo/node_modules/bar/node_modules/asdf.js</code></li><li><code>/home/ry/projects/foo/node_modules/asdf.js</code></li></ul>
 
 <h3 id="folders_as_Modules">Folders as Modules</h3>
 
@@ -324,6 +303,21 @@ permanently and subtly alter the behavior of all other node programs in
 the same process.  As the application stack grows, we tend to assemble
 functionality, and those parts interact in ways that are difficult to
 predict.</p>
+
+<h3 id="accessing_the_main_module">Accessing the main module</h3>
+
+<p>When a file is run directly from Node, <code>require.main</code> is set to its
+<code>module</code>. That means that you can determine whether a file has been run
+directly by testing</p>
+
+<pre><code>require.main === module</code></pre>
+
+<p>For a file <code>foo.js</code>, this will be <code>true</code> if run via <code>node foo.js</code>, but
+<code>false</code> if run by <code>require('./foo')</code>.</p>
+
+<p>Because <code>module</code> provides a <code>filename</code> property (normally equivalent to
+<code>__filename</code>), the entry point of the current application can be obtained
+by checking <code>require.main.filename</code>.</p>
 
 <h3 id="accessing_the_main_module">Accessing the main module</h3>
 
