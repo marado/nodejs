@@ -3,8 +3,9 @@ nodejs (0.4.9-1) unstable; urgency=low
   * New upstream release
   * Refresh debian/patches,
     remove 1001_no_ssl_v2.patch, applied upstream.
+  * deps/http_parser.c based on expat-licensed work of Igor Sysoev.
 
- -- Jérémy Lal <kapouer@melix.org>  Wed, 29 Jun 2011 16:33:17 +0200
+ -- Jérémy Lal <kapouer@melix.org>  Wed, 29 Jun 2011 16:46:47 +0200
 
 nodejs (0.4.8-1) unstable; urgency=low
 
