@@ -16,7 +16,7 @@
       </div>
       <hr />
     </header>
-    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#crypto">Crypto</a><ul><li><a href="#crypto.createCredentials">crypto.createCredentials(details)</a></li><li><a href="#crypto.createHash">crypto.createHash(algorithm)</a></li><li><a href="#hash.update">hash.update(data)</a></li><li><a href="#hash.digest">hash.digest(encoding='binary')</a></li><li><a href="#crypto.createHmac">crypto.createHmac(algorithm, key)</a></li><li><a href="#hmac.update">hmac.update(data)</a></li><li><a href="#hmac.digest">hmac.digest(encoding='binary')</a></li><li><a href="#crypto.createCipher">crypto.createCipher(algorithm, key)</a></li><li><a href="#cipher.update">cipher.update(data, input_encoding='binary', output_encoding='binary')</a></li><li><a href="#cipher.final">cipher.final(output_encoding='binary')</a></li><li><a href="#crypto.createDecipher">crypto.createDecipher(algorithm, key)</a></li><li><a href="#decipher.update">decipher.update(data, input_encoding='binary', output_encoding='binary')</a></li><li><a href="#decipher.final">decipher.final(output_encoding='binary')</a></li><li><a href="#crypto.createSign">crypto.createSign(algorithm)</a></li><li><a href="#signer.update">signer.update(data)</a></li><li><a href="#signer.sign">signer.sign(private_key, output_format='binary')</a></li><li><a href="#crypto.createVerify">crypto.createVerify(algorithm)</a></li><li><a href="#verifier.update">verifier.update(data)</a></li><li><a href="#verifier.verify">verifier.verify(cert, signature, signature_format='binary')</a></li></ul></li></ul><hr /></div>
+    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#crypto">Crypto</a><ul><li><a href="#crypto.createCredentials">crypto.createCredentials(details)</a></li><li><a href="#crypto.createHash">crypto.createHash(algorithm)</a></li><li><a href="#hash.update">hash.update(data)</a></li><li><a href="#hash.digest">hash.digest(encoding='binary')</a></li><li><a href="#crypto.createHmac">crypto.createHmac(algorithm, key)</a></li><li><a href="#hmac.update">hmac.update(data)</a></li><li><a href="#hmac.digest">hmac.digest(encoding='binary')</a></li><li><a href="#crypto.createCipher">crypto.createCipher(algorithm, key)</a></li><li><a href="#cipher.update">cipher.update(data, input_encoding='binary', output_encoding='binary')</a></li><li><a href="#cipher.final">cipher.final(output_encoding='binary')</a></li><li><a href="#crypto.createDecipher">crypto.createDecipher(algorithm, key)</a></li><li><a href="#decipher.update">decipher.update(data, input_encoding='binary', output_encoding='binary')</a></li><li><a href="#decipher.final">decipher.final(output_encoding='binary')</a></li><li><a href="#crypto.createSign">crypto.createSign(algorithm)</a></li><li><a href="#signer.update">signer.update(data)</a></li><li><a href="#signer.sign">signer.sign(private_key, output_format='binary')</a></li><li><a href="#crypto.createVerify">crypto.createVerify(algorithm)</a></li><li><a href="#verifier.update">verifier.update(data)</a></li><li><a href="#verifier.verify">verifier.verify(object, signature, signature_format='binary')</a></li></ul></li></ul><hr /></div>
 <h2 id="crypto">Crypto</h2>
 
 <p>Use <code>require('crypto')</code> to access this module.</p>
@@ -107,7 +107,7 @@ the output format of the enciphered data, and can be <code>'binary'</code>, <cod
 
 <h3 id="cipher.final">cipher.final(output_encoding='binary')</h3>
 
-<p>Returns any remaining enciphered contents, with <code>output_encoding</code> being one of: <code>'binary'</code>, <code>'ascii'</code> or <code>'utf8'</code>.</p>
+<p>Returns any remaining enciphered contents, with <code>output_encoding</code> being one of: <code>'binary'</code>, <code>'base64'</code> or <code>'hex'</code>.</p>
 
 <h3 id="crypto.createDecipher">crypto.createDecipher(algorithm, key)</h3>
 
@@ -122,7 +122,7 @@ The <code>output_decoding</code> specifies in what format to return the decipher
 <h3 id="decipher.final">decipher.final(output_encoding='binary')</h3>
 
 <p>Returns any remaining plaintext which is deciphered,
-with <code>output_encoding' being one of: </code>'binary'<code>, </code>'ascii'<code> or </code>'utf8'`.</p>
+with <code>output_encoding</code> being one of: <code>'binary'</code>, <code>'ascii'</code> or <code>'utf8'</code>.</p>
 
 <h3 id="crypto.createSign">crypto.createSign(algorithm)</h3>
 
@@ -152,11 +152,13 @@ This is the mirror of the signing object above.</p>
 <p>Updates the verifier object with data.
 This can be called many times with new data as it is streamed.</p>
 
-<h3 id="verifier.verify">verifier.verify(cert, signature, signature_format='binary')</h3>
+<h3 id="verifier.verify">verifier.verify(object, signature, signature_format='binary')</h3>
 
-<p>Verifies the signed data by using the <code>cert</code> which is a string containing
-the PEM encoded certificate, and <code>signature</code>, which is the previously calculates
-signature for the data, in the <code>signature_format</code> which can be <code>'binary'</code>, <code>'hex'</code> or <code>'base64'</code>.</p>
+<p>Verifies the signed data by using the <code>object</code> and <code>signature</code>. <code>object</code> is  a
+string containing a PEM encoded object, which can be one of RSA public key,
+DSA public key, or X.509 certificate. <code>signature</code> is the previously calculated
+signature for the data, in the <code>signature_format</code> which can be <code>'binary'</code>,
+<code>'hex'</code> or <code>'base64'</code>.</p>
 
 <p>Returns true or false depending on the validity of the signature for the data and public key.</p>
   </div>
