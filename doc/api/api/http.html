@@ -16,7 +16,7 @@
       </div>
       <hr />
     </header>
-    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#hTTP">HTTP</a></li><li><a href="#http.Server">http.Server</a><ul><li><a href="#event_request_">Event: 'request'</a></li><li><a href="#event_connection_">Event: 'connection'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#event_checkContinue_">Event: 'checkContinue'</a></li><li><a href="#event_upgrade_">Event: 'upgrade'</a></li><li><a href="#event_clientError_">Event: 'clientError'</a></li><li><a href="#http.createServer">http.createServer([requestListener])</a></li><li><a href="#server.listen">server.listen(port, [hostname], [callback])</a></li><li><a href="#server.listen">server.listen(path, [callback])</a></li><li><a href="#server.close">server.close()</a></li></ul></li><li><a href="#http.ServerRequest">http.ServerRequest</a><ul><li><a href="#event_data_">Event: 'data'</a></li><li><a href="#event_end_">Event: 'end'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#request.method">request.method</a></li><li><a href="#request.url">request.url</a></li><li><a href="#request.headers">request.headers</a></li><li><a href="#request.trailers">request.trailers</a></li><li><a href="#request.httpVersion">request.httpVersion</a></li><li><a href="#request.setEncoding">request.setEncoding(encoding=null)</a></li><li><a href="#request.pause">request.pause()</a></li><li><a href="#request.resume">request.resume()</a></li><li><a href="#request.connection">request.connection</a></li></ul></li><li><a href="#http.ServerResponse">http.ServerResponse</a><ul><li><a href="#response.writeContinue">response.writeContinue()</a></li><li><a href="#response.writeHead">response.writeHead(statusCode, [reasonPhrase], [headers])</a></li><li><a href="#response.statusCode">response.statusCode</a></li><li><a href="#response.setHeader">response.setHeader(name, value)</a></li><li><a href="#response.getHeader">response.getHeader(name)</a></li><li><a href="#response.removeHeader">response.removeHeader(name)</a></li><li><a href="#response.write">response.write(chunk, encoding='utf8')</a></li><li><a href="#response.addTrailers">response.addTrailers(headers)</a></li><li><a href="#response.end">response.end([data], [encoding])</a></li></ul></li><li><a href="#http.request">http.request(options, callback)</a></li><li><a href="#http.get">http.get(options, callback)</a></li><li><a href="#http.Agent">http.Agent</a></li><li><a href="#http.getAgent">http.getAgent(host, port)</a><ul><li><a href="#event_upgrade_">Event: 'upgrade'</a></li><li><a href="#event_continue_">Event: 'continue'</a></li><li><a href="#agent.maxSockets">agent.maxSockets</a></li><li><a href="#agent.sockets">agent.sockets</a></li><li><a href="#agent.queue">agent.queue</a></li></ul></li><li><a href="#http.ClientRequest">http.ClientRequest</a><ul><li><a href="#event_response_">Event 'response'</a></li><li><a href="#request.write">request.write(chunk, encoding='utf8')</a></li><li><a href="#request.end">request.end([data], [encoding])</a></li><li><a href="#request.abort">request.abort()</a></li></ul></li><li><a href="#http.ClientResponse">http.ClientResponse</a><ul><li><a href="#event_data_">Event: 'data'</a></li><li><a href="#event_end_">Event: 'end'</a></li><li><a href="#response.statusCode">response.statusCode</a></li><li><a href="#response.httpVersion">response.httpVersion</a></li><li><a href="#response.headers">response.headers</a></li><li><a href="#response.trailers">response.trailers</a></li><li><a href="#response.setEncoding">response.setEncoding(encoding=null)</a></li><li><a href="#response.pause">response.pause()</a></li><li><a href="#response.resume">response.resume()</a></li></ul></li></ul><hr /></div>
+    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#hTTP">HTTP</a></li><li><a href="#http.Server">http.Server</a><ul><li><a href="#event_request_">Event: 'request'</a></li><li><a href="#event_connection_">Event: 'connection'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#event_checkContinue_">Event: 'checkContinue'</a></li><li><a href="#event_upgrade_">Event: 'upgrade'</a></li><li><a href="#event_clientError_">Event: 'clientError'</a></li><li><a href="#http.createServer">http.createServer([requestListener])</a></li><li><a href="#server.listen">server.listen(port, [hostname], [callback])</a></li><li><a href="#server.listen">server.listen(path, [callback])</a></li><li><a href="#server.close">server.close()</a></li></ul></li><li><a href="#http.ServerRequest">http.ServerRequest</a><ul><li><a href="#event_data_">Event: 'data'</a></li><li><a href="#event_end_">Event: 'end'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#request.method">request.method</a></li><li><a href="#request.url">request.url</a></li><li><a href="#request.headers">request.headers</a></li><li><a href="#request.trailers">request.trailers</a></li><li><a href="#request.httpVersion">request.httpVersion</a></li><li><a href="#request.setEncoding">request.setEncoding(encoding=null)</a></li><li><a href="#request.pause">request.pause()</a></li><li><a href="#request.resume">request.resume()</a></li><li><a href="#request.connection">request.connection</a></li></ul></li><li><a href="#http.ServerResponse">http.ServerResponse</a><ul><li><a href="#response.writeContinue">response.writeContinue()</a></li><li><a href="#response.writeHead">response.writeHead(statusCode, [reasonPhrase], [headers])</a></li><li><a href="#response.statusCode">response.statusCode</a></li><li><a href="#response.setHeader">response.setHeader(name, value)</a></li><li><a href="#response.getHeader">response.getHeader(name)</a></li><li><a href="#response.removeHeader">response.removeHeader(name)</a></li><li><a href="#response.write">response.write(chunk, encoding='utf8')</a></li><li><a href="#response.addTrailers">response.addTrailers(headers)</a></li><li><a href="#response.end">response.end([data], [encoding])</a></li></ul></li><li><a href="#http.request">http.request(options, callback)</a></li><li><a href="#http.get">http.get(options, callback)</a></li><li><a href="#http.Agent">http.Agent</a></li><li><a href="#http.getAgent">http.getAgent(host, port)</a><ul><li><a href="#event_upgrade_">Event: 'upgrade'</a></li><li><a href="#agent.maxSockets">agent.maxSockets</a></li><li><a href="#agent.sockets">agent.sockets</a></li><li><a href="#agent.queue">agent.queue</a></li></ul></li><li><a href="#http.ClientRequest">http.ClientRequest</a><ul><li><a href="#event_continue_">Event: 'continue'</a></li><li><a href="#event_response_">Event 'response'</a></li><li><a href="#request.write">request.write(chunk, encoding='utf8')</a></li><li><a href="#request.end">request.end([data], [encoding])</a></li><li><a href="#request.abort">request.abort()</a></li></ul></li><li><a href="#http.ClientResponse">http.ClientResponse</a><ul><li><a href="#event_data_">Event: 'data'</a></li><li><a href="#event_end_">Event: 'end'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#response.statusCode">response.statusCode</a></li><li><a href="#response.httpVersion">response.httpVersion</a></li><li><a href="#response.headers">response.headers</a></li><li><a href="#response.trailers">response.trailers</a></li><li><a href="#response.setEncoding">response.setEncoding(encoding=null)</a></li><li><a href="#response.pause">response.pause()</a></li><li><a href="#response.resume">response.resume()</a></li></ul></li></ul><hr /></div>
 <h2 id="hTTP">HTTP</h2>
 
 <p>To use the HTTP server and client one must <code>require('http')</code>.</p>
@@ -56,10 +56,10 @@ per connection (in the case of keep-alive connections).
 
 <h3 id="event_connection_">Event: 'connection'</h3>
 
-<p><code>function (stream) { }</code></p>
+<p><code>function (socket) { }</code></p>
 
-<p> When a new TCP stream is established. <code>stream</code> is an object of type
- <code>net.Stream</code>. Usually users will not want to access this event. The
+<p> When a new TCP stream is established. <code>socket</code> is an object of type
+ <code>net.Socket</code>. Usually users will not want to access this event. The
  <code>stream</code> can also be accessed at <code>request.connection</code>.</p>
 
 <h3 id="event_close_">Event: 'close'</h3>
@@ -70,7 +70,7 @@ per connection (in the case of keep-alive connections).
 
 <h3 id="event_checkContinue_">Event: 'checkContinue'</h3>
 
-<p><code>function (request, response) {}</code></p>
+<p><code>function (request, response) { }</code></p>
 
 <p>Emitted each time a request with an http Expect: 100-continue is received.
 If this event isn't listened for, the server will automatically respond
@@ -86,7 +86,7 @@ not be emitted.</p>
 
 <h3 id="event_upgrade_">Event: 'upgrade'</h3>
 
-<p><code>function (request, socket, head)</code></p>
+<p><code>function (request, socket, head) { }</code></p>
 
 <p>Emitted each time a client requests a http upgrade. If this event isn't
 listened for, then clients requesting an upgrade will have their connections
@@ -100,7 +100,7 @@ sent to the server on that socket.</p>
 
 <h3 id="event_clientError_">Event: 'clientError'</h3>
 
-<p><code>function (exception) {}</code></p>
+<p><code>function (exception) { }</code></p>
 
 <p>If a client connection emits an 'error' event - it will forwarded here.</p>
 
@@ -246,7 +246,7 @@ to <code>null</code>, which means that the <code>'data'</code> event will emit a
 
 <h3 id="request.connection">request.connection</h3>
 
-<p>The <code>net.Stream</code> object associated with the connection.</p>
+<p>The <code>net.Socket</code> object associated with the connection.</p>
 
 <p>With HTTPS support, use request.connection.verifyPeer() and
 request.connection.getPeerCertificate() to obtain the client's
@@ -388,7 +388,7 @@ This function allows one to transparently issue requests.</p>
 
 <ul><li><code>host</code>: A domain name or IP address of the server to issue the request to.</li><li><code>port</code>: Port of remote server.</li><li><code>method</code>: A string specifying the HTTP request method. Possible values:
 <code>'GET'</code> (default), <code>'POST'</code>, <code>'PUT'</code>, and <code>'DELETE'</code>.</li><li><code>path</code>: Request path. Should include query string and fragments if any.
-E.G. <code>'/index.html?page=12'</code></li><li><code>headers</code>: An object containing request headers.</li></ul>
+E.G. <code>'/index.html?page=12'</code></li><li><code>headers</code>: An object containing request headers.</li><li><code>agent</code>: Controls <code>Agent</code> behavior. Possible values:<ul><li><code>undefined</code> (default): use default <code>Agent</code> for this host and port.</li><li><code>Agent</code> object: explicitly use the passed in <code>Agent</code>.</li><li><code>false</code>: explicitly generate a new <code>Agent</code> for this host and port. <code>Agent</code> will not be re-used.</li></ul></li></ul>
 
 <p><code>http.request()</code> returns an instance of the <code>http.ClientRequest</code>
 class. The <code>ClientRequest</code> instance is a writable stream. If one needs to
@@ -468,7 +468,7 @@ agent. The <code>http.getAgent()</code> function allows you to access the agents
 
 <h3 id="event_upgrade_">Event: 'upgrade'</h3>
 
-<p><code>function (response, socket, head)</code></p>
+<p><code>function (response, socket, head) { }</code></p>
 
 <p>Emitted each time a server responds to a request with an upgrade. If this
 event isn't being listened for, clients receiving an upgrade header will have
@@ -520,14 +520,6 @@ srv.listen(1337, '127.0.0.1', function() {
     process.exit(0);
   });
 });</code></pre>
-
-<h3 id="event_continue_">Event: 'continue'</h3>
-
-<p><code>function ()</code></p>
-
-<p>Emitted when the server sends a '100 Continue' HTTP response, usually because
-the request contained 'Expect: 100-continue'. This is an instruction that
-the client should send the request body.</p>
 
 <h3 id="agent.maxSockets">agent.maxSockets</h3>
 
@@ -581,6 +573,14 @@ request.on('response', function (response) {
 
 <p>This is an <code>EventEmitter</code> with the following events:</p>
 
+<h3 id="event_continue_">Event: 'continue'</h3>
+
+<p><code>function () { }</code></p>
+
+<p>Emitted when the server sends a '100 Continue' HTTP response, usually because
+the request contained 'Expect: 100-continue'. This is an instruction that
+the client should send the request body.</p>
+
 <h3 id="event_response_">Event 'response'</h3>
 
 <p><code>function (response) { }</code></p>
@@ -624,16 +624,25 @@ passed to the <code>'response'</code> event of the request object.</p>
 
 <h3 id="event_data_">Event: 'data'</h3>
 
-<p><code>function (chunk) {}</code></p>
+<p><code>function (chunk) { }</code></p>
 
 <p>Emitted when a piece of the message body is received.</p>
 
 <h3 id="event_end_">Event: 'end'</h3>
 
-<p><code>function () {}</code></p>
+<p><code>function () { }</code></p>
 
 <p>Emitted exactly once for each message. No arguments. After
 emitted no other events will be emitted on the response.</p>
+
+<h3 id="event_close_">Event: 'close'</h3>
+
+<p><code>function (err) { }</code></p>
+
+<p>Indicates that the underlaying connection was terminated before
+<code>end</code> event was emitted.
+See <a href="#http.ServerRequest">http.ServerRequest</a>'s <code>'close'</code> event for more
+information.</p>
 
 <h3 id="response.statusCode">response.statusCode</h3>
 

@@ -203,7 +203,7 @@ packets will also be received on the local interface.</p>
 
 <p>Tells the kernel to join a multicast group with <code>IP_ADD_MEMBERSHIP</code> socket option.</p>
 
-<p>If <code>multicastAddress</code> is not specified, the OS will try to add membership to all valid
+<p>If <code>multicastInterface</code> is not specified, the OS will try to add membership to all valid
 interfaces.</p>
 
 <h3 id="dgram.dropMembership">dgram.dropMembership(multicastAddress, [multicastInterface])</h3>
@@ -213,7 +213,7 @@ interfaces.</p>
 when the socket is closed or process terminates, so most apps will never need to call
 this.</p>
 
-<p>If <code>multicastAddress</code> is not specified, the OS will try to drop membership to all valid
+<p>If <code>multicastInterface</code> is not specified, the OS will try to drop membership to all valid
 interfaces.</p>
   </div>
   <script type="text/javascript" src="assets/sh_main.js"></script>

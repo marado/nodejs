@@ -16,7 +16,7 @@
       </div>
       <hr />
     </header>
-    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#global_Objects">Global Objects</a><ul><li><a href="#global">global</a></li><li><a href="#process">process</a></li><li><a href="#console">console</a></li><li><a href="#require">require()</a></li><li><a href="#require.resolve">require.resolve()</a></li><li><a href="#require.cache">require.cache</a></li><li><a href="#require.paths">require.paths</a></li><li><a href="#__filename">__filename</a></li><li><a href="#__dirname">__dirname</a></li><li><a href="#module">module</a></li><li><a href="#setTimeout">setTimeout(cb, ms)</a></li><li><a href="#clearTimeout">clearTimeout(t)</a></li><li><a href="#setInterval">setInterval(cb, ms)</a></li><li><a href="#clearInterval">clearInterval(t)</a></li></ul></li></ul><hr /></div>
+    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#global_Objects">Global Objects</a><ul><li><a href="#global">global</a></li><li><a href="#process">process</a></li><li><a href="#console">console</a></li><li><a href="#require">require()</a></li><li><a href="#require.resolve">require.resolve()</a></li><li><a href="#require.cache">require.cache</a></li><li><a href="#require.paths">require.paths</a></li><li><a href="#__filename">__filename</a></li><li><a href="#__dirname">__dirname</a></li><li><a href="#module">module</a></li><li><a href="#exports">exports</a></li><li><a href="#setTimeout">setTimeout(cb, ms)</a></li><li><a href="#clearTimeout">clearTimeout(t)</a></li><li><a href="#setInterval">setInterval(cb, ms)</a></li><li><a href="#clearInterval">clearInterval(t)</a></li></ul></li></ul><hr /></div>
 <h2 id="global_Objects">Global Objects</h2>
 
 <p>These object are available in all modules. Some of these objects aren't
@@ -92,6 +92,14 @@ the same filename passed in as a command line argument.</p>
 <code>module.exports</code> is the same as the <code>exports</code> object. See <code>src/node.js</code>
 for more information.
 <code>module</code> isn't actually a global but rather local to each module.</p>
+
+<h3 id="exports">exports</h3>
+
+<p>An object which is shared between all instances of the current module and
+made accessible through <code>require()</code>.
+<code>exports</code> is the same as the <code>module.exports</code> object. See <code>src/node.js</code>
+for more information.
+<code>exports</code> isn't actually a global but rather local to each module.</p>
 
 <h3 id="setTimeout">setTimeout(cb, ms)</h3>
 
