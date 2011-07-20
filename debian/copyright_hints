@@ -767,10 +767,12 @@ Files: AUTHORS
  doc/api_assets/style.css
  doc/cla.html
  doc/favicon.ico
+ doc/logo.png
  doc/node.1
  doc/pipe.css
  doc/sh_javascript.min.js
  doc/sh_vim-dark.css
+ doc/sponsored.png
  doc/template.html
  doc/v0.4_announcement.html
  test/CMakeLists.txt
@@ -870,6 +872,7 @@ Files: AUTHORS
  test/simple/test-http-response-readable.js
  test/simple/test-regress-GH-784.js
  test/simple/test-regress-GH-819.js
+ test/simple/test-regress-GH-877.js
  test/simple/test-regress-GH-897.js
  test/simple/test-stream-pipe-multi.js
  test/simple/test-vm-create-context-circular-reference.js
@@ -1220,6 +1223,7 @@ Files: lib/_debugger.js
  test/simple/test-http-cat.js
  test/simple/test-http-chunked.js
  test/simple/test-http-client-abort.js
+ test/simple/test-http-client-abort2.js
  test/simple/test-http-client-parse-error.js
  test/simple/test-http-client-race-2.js
  test/simple/test-http-client-race.js
@@ -1236,6 +1240,7 @@ Files: lib/_debugger.js
  test/simple/test-http-full-response.js
  test/simple/test-http-get-pipeline-problem.js
  test/simple/test-http-head-request.js
+ test/simple/test-http-head-response-has-no-body-end.js
  test/simple/test-http-head-response-has-no-body.js
  test/simple/test-http-host-headers.js
  test/simple/test-http-keep-alive-close-on-header.js
@@ -1329,6 +1334,7 @@ Files: lib/_debugger.js
  test/simple/test-sync-fileread.js
  test/simple/test-sys.js
  test/simple/test-timers-linked-list.js
+ test/simple/test-tls-client-abort.js
  test/simple/test-tls-client-verify.js
  test/simple/test-tls-ext-key-usage.js
  test/simple/test-tls-junk-closes-server.js
@@ -1721,6 +1727,14 @@ Copyright: 1994-2006, Sun Microsystems Inc
 License: BSD (2 clause)
  FIXME
 
+Files: doc/logos/nodejs-black.eps
+ doc/logos/nodejs-dark.eps
+ doc/logos/nodejs-green.eps
+ doc/logos/nodejs-light.eps
+Copyright: 1997-2006, Adobe Systems Incorporated.%%Version: 2.31 010 dict begin/Adobe_CoolType_Passthru currentdict def/Adobe_CoolType_Core_Defined userdict/Adobe_CoolType_Core known defAdobe_CoolType_Core_Defined {/Adobe_CoolType_Core userdict/Adobe_CoolType_Core get def}ifuserdict/Adobe_CoolType_Core 70 dict dup begin put/Adobe_CoolType_Version 2.31 def/Level2? systemdict/languagelevel known dup {pop systemdict/languagelevel get 2 ge} if defLevel2? not { /currentglobal false def /setglobal/pop load def /gcheck{pop false}bind def /currentpacking false def /setpacking/pop load def /SharedFontDirectory 0 dict def }ifcurrentpackingtrue setpackingcurrentglobal false setglobaluserdict/Adobe_CoolType_Data 2 copy known not {2 copy 10 dict put}ifget begin /@opStackCountByLevel 32 dict def /@opStackLevel 0 def /@dictStackCountByLevel 32 dict def /@dictStackLevel 0 def endsetglobalcurrentglobal true setglobaluserdict/Adobe_CoolType_GVMFonts known not {userdict/Adobe_CoolType_GVMFonts 10 dict put}ifsetglobalcurrentglobal false setglobaluserdict/Adobe_CoolType_LVMFonts known not {userdict/Adobe_CoolType_LVMFonts 10 dict put}ifsetglobal/ct_VMDictPut { dup gcheck{Adobe_CoolType_GVMFonts}{Adobe_CoolType_LVMFonts}ifelse 3 1 roll put }bind def/ct_VMDictUndef { dup Adobe_CoolType_GVMFonts exch known {Adobe_CoolType_GVMFonts exch undef} { dup Adobe_CoolType_LVMFonts exch known {Adobe_CoolType_LVMFonts exch undef} {pop} ifelse }ifelse }bind def/ct_str1 1 string def/ct_xshow{ /_ct_na exch def /_ct_i 0 def currentpoint /_ct_y exch def /_ct_x exch def { pop pop ct_str1 exch 0 exch put ct_str1 show {_ct_na _ct_i get}stopped {pop pop} { _ct_x _ct_y moveto 0 rmoveto } ifelse /_ct_i _ct_i 1 add def currentpoint /_ct_y exch def /_ct_x exch def } exch @cshow}bind def/ct_yshow{ /_ct_na exch def /_ct_i 0 def currentpoint /_ct_y exch def /_ct_x exch def { pop pop ct_str1 exch 0 exch put ct_str1 show {_ct_na _ct_i get}stopped {pop pop} { _ct_x _ct_y moveto 0 exch rmoveto } ifelse /_ct_i _ct_i 1 add def currentpoint /_ct_y exch def /_ct_x exch def } exch @cshow}bind def/ct_xyshow{ /_ct_na exch def /_ct_i 0 def currentpoint /_ct_y exch def /_ct_x exch def { pop pop ct_str1 exch 0 exch put ct_str1 show {_ct_na _ct_i get}stopped {pop pop} { {_ct_na _ct_i 1 add get}stopped {pop pop pop} { _ct_x _ct_y moveto rmoveto } ifelse } ifelse /_ct_i _ct_i 2 add def currentpoint /_ct_y exch def /_ct_x exch def } exch @cshow}bind def/xsh{{@xshow}stopped{Adobe_CoolType_Data begin ct_xshow end}if}bind def/ysh{{@yshow}stopped{Adobe_CoolType_Data begin ct_yshow end}if}bind def/xysh{{@xyshow}stopped{Adobe_CoolType_Data begin ct_xyshow end}if}bind defcurrentglobal true setglobal/ct_T3Defs{/BuildChar{ 1 index/Encoding get exch get 1 index/BuildGlyph get exec}bind def/BuildGlyph{ exch begin GlyphProcs exch get exec end}bind def}bind defsetglobal/@_SaveStackLevels { Adobe_CoolType_Data begin /@vmState currentglobal def false setglobal @opStackCountByLevel @opStackLevel 2 copy known not { 2 copy 3 dict dup/args 7 index 5 add array put put get } { get dup/args get dup length 3 index lt { dup length 5 add array exch 1 index exch 0 exch putinterval 1 index exch/args exch put } {pop} ifelse } ifelse begin count 1 sub 1 index lt {pop count} if dup/argCount exch def dup 0 gt { args exch 0 exch getinterval astore pop } {pop} ifelse count /restCount exch def end /@opStackLevel @opStackLevel 1 add def countdictstack 1 sub @dictStackCountByLevel exch @dictStackLevel exch put /@dictStackLevel @dictStackLevel 1 add def @vmState setglobal end }bind def/@_RestoreStackLevels { Adobe_CoolType_Data begin /@opStackLevel @opStackLevel 1 sub def @opStackCountByLevel @opStackLevel get begin count restCount sub dup 0 gt {{pop}repeat} {pop} ifelse args 0 argCount getinterval{}forall end /@dictStackLevel @dictStackLevel 1 sub def @dictStackCountByLevel @dictStackLevel get end countdictstack exch sub dup 0 gt {{end}repeat} {pop} ifelse }bind def/@_PopStackLevels { Adobe_CoolType_Data begin /@opStackLevel @opStackLevel 1 sub def /@dictStackLevel @dictStackLevel 1 sub def end }bind def/@Raise { exch cvx exch errordict exch get exec stop }bind def/@ReRaise { cvx $error/errorname get errordict exch get exec stop }bind def/@Stopped { 0 @#Stopped }bind def/@#Stopped { @_SaveStackLevels stopped {@_RestoreStackLevels true} {@_PopStackLevels false} ifelse }bind def/@Arg { Adobe_CoolType_Data begin @opStackCountByLevel @opStackLevel 1 sub get begin args exch argCount 1 sub exch sub get end end }bind defcurrentglobal true setglobal/CTHasResourceForAllBug Level2? { 1 dict dup /@shouldNotDisappearDictValue true def Adobe_CoolType_Data exch/@shouldNotDisappearDict exch put begin count @_SaveStackLevels {(*){pop stop}128 string/Category resourceforall} stopped pop @_RestoreStackLevels currentdict Adobe_CoolType_Data/@shouldNotDisappearDict get dup 3 1 roll ne dup 3 1 roll { /@shouldNotDisappearDictValue known { { end currentdict 1 index eq {pop exit} if } loop } if } { pop end } ifelse } {false} ifelse deftrue setglobal/CTHasResourceStatusBug Level2? { mark {/steveamerige/Category resourcestatus} stopped {cleartomark true} {cleartomark currentglobal not} ifelse } {false} ifelse defsetglobal/CTResourceStatus { mark 3 1 roll /Category findresource begin ({ResourceStatus}stopped)0()/SubFileDecode filter cvx exec {cleartomark false} {{3 2 roll pop true}{cleartomark false}ifelse} ifelse end }bind def/CTWorkAroundBugs { Level2? { /cid_PreLoad/ProcSet resourcestatus { pop pop currentglobal mark { (*) { dup/CMap CTHasResourceStatusBug {CTResourceStatus} {resourcestatus} ifelse { pop dup 0 eq exch 1 eq or { dup/CMap findresource gcheck setglobal /CMap undefineresource } { pop CTHasResourceForAllBug {exit} {stop} ifelse } ifelse } {pop} ifelse } 128 string/CMap resourceforall } stopped {cleartomark} stopped pop setglobal } if } if }bind def/ds { Adobe_CoolType_Core begin CTWorkAroundBugs /mo/moveto load def /nf/newencodedfont load def /msf{makefont setfont}bind def /uf{dup undefinefont ct_VMDictUndef}bind def /ur/undefineresource load def /chp/charpath load def /awsh/awidthshow load def /wsh/widthshow load def /ash/ashow load def /@xshow/xshow load def /@yshow/yshow load def /@xyshow/xyshow load def /@cshow/cshow load def /sh/show load def /rp/repeat load def /.n/.notdef def end currentglobal false setglobal userdict/Adobe_CoolType_Data 2 copy known not {2 copy 10 dict put} if get begin /AddWidths? false def /CC 0 def /charcode 2 string def /@opStackCountByLevel 32 dict def /@opStackLevel 0 def /@dictStackCountByLevel 32 dict def /@dictStackLevel 0 def /InVMFontsByCMap 10 dict def /InVMDeepCopiedFonts 10 dict def end setglobal }bind def/dt { currentdict Adobe_CoolType_Core eq {end} if }bind def/ps { Adobe_CoolType_Core begin Adobe_CoolType_GVMFonts begin Adobe_CoolType_LVMFonts begin SharedFontDirectory begin }bind def/pt { end end end end }bind def/unload { systemdict/languagelevel known { systemdict/languagelevel get 2 ge { userdict/Adobe_CoolType_Core 2 copy known {undef} {pop pop} ifelse } if } if }bind def/ndf { 1 index where {pop pop pop} {dup xcheck{bind}if def} ifelse }def/findfont systemdict begin userdict begin /globaldict where{/globaldict get begin}if dup where pop exch get /globaldict where{pop end}if end endAdobe_CoolType_Core_Defined {/systemfindfont exch def} { /findfont 1 index def /systemfindfont exch def }ifelse/undefinefont {pop}ndf/copyfont { currentglobal 3 1 roll 1 index gcheck setglobal dup null eq{0}{dup length}ifelse 2 index length add 1 add dict begin exch { 1 index/FID eq {pop pop} {def} ifelse } forall dup null eq {pop} {{def}forall} ifelse currentdict end exch setglobal }bind def/copyarray { currentglobal exch dup gcheck setglobal dup length array copy exch setglobal }bind def/newencodedfont { currentglobal { SharedFontDirectory 3 index known {SharedFontDirectory 3 index get/FontReferenced known} {false} ifelse } { FontDirectory 3 index known {FontDirectory 3 index get/FontReferenced known} { SharedFontDirectory 3 index known {SharedFontDirectory 3 index get/FontReferenced known} {false} ifelse } ifelse } ifelse dup { 3 index findfont/FontReferenced get 2 index dup type/nametype eq {findfont} if ne {pop false} if } if dup { 1 index dup type/nametype eq {findfont} if dup/CharStrings known { /CharStrings get length 4 index findfont/CharStrings get length ne { pop false } if } {pop} ifelse } if { pop 1 index findfont /Encoding get exch 0 1 255 {2 copy get 3 index 3 1 roll put} for pop pop pop } { currentglobal 4 1 roll dup type/nametype eq {findfont} if dup gcheck setglobal dup dup maxlength 2 add dict begin exch { 1 index/FID ne 2 index/Encoding ne and {def} {pop pop} ifelse } forall /FontReferenced exch def /Encoding exch dup length array copy def /FontName 1 index dup type/stringtype eq{cvn}if def dup currentdict end definefont ct_VMDictPut setglobal } ifelse }bind def/SetSubstituteStrategy { $SubstituteFont begin dup type/dicttype ne {0 dict} if currentdict/$Strategies known { exch $Strategies exch 2 copy known { get 2 copy maxlength exch maxlength add dict begin {def}forall {def}forall currentdict dup/$Init known {dup/$Init get exec} if end /$Strategy exch def } {pop pop pop} ifelse } {pop pop} ifelse end }bind def/scff { $SubstituteFont begin dup type/stringtype eq {dup length exch} {null} ifelse /$sname exch def /$slen exch def /$inVMIndex $sname null eq { 1 index $str cvs dup length $slen sub $slen getinterval cvn } {$sname} ifelse def end {findfont} @Stopped { dup length 8 add string exch 1 index 0(BadFont:)putinterval 1 index exch 8 exch dup length string cvs putinterval cvn {findfont} @Stopped {pop/Courier findfont} if } if $SubstituteFont begin /$sname null def /$slen 0 def /$inVMIndex null def end }bind def/isWidthsOnlyFont { dup/WidthsOnly known {pop pop true} { dup/FDepVector known {/FDepVector get{isWidthsOnlyFont dup{exit}if}forall} { dup/FDArray known {/FDArray get{isWidthsOnlyFont dup{exit}if}forall} {pop} ifelse } ifelse } ifelse }bind def/ct_StyleDicts 4 dict dup begin /Adobe-Japan1 4 dict dup begin Level2? { /Serif /HeiseiMin-W3-83pv-RKSJ-H/Font resourcestatus {pop pop/HeiseiMin-W3} { /CIDFont/Category resourcestatus { pop pop /HeiseiMin-W3/CIDFont resourcestatus {pop pop/HeiseiMin-W3} {/Ryumin-Light} ifelse } {/Ryumin-Light} ifelse } ifelse def /SansSerif /HeiseiKakuGo-W5-83pv-RKSJ-H/Font resourcestatus {pop pop/HeiseiKakuGo-W5} { /CIDFont/Category resourcestatus { pop pop /HeiseiKakuGo-W5/CIDFont resourcestatus {pop pop/HeiseiKakuGo-W5} {/GothicBBB-Medium} ifelse } {/GothicBBB-Medium} ifelse } ifelse def /HeiseiMaruGo-W4-83pv-RKSJ-H/Font resourcestatus {pop pop/HeiseiMaruGo-W4} { /CIDFont/Category resourcestatus { pop pop /HeiseiMaruGo-W4/CIDFont resourcestatus {pop pop/HeiseiMaruGo-W4} { /Jun101-Light-RKSJ-H/Font resourcestatus {pop pop/Jun101-Light} {SansSerif} ifelse } ifelse } { /Jun101-Light-RKSJ-H/Font resourcestatus {pop pop/Jun101-Light} {SansSerif} ifelse } ifelse } ifelse /RoundSansSerif exch def /Default Serif def } { /Serif/Ryumin-Light def /SansSerif/GothicBBB-Medium def { (fonts/Jun101-Light-83pv-RKSJ-H)status }stopped {pop}{ {pop pop pop pop/Jun101-Light} {SansSerif} ifelse /RoundSansSerif exch def }ifelse /Default Serif def } ifelse end def /Adobe-Korea1 4 dict dup begin /Serif/HYSMyeongJo-Medium def /SansSerif/HYGoThic-Medium def /RoundSansSerif SansSerif def /Default Serif def end def /Adobe-GB1 4 dict dup begin /Serif/STSong-Light def /SansSerif/STHeiti-Regular def /RoundSansSerif SansSerif def /Default Serif def end def /Adobe-CNS1 4 dict dup begin /Serif/MKai-Medium def /SansSerif/MHei-Medium def /RoundSansSerif SansSerif def /Default Serif def end defenddefLevel2?{currentglobal true setglobal}if/ct_BoldRomanWidthProc { stringwidth 1 index 0 ne{exch .03 add exch}if setcharwidth 0 0 }bind def/ct_Type0WidthProc { dup stringwidth 0 0 moveto 2 index true charpath pathbbox 0 -1 7 index 2 div .88 setcachedevice2 pop 0 0 }bind def/ct_Type0WMode1WidthProc { dup stringwidth pop 2 div neg -0.88 2 copy moveto 0 -1 5 -1 roll true charpath pathbbox setcachedevice }bind def/cHexEncoding[/c00/c01/c02/c03/c04/c05/c06/c07/c08/c09/c0A/c0B/c0C/c0D/c0E/c0F/c10/c11/c12/c13/c14/c15/c16/c17/c18/c19/c1A/c1B/c1C/c1D/c1E/c1F/c20/c21/c22/c23/c24/c25/c26/c27/c28/c29/c2A/c2B/c2C/c2D/c2E/c2F/c30/c31/c32/c33/c34/c35/c36/c37/c38/c39/c3A/c3B/c3C/c3D/c3E/c3F/c40/c41/c42/c43/c44/c45/c46/c47/c48/c49/c4A/c4B/c4C/c4D/c4E/c4F/c50/c51/c52/c53/c54/c55/c56/c57/c58/c59/c5A/c5B/c5C/c5D/c5E/c5F/c60/c61/c62/c63/c64/c65/c66/c67/c68/c69/c6A/c6B/c6C/c6D/c6E/c6F/c70/c71/c72/c73/c74/c75/c76/c77/c78/c79/c7A/c7B/c7C/c7D/c7E/c7F/c80/c81/c82/c83/c84/c85/c86/c87/c88/c89/c8A/c8B/c8C/c8D/c8E/c8F/c90/c91/c92/c93/c94/c95/c96/c97/c98/c99/c9A/c9B/c9C/c9D/c9E/c9F/cA0/cA1/cA2/cA3/cA4/cA5/cA6/cA7/cA8/cA9/cAA/cAB/cAC/cAD/cAE/cAF/cB0/cB1/cB2/cB3/cB4/cB5/cB6/cB7/cB8/cB9/cBA/cBB/cBC/cBD/cBE/cBF/cC0/cC1/cC2/cC3/cC4/cC5/cC6/cC7/cC8/cC9/cCA/cCB/cCC/cCD/cCE/cCF/cD0/cD1/cD2/cD3/cD4/cD5/cD6/cD7/cD8/cD9/cDA/cDB/cDC/cDD/cDE/cDF/cE0/cE1/cE2/cE3/cE4/cE5/cE6/cE7/cE8/cE9/cEA/cEB/cEC/cED/cEE/cEF/cF0/cF1/cF2/cF3/cF4/cF5/cF6/cF7/cF8/cF9/cFA/cFB/cFC/cFD/cFE/cFF
+License: UNKNOWN
+ FIXME
+
 Files: deps/c-ares/ares_getnameinfo.c
  deps/c-ares/ares_ipv6.h
  deps/c-ares/bitncmp.h
@@ -1802,6 +1816,12 @@ Files: deps/c-ares/ares_parse_srv_reply.c
  deps/c-ares/ares_parse_txt_reply.c
 Copyright: 1998, the Massachusetts Institute of Technology
  2009, Jakub Hrozek <jhrozek@redhat.com>
+License: UNKNOWN
+ FIXME
+
+Files: doc/index.html
+ doc/logos/index.html
+Copyright: 2010, Joyent, Inc
 License: UNKNOWN
  FIXME
 
@@ -2007,13 +2027,6 @@ Copyright: 2003-2005, Tom Wu
 License: MIT/X11 (BSD like)
  FIXME
 
-Files: doc/trademark-policy.pdf
-Copyright: ÃGša‘`2NÂNÒUxL$C£ò¤' ÌªwèQ[ÌzÊ‚d‘mª-ä<gÕOikéÄ€‰@3æDÅÔÔ@ò¥aEdÅ’S9å&êPÕ®öUN{hè(!jp¿¿Ç“Ïµhûý± ?wû—çÉ91"äÈ9èƒ0£ZƒåÉªPó$æÝ¶Þd¿º&¹F5F,Þdy¦6$²ù´%Ï†Ì	Ë°jËÆ-ÇØJÍ+#_
- ºBî_ÜÞ¾¸ÿ›çÛ[.¿tZy¼‚r‚àq…5ÊÓTzM;Ð-·÷ZO6ÞØñõ+fTtTVš§N²ÙÊbŽik
- ðÄà8%ÇS¬ˆ%w–5²µkº!@ ´,@¢XÕÚÅš_v
-License: UNKNOWN
- FIXME
-
 Files: deps/v8/benchmarks/v8-logo.png
 Copyright: í$9‡½ 1¨uîºº¶•ˆìœÚè’³Ôa×þ<mÛÒ¸ÛÑ8î„¢ÚºöØPŽH}m@[¼s~8D<lRv´ò®å8yvCO[ÈwŒ‘&rõ¸ï‡7rbÿDÍ
  æÐ_Çñ-8CÅXçy¦žÇ-G™üâìB³ß çöÞ¡qÌ^;(Œ°ÂÔÆ0ÒnÉŒ’ªÎ6ÆPâ\×äš5{“;BGòg91dø¹ö{Ù+GD+aÈ®í~-
@@ -2065,11 +2078,6 @@ Copyright: 1998, the Massachusetts Institute of Technology
 License: UNKNOWN
  FIXME
 
-Files: doc/index.html
-Copyright: 2010, Joyent, Inc
-License: UNKNOWN
- FIXME
-
 Files: deps/v8/benchmarks/raytrace.js
 Copyright: 2005-2007, Sam Stephenson
 License: UNKNOWN
@@ -2080,18 +2088,8 @@ Copyright: 2001-2008, The SCons Foundation
 License: UNKNOWN
  FIXME
 
-Files: doc/logo.png
-Copyright: TÊ±‘äZÌ‚hRªnÒÂÆ/Ay-þE7Ž þŒjãkˆ¯òíU>Ïóð/˜áGÀ­5Ü$¾J[‹TJH®ëÒ”hgËÆÒ{ü	L³¡»qÜ„ÄMS18¦çðë7´aÛ37zž‡m{X–ÁêµÍt¯i"•²É24bt4K&•'“qp·¸›R†šÎ—SØ8¯ÓÇeˆ½ðžB"VïFL€{8Ù÷“ÑGÒÏ‰kdBú8Õ±éïÓìïÇ½Og›½ÊG“ÏÓÚ„T+xÚŒâ—Il“×öumþR›(6Wñ—ûøÌ>YÃ5òð}Ä”^Ó9ð<×µYØ«5ù? ñ·ìyjˆeËc´´FLJ¥Ä‹YÄã!ºW7á8étžlÆf<™c|,ÇÄDžtÚ&—µÉf\×›Tû•ÂPLçÛjC*Ñì@ü‘ _ÒõbOµ&®Q	éIÄ‘ZAü¸÷éÊùÙ^úëÌÃÆîîÕZäsh=ä€/×ð|Ià3Tà„
-License: UNKNOWN
- FIXME
-
 Files: test/fixtures/person.jpg
 Copyright: uzŽ3@‡VnyÊÀIå'Dÿ â:‚óÌ[eºÇh£¶ÿ àðÄÔitI&JH,¥ØîË÷¾XàŠyZÜ D ˜Ü­…0ºz¢Ï5m¿XÝê¤‡Ž™ôèR’ŠysÉçìMÈcu)æFßI<ú–ÄÇñì*ZÂÕeð¹%ÊHf½UÐÚÍ@‚Z×·ËÐ“åÆ
-License: UNKNOWN
- FIXME
-
-Files: doc/sponsored.png
-Copyright: Ô–«UªPëSSg;¨‡ªg¨oT?¤~Yý‰YÃLÃOC¤Q ±_ã¼Æ c³x,!k«†u5Ä&±ÍÙ|v*»˜ý»‹=ª¡9C3J3W³Ró”f?ã˜qøœtN	ç(§—ó~ŠÞï)â)¦4L¹1e\kª–—–X«H«Q«Gë½6®í§¦½E»YûAÇJ'\'GgÎçSÙSÝ§
 License: UNKNOWN
  FIXME
 
