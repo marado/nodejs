@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>globals - Node.js Manual &amp; Documentation</title>
+  <title>globals - Node.js v0.5.2 Manual &amp; Documentation</title>
   <link type="image/x-icon" rel="icon" href="/favicon.ico" />
   <link type="image/x-icon" rel="shortcut icon" href="/favicon.ico" />
   <link rel="stylesheet" href="assets/style.css" type="text/css" media="all" />
@@ -10,13 +10,13 @@
 <body>
   <div id="container">
     <header>
-      <h1>Node.js Manual &amp; Documentation</h1>
+      <h1>Node.js v0.5.2 Manual &amp; Documentation</h1>
       <div id="gtoc">
         <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
       </div>
       <hr />
     </header>
-    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#global_Objects">Global Objects</a><ul><li><a href="#global">global</a></li><li><a href="#process">process</a></li><li><a href="#console">console</a></li><li><a href="#require">require()</a></li><li><a href="#require.resolve">require.resolve()</a></li><li><a href="#require.cache">require.cache</a></li><li><a href="#require.paths">require.paths</a></li><li><a href="#__filename">__filename</a></li><li><a href="#__dirname">__dirname</a></li><li><a href="#module">module</a></li><li><a href="#exports">exports</a></li><li><a href="#setTimeout">setTimeout(cb, ms)</a></li><li><a href="#clearTimeout">clearTimeout(t)</a></li><li><a href="#setInterval">setInterval(cb, ms)</a></li><li><a href="#clearInterval">clearInterval(t)</a></li></ul></li></ul><hr /></div>
+    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#global_Objects">Global Objects</a><ul><li><a href="#global">global</a></li><li><a href="#process">process</a></li><li><a href="#console">console</a></li><li><a href="#buffer">Buffer</a></li><li><a href="#require">require()</a></li><li><a href="#require.resolve">require.resolve()</a></li><li><a href="#require.cache">require.cache</a></li><li><a href="#require.paths">require.paths</a></li><li><a href="#__filename">__filename</a></li><li><a href="#__dirname">__dirname</a></li><li><a href="#module">module</a></li><li><a href="#exports">exports</a></li><li><a href="#setTimeout">setTimeout(cb, ms)</a></li><li><a href="#clearTimeout">clearTimeout(t)</a></li><li><a href="#setInterval">setInterval(cb, ms)</a></li><li><a href="#clearInterval">clearInterval(t)</a></li></ul></li></ul><hr /></div>
 <h2 id="global_Objects">Global Objects</h2>
 
 <p>These object are available in all modules. Some of these objects aren't
@@ -38,6 +38,10 @@ scope; <code>var something</code> inside a Node module will be local to that mod
 <h3 id="console">console</h3>
 
 <p>Used to print to stdout and stderr. See the <a href="stdio.html">stdio</a> section.</p>
+
+<h3 id="buffer">Buffer</h3>
+
+<p>Used to handle binary data. See the <a href="buffers.html">buffers</a> section.</p>
 
 <h3 id="require">require()</h3>
 

@@ -284,6 +284,26 @@ The file is created if it does not exist.
 
 Synchronous open(2).
 
+### fs.utimes(path, atime, mtime, callback)
+### fs.utimesSync(path, atime, mtime)
+
+Change file timestamps.
+
+### fs.futimes(path, atime, mtime, callback)
+### fs.futimesSync(path, atime, mtime)
+
+Change file timestamps with the difference that if filename refers to a
+symbolic link, then the link is not dereferenced.
+
+### fs.fsync(fd, callback)
+
+Asynchronous fsync(2). No arguments other than a possible exception are given
+to the completion callback.
+
+### fs.fsyncSync(fd)
+
+Synchronous fsync(2).
+
 ### fs.write(fd, buffer, offset, length, position, [callback])
 
 Write `buffer` to the file specified by `fd`.
@@ -363,7 +383,8 @@ returns a buffer.
 ### fs.writeFile(filename, data, encoding='utf8', [callback])
 
 Asynchronously writes data to a file, replacing the file if it already exists.
-`data` can be a string or a buffer.
+`data` can be a string or a buffer. The `encoding` argument is ignored if
+`data` is a buffer.
 
 Example:
 
@@ -457,6 +478,11 @@ An example to read the last 10 bytes of a file which is 100 bytes long:
 `function (fd) { }`
 
  `fd` is the file descriptor used by the WriteStream.
+
+### file.bytesWritten
+
+The number of bytes written so far. Does not include data that is still queued
+for writing.
 
 ### fs.createWriteStream(path, [options])
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>child_processes - Node.js Manual &amp; Documentation</title>
+  <title>child_processes - Node.js v0.5.2 Manual &amp; Documentation</title>
   <link type="image/x-icon" rel="icon" href="/favicon.ico" />
   <link type="image/x-icon" rel="shortcut icon" href="/favicon.ico" />
   <link rel="stylesheet" href="assets/style.css" type="text/css" media="all" />
@@ -10,13 +10,13 @@
 <body>
   <div id="container">
     <header>
-      <h1>Node.js Manual &amp; Documentation</h1>
+      <h1>Node.js v0.5.2 Manual &amp; Documentation</h1>
       <div id="gtoc">
         <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
       </div>
       <hr />
     </header>
-    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#child_Processes">Child Processes</a><ul><li><a href="#event_exit_">Event:  'exit'</a></li><li><a href="#child.stdin">child.stdin</a></li><li><a href="#child.stdout">child.stdout</a></li><li><a href="#child.stderr">child.stderr</a></li><li><a href="#child.pid">child.pid</a></li><li><a href="#child_process.spawn">child_process.spawn(command, args=[], [options])</a></li><li><a href="#child_process.exec">child_process.exec(command, [options], callback)</a></li><li><a href="#child.kill">child.kill(signal='SIGTERM')</a></li></ul></li></ul><hr /></div>
+    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#child_Processes">Child Processes</a><ul><li><a href="#event_exit_">Event:  'exit'</a></li><li><a href="#child.stdin">child.stdin</a></li><li><a href="#child.stdout">child.stdout</a></li><li><a href="#child.stderr">child.stderr</a></li><li><a href="#child.pid">child.pid</a></li><li><a href="#child_process.spawn">child_process.spawn(command, args=[], [options])</a></li><li><a href="#child_process.exec">child_process.exec(command, [options], callback)</a></li><li><a href="#child_process.fork">child_process.fork(modulePath, arguments, options)</a></li><li><a href="#child.kill">child.kill(signal='SIGTERM')</a></li></ul></li></ul><hr /></div>
 <h2 id="child_Processes">Child Processes</h2>
 
 <p>Node provides a tri-directional <code>popen(3)</code> facility through the <code>ChildProcess</code>
@@ -192,6 +192,45 @@ if it runs longer than <code>timeout</code> milliseconds. The child process is k
 <code>killSignal</code> (default: <code>'SIGTERM'</code>). <code>maxBuffer</code> specifies the largest
 amount of data allowed on stdout or stderr - if this value is exceeded then
 the child process is killed.</p>
+
+<h3 id="child_process.fork">child_process.fork(modulePath, arguments, options)</h3>
+
+<p>This is a special case of the <code>spawn()</code> functionality for spawning Node
+processes. In addition to having all the methods in a normal ChildProcess
+instance, the returned object has a communication channel built-in. The
+channel is written to with <code>child.send(message)</code> and messages are recieved
+by a <code>'message'</code> event on the child.</p>
+
+<p>For example:</p>
+
+<pre><code>var cp = require('child_process');
+
+var n = cp.fork(__dirname + '/sub.js');
+
+n.on('message', function(m) {
+  console.log('PARENT got message:', m);
+});
+
+n.send({ hello: 'world' });</code></pre>
+
+<p>And then the child script, <code>'sub.js'</code> would might look like this:</p>
+
+<pre><code>process.on('message', function(m) {
+  console.log('CHILD got message:', m);
+});
+
+process.send({ foo: 'bar' });</code></pre>
+
+<p>In the child the <code>process</code> object will have a <code>send()</code> method, and <code>process</code>
+will emit objects each time it receives a message on its channel.</p>
+
+<p>By default the spawned Node process will have the stdin, stdout, stderr
+associated with the parent's. This can be overridden by using the
+<code>customFds</code> option.</p>
+
+<p>These child Nodes are still whole new instances of V8. Assume at least 30ms
+startup and 10mb memory for each new Node. That is, you cannot create many
+thousands of them.</p>
 
 <h3 id="child.kill">child.kill(signal='SIGTERM')</h3>
 

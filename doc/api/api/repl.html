@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>repl - Node.js Manual &amp; Documentation</title>
+  <title>repl - Node.js v0.5.2 Manual &amp; Documentation</title>
   <link type="image/x-icon" rel="icon" href="/favicon.ico" />
   <link type="image/x-icon" rel="shortcut icon" href="/favicon.ico" />
   <link rel="stylesheet" href="assets/style.css" type="text/css" media="all" />
@@ -10,7 +10,7 @@
 <body>
   <div id="container">
     <header>
-      <h1>Node.js Manual &amp; Documentation</h1>
+      <h1>Node.js v0.5.2 Manual &amp; Documentation</h1>
       <div id="gtoc">
         <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
       </div>
@@ -94,9 +94,9 @@ connect to a long-running node process without restarting it.</p>
 &gt; _ += 1
 4</code></pre>
 
-<p>The REPL provides access to any variables in the global scope. You can expose a variable
-to the REPL explicitly by assigning it to the <code>context</code> object associated with each
-<code>REPLServer</code>.  For example:</p>
+<p>The REPL provides access to any variables in the global scope. You can expose
+a variable to the REPL explicitly by assigning it to the <code>context</code> object
+associated with each <code>REPLServer</code>.  For example:</p>
 
 <pre><code>// repl_test.js
 var repl = require("repl"),
@@ -113,7 +113,13 @@ repl.start().context.m = msg;</code></pre>
 <p>There are a few special REPL commands:</p>
 
 <ul><li><code>.break</code> - While inputting a multi-line expression, sometimes you get lost
-or just don't care about completing it. <code>.break</code> will start over.</li><li><code>.clear</code> - Resets the <code>context</code> object to an empty object and clears any multi-line expression.</li><li><code>.exit</code> - Close the I/O stream, which will cause the REPL to exit.</li><li><code>.help</code> - Show this list of special commands.</li></ul>
+or just don't care about completing it. <code>.break</code> will start over.</li><li><code>.clear</code> - Resets the <code>context</code> object to an empty object and clears any
+multi-line expression.</li><li><code>.exit</code> - Close the I/O stream, which will cause the REPL to exit.</li><li><code>.help</code> - Show this list of special commands.</li></ul>
+
+<p>The following key combinations in the REPL have these special effects:</p>
+
+<ul><li><code>&lt;ctrl&gt;C</code> - Similar to the <code>.break</code> keyword.  Terminates the current
+command.  Press twice on a blank line to forcibly exit.</li><li><code>&lt;ctrl&gt;D</code> - Similar to the <code>.exit</code> keyword.</li></ul>
   </div>
   <script type="text/javascript" src="assets/sh_main.js"></script>
   <script type="text/javascript" src="assets/sh_javascript.min.js"></script>

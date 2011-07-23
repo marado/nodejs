@@ -39,6 +39,7 @@ namespace node {
 using namespace v8;
 
 static char *process_title = NULL;
+double Platform::prog_start_time = 0.0;
 
 
 // Does the about the same as strerror(),
@@ -230,23 +231,24 @@ double Platform::GetTotalMemory() {
 }
 
 
-int Platform::GetExecutablePath(char* buffer, size_t* size) {
-  *size = 0;
-  return -1;
-}
-
-
 int Platform::GetCPUInfo(Local<Array> *cpus) {
   return -1;
 }
 
 
-double Platform::GetUptime() {
+double Platform::GetUptimeImpl() {
   return -1;
 }
 
 int Platform::GetLoadAvg(Local<Array> *loads) {
   return -1;
 }
+
+
+Handle<Value> Platform::GetInterfaceAddresses() {
+  HandleScope scope;
+  return scope.Close(Object::New());
+}
+
 
 } // namespace node

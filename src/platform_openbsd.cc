@@ -43,6 +43,7 @@ namespace node {
 using namespace v8;
 
 static char *process_title;
+double Platform::prog_start_time = Platform::GetUptime();
 
 char** Platform::SetupArgs(int argc, char *argv[]) {
   process_title = argc ? strdup(argv[0]) : NULL;
@@ -92,11 +93,6 @@ error:
   return -1;
 }
 
-
-int Platform::GetExecutablePath(char* buffer, size_t* size) {
-  *size = 0;
-  return -1;
-}
 
 int Platform::GetCPUInfo(Local<Array> *cpus) {
   Local<Object> cpuinfo;
@@ -187,7 +183,7 @@ double Platform::GetTotalMemory() {
   return static_cast<double>(info);
 }
 
-double Platform::GetUptime() {
+double Platform::GetUptimeImpl() {
   time_t now;
   struct timeval info;
   size_t size = sizeof(info);
@@ -218,5 +214,12 @@ int Platform::GetLoadAvg(Local<Array> *loads) {
 
   return 0;
 }
+
+
+Handle<Value> Platform::GetInterfaceAddresses() {
+  HandleScope scope;
+  return scope.Close(Object::New());
+}
+
 
 }  // namespace node
