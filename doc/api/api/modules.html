@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>modules - Node.js Manual &amp; Documentation</title>
+  <title>modules - Node.js v0.5.2 Manual &amp; Documentation</title>
   <link type="image/x-icon" rel="icon" href="/favicon.ico" />
   <link type="image/x-icon" rel="shortcut icon" href="/favicon.ico" />
   <link rel="stylesheet" href="assets/style.css" type="text/css" media="all" />
@@ -10,13 +10,13 @@
 <body>
   <div id="container">
     <header>
-      <h1>Node.js Manual &amp; Documentation</h1>
+      <h1>Node.js v0.5.2 Manual &amp; Documentation</h1>
       <div id="gtoc">
         <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
       </div>
       <hr />
     </header>
-    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#modules">Modules</a><ul><li><a href="#core_Modules">Core Modules</a></li><li><a href="#file_Modules">File Modules</a></li><li><a href="#loading_from_node_modules_Folders">Loading from `node_modules` Folders</a></li><li><a href="#folders_as_Modules">Folders as Modules</a></li><li><a href="#caching">Caching</a><ul><li><a href="#module_Caching_Caveats">Module Caching Caveats</a></li></ul></li><li><a href="#module.exports">module.exports</a></li><li><a href="#all_Together...">All Together...</a></li><li><a href="#loading_from_the_require.paths_Folders">Loading from the `require.paths` Folders</a><ul><li><a href="#note_Please_Avoid_Modifying_require.paths_">Note:** Please Avoid Modifying `require.paths`</a><ul><li><a href="#setting_require.paths_to_some_other_value_does_nothing.">Setting `require.paths` to some other value does nothing.</a></li><li><a href="#putting_relative_paths_in_require.paths_is..._weird.">Putting relative paths in `require.paths` is... weird.</a></li><li><a href="#zero_Isolation">Zero Isolation</a></li></ul></li></ul></li><li><a href="#accessing_the_main_module">Accessing the main module</a></li></ul></li><li><a href="#addenda_Package_Manager_Tips">Addenda: Package Manager Tips</a></li></ul><hr /></div>
+    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#modules">Modules</a><ul><li><a href="#core_Modules">Core Modules</a></li><li><a href="#file_Modules">File Modules</a></li><li><a href="#loading_from_node_modules_Folders">Loading from `node_modules` Folders</a></li><li><a href="#folders_as_Modules">Folders as Modules</a></li><li><a href="#caching">Caching</a><ul><li><a href="#module_Caching_Caveats">Module Caching Caveats</a></li></ul></li><li><a href="#module.exports">module.exports</a></li><li><a href="#module.require">module.require</a></li><li><a href="#all_Together...">All Together...</a></li><li><a href="#loading_from_the_global_folders">Loading from the global folders</a></li><li><a href="#accessing_the_main_module">Accessing the main module</a></li></ul></li><li><a href="#aMD_Compatibility">AMD Compatibility</a></li><li><a href="#addenda_Package_Manager_Tips">Addenda: Package Manager Tips</a></li></ul><hr /></div>
 <h2 id="modules">Modules</h2>
 
 <p>Node has a simple module loading system.  In Node, files and modules are in
@@ -185,6 +185,16 @@ done in any callbacks.  This does not work:</p>
 <pre><code>var x = require('./x');
 console.log(x.a);</code></pre>
 
+<h3 id="module.require">module.require</h3>
+
+<p>The <code>module.require</code> method provides a way to load a module as if
+<code>require()</code> was called from the original module.</p>
+
+<p>Note that in order to do this, you must get a reference to the <code>module</code>
+object.  Since <code>require()</code> returns the <code>exports</code>, and the <code>module</code> is
+typically <em>only</em> available within a specific module's code, it must be
+explicitly exported in order to be used.</p>
+
 <h3 id="all_Together...">All Together...</h3>
 
 <p>To get the exact filename that will be loaded when <code>require()</code> is called, use
@@ -233,76 +243,23 @@ NODE_MODULES_PATHS(START)
    c. let I = I - 1
 6. return DIRS</code></pre>
 
-<h3 id="loading_from_the_require.paths_Folders">Loading from the `require.paths` Folders</h3>
+<h3 id="loading_from_the_global_folders">Loading from the global folders</h3>
 
-<p>In node, <code>require.paths</code> is an array of strings that represent paths to
-be searched for modules when they are not prefixed with <code>'/'</code>, <code>'./'</code>, or
-<code>'../'</code>.  For example, if require.paths were set to:</p>
+<p>If the <code>NODE_PATH</code> environment variable is set to a colon-delimited list
+of absolute paths, then node will search those paths for modules if they
+are not found elsewhere.  (Note: On Windows, <code>NODE_PATH</code> is delimited by
+semicolons instead of colons.)</p>
 
-<pre><code>[ '/home/micheil/.node_modules',
-  '/usr/local/lib/node_modules' ]</code></pre>
+<p>Additionally, node will search in the following locations:</p>
 
-<p>Then calling <code>require('bar/baz.js')</code> would search the following
-locations:</p>
+<ul><li>1: <code>$HOME/.node_modules</code></li><li>2: <code>$HOME/.node_libraries</code></li><li>3: <code>$PREFIX/lib/node</code></li></ul>
 
-<ul><li>1: <code>'/home/micheil/.node_modules/bar/baz.js'</code></li><li>2: <code>'/usr/local/lib/node_modules/bar/baz.js'</code></li></ul>
+<p>Where <code>$HOME</code> is the user's home directory, and <code>PREFIX</code> is node's
+configured <code>installPrefix</code>.</p>
 
-<p>The <code>require.paths</code> array can be mutated at run time to alter this
-behavior.</p>
-
-<p>It is set initially from the <code>NODE_PATH</code> environment variable, which is
-a colon-delimited list of absolute paths.  In the previous example,
-the <code>NODE_PATH</code> environment variable might have been set to:</p>
-
-<pre><code>/home/micheil/.node_modules:/usr/local/lib/node_modules</code></pre>
-
-<p>Loading from the <code>require.paths</code> locations is only performed if the
-module could not be found using the <code>node_modules</code> algorithm above.
-Global modules are lower priority than bundled dependencies.</p>
-
-<h4 id="_Note_Please_Avoid_Modifying_require.paths_">**Note:** Please Avoid Modifying `require.paths`</h4>
-
-<p><code>require.paths</code> may disappear in a future release.</p>
-
-<p>While it seemed like a good idea at the time, and enabled a lot of
-useful experimentation, in practice a mutable <code>require.paths</code> list is
-often a troublesome source of confusion and headaches.</p>
-
-<h5 id="setting_require.paths_to_some_other_value_does_nothing.">Setting `require.paths` to some other value does nothing.</h5>
-
-<p>This does not do what one might expect:</p>
-
-<pre><code>require.paths = [ '/usr/lib/node' ];</code></pre>
-
-<p>All that does is lose the reference to the <em>actual</em> node module lookup
-paths, and create a new reference to some other thing that isn't used
-for anything.</p>
-
-<h5 id="putting_relative_paths_in_require.paths_is..._weird.">Putting relative paths in `require.paths` is... weird.</h5>
-
-<p>If you do this:</p>
-
-<pre><code>require.paths.push('./lib');</code></pre>
-
-<p>then it does <em>not</em> add the full resolved path to where <code>./lib</code>
-is on the filesystem.  Instead, it literally adds <code>'./lib'</code>,
-meaning that if you do <code>require('y.js')</code> in <code>/a/b/x.js</code>, then it'll look
-in <code>/a/b/lib/y.js</code>.  If you then did <code>require('y.js')</code> in
-<code>/l/m/n/o/p.js</code>, then it'd look in <code>/l/m/n/o/lib/y.js</code>.</p>
-
-<p>In practice, people have used this as an ad hoc way to bundle
-dependencies, but this technique is brittle.</p>
-
-<h5 id="zero_Isolation">Zero Isolation</h5>
-
-<p>There is (by regrettable design), only one <code>require.paths</code> array used by
-all modules.</p>
-
-<p>As a result, if one node program comes to rely on this behavior, it may
-permanently and subtly alter the behavior of all other node programs in
-the same process.  As the application stack grows, we tend to assemble
-functionality, and those parts interact in ways that are difficult to
-predict.</p>
+<p>These are mostly for historic reasons.  You are highly encouraged to
+place your dependencies localy in <code>node_modules</code> folders.  They will be
+loaded faster, and more reliably.</p>
 
 <h3 id="accessing_the_main_module">Accessing the main module</h3>
 
@@ -318,6 +275,36 @@ directly by testing</p>
 <p>Because <code>module</code> provides a <code>filename</code> property (normally equivalent to
 <code>__filename</code>), the entry point of the current application can be obtained
 by checking <code>require.main.filename</code>.</p>
+
+<h2 id="aMD_Compatibility">AMD Compatibility</h2>
+
+<p>Node's modules have access to a function named <code>define</code>, which may be
+used to specify the module's return value.  This is not necessary in node
+programs, but is present in the node API in order to provide
+compatibility with module loaders that use the Asynchronous Module
+Definition pattern.</p>
+
+<p>The example module above could be structured like so:</p>
+
+<pre><code>define(function (require, exports, module) {
+  var PI = Math.PI;
+
+  exports.area = function (r) {
+    return PI * r * r;
+  };
+
+  exports.circumference = function (r) {
+    return 2 * PI * r;
+  };
+});</code></pre>
+
+<ul><li>Only the last argument to <code>define()</code> matters.  Other module loaders
+sometimes use a <code>define(id, [deps], cb)</code> pattern, but since this is
+not relevant in node programs, the other arguments are ignored.</li><li>If the <code>define</code> callback returns a value other than <code>undefined</code>, then
+that value is assigned to <code>module.exports</code>.</li><li><strong>Important</strong>: Despite being called "AMD", the node module loader <strong>is
+in fact synchronous</strong>, and using <code>define()</code> does not change this fact.
+Node executes the callback immediately, so please plan your programs
+accordingly.</li></ul>
 
 <h2 id="addenda_Package_Manager_Tips">Addenda: Package Manager Tips</h2>
 

@@ -39,7 +39,7 @@ using namespace v8;
 
 static char buf[MAXPATHLEN + 1];
 static char *process_title = NULL;
-
+double Platform::prog_start_time = Platform::GetUptime();
 
 // Does the about the same as perror(), but for windows api functions
 static void _winapi_perror(const char* prefix = NULL) {
@@ -264,13 +264,6 @@ error:
 }
 
 
-int Platform::GetExecutablePath(char* buffer, size_t* size) {
-  *size = readlink("/proc/self/exe", buffer, *size - 1);
-  if (*size <= 0) return -1;
-  buffer[*size] = '\0';
-  return 0;
-}
-
 int Platform::GetCPUInfo(Local<Array> *cpus) {
   HandleScope scope;
   Local<Object> cpuinfo;
@@ -359,7 +352,7 @@ double Platform::GetTotalMemory() {
   return pages * pagesize;
 }
 
-double Platform::GetUptime() {
+double Platform::GetUptimeImpl() {
   double amount;
   char line[512];
   FILE *fpUptime = fopen("/proc/uptime", "r");
@@ -377,6 +370,12 @@ double Platform::GetUptime() {
 int Platform::GetLoadAvg(Local<Array> *loads) {
   // Unsupported as of cygwin 1.7.7
   return -1;
+}
+
+
+Handle<Value> Platform::GetInterfaceAddresses() {
+  HandleScope scope;
+  return scope.Close(Object::New());
 }
 
 

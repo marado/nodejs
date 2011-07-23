@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>process - Node.js Manual &amp; Documentation</title>
+  <title>process - Node.js v0.5.2 Manual &amp; Documentation</title>
   <link type="image/x-icon" rel="icon" href="/favicon.ico" />
   <link type="image/x-icon" rel="shortcut icon" href="/favicon.ico" />
   <link rel="stylesheet" href="assets/style.css" type="text/css" media="all" />
@@ -10,13 +10,13 @@
 <body>
   <div id="container">
     <header>
-      <h1>Node.js Manual &amp; Documentation</h1>
+      <h1>Node.js v0.5.2 Manual &amp; Documentation</h1>
       <div id="gtoc">
         <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
       </div>
       <hr />
     </header>
-    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#process">process</a><ul><li><a href="#event_exit_">Event: 'exit'</a></li><li><a href="#event_uncaughtException_">Event: 'uncaughtException'</a></li><li><a href="#signal_Events">Signal Events</a></li><li><a href="#process.stdout">process.stdout</a></li><li><a href="#process.stderr">process.stderr</a></li><li><a href="#process.stdin">process.stdin</a></li><li><a href="#process.argv">process.argv</a></li><li><a href="#process.execPath">process.execPath</a></li><li><a href="#process.chdir">process.chdir(directory)</a></li><li><a href="#process.cwd">process.cwd()</a></li><li><a href="#process.env">process.env</a></li><li><a href="#process.exit">process.exit(code=0)</a></li><li><a href="#process.getgid">process.getgid()</a></li><li><a href="#process.setgid">process.setgid(id)</a></li><li><a href="#process.getuid">process.getuid()</a></li><li><a href="#process.setuid">process.setuid(id)</a></li><li><a href="#process.version">process.version</a></li><li><a href="#process.installPrefix">process.installPrefix</a></li><li><a href="#process.kill">process.kill(pid, signal='SIGTERM')</a></li><li><a href="#process.pid">process.pid</a></li><li><a href="#process.title">process.title</a></li><li><a href="#process.platform">process.platform</a></li><li><a href="#process.memoryUsage">process.memoryUsage()</a></li><li><a href="#process.nextTick">process.nextTick(callback)</a></li><li><a href="#process.umask">process.umask([mask])</a></li></ul></li></ul><hr /></div>
+    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#process">process</a><ul><li><a href="#event_exit_">Event: 'exit'</a></li><li><a href="#event_uncaughtException_">Event: 'uncaughtException'</a></li><li><a href="#signal_Events">Signal Events</a></li><li><a href="#process.stdout">process.stdout</a></li><li><a href="#process.stderr">process.stderr</a></li><li><a href="#process.stdin">process.stdin</a></li><li><a href="#process.argv">process.argv</a></li><li><a href="#process.execPath">process.execPath</a></li><li><a href="#process.chdir">process.chdir(directory)</a></li><li><a href="#process.cwd">process.cwd()</a></li><li><a href="#process.env">process.env</a></li><li><a href="#process.exit">process.exit(code=0)</a></li><li><a href="#process.getgid">process.getgid()</a></li><li><a href="#process.setgid">process.setgid(id)</a></li><li><a href="#process.getuid">process.getuid()</a></li><li><a href="#process.setuid">process.setuid(id)</a></li><li><a href="#process.version">process.version</a></li><li><a href="#process.installPrefix">process.installPrefix</a></li><li><a href="#process.kill">process.kill(pid, signal='SIGTERM')</a></li><li><a href="#process.pid">process.pid</a></li><li><a href="#process.title">process.title</a></li><li><a href="#process.arch">process.arch</a></li><li><a href="#process.platform">process.platform</a></li><li><a href="#process.memoryUsage">process.memoryUsage()</a></li><li><a href="#process.nextTick">process.nextTick(callback)</a></li><li><a href="#process.umask">process.umask([mask])</a></li><li><a href="#process.uptime">process.uptime()</a></li></ul></li></ul><hr /></div>
 <h2 id="process">process</h2>
 
 <p>The <code>process</code> object is a global object and can be accessed from anywhere.
@@ -270,6 +270,12 @@ process.kill(process.pid, 'SIGHUP');</code></pre>
 
 <p>Getter/setter to set what is displayed in 'ps'.</p>
 
+<h3 id="process.arch">process.arch</h3>
+
+<p>What processor architecture you're running on: <code>'arm'</code>, <code>'ia32'</code>, or <code>'x64'</code>.</p>
+
+<pre><code>console.log('This processor architecture is ' + process.arch);</code></pre>
+
 <h3 id="process.platform">process.platform</h3>
 
 <p>What platform you're running on. <code>'linux2'</code>, <code>'darwin'</code>, etc.</p>
@@ -314,6 +320,10 @@ given, otherwise returns the current mask.</p>
 oldmask = process.umask(newmask);
 console.log('Changed umask from: ' + oldmask.toString(8) +
             ' to ' + newmask.toString(8));</code></pre>
+
+<h3 id="process.uptime">process.uptime()</h3>
+
+<p>Number of seconds Node has been running.</p>
   </div>
   <script type="text/javascript" src="assets/sh_main.js"></script>
   <script type="text/javascript" src="assets/sh_javascript.min.js"></script>
