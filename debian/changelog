@@ -1,6 +1,9 @@
 nodejs (0.5.2-1) experimental; urgency=low
 
   * New upstream release 
+TODO * deps/pthread-win32/*.a : not DFSG ? It's not actually used in the packages.
+TODO * Update debian/copyright
+TODO * Upstream disabled system libev, find why and reenable it
 
  -- Jérémy Lal <kapouer@melix.org>  Sat, 23 Jul 2011 13:00:07 +0200
 
