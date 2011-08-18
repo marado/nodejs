@@ -1,3 +1,10 @@
+nodejs (0.4.11-1) unstable; urgency=low
+
+  * New upstream release
+  * Filter doc/logos/nodejs-*x*.png, heavy files generated from eps. 
+
+ -- Jérémy Lal <kapouer@melix.org>  Thu, 18 Aug 2011 11:28:47 +0200
+
 nodejs (0.4.10-1) unstable; urgency=low
 
   * New upstream release 
