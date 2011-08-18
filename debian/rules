@@ -9,7 +9,7 @@ DEB_UPSTREAM_URL = http://nodejs.org/dist
 DEB_UPSTREAM_TARBALL_BASENAME = node-v$(DEB_UPSTREAM_TARBALL_VERSION)
 
 # suppress checking binary files, to not upset dpkg-source
-DEB_COPYRIGHT_CHECK_IGNORE_REGEX = ^(doc/trademark-policy\.pdf|doc/joyent-logo_orange_nodeorg-01\.png|doc/logos/.*\.png|debian/(changelog|copyright(|_hints|_newhints)))$
+DEB_COPYRIGHT_CHECK_IGNORE_REGEX = ^(doc/trademark-policy\.pdf|doc/joyent-logo_orange_nodeorg-01\.png|doc/logos/.*\.png|doc/logos/.*\.psd|debian/(changelog|copyright(|_hints|_newhints)))$
 
 DEB_CONFIGURE_NORMAL_ARGS = ""
 DEB_CONFIGURE_EXTRA_FLAGS = --debug --shared-v8 --shared-cares --shared-libev --no-ssl2
