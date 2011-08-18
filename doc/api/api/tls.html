@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>tls - Node.js Manual &amp; Documentation</title>
+  <meta charset="UTF-8" />
+  <title>tls - Node.js v0.4.11 Manual &amp; Documentation</title>
   <link type="image/x-icon" rel="icon" href="/favicon.ico" />
   <link type="image/x-icon" rel="shortcut icon" href="/favicon.ico" />
   <link rel="stylesheet" href="assets/style.css" type="text/css" media="all" />
@@ -10,13 +11,13 @@
 <body>
   <div id="container">
     <header>
-      <h1>Node.js Manual &amp; Documentation</h1>
+      <h1>Node.js v0.4.11 Manual &amp; Documentation</h1>
       <div id="gtoc">
         <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
       </div>
       <hr />
     </header>
-    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#tLS_">TLS (SSL)</a><ul><li><a href="#s_tls.connect">s = tls.connect(port, [host], [options], callback)</a></li><li><a href="#sTARTTLS">STARTTLS</a></li><li><a href="#tls.Server">tls.Server</a><ul><li><a href="#tls.createServer">tls.createServer(options, secureConnectionListener)</a></li><li><a href="#event_secureConnection_">Event: 'secureConnection'</a></li><li><a href="#server.listen">server.listen(port, [host], [callback])</a></li><li><a href="#server.close">server.close()</a></li><li><a href="#server.maxConnections">server.maxConnections</a></li><li><a href="#server.connections">server.connections</a></li></ul></li></ul></li></ul><hr /></div>
+    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#tLS_">TLS (SSL)</a><ul><li><a href="#s_tls.connect">s = tls.connect(port, [host], [options], callback)</a></li><li><a href="#sTARTTLS">STARTTLS</a></li><li><a href="#pair_tls.createSecurePair">pair = tls.createSecurePair([credentials], [isServer], [requestCert], [rejectUnauthorized])</a><ul><li><a href="#event_secure_">Event: 'secure'</a></li></ul></li><li><a href="#tls.Server">tls.Server</a><ul><li><a href="#tls.createServer">tls.createServer(options, secureConnectionListener)</a></li><li><a href="#event_secureConnection_">Event: 'secureConnection'</a></li><li><a href="#server.listen">server.listen(port, [host], [callback])</a></li><li><a href="#server.close">server.close()</a></li><li><a href="#server.maxConnections">server.maxConnections</a></li><li><a href="#server.connections">server.connections</a></li></ul></li><li><a href="#tls.CleartextStream">tls.CleartextStream</a><ul><li><a href="#cleartextStream.authorized">cleartextStream.authorized</a></li><li><a href="#cleartextStream.authorizationError">cleartextStream.authorizationError</a></li><li><a href="#cleartextStream.getPeerCertificate">cleartextStream.getPeerCertificate()</a></li></ul></li></ul></li></ul><hr /></div>
 <h2 id="tLS_">TLS (SSL)</h2>
 
 <p>Use <code>require('tls')</code> to access this module.</p>
@@ -56,23 +57,49 @@ PEM format.</p></li><li><p><code>ca</code>: An array of strings or <code>Buffer<
 omitted several well known "root" CAs will be used, like VeriSign.
 These are used to authorize connections.</p></li></ul>
 
-<p><code>tls.connect()</code> returns a cleartext <code>CryptoStream</code> object.</p>
+<p><code>tls.connect()</code> returns a <a href="#tls.CleartextStream">CleartextStream</a> object.</p>
 
 <p>After the TLS/SSL handshake the <code>callback</code> is called. The <code>callback</code> will be
 called no matter if the server's certificate was authorized or not. It is up
-to the user to test <code>s.authorized</code> to see if the server certificate was
-signed by one of the specified CAs. If <code>s.authorized === false</code> then the error
-can be found in <code>s.authorizationError</code>.</p>
+to the user to test <code>s.authorized</code> to see if the server certificate was signed
+by one of the specified CAs. If <code>s.authorized === false</code> then the error can be
+found in <code>s.authorizationError</code>.</p>
 
 <h3 id="sTARTTLS">STARTTLS</h3>
 
 <p>In the v0.4 branch no function exists for starting a TLS session on an
 already existing TCP connection.  This is possible it just requires a bit of
 work. The technique is to use <code>tls.createSecurePair()</code> which returns two
-streams: an encrypted stream and a plaintext stream. The encrypted stream is then
-piped to the socket, the plaintext stream is what the user interacts with thereafter.</p>
+streams: an encrypted stream and a cleartext stream. The encrypted stream is
+then piped to the socket, the cleartext stream is what the user interacts with
+thereafter.</p>
 
 <p><a href="http://gist.github.com/848444">Here is some code that does it.</a></p>
+
+<h3 id="pair_tls.createSecurePair">pair = tls.createSecurePair([credentials], [isServer], [requestCert], [rejectUnauthorized])</h3>
+
+<p>Creates a new secure pair object with two streams, one of which reads/writes
+encrypted data, and one reads/writes cleartext data.
+Generally the encrypted one is piped to/from an incoming encrypted data stream,
+and the cleartext one is used as a replacement for the initial encrypted stream.</p>
+
+<ul><li><p><code>credentials</code>: A credentials object from crypto.createCredentials( ... )</p></li><li><p><code>isServer</code>: A boolean indicating whether this tls connection should be
+opened as a server or a client.</p></li><li><p><code>requestCert</code>: A boolean indicating whether a server should request a
+certificate from a connecting client. Only applies to server connections.</p></li><li><p><code>rejectUnauthorized</code>: A boolean indicating whether a server should
+automatically reject clients with invalid certificates. Only applies to
+servers with <code>requestCert</code> enabled.</p></li></ul>
+
+<p><code>tls.createSecurePair()</code> returns a SecurePair object with
+<a href="#tls.CleartextStream">cleartext</a> and <code>encrypted</code> stream properties.</p>
+
+<h4 id="event_secure_">Event: 'secure'</h4>
+
+<p>The event is emitted from the SecurePair once the pair has successfully
+established a secure connection.</p>
+
+<p>Similarly to the checking for the server 'secureConnection' event,
+pair.cleartext.authorized should be checked to confirm whether the certificate
+used properly authorized.</p>
 
 <h3 id="tls.Server">tls.Server</h3>
 
@@ -119,8 +146,9 @@ has an effect if <code>requestCert</code> is <code>true</code>. Default: <code>f
 <p><code>function (cleartextStream) {}</code></p>
 
 <p>This event is emitted after a new connection has been successfully
-handshaked. The argument is a duplex instance of <code>stream.Stream</code>. It has all
-the common stream methods and events.</p>
+handshaked. The argument is a instance of
+<a href="#tls.CleartextStream">CleartextStream</a>. It has all the common stream methods
+and events.</p>
 
 <p><code>cleartextStream.authorized</code> is a boolean value which indicates if the
 client has verified by one of the supplied certificate authorities for the
@@ -148,11 +176,58 @@ event.</p>
 
 <h4 id="server.maxConnections">server.maxConnections</h4>
 
-<p>Set this property to reject connections when the server's connection count gets high.</p>
+<p>Set this property to reject connections when the server's connection count
+gets high.</p>
 
 <h4 id="server.connections">server.connections</h4>
 
 <p>The number of concurrent connections on the server.</p>
+
+<h3 id="tls.CleartextStream">tls.CleartextStream</h3>
+
+<p>This is a stream on top of the <em>Encrypted</em> stream that makes it possible to
+read/write an encrypted data as a cleartext data.</p>
+
+<p>This instance implements a duplex <a href="streams.html#streams">Stream</a> interfaces.
+It has all the common stream methods and events.</p>
+
+<h4 id="cleartextStream.authorized">cleartextStream.authorized</h4>
+
+<p>A boolean that is <code>true</code> if the peer certificate was signed by one of the
+specified CAs, otherwise <code>false</code></p>
+
+<h4 id="cleartextStream.authorizationError">cleartextStream.authorizationError</h4>
+
+<p>The reason why the peer's certificate has not been verified. This property
+becomes available only when <code>cleartextStream.authorized === false</code>.</p>
+
+<h4 id="cleartextStream.getPeerCertificate">cleartextStream.getPeerCertificate()</h4>
+
+<p>Returns an object representing the peer's certicicate. The returned object has
+some properties corresponding to the field of the certificate.</p>
+
+<p>Example:</p>
+
+<pre><code>{ subject: 
+   { C: 'UK',
+     ST: 'Acknack Ltd',
+     L: 'Rhys Jones',
+     O: 'node.js',
+     OU: 'Test TLS Certificate',
+     CN: 'localhost' },
+  issuer: 
+   { C: 'UK',
+     ST: 'Acknack Ltd',
+     L: 'Rhys Jones',
+     O: 'node.js',
+     OU: 'Test TLS Certificate',
+     CN: 'localhost' },
+  valid_from: 'Nov 11 09:52:22 2009 GMT',
+  valid_to: 'Nov  6 09:52:22 2029 GMT',
+  fingerprint: '2A:7A:C2:DD:E5:F9:CC:53:72:35:99:7A:02:5A:71:38:52:EC:8A:DF' }</code></pre>
+
+<p>If the peer does not provide a certificate, it returns <code>null</code> or an empty
+object.</p>
   </div>
   <script type="text/javascript" src="assets/sh_main.js"></script>
   <script type="text/javascript" src="assets/sh_javascript.min.js"></script>

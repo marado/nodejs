@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>http - Node.js Manual &amp; Documentation</title>
+  <meta charset="UTF-8" />
+  <title>http - Node.js v0.4.11 Manual &amp; Documentation</title>
   <link type="image/x-icon" rel="icon" href="/favicon.ico" />
   <link type="image/x-icon" rel="shortcut icon" href="/favicon.ico" />
   <link rel="stylesheet" href="assets/style.css" type="text/css" media="all" />
@@ -10,7 +11,7 @@
 <body>
   <div id="container">
     <header>
-      <h1>Node.js Manual &amp; Documentation</h1>
+      <h1>Node.js v0.4.11 Manual &amp; Documentation</h1>
       <div id="gtoc">
         <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
       </div>
@@ -60,7 +61,7 @@ per connection (in the case of keep-alive connections).
 
 <p> When a new TCP stream is established. <code>socket</code> is an object of type
  <code>net.Socket</code>. Usually users will not want to access this event. The
- <code>stream</code> can also be accessed at <code>request.connection</code>.</p>
+ <code>socket</code> can also be accessed at <code>request.connection</code>.</p>
 
 <h3 id="event_close_">Event: 'close'</h3>
 
@@ -286,7 +287,9 @@ implicit/mutable headers will be calculated and call this function for you.</p>
 <p>Note: that Content-Length is given in bytes not characters. The above example
 works because the string <code>'hello world'</code> contains only single byte characters.
 If the body contains higher coded characters then <code>Buffer.byteLength()</code>
-should be used to determine the number of bytes in a given encoding.</p>
+should be used to determine the number of bytes in a given encoding.
+And Node does not check whether Content-Length and the length of the body
+which has been transmitted are equal or not.</p>
 
 <h3 id="response.statusCode">response.statusCode</h3>
 
@@ -297,6 +300,9 @@ flushed.</p>
 <p>Example:</p>
 
 <pre><code>response.statusCode = 404;</code></pre>
+
+<p>After response header was sent to the client, this property indicates the
+status code which was sent out.</p>
 
 <h3 id="response.setHeader">response.setHeader(name, value)</h3>
 
@@ -569,7 +575,9 @@ request.on('response', function (response) {
   }, 10);
 });</code></pre>
 
-<p>This is a <code>Writable Stream</code>.</p>
+<p>This is a <code>Writable Stream</code>.
+Note: Node does not check whether Content-Length and the length of the body
+which has been transmitted are equal or not.</p>
 
 <p>This is an <code>EventEmitter</code> with the following events:</p>
 
