@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>crypto - Node.js Manual &amp; Documentation</title>
+  <meta charset="UTF-8" />
+  <title>crypto - Node.js v0.4.11 Manual &amp; Documentation</title>
   <link type="image/x-icon" rel="icon" href="/favicon.ico" />
   <link type="image/x-icon" rel="shortcut icon" href="/favicon.ico" />
   <link rel="stylesheet" href="assets/style.css" type="text/css" media="all" />
@@ -10,13 +11,13 @@
 <body>
   <div id="container">
     <header>
-      <h1>Node.js Manual &amp; Documentation</h1>
+      <h1>Node.js v0.4.11 Manual &amp; Documentation</h1>
       <div id="gtoc">
         <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
       </div>
       <hr />
     </header>
-    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#crypto">Crypto</a><ul><li><a href="#crypto.createCredentials">crypto.createCredentials(details)</a></li><li><a href="#crypto.createHash">crypto.createHash(algorithm)</a></li><li><a href="#hash.update">hash.update(data)</a></li><li><a href="#hash.digest">hash.digest(encoding='binary')</a></li><li><a href="#crypto.createHmac">crypto.createHmac(algorithm, key)</a></li><li><a href="#hmac.update">hmac.update(data)</a></li><li><a href="#hmac.digest">hmac.digest(encoding='binary')</a></li><li><a href="#crypto.createCipher">crypto.createCipher(algorithm, key)</a></li><li><a href="#cipher.update">cipher.update(data, input_encoding='binary', output_encoding='binary')</a></li><li><a href="#cipher.final">cipher.final(output_encoding='binary')</a></li><li><a href="#crypto.createDecipher">crypto.createDecipher(algorithm, key)</a></li><li><a href="#decipher.update">decipher.update(data, input_encoding='binary', output_encoding='binary')</a></li><li><a href="#decipher.final">decipher.final(output_encoding='binary')</a></li><li><a href="#crypto.createSign">crypto.createSign(algorithm)</a></li><li><a href="#signer.update">signer.update(data)</a></li><li><a href="#signer.sign">signer.sign(private_key, output_format='binary')</a></li><li><a href="#crypto.createVerify">crypto.createVerify(algorithm)</a></li><li><a href="#verifier.update">verifier.update(data)</a></li><li><a href="#verifier.verify">verifier.verify(object, signature, signature_format='binary')</a></li></ul></li></ul><hr /></div>
+    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#crypto">Crypto</a><ul><li><a href="#crypto.createCredentials">crypto.createCredentials(details)</a></li><li><a href="#crypto.createHash">crypto.createHash(algorithm)</a></li><li><a href="#hash.update">hash.update(data)</a></li><li><a href="#hash.digest">hash.digest(encoding='binary')</a></li><li><a href="#crypto.createHmac">crypto.createHmac(algorithm, key)</a></li><li><a href="#hmac.update">hmac.update(data)</a></li><li><a href="#hmac.digest">hmac.digest(encoding='binary')</a></li><li><a href="#crypto.createCipher">crypto.createCipher(algorithm, password)</a></li><li><a href="#crypto.createCipheriv">crypto.createCipheriv(algorithm, key, iv)</a></li><li><a href="#cipher.update">cipher.update(data, input_encoding='binary', output_encoding='binary')</a></li><li><a href="#cipher.final">cipher.final(output_encoding='binary')</a></li><li><a href="#crypto.createDecipher">crypto.createDecipher(algorithm, password)</a></li><li><a href="#crypto.createDecipheriv">crypto.createDecipheriv(algorithm, key, iv)</a></li><li><a href="#decipher.update">decipher.update(data, input_encoding='binary', output_encoding='binary')</a></li><li><a href="#decipher.final">decipher.final(output_encoding='binary')</a></li><li><a href="#crypto.createSign">crypto.createSign(algorithm)</a></li><li><a href="#signer.update">signer.update(data)</a></li><li><a href="#signer.sign">signer.sign(private_key, output_format='binary')</a></li><li><a href="#crypto.createVerify">crypto.createVerify(algorithm)</a></li><li><a href="#verifier.update">verifier.update(data)</a></li><li><a href="#verifier.verify">verifier.verify(object, signature, signature_format='binary')</a></li></ul></li></ul><hr /></div>
 <h2 id="crypto">Crypto</h2>
 
 <p>Use <code>require('crypto')</code> to access this module.</p>
@@ -73,6 +74,8 @@ This can be called many times with new data as it is streamed.</p>
 <p>Calculates the digest of all of the passed data to be hashed.
 The <code>encoding</code> can be <code>'hex'</code>, <code>'binary'</code> or <code>'base64'</code>.</p>
 
+<p>Note: <code>hash</code> object can not be used after <code>digest()</code> method been called.</p>
+
 <h3 id="crypto.createHmac">crypto.createHmac(algorithm, key)</h3>
 
 <p>Creates and returns a hmac object, a cryptographic hmac with the given algorithm and key.</p>
@@ -90,12 +93,25 @@ This can be called many times with new data as it is streamed.</p>
 <p>Calculates the digest of all of the passed data to the hmac.
 The <code>encoding</code> can be <code>'hex'</code>, <code>'binary'</code> or <code>'base64'</code>.</p>
 
-<h3 id="crypto.createCipher">crypto.createCipher(algorithm, key)</h3>
+<p>Note: <code>hmac</code> object can not be used after <code>digest()</code> method been called.</p>
 
-<p>Creates and returns a cipher object, with the given algorithm and key.</p>
+<h3 id="crypto.createCipher">crypto.createCipher(algorithm, password)</h3>
+
+<p>Creates and returns a cipher object, with the given algorithm and password.</p>
 
 <p><code>algorithm</code> is dependent on OpenSSL, examples are <code>'aes192'</code>, etc.
-On recent releases, <code>openssl list-cipher-algorithms</code> will display the available cipher algorithms.</p>
+On recent releases, <code>openssl list-cipher-algorithms</code> will display the
+available cipher algorithms.
+<code>password</code> is used to derive key and IV, which must be <code>'binary'</code> encoded
+string (See the <a href="buffers.html">Buffers</a> for more information).</p>
+
+<h3 id="crypto.createCipheriv">crypto.createCipheriv(algorithm, key, iv)</h3>
+
+<p>Creates and returns a cipher object, with the given algorithm, key and iv.</p>
+
+<p><code>algorithm</code> is the same as the <code>createCipher()</code>. <code>key</code> is a raw key used in
+algorithm. <code>iv</code> is an Initialization vector. <code>key</code> and <code>iv</code> must be <code>'binary'</code>
+encoded string (See the <a href="buffers.html">Buffers</a> for more information).</p>
 
 <h3 id="cipher.update">cipher.update(data, input_encoding='binary', output_encoding='binary')</h3>
 
@@ -109,10 +125,17 @@ the output format of the enciphered data, and can be <code>'binary'</code>, <cod
 
 <p>Returns any remaining enciphered contents, with <code>output_encoding</code> being one of: <code>'binary'</code>, <code>'base64'</code> or <code>'hex'</code>.</p>
 
-<h3 id="crypto.createDecipher">crypto.createDecipher(algorithm, key)</h3>
+<p>Note: <code>cipher</code> object can not be used after <code>final()</code> method been called.</p>
+
+<h3 id="crypto.createDecipher">crypto.createDecipher(algorithm, password)</h3>
 
 <p>Creates and returns a decipher object, with the given algorithm and key.
-This is the mirror of the cipher object above.</p>
+This is the mirror of the <a href="#crypto.createCipher">createCipher()</a> above.</p>
+
+<h3 id="crypto.createDecipheriv">crypto.createDecipheriv(algorithm, key, iv)</h3>
+
+<p>Creates and returns a decipher object, with the given algorithm, key and iv.
+This is the mirror of the <a href="#crypto.createCipheriv">createCipheriv()</a> above.</p>
 
 <h3 id="decipher.update">decipher.update(data, input_encoding='binary', output_encoding='binary')</h3>
 
@@ -123,6 +146,8 @@ The <code>output_decoding</code> specifies in what format to return the decipher
 
 <p>Returns any remaining plaintext which is deciphered,
 with <code>output_encoding</code> being one of: <code>'binary'</code>, <code>'ascii'</code> or <code>'utf8'</code>.</p>
+
+<p>Note: <code>decipher</code> object can not be used after <code>final()</code> method been called.</p>
 
 <h3 id="crypto.createSign">crypto.createSign(algorithm)</h3>
 
@@ -141,6 +166,8 @@ This can be called many times with new data as it is streamed.</p>
 <code>private_key</code> is a string containing the PEM encoded private key for signing.</p>
 
 <p>Returns the signature in <code>output_format</code> which can be <code>'binary'</code>, <code>'hex'</code> or <code>'base64'</code>.</p>
+
+<p>Note: <code>signer</code> object can not be used after <code>sign()</code> method been called.</p>
 
 <h3 id="crypto.createVerify">crypto.createVerify(algorithm)</h3>
 
@@ -161,6 +188,8 @@ signature for the data, in the <code>signature_format</code> which can be <code>
 <code>'hex'</code> or <code>'base64'</code>.</p>
 
 <p>Returns true or false depending on the validity of the signature for the data and public key.</p>
+
+<p>Note: <code>verifier</code> object can not be used after <code>verify()</code> method been called.</p>
   </div>
   <script type="text/javascript" src="assets/sh_main.js"></script>
   <script type="text/javascript" src="assets/sh_javascript.min.js"></script>
