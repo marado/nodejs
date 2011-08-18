@@ -1,9 +1,10 @@
 nodejs (0.4.11-1) unstable; urgency=low
 
   * New upstream release
-  * Filter doc/logos/nodejs-*x*.png, heavy files generated from eps. 
+  * debian/gbp.conf: Filter out doc/logos, unused, too big, and
+    upstream removed it from 0.5 tarballs.
 
- -- Jérémy Lal <kapouer@melix.org>  Thu, 18 Aug 2011 11:28:47 +0200
+ -- Jérémy Lal <kapouer@melix.org>  Thu, 18 Aug 2011 15:09:01 +0200
 
 nodejs (0.4.10-1) unstable; urgency=low
 
