@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>assert - Node.js v0.5.2 Manual &amp; Documentation</title>
+  <meta charset="UTF-8" />
+  <title>assert - Node.js v0.5.6 Manual &amp; Documentation</title>
   <link type="image/x-icon" rel="icon" href="/favicon.ico" />
   <link type="image/x-icon" rel="shortcut icon" href="/favicon.ico" />
   <link rel="stylesheet" href="assets/style.css" type="text/css" media="all" />
@@ -10,95 +11,101 @@
 <body>
   <div id="container">
     <header>
-      <h1>Node.js v0.5.2 Manual &amp; Documentation</h1>
+      <h1>Node.js v0.5.6 Manual &amp; Documentation</h1>
       <div id="gtoc">
         <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
       </div>
       <hr />
     </header>
-    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#assert">Assert</a><ul><li><a href="#assert.fail">assert.fail(actual, expected, message, operator)</a></li><li><a href="#assert.ok">assert.ok(value, [message])</a></li><li><a href="#assert.equal">assert.equal(actual, expected, [message])</a></li><li><a href="#assert.notEqual">assert.notEqual(actual, expected, [message])</a></li><li><a href="#assert.deepEqual">assert.deepEqual(actual, expected, [message])</a></li><li><a href="#assert.notDeepEqual">assert.notDeepEqual(actual, expected, [message])</a></li><li><a href="#assert.strictEqual">assert.strictEqual(actual, expected, [message])</a></li><li><a href="#assert.notStrictEqual">assert.notStrictEqual(actual, expected, [message])</a></li><li><a href="#assert.throws">assert.throws(block, [error], [message])</a></li><li><a href="#assert.doesNotThrow">assert.doesNotThrow(block, [error], [message])</a></li><li><a href="#assert.ifError">assert.ifError(value)</a></li></ul></li></ul><hr /></div>
+    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#assert_">Assert</a><ul><li><a href="#assert.fail_">assert.fail(actual, expected, message, operator)</a></li><li><a href="#assert.ok_">assert.ok(value, [message])</a></li><li><a href="#assert.equal_">assert.equal(actual, expected, [message])</a></li><li><a href="#assert.notEqual_">assert.notEqual(actual, expected, [message])</a></li><li><a href="#assert.deepEqual_">assert.deepEqual(actual, expected, [message])</a></li><li><a href="#assert.notDeepEqual_">assert.notDeepEqual(actual, expected, [message])</a></li><li><a href="#assert.strictEqual_">assert.strictEqual(actual, expected, [message])</a></li><li><a href="#assert.notStrictEqual_">assert.notStrictEqual(actual, expected, [message])</a></li><li><a href="#assert.throws_">assert.throws(block, [error], [message])</a></li><li><a href="#assert.doesNotThrow_">assert.doesNotThrow(block, [error], [message])</a></li><li><a href="#assert.ifError_">assert.ifError(value)</a></li></ul></li></ul><hr /></div>
 <h2 id="assert">Assert</h2>
 
 <p>This module is used for writing unit tests for your applications, you can
-access it with <code>require('assert')</code>.</p>
+access it with <code>require('assert')</code>.</p>
 
 <h3 id="assert.fail">assert.fail(actual, expected, message, operator)</h3>
 
-<p>Throws an exception that displays the values for <code>actual</code> and <code>expected</code> separated by the provided operator.</p>
+<p>Throws an exception that displays the values for <code>actual</code> and <code>expected</code> separated by the provided operator.</p>
 
 <h3 id="assert.ok">assert.ok(value, [message])</h3>
 
-<p>Tests if value is a <code>true</code> value, it is equivalent to <code>assert.equal(true, value, message);</code></p>
+<p>Tests if value is a <code>true</code> value, it is equivalent to <code>assert.equal(true, value, message);</code></p>
 
 <h3 id="assert.equal">assert.equal(actual, expected, [message])</h3>
 
-<p>Tests shallow, coercive equality with the equal comparison operator ( <code>==</code> ).</p>
+<p>Tests shallow, coercive equality with the equal comparison operator ( <code>==</code> ).</p>
 
 <h3 id="assert.notEqual">assert.notEqual(actual, expected, [message])</h3>
 
-<p>Tests shallow, coercive non-equality with the not equal comparison operator ( <code>!=</code> ).</p>
+<p>Tests shallow, coercive non-equality with the not equal comparison operator ( <code>!=</code> ).</p>
 
 <h3 id="assert.deepEqual">assert.deepEqual(actual, expected, [message])</h3>
 
-<p>Tests for deep equality.</p>
+<p>Tests for deep equality.</p>
 
 <h3 id="assert.notDeepEqual">assert.notDeepEqual(actual, expected, [message])</h3>
 
-<p>Tests for any deep inequality.</p>
+<p>Tests for any deep inequality.</p>
 
 <h3 id="assert.strictEqual">assert.strictEqual(actual, expected, [message])</h3>
 
-<p>Tests strict equality, as determined by the strict equality operator ( <code>===</code> )</p>
+<p>Tests strict equality, as determined by the strict equality operator ( <code>===</code> )</p>
 
 <h3 id="assert.notStrictEqual">assert.notStrictEqual(actual, expected, [message])</h3>
 
-<p>Tests strict non-equality, as determined by the strict not equal operator ( <code>!==</code> )</p>
+<p>Tests strict non-equality, as determined by the strict not equal operator ( <code>!==</code> )</p>
 
 <h3 id="assert.throws">assert.throws(block, [error], [message])</h3>
 
 <p>Expects <code>block</code> to throw an error. <code>error</code> can be constructor, regexp or 
-validation function.</p>
+validation function.</p>
 
-<p>Validate instanceof using constructor:</p>
+<p>Validate instanceof using constructor:</p>
 
-<pre><code>assert.throws(
-  function() {
-    throw new Error("Wrong value");
-  },
-  Error
-);</code></pre>
+<pre><code>assert.throws(</code></pre>
 
-<p>Validate error message using RegExp:</p>
+<p>
+      function() {
+        throw new Error("Wrong value");
+      },
+      Error
+    );</p>
 
-<pre><code>assert.throws(
-  function() {
-    throw new Error("Wrong value");
-  },
-  /value/
-);</code></pre>
+<p>Validate error message using RegExp:</p>
 
-<p>Custom error validation:</p>
+<pre><code>assert.throws(</code></pre>
 
-<pre><code>assert.throws(
-  function() {
-    throw new Error("Wrong value");
-  },
-  function(err) {
-    if ( (err instanceof Error) &amp;&amp; /value/.test(err) ) {
-      return true;
-    }
-  },
-  "unexpected error"
-);</code></pre>
+<p>
+      function() {
+        throw new Error("Wrong value");
+      },
+      /value/
+    );</p>
+
+<p>Custom error validation:</p>
+
+<pre><code>assert.throws(</code></pre>
+
+<p>
+      function() {
+        throw new Error("Wrong value");
+      },
+      function(err) {
+        if ( (err instanceof Error) &amp;&amp; /value/.test(err) ) {
+          return true;
+        }
+      },
+      "unexpected error"
+    );</p>
 
 <h3 id="assert.doesNotThrow">assert.doesNotThrow(block, [error], [message])</h3>
 
-<p>Expects <code>block</code> not to throw an error, see assert.throws for details.</p>
+<p>Expects <code>block</code> not to throw an error, see assert.throws for details.</p>
 
 <h3 id="assert.ifError">assert.ifError(value)</h3>
 
 <p>Tests if value is not a false value, throws if it is a true value. Useful when
-testing the first argument, <code>error</code> in callbacks.</p>
+testing the first argument, <code>error</code> in callbacks.</p>
   </div>
   <script type="text/javascript" src="assets/sh_main.js"></script>
   <script type="text/javascript" src="assets/sh_javascript.min.js"></script>

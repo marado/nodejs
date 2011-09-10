@@ -237,7 +237,7 @@ function BasicSerializeArray(value, stack, builder) {
     }
   }
   stack.pop();
-  builder.push("]"); 
+  builder.push("]");
 }
 
 
@@ -337,11 +337,12 @@ function JSONStringify(value, replacer, space) {
   return JSONSerialize('', {'': value}, replacer, new InternalArray(), "", gap);
 }
 
-function SetupJSON() {
+function SetUpJSON() {
+  %CheckIsBootstrapping();
   InstallFunctions($JSON, DONT_ENUM, $Array(
     "parse", JSONParse,
     "stringify", JSONStringify
   ));
 }
 
-SetupJSON();
+SetUpJSON()

@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>util - Node.js v0.5.2 Manual &amp; Documentation</title>
+  <meta charset="UTF-8" />
+  <title>util - Node.js v0.5.6 Manual &amp; Documentation</title>
   <link type="image/x-icon" rel="icon" href="/favicon.ico" />
   <link type="image/x-icon" rel="shortcut icon" href="/favicon.ico" />
   <link rel="stylesheet" href="assets/style.css" type="text/css" media="all" />
@@ -10,17 +11,44 @@
 <body>
   <div id="container">
     <header>
-      <h1>Node.js v0.5.2 Manual &amp; Documentation</h1>
+      <h1>Node.js v0.5.6 Manual &amp; Documentation</h1>
       <div id="gtoc">
         <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
       </div>
       <hr />
     </header>
-    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#util">util</a><ul><li><a href="#util.debug">util.debug(string)</a></li><li><a href="#util.log">util.log(string)</a></li><li><a href="#util.inspect">util.inspect(object, showHidden=false, depth=2)</a></li><li><a href="#util.pump">util.pump(readableStream, writableStream, [callback])</a></li><li><a href="#util.inherits">util.inherits(constructor, superConstructor)</a></li></ul></li></ul><hr /></div>
+    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#util">util</a><ul><li><a href="#util.format">util.format()</a></li><li><a href="#util.debug">util.debug(string)</a></li><li><a href="#util.log">util.log(string)</a></li><li><a href="#util.inspect">util.inspect(object, showHidden=false, depth=2)</a></li><li><a href="#util.pump">util.pump(readableStream, writableStream, [callback])</a></li><li><a href="#util.inherits">util.inherits(constructor, superConstructor)</a></li></ul></li></ul><hr /></div>
 <h2 id="util">util</h2>
 
 <p>These functions are in the module <code>'util'</code>. Use <code>require('util')</code> to access
 them.</p>
+
+<h3 id="util.format">util.format()</h3>
+
+<p>Returns a formatted string using the first argument as a <code>printf</code>-like format.</p>
+
+<p>The first argument is a string that contains zero or more <em>placeholders</em>.
+Each placeholder is replaced with the converted value from its corresponding
+argument. Supported placeholders are:</p>
+
+<ul><li><code>%s</code> - String.</li><li><code>%d</code> - Number (both integer and float).</li><li><code>%j</code> - JSON.</li><li><code>%%</code> - single percent sign (<code>'%'</code>). This does not consume an argument.</li></ul>
+
+<p>If the placeholder does not have a corresponding argument, the placeholder is
+not replaced.</p>
+
+<pre><code>util.format('%s:%s', 'foo'); // 'foo:%s'</code></pre>
+
+<p>If there are more arguments than placeholders, the extra arguments are
+converted to strings with <code>util.inspect()</code> and these strings are concatenated,
+delimited by a space.</p>
+
+<pre><code>util.format('%s:%s', 'foo', 'bar', 'baz'); // 'foo:bar baz'</code></pre>
+
+<p>If the first argument is not a format string then <code>util.format()</code> returns
+a string that is the concatenation of all its arguments separated by spaces.
+Each argument is converted to a string with <code>util.inspect()</code>.</p>
+
+<pre><code>util.format(1, 2, 3); // '1 2 3'</code></pre>
 
 <h3 id="util.debug">util.debug(string)</h3>
 
