@@ -1,11 +1,13 @@
-nodejs (0.5.2-1) experimental; urgency=low
+nodejs (0.5.6-1) experimental; urgency=low
 
   * New upstream release 
-TODO * deps/pthread-win32/*.a : not DFSG ? It's not actually used in the packages.
-TODO * Update debian/copyright
-TODO * Upstream disabled system libev, find why and reenable it
 
- -- Jérémy Lal <kapouer@melix.org>  Sat, 23 Jul 2011 13:00:07 +0200
+  [ TODO ]
+  * Update debian/copyright
+  * Use libuv
+  * Move to cmake, refresh patches. Abandon waf in nodejs-dev.
+
+ -- Jérémy Lal <kapouer@melix.org>  Sat, 10 Sep 2011 19:20:30 +0200
 
 nodejs (0.4.10-1) unstable; urgency=low
 
