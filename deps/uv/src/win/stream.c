@@ -26,15 +26,15 @@
 #include "internal.h"
 
 
-void uv_stream_init(uv_stream_t* handle) {
+void uv_stream_init(uv_loop_t* loop, uv_stream_t* handle) {
   handle->write_queue_size = 0;
+  handle->loop = loop;
   handle->flags = 0;
-  handle->error = uv_ok_;
 
-  uv_counters()->handle_init++;
-  uv_counters()->stream_init++;
+  loop->counters.handle_init++;
+  loop->counters.stream_init++;
 
-  uv_ref();
+  uv_ref(loop);
 }
 
 
@@ -42,33 +42,51 @@ void uv_connection_init(uv_stream_t* handle) {
   handle->flags |= UV_HANDLE_CONNECTION;
   handle->write_reqs_pending = 0;
 
-  uv_req_init((uv_req_t*) &(handle->read_req));
+  uv_req_init(handle->loop, (uv_req_t*) &(handle->read_req));
   handle->read_req.type = UV_READ;
   handle->read_req.data = handle;
 }
 
 
-int uv_accept(uv_handle_t* server, uv_stream_t* client) {
-  assert(client->type == server->type);
-
-  if (server->type == UV_TCP) {
-    return uv_tcp_accept((uv_tcp_t*)server, (uv_tcp_t*)client);
-  } else if (server->type == UV_NAMED_PIPE) {
-    return uv_pipe_accept((uv_pipe_t*)server, (uv_pipe_t*)client);
+int uv_listen(uv_stream_t* stream, int backlog, uv_connection_cb cb) {
+  switch (stream->type) {
+    case UV_TCP:
+      return uv_tcp_listen((uv_tcp_t*)stream, backlog, cb);
+    case UV_NAMED_PIPE:
+      return uv_pipe_listen((uv_pipe_t*)stream, backlog, cb);
+    default:
+      assert(0);
+      return -1;
   }
-
-  return -1;
 }
 
 
-int uv_read_start(uv_stream_t* handle, uv_alloc_cb alloc_cb, uv_read_cb read_cb) {
-  if (handle->type == UV_TCP) {
-    return uv_tcp_read_start((uv_tcp_t*)handle, alloc_cb, read_cb);
-  } else if (handle->type == UV_NAMED_PIPE) {
-    return uv_pipe_read_start((uv_pipe_t*)handle, alloc_cb, read_cb);
-  }
+int uv_accept(uv_stream_t* server, uv_stream_t* client) {
+  assert(client->type == server->type);
 
-  return -1;
+  switch (server->type) {
+    case UV_TCP:
+      return uv_tcp_accept((uv_tcp_t*)server, (uv_tcp_t*)client);
+    case UV_NAMED_PIPE:
+      return uv_pipe_accept((uv_pipe_t*)server, (uv_pipe_t*)client);
+    default:
+      assert(0);
+      return -1;
+  }
+}
+
+
+int uv_read_start(uv_stream_t* handle, uv_alloc_cb alloc_cb,
+    uv_read_cb read_cb) {
+  switch (handle->type) {
+    case UV_TCP:
+      return uv_tcp_read_start((uv_tcp_t*)handle, alloc_cb, read_cb);
+    case UV_NAMED_PIPE:
+      return uv_pipe_read_start((uv_pipe_t*)handle, alloc_cb, read_cb);
+    default:
+      assert(0);
+      return -1;
+  }
 }
 
 
@@ -81,29 +99,35 @@ int uv_read_stop(uv_stream_t* handle) {
 
 int uv_write(uv_write_t* req, uv_stream_t* handle, uv_buf_t bufs[], int bufcnt,
     uv_write_cb cb) {
-  if (handle->type == UV_TCP) {
-    return uv_tcp_write(req, (uv_tcp_t*) handle, bufs, bufcnt, cb);
-  } else if (handle->type == UV_NAMED_PIPE) {
-    return uv_pipe_write(req, (uv_pipe_t*) handle, bufs, bufcnt, cb);
-  }
+  uv_loop_t* loop = handle->loop;
 
-  uv_set_sys_error(WSAEINVAL);
-  return -1;
+  switch (handle->type) {
+    case UV_TCP:
+      return uv_tcp_write(loop, req, (uv_tcp_t*) handle, bufs, bufcnt, cb);
+    case UV_NAMED_PIPE:
+      return uv_pipe_write(loop, req, (uv_pipe_t*) handle, bufs, bufcnt, cb);
+    default:
+      assert(0);
+      uv_set_sys_error(loop, WSAEINVAL);
+      return -1;
+  }
 }
 
 
 int uv_shutdown(uv_shutdown_t* req, uv_stream_t* handle, uv_shutdown_cb cb) {
+  uv_loop_t* loop = handle->loop;
+
   if (!(handle->flags & UV_HANDLE_CONNECTION)) {
-    uv_set_sys_error(WSAEINVAL);
+    uv_set_sys_error(loop, WSAEINVAL);
     return -1;
   }
 
   if (handle->flags & UV_HANDLE_SHUTTING) {
-    uv_set_sys_error(WSAESHUTDOWN);
+    uv_set_sys_error(loop, WSAESHUTDOWN);
     return -1;
   }
 
-  uv_req_init((uv_req_t*) req);
+  uv_req_init(loop, (uv_req_t*) req);
   req->type = UV_SHUTDOWN;
   req->handle = handle;
   req->cb = cb;
@@ -112,7 +136,7 @@ int uv_shutdown(uv_shutdown_t* req, uv_stream_t* handle, uv_shutdown_cb cb) {
   handle->shutdown_req = req;
   handle->reqs_pending++;
 
-  uv_want_endgame((uv_handle_t*)handle);
+  uv_want_endgame(loop, (uv_handle_t*)handle);
 
   return 0;
 }

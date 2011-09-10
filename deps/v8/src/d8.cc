@@ -26,8 +26,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-#ifdef V8_SHARED
-#define USING_V8_SHARED
+#ifdef USING_V8_SHARED  // Defined when linking against shared lib on Windows.
+#define V8_SHARED
 #endif
 
 #ifdef COMPRESS_STARTUP_DATA_BZ2
@@ -37,15 +37,16 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 
-#ifdef USING_V8_SHARED
+#ifdef V8_SHARED
 #include <assert.h>
 #include "../include/v8-testing.h"
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
 
 #include "d8.h"
 
-#ifndef USING_V8_SHARED
+#ifndef V8_SHARED
 #include "api.h"
 #include "checks.h"
 #include "d8-debug.h"
@@ -53,20 +54,20 @@
 #include "natives.h"
 #include "platform.h"
 #include "v8.h"
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
 
 #if !defined(_WIN32) && !defined(_WIN64)
 #include <unistd.h>  // NOLINT
 #endif
 
-#ifdef USING_V8_SHARED
+#ifndef ASSERT
 #define ASSERT(condition) assert(condition)
-#endif  // USING_V8_SHARED
+#endif
 
 namespace v8 {
 
 
-#ifndef USING_V8_SHARED
+#ifndef V8_SHARED
 LineEditor *LineEditor::first_ = NULL;
 const char* Shell::kHistoryFileName = ".d8_history";
 
@@ -116,20 +117,20 @@ CounterCollection Shell::local_counters_;
 CounterCollection* Shell::counters_ = &local_counters_;
 i::Mutex* Shell::context_mutex_(i::OS::CreateMutex());
 Persistent<Context> Shell::utility_context_;
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
 
 Persistent<Context> Shell::evaluation_context_;
 ShellOptions Shell::options;
 const char* Shell::kPrompt = "d8> ";
 
 
-#ifndef USING_V8_SHARED
+#ifndef V8_SHARED
 bool CounterMap::Match(void* key1, void* key2) {
   const char* name1 = reinterpret_cast<const char*>(key1);
   const char* name2 = reinterpret_cast<const char*>(key2);
   return strcmp(name1, name2) == 0;
 }
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
 
 
 // Converts a V8 value to a C string.
@@ -143,11 +144,11 @@ bool Shell::ExecuteString(Handle<String> source,
                           Handle<Value> name,
                           bool print_result,
                           bool report_exceptions) {
-#ifndef USING_V8_SHARED
+#ifndef V8_SHARED
   bool FLAG_debugger = i::FLAG_debugger;
 #else
   bool FLAG_debugger = false;
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
   HandleScope handle_scope;
   TryCatch try_catch;
   options.script_executed = true;
@@ -175,8 +176,8 @@ bool Shell::ExecuteString(Handle<String> source,
         // If all went well and the result wasn't undefined then print
         // the returned value.
         v8::String::Utf8Value str(result);
-        const char* cstr = ToCString(str);
-        printf("%s\n", cstr);
+        fwrite(*str, sizeof(**str), str.length(), stdout);
+        printf("\n");
       }
       return true;
     }
@@ -199,12 +200,24 @@ Handle<Value> Shell::Write(const Arguments& args) {
       printf(" ");
     }
     v8::String::Utf8Value str(args[i]);
-    int n = fwrite(*str, sizeof(**str), str.length(), stdout);
+    int n = static_cast<int>(fwrite(*str, sizeof(**str), str.length(), stdout));
     if (n != str.length()) {
       printf("Error in fwrite\n");
       exit(1);
     }
   }
+  return Undefined();
+}
+
+
+Handle<Value> Shell::EnableProfiler(const Arguments& args) {
+  V8::ResumeProfiler();
+  return Undefined();
+}
+
+
+Handle<Value> Shell::DisableProfiler(const Arguments& args) {
+  V8::PauseProfiler();
   return Undefined();
 }
 
@@ -226,17 +239,24 @@ Handle<Value> Shell::ReadLine(const Arguments& args) {
   static const int kBufferSize = 256;
   char buffer[kBufferSize];
   Handle<String> accumulator = String::New("");
-  bool linebreak;
   int length;
-  do {  // Repeat if the line ends with an escape '\'.
-    // fgets got an error. Just give up.
+  while (true) {
+    // Continue reading if the line ends with an escape '\\' or the line has
+    // not been fully read into the buffer yet (does not end with '\n').
+    // If fgets gets an error, just give up.
     if (fgets(buffer, kBufferSize, stdin) == NULL) return Null();
-    length = strlen(buffer);
-    linebreak = (length > 1 && buffer[length-2] == '\\');
-    if (linebreak) buffer[length-2] = '\n';
-    accumulator = String::Concat(accumulator, String::New(buffer, length-1));
-  } while (linebreak);
-  return accumulator;
+    length = static_cast<int>(strlen(buffer));
+    if (length == 0) {
+      return accumulator;
+    } else if (buffer[length-1] != '\n') {
+      accumulator = String::Concat(accumulator, String::New(buffer, length));
+    } else if (length > 1 && buffer[length-2] == '\\') {
+      buffer[length-2] = '\n';
+      accumulator = String::Concat(accumulator, String::New(buffer, length-1));
+    } else {
+      return String::Concat(accumulator, String::New(buffer, length-1));
+    }
+  }
 }
 
 
@@ -269,9 +289,9 @@ Handle<Value> Shell::CreateExternalArray(const Arguments& args,
         String::New("Array constructor needs one parameter."));
   }
   static const int kMaxLength = 0x3fffffff;
-#ifndef USING_V8_SHARED
+#ifndef V8_SHARED
   ASSERT(kMaxLength == i::ExternalArray::kMaxLength);
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
   size_t length = 0;
   if (args[0]->IsUint32()) {
     length = args[0]->Uint32Value();
@@ -299,9 +319,12 @@ Handle<Value> Shell::CreateExternalArray(const Arguments& args,
   Persistent<Object> persistent_array = Persistent<Object>::New(array);
   persistent_array.MakeWeak(data, ExternalArrayWeakCallback);
   persistent_array.MarkIndependent();
-  array->SetIndexedPropertiesToExternalArrayData(data, type, length);
-  array->Set(String::New("length"), Int32::New(length), ReadOnly);
-  array->Set(String::New("BYTES_PER_ELEMENT"), Int32::New(element_size));
+  array->SetIndexedPropertiesToExternalArrayData(data, type,
+                                                 static_cast<int>(length));
+  array->Set(String::New("length"),
+             Int32::New(static_cast<int32_t>(length)), ReadOnly);
+  array->Set(String::New("BYTES_PER_ELEMENT"),
+             Int32::New(static_cast<int32_t>(element_size)));
   return array;
 }
 
@@ -368,9 +391,9 @@ Handle<Value> Shell::Yield(const Arguments& args) {
 
 Handle<Value> Shell::Quit(const Arguments& args) {
   int exit_code = args[0]->Int32Value();
-#ifndef USING_V8_SHARED
+#ifndef V8_SHARED
   OnExit();
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
   exit(exit_code);
   return Undefined();
 }
@@ -419,7 +442,7 @@ void Shell::ReportException(v8::TryCatch* try_catch) {
 }
 
 
-#ifndef USING_V8_SHARED
+#ifndef V8_SHARED
 Handle<Array> Shell::GetCompletions(Handle<String> text, Handle<String> full) {
   HandleScope handle_scope;
   Context::Scope context_scope(utility_context_);
@@ -454,10 +477,10 @@ Handle<Value> Shell::DebugCommandToJSONRequest(Handle<String> command) {
   return val;
 }
 #endif  // ENABLE_DEBUGGER_SUPPORT
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
 
 
-#ifndef USING_V8_SHARED
+#ifndef V8_SHARED
 int32_t* Counter::Bind(const char* name, bool is_histogram) {
   int i;
   for (i = 0; i < kMaxNameSize - 1 && name[i]; i++)
@@ -605,7 +628,7 @@ void Shell::InstallUtilityScript() {
   }
 #endif  // ENABLE_DEBUGGER_SUPPORT
 }
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
 
 
 #ifdef COMPRESS_STARTUP_DATA_BZ2
@@ -645,6 +668,10 @@ Handle<ObjectTemplate> Shell::CreateGlobalTemplate() {
   global_template->Set(String::New("load"), FunctionTemplate::New(Load));
   global_template->Set(String::New("quit"), FunctionTemplate::New(Quit));
   global_template->Set(String::New("version"), FunctionTemplate::New(Version));
+  global_template->Set(String::New("enableProfiler"),
+                       FunctionTemplate::New(EnableProfiler));
+  global_template->Set(String::New("disableProfiler"),
+                       FunctionTemplate::New(DisableProfiler));
 
   // Bind the handlers for external arrays.
   global_template->Set(String::New("Int8Array"),
@@ -667,16 +694,16 @@ Handle<ObjectTemplate> Shell::CreateGlobalTemplate() {
                        FunctionTemplate::New(PixelArray));
 
 #ifdef LIVE_OBJECT_LIST
-  global_template->Set(String::New("lol_is_enabled"), Boolean::New(true));
+  global_template->Set(String::New("lol_is_enabled"), True());
 #else
-  global_template->Set(String::New("lol_is_enabled"), Boolean::New(false));
+  global_template->Set(String::New("lol_is_enabled"), False());
 #endif
 
-#ifndef USING_V8_SHARED
+#if !defined(V8_SHARED) && !defined(_WIN32) && !defined(_WIN64)
   Handle<ObjectTemplate> os_templ = ObjectTemplate::New();
   AddOSMethods(os_templ);
   global_template->Set(String::New("os"), os_templ);
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
 
   return global_template;
 }
@@ -692,7 +719,7 @@ void Shell::Initialize() {
   }
 #endif
 
-#ifndef USING_V8_SHARED
+#ifndef V8_SHARED
   Shell::counter_map_ = new CounterMap();
   // Set up counters
   if (i::StrLength(i::FLAG_map_counters) != 0)
@@ -702,10 +729,10 @@ void Shell::Initialize() {
     V8::SetCreateHistogramFunction(CreateHistogram);
     V8::SetAddHistogramSampleFunction(AddHistogramSample);
   }
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
   if (options.test_shell) return;
 
-#ifndef USING_V8_SHARED
+#ifndef V8_SHARED
   Locker lock;
   HandleScope scope;
   Handle<ObjectTemplate> global_template = CreateGlobalTemplate();
@@ -717,21 +744,22 @@ void Shell::Initialize() {
     v8::Debug::EnableAgent("d8 shell", i::FLAG_debugger_port, true);
   }
 #endif  // ENABLE_DEBUGGER_SUPPORT
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
 }
 
 
 Persistent<Context> Shell::CreateEvaluationContext() {
-#ifndef USING_V8_SHARED
+#ifndef V8_SHARED
   // This needs to be a critical section since this is not thread-safe
   i::ScopedLock lock(context_mutex_);
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
   // Initialize the global objects
   Handle<ObjectTemplate> global_template = CreateGlobalTemplate();
   Persistent<Context> context = Context::New(NULL, global_template);
+  ASSERT(!context.IsEmpty());
   Context::Scope scope(context);
 
-#ifndef USING_V8_SHARED
+#ifndef V8_SHARED
   i::JSArguments js_args = i::FLAG_js_arguments;
   i::Handle<i::FixedArray> arguments_array =
       FACTORY->NewFixedArray(js_args.argc());
@@ -744,12 +772,12 @@ Persistent<Context> Shell::CreateEvaluationContext() {
       FACTORY->NewJSArrayWithElements(arguments_array);
   context->Global()->Set(String::New("arguments"),
                          Utils::ToLocal(arguments_jsarray));
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
   return context;
 }
 
 
-#ifndef USING_V8_SHARED
+#ifndef V8_SHARED
 void Shell::OnExit() {
   if (i::FLAG_dump_counters) {
     printf("+----------------------------------------+-------------+\n");
@@ -769,18 +797,34 @@ void Shell::OnExit() {
   if (counters_file_ != NULL)
     delete counters_file_;
 }
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
+
+
+static FILE* FOpen(const char* path, const char* mode) {
+#if (defined(_WIN32) || defined(_WIN64))
+  FILE* result;
+  if (fopen_s(&result, path, mode) == 0) {
+    return result;
+  } else {
+    return NULL;
+  }
+#else
+  FILE* file = fopen(path, mode);
+  if (file == NULL) return NULL;
+  struct stat file_stat;
+  if (fstat(fileno(file), &file_stat) != 0) return NULL;
+  bool is_regular_file = ((file_stat.st_mode & S_IFREG) != 0);
+  if (is_regular_file) return file;
+  fclose(file);
+  return NULL;
+#endif
+}
 
 
 static char* ReadChars(const char* name, int* size_out) {
   // Release the V8 lock while reading files.
   v8::Unlocker unlocker(Isolate::GetCurrent());
-#ifndef USING_V8_SHARED
-  FILE* file = i::OS::FOpen(name, "rb");
-#else
-  // TODO(yangguo@chromium.org): reading from a directory hangs!
-  FILE* file = fopen(name, "rb");
-#endif  // USING_V8_SHARED
+  FILE* file = FOpen(name, "rb");
   if (file == NULL) return NULL;
 
   fseek(file, 0, SEEK_END);
@@ -790,7 +834,7 @@ static char* ReadChars(const char* name, int* size_out) {
   char* chars = new char[size + 1];
   chars[size] = '\0';
   for (int i = 0; i < size;) {
-    int read = fread(&chars[i], 1, size - i, file);
+    int read = static_cast<int>(fread(&chars[i], 1, size - i, file));
     i += read;
   }
   fclose(file);
@@ -799,7 +843,7 @@ static char* ReadChars(const char* name, int* size_out) {
 }
 
 
-#ifndef USING_V8_SHARED
+#ifndef V8_SHARED
 static char* ReadToken(char* data, char token) {
   char* next = i::OS::StrChr(data, token);
   if (next != NULL) {
@@ -819,7 +863,7 @@ static char* ReadLine(char* data) {
 static char* ReadWord(char* data) {
   return ReadToken(data, ' ');
 }
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
 
 
 // Reads a file into a v8 string.
@@ -836,9 +880,9 @@ Handle<String> Shell::ReadFile(const char* name) {
 void Shell::RunShell() {
   Locker locker;
   Context::Scope context_scope(evaluation_context_);
-  HandleScope handle_scope;
+  HandleScope outer_scope;
   Handle<String> name = String::New("(d8)");
-#ifndef USING_V8_SHARED
+#ifndef V8_SHARED
   LineEditor* editor = LineEditor::Get();
   printf("V8 version %s [console: %s]\n", V8::GetVersion(), editor->name());
   if (i::FLAG_debugger) {
@@ -849,6 +893,7 @@ void Shell::RunShell() {
     i::SmartPointer<char> input = editor->Prompt(Shell::kPrompt);
     if (input.is_empty()) break;
     editor->AddHistory(*input);
+    HandleScope inner_scope;
     ExecuteString(String::New(*input), name, true, true);
   }
   editor->Close();
@@ -859,14 +904,15 @@ void Shell::RunShell() {
     char buffer[kBufferSize];
     printf("%s", Shell::kPrompt);
     if (fgets(buffer, kBufferSize, stdin) == NULL) break;
+    HandleScope inner_scope;
     ExecuteString(String::New(buffer), name, true, true);
   }
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
   printf("\n");
 }
 
 
-#ifndef USING_V8_SHARED
+#ifndef V8_SHARED
 class ShellThread : public i::Thread {
  public:
   ShellThread(int no, i::Vector<const char> files)
@@ -919,7 +965,7 @@ void ShellThread::Run() {
     ptr = next_line;
   }
 }
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
 
 
 void SourceGroup::ExitShell(int exit_code) {
@@ -966,32 +1012,16 @@ void SourceGroup::Execute() {
 
 
 Handle<String> SourceGroup::ReadFile(const char* name) {
-#ifndef USING_V8_SHARED
-  FILE* file = i::OS::FOpen(name, "rb");
-#else
-  // TODO(yangguo@chromium.org): reading from a directory hangs!
-  FILE* file = fopen(name, "rb");
-#endif  // USING_V8_SHARED
-  if (file == NULL) return Handle<String>();
-
-  fseek(file, 0, SEEK_END);
-  int size = ftell(file);
-  rewind(file);
-
-  char* chars = new char[size + 1];
-  chars[size] = '\0';
-  for (int i = 0; i < size;) {
-    int read = fread(&chars[i], 1, size - i, file);
-    i += read;
-  }
-  fclose(file);
+  int size;
+  const char* chars = ReadChars(name, &size);
+  if (chars == NULL) return Handle<String>();
   Handle<String> result = String::New(chars, size);
   delete[] chars;
   return result;
 }
 
 
-#ifndef USING_V8_SHARED
+#ifndef V8_SHARED
 i::Thread::Options SourceGroup::GetThreadOptions() {
   i::Thread::Options options;
   options.name = "IsolateThread";
@@ -1007,7 +1037,7 @@ i::Thread::Options SourceGroup::GetThreadOptions() {
 void SourceGroup::ExecuteInThread() {
   Isolate* isolate = Isolate::New();
   do {
-    if (next_semaphore_ != NULL) next_semaphore_->Wait();
+    if (!next_semaphore_.is_empty()) next_semaphore_->Wait();
     {
       Isolate::Scope iscope(isolate);
       Locker lock(isolate);
@@ -1019,15 +1049,15 @@ void SourceGroup::ExecuteInThread() {
       }
       context.Dispose();
     }
-    if (done_semaphore_ != NULL) done_semaphore_->Signal();
+    if (!done_semaphore_.is_empty()) done_semaphore_->Signal();
   } while (!Shell::options.last_run);
   isolate->Dispose();
 }
 
 
 void SourceGroup::StartExecuteInThread() {
-  if (thread_ == NULL) {
-    thread_ = new IsolateThread(this);
+  if (thread_.is_empty()) {
+    thread_ = i::SmartPointer<i::Thread>(new IsolateThread(this));
     thread_->Start();
   }
   next_semaphore_->Signal();
@@ -1035,15 +1065,14 @@ void SourceGroup::StartExecuteInThread() {
 
 
 void SourceGroup::WaitForThread() {
-  if (thread_ == NULL) return;
+  if (thread_.is_empty()) return;
   if (Shell::options.last_run) {
     thread_->Join();
-    thread_ = NULL;
   } else {
     done_semaphore_->Wait();
   }
 }
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
 
 
 bool Shell::SetOptions(int argc, char* argv[]) {
@@ -1065,23 +1094,23 @@ bool Shell::SetOptions(int argc, char* argv[]) {
       options.test_shell = true;
       argv[i] = NULL;
     } else if (strcmp(argv[i], "--preemption") == 0) {
-#ifdef USING_V8_SHARED
+#ifdef V8_SHARED
       printf("D8 with shared library does not support multi-threading\n");
       return false;
 #else
       options.use_preemption = true;
       argv[i] = NULL;
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
     } else if (strcmp(argv[i], "--no-preemption") == 0) {
-#ifdef USING_V8_SHARED
+#ifdef V8_SHARED
       printf("D8 with shared library does not support multi-threading\n");
       return false;
 #else
       options.use_preemption = false;
       argv[i] = NULL;
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
     } else if (strcmp(argv[i], "--preemption-interval") == 0) {
-#ifdef USING_V8_SHARED
+#ifdef V8_SHARED
       printf("D8 with shared library does not support multi-threading\n");
       return false;
 #else
@@ -1100,19 +1129,19 @@ bool Shell::SetOptions(int argc, char* argv[]) {
         printf("Missing value for --preemption-interval\n");
         return false;
       }
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
     } else if (strcmp(argv[i], "-f") == 0) {
       // Ignore any -f flags for compatibility with other stand-alone
       // JavaScript engines.
       continue;
     } else if (strcmp(argv[i], "--isolate") == 0) {
-#ifdef USING_V8_SHARED
+#ifdef V8_SHARED
       printf("D8 with shared library does not support multi-threading\n");
       return false;
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
       options.num_isolates++;
     }
-#ifdef USING_V8_SHARED
+#ifdef V8_SHARED
     else if (strcmp(argv[i], "--dump-counters") == 0) {
       printf("D8 with shared library does not include counters\n");
       return false;
@@ -1123,10 +1152,10 @@ bool Shell::SetOptions(int argc, char* argv[]) {
       printf("Javascript debugger not included\n");
       return false;
     }
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
   }
 
-#ifndef USING_V8_SHARED
+#ifndef V8_SHARED
   // Run parallel threads if we are not using --isolate
   for (int i = 1; i < argc; i++) {
     if (argv[i] == NULL) continue;
@@ -1147,9 +1176,10 @@ bool Shell::SetOptions(int argc, char* argv[]) {
       }
       argv[i] = NULL;
       options.parallel_files->Add(i::Vector<const char>(files, size));
+      delete[] files;
     }
   }
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
 
   v8::V8::SetFlagsFromCommandLine(&argc, argv, true);
 
@@ -1174,7 +1204,7 @@ bool Shell::SetOptions(int argc, char* argv[]) {
 
 
 int Shell::RunMain(int argc, char* argv[]) {
-#ifndef USING_V8_SHARED
+#ifndef V8_SHARED
   i::List<i::Thread*> threads(1);
   if (options.parallel_files != NULL)
     for (int i = 0; i < options.parallel_files->length(); i++) {
@@ -1187,7 +1217,7 @@ int Shell::RunMain(int argc, char* argv[]) {
   for (int i = 1; i < options.num_isolates; ++i) {
     options.isolate_sources[i].StartExecuteInThread();
   }
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
   {  // NOLINT
     Locker lock;
     HandleScope scope;
@@ -1203,17 +1233,17 @@ int Shell::RunMain(int argc, char* argv[]) {
       context.Dispose();
     }
 
-#ifndef USING_V8_SHARED
+#ifndef V8_SHARED
     // Start preemption if threads have been created and preemption is enabled.
     if (options.parallel_files != NULL
         && threads.length() > 0
         && options.use_preemption) {
       Locker::StartPreemption(options.preemption_interval);
     }
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
   }
 
-#ifndef USING_V8_SHARED
+#ifndef V8_SHARED
   for (int i = 1; i < options.num_isolates; ++i) {
     options.isolate_sources[i].WaitForThread();
   }
@@ -1224,9 +1254,7 @@ int Shell::RunMain(int argc, char* argv[]) {
       thread->Join();
       delete thread;
     }
-
-  OnExit();
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
   return 0;
 }
 
@@ -1254,14 +1282,14 @@ int Shell::Main(int argc, char* argv[]) {
   }
 
 
-#if !defined(USING_V8_SHARED) && defined(ENABLE_DEBUGGER_SUPPORT)
+#if !defined(V8_SHARED) && defined(ENABLE_DEBUGGER_SUPPORT)
   // Run remote debugger if requested, but never on --test
   if (i::FLAG_remote_debugger && !options.test_shell) {
     InstallUtilityScript();
     RunRemoteDebugger(i::FLAG_debugger_port);
     return 0;
   }
-#endif  // !USING_V8_SHARED && ENABLE_DEBUGGER_SUPPORT
+#endif  // !V8_SHARED && ENABLE_DEBUGGER_SUPPORT
 
   // Run interactive shell if explicitly requested or if no script has been
   // executed, but never on --test
@@ -1269,13 +1297,17 @@ int Shell::Main(int argc, char* argv[]) {
   if (( options.interactive_shell
       || !options.script_executed )
       && !options.test_shell ) {
-#ifndef USING_V8_SHARED
+#ifndef V8_SHARED
     InstallUtilityScript();
-#endif  // USING_V8_SHARED
+#endif  // V8_SHARED
     RunShell();
   }
 
   V8::Dispose();
+
+#ifndef V8_SHARED
+  OnExit();
+#endif  // V8_SHARED
 
   return result;
 }

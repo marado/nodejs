@@ -9,6 +9,8 @@ namespace node {
 
 class StreamWrap : public HandleWrap {
  public:
+  uv_stream_t* GetStream() { return stream_; }
+
   static void Initialize(v8::Handle<v8::Object> target);
 
   // JavaScript functions
@@ -20,6 +22,7 @@ class StreamWrap : public HandleWrap {
  protected:
   StreamWrap(v8::Handle<v8::Object> object, uv_stream_t* stream);
   virtual ~StreamWrap() { }
+  virtual void SetHandle(uv_handle_t* h);
   void StateChange() { }
   void UpdateWriteQueueSize();
 
@@ -28,7 +31,7 @@ class StreamWrap : public HandleWrap {
 
   // Callbacks for libuv
   static void AfterWrite(uv_write_t* req, int status);
-  static uv_buf_t OnAlloc(uv_stream_t* handle, size_t suggested_size);
+  static uv_buf_t OnAlloc(uv_handle_t* handle, size_t suggested_size);
   static void OnRead(uv_stream_t* handle, ssize_t nread, uv_buf_t buf);
   static void AfterShutdown(uv_shutdown_t* req, int status);
 
