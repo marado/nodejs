@@ -1,3 +1,9 @@
+nodejs (0.4.11-2) unstable; urgency=low
+
+  * Port to libv8 3.4 branch. 
+
+ -- Jérémy Lal <kapouer@melix.org>  Mon, 12 Sep 2011 10:13:32 +0200
+
 nodejs (0.4.11-1) unstable; urgency=low
 
   * New upstream release
