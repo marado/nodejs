@@ -108,22 +108,7 @@ Last-Update: 2011-09-12
      // Make dates with properties first say the date
      if (isDate(value)) {
        base = ' ' + value.toUTCString();
-@@ -284,24 +288,14 @@
- 
- 
- function isRegExp(re) {
--  var s = '' + re;
--  return re instanceof RegExp || // easy case
--         // duck-type for context-switching evalcx case
--         typeof(re) === 'function' &&
--         re.constructor.name === 'RegExp' &&
--         re.compile &&
--         re.test &&
--         re.exec &&
--         s.match(/^\/.*\/[gim]{0,3}$/);
-+  return re instanceof RegExp ||
-+    (typeof re === 'object' && Object.prototype.toString.call(re) === '[object RegExp]');
- }
+@@ -290,11 +294,8 @@
  
  
  function isDate(d) {
