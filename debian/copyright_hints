@@ -870,6 +870,7 @@ Files: AUTHORS
  test/pummel/test-regress-GH-814.js
  test/pummel/test-regress-GH-814_2.js
  test/simple/simple.status
+ test/simple/test-child-process-customfd-bounded.js
  test/simple/test-event-emitter-check-listener-leaks.js
  test/simple/test-http-response-readable.js
  test/simple/test-regress-GH-784.js
@@ -1168,6 +1169,7 @@ Files: lib/_debugger.js
  test/simple/test-child-process-stdin.js
  test/simple/test-child-process-stdout-flush.js
  test/simple/test-cli-eval.js
+ test/simple/test-console-not-call-toString.js
  test/simple/test-console.js
  test/simple/test-crypto.js
  test/simple/test-debugger-client.js
@@ -1250,6 +1252,7 @@ Files: lib/_debugger.js
  test/simple/test-http-keep-alive.js
  test/simple/test-http-malformed-request.js
  test/simple/test-http-many-keep-alive-connections.js
+ test/simple/test-http-multi-line-headers.js
  test/simple/test-http-mutable-headers.js
  test/simple/test-http-parser.js
  test/simple/test-http-proxy.js
@@ -1290,6 +1293,7 @@ Files: lib/_debugger.js
  test/simple/test-net-eaddrinuse.js
  test/simple/test-net-isip.js
  test/simple/test-net-keepalive.js
+ test/simple/test-net-large-string.js
  test/simple/test-net-pingpong.js
  test/simple/test-net-reconnect.js
  test/simple/test-net-server-bind.js
