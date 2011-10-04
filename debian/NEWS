@@ -1,0 +1,11 @@
+nodejs (0.4.12-2) UNRELEASED; urgency=low
+
+    Do not search for modules in /usr/local/lib/nodejs.
+    System-wide search path is only /usr/lib/nodejs, where modules installed
+    by debian packages go.
+
+    Npm 1.0 install path for 'global' modules is /usr/local/lib/node_modules.
+    Using those modules is done with `npm link mymodule` in a project root,
+    not by changing NODE_PATH, nor changing require.paths.
+
+ -- Jérémy Lal <kapouer@melix.org>  Tue, 04 Oct 2011 22:23:43 +0200
