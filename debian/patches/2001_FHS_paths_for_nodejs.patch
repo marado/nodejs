@@ -56,12 +56,12 @@ Last-Update: 2011-02-13
  t = join(w, 'Tools')
 --- a/lib/module.js
 +++ b/lib/module.js
-@@ -422,7 +422,7 @@
+@@ -431,7 +431,7 @@
  };
  
  Module._initPaths = function() {
 -  var paths = [path.resolve(process.execPath, '..', '..', 'lib', 'node')];
-+  var paths = ['/usr/local/lib/nodejs', '/usr/lib/nodejs'];
++  var paths = ['/usr/lib/nodejs'];
  
    if (process.env['HOME']) {
      paths.unshift(path.resolve(process.env['HOME'], '.node_libraries'));
