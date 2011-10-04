@@ -1,3 +1,10 @@
+nodejs (0.4.12-2) UNRELEASED; urgency=low
+
+  * Remove useless patch.
+  * Do not search modules in /usr/local/lib/nodejs.
+
+ -- Jérémy Lal <kapouer@melix.org>  Tue, 04 Oct 2011 22:22:31 +0200
+
 nodejs (0.4.12-1) unstable; urgency=low
 
   * New upstream release 
