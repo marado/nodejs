@@ -1,14 +1,15 @@
 nodejs (0.4.12-2) UNRELEASED; urgency=low
 
-  * Remove useless patch.
+  * Port to libv8 3.5 branch and depend on it.
   * Do not search modules in /usr/local/lib/nodejs.
+  * Remove useless debian/patches/1006_version.patch
 
  -- Jérémy Lal <kapouer@melix.org>  Tue, 04 Oct 2011 22:22:31 +0200
 
 nodejs (0.4.12-1) unstable; urgency=low
 
   * New upstream release 
-  * Port to libv8 3.4 branch and depend on it., Closes:bug#642731.
+  * Port to libv8 3.4 branch and depend on it. Closes:bug#642731.
   * debian/gbp.conf: fix syntax, filter 'doc/logos/*' or else
     pristine-tar will complain.
 
