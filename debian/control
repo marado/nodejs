@@ -12,7 +12,7 @@ Build-Depends: autotools-dev,
  debhelper,
  dh-buildinfo,
  python,
- libv8-dev (>= 3.4.14),
+ libv8-dev (>= 3.6.6),
  binutils,
  libssl-dev (>= 0.9.8),
  pkg-config,
@@ -30,7 +30,7 @@ Architecture: any
 Depends: nodejs (= ${binary:Version}),
  ${misc:Depends},
  python,
- libv8-dev (>= 3.4.14),
+ libv8-dev (>= 3.6.6),
  libssl-dev (>= 0.9.8)
 Description: Development files for Node.js
  Node.js provides an event-based server-side javascript engine.
