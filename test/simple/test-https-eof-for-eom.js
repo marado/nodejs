@@ -19,7 +19,7 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-// libuv-broken
+
 
 
 // I hate HTTP. One way of terminating an HTTP response is to not send
@@ -73,7 +73,7 @@ var gotEnd = false;
 var bodyBuffer = '';
 
 server.listen(common.PORT, function() {
-    console.log('1) Making Request');
+  console.log('1) Making Request');
   var req = https.get({ port: common.PORT }, function(res) {
     server.close();
     console.log('3) Client got response headers.');

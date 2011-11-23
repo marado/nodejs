@@ -19,7 +19,7 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-// libuv-broken
+
 
 
 // Server sends a large string. Client counts bytes and pauses every few
@@ -33,7 +33,7 @@ var fs = require('fs');
 var body = '';
 
 process.stdout.write('build body...');
-for (var i = 0; i < 10*1024*1024; i++) {
+for (var i = 0; i < 10 * 1024 * 1024; i++) {
   body += 'hello world\n';
 }
 process.stdout.write('done\n');

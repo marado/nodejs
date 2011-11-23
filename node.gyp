@@ -1,9 +1,13 @@
 {
   'variables': {
     'v8_use_snapshot': 'true',
+    # Turn off -Werror in V8
+    # See http://codereview.chromium.org/8159015
+    'werror': '',
     'target_arch': 'ia32',
     'node_use_dtrace': 'false',
     'node_use_openssl%': 'true',
+    'node_use_system_openssl%': 'false',
     'library_files': [
       'src/node.js',
       'lib/_debugger.js',
@@ -11,25 +15,20 @@
       'lib/assert.js',
       'lib/buffer.js',
       'lib/buffer_ieee754.js',
-      'lib/child_process_legacy.js',
-      'lib/child_process_uv.js',
+      'lib/child_process.js',
       'lib/console.js',
       'lib/constants.js',
       'lib/crypto.js',
-      'lib/dgram_legacy.js',
-      'lib/dgram_uv.js',
-      'lib/dns_legacy.js',
-      'lib/dns_uv.js',
+      'lib/cluster.js',
+      'lib/dgram.js',
+      'lib/dns.js',
       'lib/events.js',
       'lib/freelist.js',
       'lib/fs.js',
       'lib/http.js',
-      'lib/http2.js',
       'lib/https.js',
-      'lib/https2.js',
       'lib/module.js',
-      'lib/net_legacy.js',
-      'lib/net_uv.js',
+      'lib/net.js',
       'lib/os.js',
       'lib/path.js',
       'lib/punycode.js',
@@ -39,15 +38,13 @@
       'lib/stream.js',
       'lib/string_decoder.js',
       'lib/sys.js',
-      'lib/timers_legacy.js',
-      'lib/timers_uv.js',
+      'lib/timers.js',
       'lib/tls.js',
       'lib/tty.js',
-      'lib/tty_posix.js',
-      'lib/tty_win32.js',
       'lib/url.js',
       'lib/util.js',
       'lib/vm.js',
+      'lib/zlib.js',
     ],
   },
 
@@ -60,6 +57,7 @@
         'deps/http_parser/http_parser.gyp:http_parser',
         'deps/v8/tools/gyp/v8-node.gyp:v8',
         'deps/uv/uv.gyp:uv',
+        'deps/zlib/zlib.gyp:zlib',
         'node_js2c#host',
       ],
 
@@ -70,12 +68,12 @@
       ],
 
       'sources': [
+        'src/fs_event_wrap.cc',
         'src/cares_wrap.cc',
         'src/handle_wrap.cc',
         'src/node.cc',
         'src/node_buffer.cc',
         'src/node_constants.cc',
-        'src/node_dtrace.cc',
         'src/node_extensions.cc',
         'src/node_file.cc',
         'src/node_http_parser.cc',
@@ -84,11 +82,12 @@
         'src/node_os.cc',
         'src/node_script.cc',
         'src/node_string.cc',
+        'src/node_zlib.cc',
         'src/pipe_wrap.cc',
-        'src/stdio_wrap.cc',
         'src/stream_wrap.cc',
         'src/tcp_wrap.cc',
         'src/timer_wrap.cc',
+        'src/tty_wrap.cc',
         'src/process_wrap.cc',
         'src/v8_typed_array.cc',
         'src/udp_wrap.cc',
@@ -96,20 +95,15 @@
         'src/handle_wrap.h',
         'src/node.h',
         'src/node_buffer.h',
-        'src/node_cares.h',
-        'src/node_child_process.h',
         'src/node_constants.h',
         'src/node_crypto.h',
-        'src/node_dtrace.h',
         'src/node_extensions.h',
         'src/node_file.h',
         'src/node_http_parser.h',
         'src/node_javascript.h',
-        'src/node_net.h',
         'src/node_os.h',
         'src/node_root_certs.h',
         'src/node_script.h',
-        'src/node_stdio.h',
         'src/node_string.h',
         'src/node_version.h',
         'src/pipe_wrap.h',
@@ -123,6 +117,8 @@
         '<(SHARED_INTERMEDIATE_DIR)/node_natives.h',
         # javascript files to make for an even more pleasant IDE experience
         '<@(library_files)',
+        # node.gyp is added to the project by default.
+        'common.gypi',
       ],
 
       'defines': [
@@ -136,23 +132,30 @@
         [ 'node_use_openssl=="true"', {
           'defines': [ 'HAVE_OPENSSL=1' ],
           'sources': [ 'src/node_crypto.cc' ],
-          'dependencies': [ './deps/openssl/openssl.gyp:openssl' ]
+          'conditions': [
+            [ 'node_use_system_openssl=="false"', {
+              'dependencies': [ './deps/openssl/openssl.gyp:openssl' ],
+            }]]
         }, {
           'defines': [ 'HAVE_OPENSSL=0' ]
         }],
 
         [ 'node_use_dtrace=="true"', {
           'sources': [
-            'src/node_provider.h', # why does this get generated into src and not SHARED_INTERMEDIATE_DIR?
+            'src/node_dtrace.cc',
+            'src/node_dtrace.h',
+            # why does node_provider.h get generated into src and not
+            # SHARED_INTERMEDIATE_DIR?
+            'src/node_provider.h',
           ],
         }],
 
         [ 'OS=="win"', {
           'sources': [
             'src/platform_win32.cc',
-            'src/node_stdio_win32.cc',
             # headers to make for a more pleasant IDE experience
             'src/platform_win32.h',
+            'tools/msvs/res/node.rc',
           ],
           'defines': [
             'FD_SETSIZE=1024',
@@ -163,14 +166,9 @@
         },{ # POSIX
           'defines': [ '__POSIX__' ],
           'sources': [
-            'src/node_cares.cc',
-            'src/node_net.cc',
             'src/node_signal_watcher.cc',
             'src/node_stat_watcher.cc',
             'src/node_io_watcher.cc',
-            'src/node_stdio.cc',
-            'src/node_child_process.cc',
-            'src/node_timer.cc'
           ]
         }],
         [ 'OS=="mac"', {
@@ -183,7 +181,20 @@
             '-ldl',
             '-lutil' # needed for openpty
           ],
-        }]
+        }],
+        [ 'OS=="freebsd"', {
+          'sources': [ 'src/platform_freebsd.cc' ],
+          'libraries': [
+            '-lutil',
+            '-lkvm',
+          ],
+        }],
+        [ 'OS=="solaris"', {
+          'sources': [ 'src/platform_sunos.cc' ],
+          'libraries': [
+            '-lkstat',
+          ],
+        }],
       ],
       'msvs-settings': {
         'VCLinkerTool': {

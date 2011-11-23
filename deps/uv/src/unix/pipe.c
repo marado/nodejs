@@ -29,31 +29,18 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-int uv_pipe_init(uv_loop_t* loop, uv_pipe_t* handle) {
-  memset(handle, 0, sizeof *handle);
 
-  uv__handle_init(loop, (uv_handle_t*)handle, UV_NAMED_PIPE);
+int uv_pipe_init(uv_loop_t* loop, uv_pipe_t* handle, int ipc) {
+  uv__stream_init(loop, (uv_stream_t*)handle, UV_NAMED_PIPE);
   loop->counters.pipe_init++;
-
-  handle->type = UV_NAMED_PIPE;
-  handle->pipe_fname = NULL; /* Only set by listener. */
-
-  ev_init(&handle->write_watcher, uv__stream_io);
-  ev_init(&handle->read_watcher, uv__stream_io);
-  handle->write_watcher.data = handle;
-  handle->read_watcher.data = handle;
-  handle->accepted_fd = -1;
-  handle->fd = -1;
-
-  ngx_queue_init(&handle->write_completed_queue);
-  ngx_queue_init(&handle->write_queue);
-
+  handle->pipe_fname = NULL;
+  handle->ipc = ipc;
   return 0;
 }
 
 
 int uv_pipe_bind(uv_pipe_t* handle, const char* name) {
-  struct sockaddr_un sun;
+  struct sockaddr_un saddr;
   const char* pipe_fname;
   int saved_errno;
   int sockfd;
@@ -68,13 +55,13 @@ int uv_pipe_bind(uv_pipe_t* handle, const char* name) {
 
   /* Already bound? */
   if (handle->fd >= 0) {
-    uv_err_new_artificial(handle->loop, UV_EINVAL);
+    uv__set_artificial_error(handle->loop, UV_EINVAL);
     goto out;
   }
 
   /* Make a copy of the file name, it outlives this function's scope. */
   if ((pipe_fname = strdup(name)) == NULL) {
-    uv_err_new(handle->loop, ENOMEM);
+    uv__set_sys_error(handle->loop, ENOMEM);
     goto out;
   }
 
@@ -82,15 +69,15 @@ int uv_pipe_bind(uv_pipe_t* handle, const char* name) {
   name = NULL;
 
   if ((sockfd = uv__socket(AF_UNIX, SOCK_STREAM, 0)) == -1) {
-    uv_err_new(handle->loop, errno);
+    uv__set_sys_error(handle->loop, errno);
     goto out;
   }
 
-  memset(&sun, 0, sizeof sun);
-  uv__strlcpy(sun.sun_path, pipe_fname, sizeof(sun.sun_path));
-  sun.sun_family = AF_UNIX;
+  memset(&saddr, 0, sizeof saddr);
+  uv__strlcpy(saddr.sun_path, pipe_fname, sizeof(saddr.sun_path));
+  saddr.sun_family = AF_UNIX;
 
-  if (bind(sockfd, (struct sockaddr*)&sun, sizeof sun) == -1) {
+  if (bind(sockfd, (struct sockaddr*)&saddr, sizeof saddr) == -1) {
     /* On EADDRINUSE:
      *
      * We hold the file lock so there is no other process listening
@@ -101,9 +88,9 @@ int uv_pipe_bind(uv_pipe_t* handle, const char* name) {
      */
     if (errno != EADDRINUSE
         || unlink(pipe_fname) == -1
-        || bind(sockfd, (struct sockaddr*)&sun, sizeof sun) == -1) {
+        || bind(sockfd, (struct sockaddr*)&saddr, sizeof saddr) == -1) {
       /* Convert ENOENT to EACCES for compatibility with Windows. */
-      uv_err_new(handle->loop, (errno == ENOENT) ? EACCES : errno);
+      uv__set_sys_error(handle->loop, (errno == ENOENT) ? EACCES : errno);
       goto out;
     }
   }
@@ -140,13 +127,13 @@ int uv_pipe_listen(uv_pipe_t* handle, int backlog, uv_connection_cb cb) {
   status = -1;
 
   if (handle->fd == -1) {
-    uv_err_new_artificial(handle->loop, UV_EINVAL);
+    uv__set_artificial_error(handle->loop, UV_EINVAL);
     goto out;
   }
   assert(handle->fd >= 0);
 
   if ((status = listen(handle->fd, backlog)) == -1) {
-    uv_err_new(handle->loop, errno);
+    uv__set_sys_error(handle->loop, errno);
   } else {
     handle->connection_cb = cb;
     ev_io_init(&handle->read_watcher, uv__pipe_accept, handle->fd, EV_READ);
@@ -185,11 +172,16 @@ int uv_pipe_cleanup(uv_pipe_t* handle) {
 }
 
 
-int uv_pipe_connect(uv_connect_t* req,
+void uv_pipe_open(uv_pipe_t* handle, uv_file fd) {
+  uv__stream_open((uv_stream_t*)handle, fd, UV_READABLE | UV_WRITABLE);
+}
+
+
+void uv_pipe_connect(uv_connect_t* req,
                     uv_pipe_t* handle,
                     const char* name,
                     uv_connect_cb cb) {
-  struct sockaddr_un sun;
+  struct sockaddr_un saddr;
   int saved_errno;
   int sockfd;
   int status;
@@ -200,24 +192,24 @@ int uv_pipe_connect(uv_connect_t* req,
   status = -1;
 
   if ((sockfd = uv__socket(AF_UNIX, SOCK_STREAM, 0)) == -1) {
-    uv_err_new(handle->loop, errno);
+    uv__set_sys_error(handle->loop, errno);
     goto out;
   }
 
-  memset(&sun, 0, sizeof sun);
-  uv__strlcpy(sun.sun_path, name, sizeof(sun.sun_path));
-  sun.sun_family = AF_UNIX;
+  memset(&saddr, 0, sizeof saddr);
+  uv__strlcpy(saddr.sun_path, name, sizeof(saddr.sun_path));
+  saddr.sun_family = AF_UNIX;
 
   /* We don't check for EINPROGRESS. Think about it: the socket
    * is either there or not.
    */
   do {
-    r = connect(sockfd, (struct sockaddr*)&sun, sizeof sun);
+    r = connect(sockfd, (struct sockaddr*)&saddr, sizeof saddr);
   }
   while (r == -1 && errno == EINTR);
 
   if (r == -1) {
-    uv_err_new(handle->loop, errno);
+    status = errno;
     uv__close(sockfd);
     goto out;
   }
@@ -245,13 +237,12 @@ out:
    * return 0 and let the callback handle errors.
    */
   errno = saved_errno;
-  return 0;
 }
 
 
 /* TODO merge with uv__server_io()? */
 void uv__pipe_accept(EV_P_ ev_io* watcher, int revents) {
-  struct sockaddr_un sun;
+  struct sockaddr_un saddr;
   uv_pipe_t* pipe;
   int saved_errno;
   int sockfd;
@@ -262,12 +253,12 @@ void uv__pipe_accept(EV_P_ ev_io* watcher, int revents) {
   assert(pipe->type == UV_NAMED_PIPE);
   assert(pipe->pipe_fname != NULL);
 
-  sockfd = uv__accept(pipe->fd, (struct sockaddr *)&sun, sizeof sun);
+  sockfd = uv__accept(pipe->fd, (struct sockaddr *)&saddr, sizeof saddr);
   if (sockfd == -1) {
     if (errno == EAGAIN || errno == EWOULDBLOCK) {
       assert(0 && "EAGAIN on uv__accept(pipefd)");
     } else {
-      uv_err_new(pipe->loop, errno);
+      uv__set_sys_error(pipe->loop, errno);
     }
   } else {
     pipe->accepted_fd = sockfd;

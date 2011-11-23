@@ -33,7 +33,7 @@
 /* The resolution of the high-resolution clock. */
 static int64_t uv_ticks_per_msec_ = 0;
 static uint64_t uv_hrtime_frequency_ = 0;
-static char uv_hrtime_initialized_ = 0;
+static uv_once_t uv_hrtime_init_guard_ = UV_ONCE_INIT;
 
 
 void uv_update_time(uv_loop_t* loop) {
@@ -57,32 +57,32 @@ int64_t uv_now(uv_loop_t* loop) {
   return loop->time;
 }
 
-/* TODO: thread safety */
+
+static void uv_hrtime_init(void) {
+  LARGE_INTEGER frequency;
+
+  if (!QueryPerformanceFrequency(&frequency)) {
+    uv_hrtime_frequency_ = 0;
+    return;
+  }
+
+  uv_hrtime_frequency_ = frequency.QuadPart;
+}
+
+
 uint64_t uv_hrtime(void) {
   LARGE_INTEGER counter;
 
-  /* When called for the first time, obtain the high-resolution clock */
-  /* frequency. */
-  if (!uv_hrtime_initialized_) {
-    uv_hrtime_initialized_ = 1;
-
-    if (!QueryPerformanceFrequency(&counter)) {
-      uv_hrtime_frequency_ = 0;
-      /* uv_set_sys_error(loop, GetLastError()); */
-      return 0;
-    }
-
-    uv_hrtime_frequency_ = counter.QuadPart;
-  }
+  uv_once(&uv_hrtime_init_guard_, uv_hrtime_init);
 
   /* If the performance frequency is zero, there's no support. */
   if (!uv_hrtime_frequency_) {
-    /* uv_set_sys_error(loop, ERROR_NOT_SUPPORTED); */
+    /* uv__set_sys_error(loop, ERROR_NOT_SUPPORTED); */
     return 0;
   }
 
   if (!QueryPerformanceCounter(&counter)) {
-    /* uv_set_sys_error(loop, GetLastError()); */
+    /* uv__set_sys_error(loop, GetLastError()); */
     return 0;
   }
 
@@ -181,7 +181,7 @@ int uv_timer_again(uv_timer_t* handle) {
 
   /* If timer_cb is NULL that means that the timer was never started. */
   if (!handle->timer_cb) {
-    uv_set_sys_error(loop, ERROR_INVALID_DATA);
+    uv__set_sys_error(loop, ERROR_INVALID_DATA);
     return -1;
   }
 

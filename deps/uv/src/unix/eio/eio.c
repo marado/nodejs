@@ -108,6 +108,10 @@ static void eio_destroy (eio_req *req);
 
 #define EIO_ENOSYS() EIO_ERRNO (ENOSYS, -1)
 
+#ifdef __sun
+# define futimes(fd, times) futimesat (fd, NULL, times)
+#endif
+
 #ifdef _WIN32
 
   #include <direct.h>
@@ -312,7 +316,7 @@ static int gettimeofday(struct timeval *tv, struct timezone *tz)
 #if HAVE_SENDFILE
 # if __linux
 #  include <sys/sendfile.h>
-# elif __FreeBSD__ || defined __APPLE__
+# elif __FreeBSD__ || __DragonFly__ || defined __APPLE__
 #  include <sys/socket.h>
 #  include <sys/uio.h>
 # elif __hpux

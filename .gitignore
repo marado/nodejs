@@ -19,6 +19,7 @@ node_g
 Debug/
 Release/
 *.sln
+!nodemsi.sln
 *.suo
 *.vcproj
 *.vcxproj
@@ -33,3 +34,4 @@ ipch/
 /options.gypi
 *-nodegyp*
 /gyp-mac-tool
+/dist-osx

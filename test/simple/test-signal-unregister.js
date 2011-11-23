@@ -19,7 +19,7 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-// libuv-broken
+
 
 
 var common = require('../common');
@@ -33,7 +33,7 @@ var childKilled = false, done = false,
 var join = require('path').join;
 
 child = spawn(process.argv[0], [join(common.fixturesDir, 'should_exit.js')]);
-child.addListener('exit', function() {
+child.on('exit', function() {
   if (!done) childKilled = true;
 });
 
@@ -51,6 +51,6 @@ setTimeout(function() {
   }, 200);
 }, 200);
 
-process.addListener('exit', function() {
+process.on('exit', function() {
   assert.ok(childKilled);
 });

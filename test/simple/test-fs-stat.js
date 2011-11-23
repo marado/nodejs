@@ -19,7 +19,7 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-// libuv-broken
+
 
 
 var common = require('../common');
@@ -114,7 +114,7 @@ fs.stat(__filename, function(err, s) {
   }
 });
 
-process.addListener('exit', function() {
+process.on('exit', function() {
   assert.equal(5, success_count);
   assert.equal(false, got_error);
 });

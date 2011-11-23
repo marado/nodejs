@@ -33,7 +33,29 @@
 
 /* The only event loop we support right now */
 static uv_loop_t uv_default_loop_;
-static int uv_default_loop_initialized_ = 0;
+
+/* uv_once intialization guards */
+static uv_once_t uv_init_guard_ = UV_ONCE_INIT;
+static uv_once_t uv_default_loop_init_guard_ = UV_ONCE_INIT;
+
+
+static void uv_init(void) {
+  /* Tell Windows that we will handle critical errors. */
+  SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX |
+    SEM_NOOPENFILEERRORBOX);
+
+  /* Initialize winsock */
+  uv_winsock_init();
+
+  /* Fetch winapi function pointers */
+  uv_winapi_init();
+
+  /* Initialize FS */
+  uv_fs_init();
+
+  /* Initialize console */
+  uv_console_init();
+}
 
 
 static void uv_loop_init(uv_loop_t* loop) {
@@ -64,29 +86,33 @@ static void uv_loop_init(uv_loop_t* loop) {
   loop->ares_active_sockets = 0;
   loop->ares_chan = NULL;
 
-  loop->last_error = uv_ok_;
+  loop->last_err = uv_ok_;
 }
 
 
-uv_loop_t* uv_default_loop() {
-  if (!uv_default_loop_initialized_) {
-    uv_loop_init(&uv_default_loop_);
-    uv_default_loop_initialized_ = 1;
-  }
+static void uv_default_loop_init(void) {
+  /* Intialize libuv itself first */
+  uv_once(&uv_init_guard_, uv_init);
 
+  /* Initialize the main loop */
+  uv_loop_init(&uv_default_loop_);
+}
+
+
+uv_loop_t* uv_default_loop(void) {
+  uv_once(&uv_default_loop_init_guard_, uv_default_loop_init);
   return &uv_default_loop_;
 }
 
 
-void uv_init() {
-  /* Initialize winsock */
-  uv_winsock_init();
+uv_loop_t* uv_loop_new(void) {
+  assert(0 && "implement me");
+  return NULL;
+}
 
-  /* Fetch winapi function pointers */
-  uv_winapi_init();
 
-  /* Initialize FS */
-  uv_fs_init();
+void uv_loop_delete(uv_loop_t* loop) {
+  assert(0 && "implement me");
 }
 
 
@@ -136,7 +162,7 @@ static void uv_poll_ex(uv_loop_t* loop, int block) {
   BOOL success;
   DWORD timeout;
   uv_req_t* req;
-  OVERLAPPED_ENTRY overlappeds[64];
+  OVERLAPPED_ENTRY overlappeds[128];
   ULONG count;
   ULONG i;
 

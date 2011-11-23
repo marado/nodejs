@@ -41,10 +41,11 @@ generator_default_variables = {
   # Special variables that may be used by gyp 'rule' targets.
   # We generate definitions for these variables on the fly when processing a
   # rule.
-  'RULE_INPUT_ROOT': '$root',
-  'RULE_INPUT_PATH': '$source',
-  'RULE_INPUT_EXT': '$ext',
-  'RULE_INPUT_NAME': '$name',
+  'RULE_INPUT_ROOT': '${root}',
+  'RULE_INPUT_DIRNAME': '${dirname}',
+  'RULE_INPUT_PATH': '${source}',
+  'RULE_INPUT_EXT': '${ext}',
+  'RULE_INPUT_NAME': '${name}',
 }
 
 # TODO: enable cross compiling once we figure out:
@@ -195,39 +196,44 @@ class NinjaWriter:
     return os.path.normpath(os.path.join(obj, self.base_dir, path_dir,
                                          path_basename))
 
-  def StampPath(self, name):
-    """Return a path for a stamp file with a particular name.
+  def WriteCollapsedDependencies(self, name, targets):
+    """Given a list of targets, return a dependency list for a single
+    file representing the result of building all the targets.
 
-    Stamp files are used to collapse a dependency on a bunch of files
-    into a single file."""
-    return self.GypPathToUniqueOutput(name + '.stamp')
+    Uses a stamp file if necessary."""
+
+    if len(targets) > 1:
+      stamp = self.GypPathToUniqueOutput(name + '.stamp')
+      targets = self.ninja.build(stamp, 'stamp', targets)
+      self.ninja.newline()
+    return targets
 
   def WriteSpec(self, spec, config):
     """The main entry point for NinjaWriter: write the build rules for a spec.
 
     Returns the path to the build output, or None."""
 
+    self.name = spec['target_name']
+    self.toolset = spec['toolset']
+
     if spec['type'] == 'settings':
       # TODO: 'settings' is not actually part of gyp; it was
       # accidentally introduced somehow into just the Linux build files.
-      return None
-
-    self.name = spec['target_name']
-    self.toolset = spec['toolset']
+      # Remove this (or make it an error) once all the users are fixed.
+      print ("WARNING: %s uses invalid type 'settings'.  " % self.name +
+             "Please fix the source gyp file to use type 'none'.")
+      print "See http://code.google.com/p/chromium/issues/detail?id=96629 ."
+      spec['type'] = 'none'
 
     # Compute predepends for all rules.
     # prebuild is the dependencies this target depends on before
     # running any of its internal steps.
     prebuild = []
     if 'dependencies' in spec:
-      prebuild_deps = []
       for dep in spec['dependencies']:
         if dep in self.target_outputs:
-          prebuild_deps.append(self.target_outputs[dep][0])
-      if prebuild_deps:
-        stamp = self.StampPath('predepends')
-        prebuild = self.ninja.build(stamp, 'stamp', prebuild_deps)
-        self.ninja.newline()
+          prebuild.append(self.target_outputs[dep][0])
+      prebuild = self.WriteCollapsedDependencies('predepends', prebuild)
 
     # Write out actions, rules, and copies.  These must happen before we
     # compile any sources, so compute a list of predependencies for sources
@@ -270,11 +276,7 @@ class NinjaWriter:
     if 'copies' in spec:
       outputs += self.WriteCopies(spec['copies'], prebuild)
 
-    # To simplify downstream build edges, ensure we generate a single
-    # stamp file that represents the results of all of the above.
-    if len(outputs) > 1:
-      stamp = self.StampPath('actions_rules_copies')
-      outputs = self.ninja.build(stamp, 'stamp', outputs)
+    outputs = self.WriteCollapsedDependencies('actions_rules_copies', outputs)
 
     return outputs
 
@@ -322,9 +324,10 @@ class NinjaWriter:
       # First write out a rule for the rule action.
       name = rule['rule_name']
       args = rule['action']
-      description = self.GenerateDescription('RULE',
-                                             rule.get('message', None),
-                                             '%s $source' % name)
+      description = self.GenerateDescription(
+          'RULE',
+          rule.get('message', None),
+          ('%s ' + generator_default_variables['RULE_INPUT_PATH']) % name)
       rule_name = self.WriteNewNinjaRule(name, args, description)
 
       # TODO: if the command references the outputs directly, we should
@@ -333,22 +336,24 @@ class NinjaWriter:
       # Rules can potentially make use of some special variables which
       # must vary per source file.
       # Compute the list of variables we'll need to provide.
-      special_locals = ('source', 'root', 'ext', 'name')
+      special_locals = ('source', 'root', 'dirname', 'ext', 'name')
       needed_variables = set(['source'])
       for argument in args:
         for var in special_locals:
-          if '$' + var in argument:
+          if ('${%s}' % var) in argument:
             needed_variables.add(var)
 
       # For each source file, write an edge that generates all the outputs.
       for source in rule.get('rule_sources', []):
-        basename = os.path.basename(source)
+        dirname, basename = os.path.split(source)
         root, ext = os.path.splitext(basename)
 
         # Gather the list of outputs, expanding $vars if possible.
         outputs = []
         for output in rule['outputs']:
-          outputs.append(output.replace('$root', root))
+          outputs.append(output.replace(
+              generator_default_variables['RULE_INPUT_ROOT'], root).replace(
+                  generator_default_variables['RULE_INPUT_DIRNAME'], dirname))
 
         if int(rule.get('process_outputs_as_sources', False)):
           extra_sources += outputs
@@ -357,6 +362,8 @@ class NinjaWriter:
         for var in needed_variables:
           if var == 'root':
             extra_bindings.append(('root', root))
+          elif var == 'dirname':
+            extra_bindings.append(('dirname', dirname))
           elif var == 'source':
             # '$source' is a parameter to the rule action, which means
             # it shouldn't be converted to a Ninja path.  But we don't
@@ -467,7 +474,7 @@ class NinjaWriter:
     command_map = {
       'executable':      'link',
       'static_library':  'alink',
-      'loadable_module': 'solink',
+      'loadable_module': 'solink_module',
       'shared_library':  'solink',
       'none':            'stamp',
     }
@@ -482,7 +489,7 @@ class NinjaWriter:
                                                     spec.get('libraries', []))))
 
     extra_bindings = []
-    if command == 'solink':
+    if command in ('solink', 'solink_module'):
       extra_bindings.append(('soname', os.path.split(output)[1]))
 
     self.ninja.build(output, command, final_deps,
@@ -529,8 +536,6 @@ class NinjaWriter:
       return '%s%s%s' % (prefix, target, extension)
     elif spec['type'] == 'none':
       return '%s.stamp' % target
-    elif spec['type'] == 'settings':
-      return None
     else:
       raise 'Unhandled output type', spec['type']
 
@@ -656,6 +661,11 @@ def GenerateOutput(target_list, target_dicts, data, params):
     description='SOLINK $out',
     command=('$ld -shared $ldflags -o $out -Wl,-soname=$soname '
              '-Wl,--whole-archive $in -Wl,--no-whole-archive $libs'))
+  master_ninja.rule(
+    'solink_module',
+    description='SOLINK(module) $out',
+    command=('$ld -shared $ldflags -o $out -Wl,-soname=$soname '
+             '-Wl,--start-group $in -Wl,--end-group $libs'))
   master_ninja.rule(
     'link',
     description='LINK $out',

@@ -1369,7 +1369,7 @@ VariableProxy* Parser::Declare(Handle<String> name,
         if (harmony_block_scoping_) {
           // In harmony mode we treat re-declarations as early errors. See
           // ES5 16 for a definition of early errors.
-          SmartPointer<char> c_string = name->ToCString(DISALLOW_NULLS);
+          SmartArrayPointer<char> c_string = name->ToCString(DISALLOW_NULLS);
           const char* elms[2] = { "Variable", *c_string };
           Vector<const char*> args(elms, 2);
           ReportMessage("redeclaration", args);
@@ -1753,6 +1753,8 @@ Block* Parser::ParseVariableDeclarations(VariableDeclarationContext var_context,
           value->AsCall() == NULL &&
           value->AsCallNew() == NULL) {
         fni_->Infer();
+      } else {
+        fni_->RemoveLastFunction();
       }
     }
 
@@ -1902,7 +1904,7 @@ Statement* Parser::ParseExpressionOrLabelledStatement(ZoneStringList* labels,
     // structured.  However, these are probably changes we want to
     // make later anyway so we should go back and fix this then.
     if (ContainsLabel(labels, label) || TargetStackContainsLabel(label)) {
-      SmartPointer<char> c_string = label->ToCString(DISALLOW_NULLS);
+      SmartArrayPointer<char> c_string = label->ToCString(DISALLOW_NULLS);
       const char* elms[2] = { "Label", *c_string };
       Vector<const char*> args(elms, 2);
       ReportMessage("redeclaration", args);
@@ -2503,6 +2505,8 @@ Expression* Parser::ParseAssignmentExpression(bool accept_IN, bool* ok) {
          || op == Token::ASSIGN)
         && (right->AsCall() == NULL && right->AsCallNew() == NULL)) {
       fni_->Infer();
+    } else {
+      fni_->RemoveLastFunction();
     }
     fni_->Leave();
   }
@@ -3006,7 +3010,7 @@ void Parser::ReportUnexpectedToken(Token::Value token) {
 
 
 void Parser::ReportInvalidPreparseData(Handle<String> name, bool* ok) {
-  SmartPointer<char> name_string = name->ToCString(DISALLOW_NULLS);
+  SmartArrayPointer<char> name_string = name->ToCString(DISALLOW_NULLS);
   const char* element[1] = { *name_string };
   ReportMessage("invalid_preparser_data",
                 Vector<const char*>(element, 1));
@@ -4096,7 +4100,7 @@ void Parser::CheckConflictingVarDeclarations(Scope* scope, bool* ok) {
     // In harmony mode we treat conflicting variable bindinds as early
     // errors. See ES5 16 for a definition of early errors.
     Handle<String> name = decl->proxy()->name();
-    SmartPointer<char> c_string = name->ToCString(DISALLOW_NULLS);
+    SmartArrayPointer<char> c_string = name->ToCString(DISALLOW_NULLS);
     const char* elms[2] = { "Variable", *c_string };
     Vector<const char*> args(elms, 2);
     int position = decl->proxy()->position();
@@ -5194,13 +5198,16 @@ bool ParserApi::Parse(CompilationInfo* info) {
   bool harmony_block_scoping = !info->is_native() &&
                                FLAG_harmony_block_scoping;
   if (info->is_lazy()) {
-    Parser parser(script, true, NULL, NULL);
+    bool allow_natives_syntax =
+        FLAG_allow_natives_syntax ||
+        info->is_native();
+    Parser parser(script, allow_natives_syntax, NULL, NULL);
     parser.SetHarmonyBlockScoping(harmony_block_scoping);
     result = parser.ParseLazy(info);
   } else {
     // Whether we allow %identifier(..) syntax.
     bool allow_natives_syntax =
-        info->allows_natives_syntax() || FLAG_allow_natives_syntax;
+        info->is_native() || FLAG_allow_natives_syntax;
     ScriptDataImpl* pre_data = info->pre_parse_data();
     Parser parser(script,
                   allow_natives_syntax,

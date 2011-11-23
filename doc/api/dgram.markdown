@@ -23,6 +23,14 @@ are created.
 Emitted when a socket is closed with `close()`.  No new `message` events will be emitted
 on this socket.
 
+#### Event: 'error'
+
+`function (exception) {}`
+
+Emitted when an error occurs.
+
+---
+
 ### dgram.createSocket(type, [callback])
 
 Creates a datagram socket of the specified types.  Valid types are `udp4`
@@ -53,13 +61,39 @@ Example of sending a UDP packet to a random port on `localhost`;
     var dgram = require('dgram');
     var message = new Buffer("Some bytes");
     var client = dgram.createSocket("udp4");
-    client.send(message, 0, message.length, 41234, "localhost");
-    client.close();
+    client.send(message, 0, message.length, 41234, "localhost", function(err, bytes) {
+      client.close();
+    });
 
+**A Note about UDP datagram size**
+
+The maximum size of an `IPv4/v6` datagram depends on the `MTU` (_Maximum Transmission Unit_)
+and on the `Payload Length` field size.
+
+- The `Payload Length` field is `16 bits` wide, which means that a normal payload
+  cannot be larger than 64K octets including internet header and data
+  (65,507 bytes = 65,535 − 8 bytes UDP header − 20 bytes IP header);
+  this is generally true for loopback interfaces, but such long datagrams
+  are impractical for most hosts and networks.
+
+- The `MTU` is the largest size a given link layer technology can support for datagrams.
+  For any link, `IPv4` mandates a minimum `MTU` of `68` octets, while the recommended `MTU`
+  for IPv4 is `576` (typically recommended as the `MTU` for dial-up type applications),
+  whether they arrive whole or in fragments.
+
+  For `IPv6`, the minimum `MTU` is `1280` octets, however, the mandatory minimum
+  fragment reassembly buffer size is `1500` octets.
+  The value of `68` octets is very small, since most current link layer technologies have
+  a minimum `MTU` of `1500` (like Ethernet).
+
+Note that it's impossible to know in advance the MTU of each link through which
+a packet might travel, and that generally sending a datagram greater than
+the (receiver) `MTU` won't work (the packet gets silently dropped, without
+informing the source that the data did not reach its intended recipient).
 
 ### dgram.bind(port, [address])
 
-For UDP sockets, listen for datagrams on a named `port` and optional `address`.  If
+For UDP sockets, listen for datagrams on a named `port` and optional `address`. If
 `address` is not specified, the OS will try to listen on all addresses.
 
 Example of a UDP server listening on port 41234:

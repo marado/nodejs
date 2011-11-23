@@ -85,12 +85,12 @@ to the completion callback.
 
 Synchronous chown(2).
 
-### fs.fchown(path, uid, gid, [callback])
+### fs.fchown(fd, uid, gid, [callback])
 
 Asynchronous fchown(2). No arguments other than a possible exception are given
 to the completion callback.
 
-### fs.fchownSync(path, uid, gid)
+### fs.fchownSync(fd, uid, gid)
 
 Synchronous fchown(2).
 
@@ -117,11 +117,11 @@ Synchronous chmod(2).
 Asynchronous fchmod(2). No arguments other than a possible exception
 are given to the completion callback.
 
-### fs.fchmodSync(path, mode)
+### fs.fchmodSync(fd, mode)
 
 Synchronous fchmod(2).
 
-### fs.lchmod(fd, mode, [callback])
+### fs.lchmod(path, mode, [callback])
 
 Asynchronous lchmod(2). No arguments other than a possible exception
 are given to the completion callback.
@@ -133,23 +133,8 @@ Synchronous lchmod(2).
 ### fs.stat(path, [callback])
 
 Asynchronous stat(2). The callback gets two arguments `(err, stats)` where
-`stats` is a [`fs.Stats`](#fs.Stats) object. It looks like this:
-
-    { dev: 2049,
-      ino: 305352,
-      mode: 16877,
-      nlink: 12,
-      uid: 1000,
-      gid: 1000,
-      rdev: 0,
-      size: 4096,
-      blksize: 4096,
-      blocks: 8,
-      atime: '2009-06-29T11:11:55Z',
-      mtime: '2009-06-29T11:11:40Z',
-      ctime: '2009-06-29T11:11:40Z' }
-
-See the [fs.Stats](#fs.Stats) section below for more information.
+`stats` is a [fs.Stats](#fs.Stats) object.  See the [fs.Stats](#fs.Stats)
+section below for more information.
 
 ### fs.lstat(path, [callback])
 
@@ -230,12 +215,12 @@ to the completion callback.
 
 Synchronous rmdir(2).
 
-### fs.mkdir(path, mode, [callback])
+### fs.mkdir(path, [mode], [callback])
 
 Asynchronous mkdir(2). No arguments other than a possible exception are given
-to the completion callback.
+to the completion callback. `mode` defaults to `0777`.
 
-### fs.mkdirSync(path, mode)
+### fs.mkdirSync(path, [mode])
 
 Synchronous mkdir(2).
 
@@ -266,7 +251,7 @@ Asynchronous file open. See open(2). `flags` can be:
 * `'r'` - Open file for reading.
 An exception occurs if the file does not exist.
 
-* `'r+'` - Open file for reading and writing. 
+* `'r+'` - Open file for reading and writing.
 An exception occurs if the file does not exist.
 
 * `'w'` - Open file for writing.
@@ -287,18 +272,18 @@ The file is created if it does not exist.
 
 Synchronous open(2).
 
-### fs.utimes(path, atime, mtime, callback)
+### fs.utimes(path, atime, mtime, [callback])
 ### fs.utimesSync(path, atime, mtime)
 
-Change file timestamps.
+Change file timestamps of the file referenced by the supplied path.
 
-### fs.futimes(path, atime, mtime, callback)
-### fs.futimesSync(path, atime, mtime)
+### fs.futimes(fd, atime, mtime, [callback])
+### fs.futimesSync(fd, atime, mtime)
 
-Change file timestamps with the difference that if filename refers to a
-symbolic link, then the link is not dereferenced.
+Change the file timestamps of a file referenced by the supplied file
+descriptor.
 
-### fs.fsync(fd, callback)
+### fs.fsync(fd, [callback])
 
 Asynchronous fsync(2). No arguments other than a possible exception are given
 to the completion callback.
@@ -406,8 +391,11 @@ Watch for changes on `filename`. The callback `listener` will be called each
 time the file is accessed.
 
 The second argument is optional. The `options` if provided should be an object
-containing two members a boolean, `persistent`, and `interval`, a polling
-value in milliseconds. The default is `{ persistent: true, interval: 0 }`.
+containing two members a boolean, `persistent`, and `interval`. `persistent`
+indicates whether the process should continue to run as long as files are
+being watched. `interval` indicates how often the target should be polled,
+in milliseconds. (On Linux systems with inotify, `interval` is ignored.) The
+default is `{ persistent: true, interval: 0 }`.
 
 The `listener` gets two arguments the current stat object and the previous
 stat object:
@@ -427,9 +415,40 @@ you need to compare `curr.mtime` and `prev.mtime`.
 
 Stop watching for changes on `filename`.
 
+### fs.watch(filename, [options], listener)
+
+Watch for changes on `filename`, where `filename` is either a file or a
+directory.  The returned object is [fs.FSWatcher](#fs.FSWatcher).
+
+The second argument is optional. The `options` if provided should be an object
+containing a boolean member `persistent`, which indicates whether the process
+should continue to run as long as files are being watched. The default is
+`{ persistent: true }`.
+
+The listener callback gets two arguments `(event, filename)`.  `event` is either
+'rename' or 'change', and `filename` is the name of the file which triggered
+the event.
+
+***Warning:***
+Providing `filename` argument in the callback is not supported
+on every platform (currently it's only supported on Linux and Windows).  Even
+on supported platforms `filename` is not always guaranteed to be provided.
+Therefore, don't assume that `filename` argument is always provided in the
+callback, and have some fallback logic if it is null.
+
+    fs.watch('somedir', function (event, filename) {
+      console.log('event is: ' + event);
+	  if (filename) {
+        console.log('filename provided: ' + filename);
+	  } else {
+	    console.log('filename not provided');
+	  }
+    });
+
 ## fs.Stats
 
-Objects returned from `fs.stat()` and `fs.lstat()` are of this type.
+Objects returned from `fs.stat()`, `fs.lstat()` and `fs.fstat()` and their
+synchronous counterparts are of this type.
 
  - `stats.isFile()`
  - `stats.isDirectory()`
@@ -439,10 +458,39 @@ Objects returned from `fs.stat()` and `fs.lstat()` are of this type.
  - `stats.isFIFO()`
  - `stats.isSocket()`
 
+For a regular file `util.inspect(stats)` would return a string very
+similar to this:
+
+    { dev: 2114,
+      ino: 48064969,
+      mode: 33188,
+      nlink: 1,
+      uid: 85,
+      gid: 100,
+      rdev: 0,
+      size: 527,
+      blksize: 4096,
+      blocks: 8,
+      atime: Mon, 10 Oct 2011 23:24:11 GMT,
+      mtime: Mon, 10 Oct 2011 23:24:11 GMT,
+      ctime: Mon, 10 Oct 2011 23:24:11 GMT }
+
+Please note that `atime`, `mtime` and `ctime` are instances
+of [Date][MDN-Date] object and to compare the values of
+these objects you should use appropriate methods. For most
+general uses [getTime()][MDN-Date-getTime] will return
+the number of milliseconds elapsed since _1 January 1970
+00:00:00 UTC_ and this integer should be sufficient for
+any comparison, however there additional methods which can
+be used for displaying fuzzy information. More details can
+be found in the [MDN JavaScript Reference][MDN-Date] page.
+
+[MDN-Date]: https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date
+[MDN-Date-getTime]: https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date/getTime
 
 ## fs.ReadStream
 
-`ReadStream` is a `Readable Stream`.
+`ReadStream` is a [Readable Stream](streams.html#readable_Stream).
 
 ### Event: 'open'
 
@@ -474,7 +522,7 @@ An example to read the last 10 bytes of a file which is 100 bytes long:
 
 ## fs.WriteStream
 
-`WriteStream` is a `Writable Stream`.
+`WriteStream` is a [Writable Stream](streams.html#writable_Stream).
 
 ### Event: 'open'
 
@@ -496,3 +544,29 @@ Returns a new WriteStream object (See `Writable Stream`).
     { flags: 'w',
       encoding: null,
       mode: 0666 }
+
+`options` may also include a `start` option to allow writing data at
+some position past the beginning of the file.  Modifying a file rather
+than replacing it may require a `flags` mode of `r+` rather than the
+default mode `w`.
+
+## fs.FSWatcher
+
+Objects returned from `fs.watch()` are of this type.
+
+#### watcher.close()
+
+Stop watching for changes on the given `fs.FSWatcher`.
+
+#### Event: 'change'
+
+`function (event, filename) {}`
+
+Emitted when something changes in a watched directory or file.
+See more details in [fs.watch](#fs.watch).
+
+#### Event: 'error'
+
+`function (exception) {}`
+
+Emitted when an error occurs.

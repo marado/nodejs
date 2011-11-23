@@ -37,40 +37,58 @@ var connectCount = 0;
 
 
 server.listen(common.PORT, function() {
-  var agent = new http.Agent({maxSockets:1})
-  var request = http.request({method:'GET', path:'/', headers:headers, port:common.PORT, agent:agent}, function () {
-    assert.equal(1, agent.sockets['localhost:'+common.PORT].length)
+  var agent = new http.Agent({ maxSockets: 1 });
+  var request = http.request({
+    method: 'GET',
+    path: '/',
+    headers: headers,
+    port: common.PORT,
+    agent: agent
+  }, function() {
+    assert.equal(1, agent.sockets['localhost:' + common.PORT].length);
   });
-  request.on('socket', function (s) {
-    s.on('connect', function () {
+  request.on('socket', function(s) {
+    s.on('connect', function() {
       connectCount++;
-    })
-  })
-  request.end();
-  
-  request = http.request({method:'GET', path:'/', headers:headers, port:common.PORT, agent:agent}, function () {
-    assert.equal(1, agent.sockets['localhost:'+common.PORT].length)
+    });
   });
-  request.on('socket', function (s) {
-    s.on('connect', function () {
-      connectCount++;
-    })
-  })
   request.end();
-  request = http.request({method:'GET', path:'/', headers:headers, port:common.PORT, agent:agent}, function(response) {
-    response.addListener('end', function() {
-      assert.equal(1, agent.sockets['localhost:'+common.PORT].length)
+
+  request = http.request({
+    method: 'GET',
+    path: '/',
+    headers: headers,
+    port: common.PORT,
+    agent: agent
+  }, function() {
+    assert.equal(1, agent.sockets['localhost:' + common.PORT].length);
+  });
+  request.on('socket', function(s) {
+    s.on('connect', function() {
+      connectCount++;
+    });
+  });
+  request.end();
+  request = http.request({
+    method: 'GET',
+    path: '/',
+    headers: headers,
+    port: common.PORT,
+    agent: agent
+  }, function(response) {
+    response.on('end', function() {
+      assert.equal(1, agent.sockets['localhost:' + common.PORT].length);
       server.close();
     });
   });
-  request.on('socket', function (s) {
-    s.on('connect', function () {
+  request.on('socket', function(s) {
+    s.on('connect', function() {
       connectCount++;
-    })
-  })
+    });
+  });
   request.end();
 });
 
-process.addListener('exit', function() {
+process.on('exit', function() {
   assert.equal(3, connectCount);
 });
