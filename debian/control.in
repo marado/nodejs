@@ -16,7 +16,8 @@ Build-Depends: @cdbs@,
  libssl-dev (>= 0.9.8),
  pkg-config,
  bash-completion,
- curl
+ curl,
+ zlib1g-dev
 Standards-Version: 3.9.2
 Homepage: http://nodejs.org/
 Vcs-Browser: http://git.debian.org/?p=collab-maint/nodejs.git
