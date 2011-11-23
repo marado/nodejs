@@ -29,6 +29,7 @@ clean::
 	rm -f test/fixtures/hello.txt
 	rm -rf test/tmp
 	find . -name "*.pyc" -delete
+	rm -rf out
 
 # we have completion for nodejs-waf
 install/nodejs-dev::
