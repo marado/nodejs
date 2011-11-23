@@ -1,11 +1,18 @@
-nodejs (0.6.2-1) experimental; urgency=low
+nodejs (0.6.2-1) UNRELEASED-TO-EXPERIMENTAL; urgency=low
 
-  * New upstream release 
+  * New upstream release
+  * Use bundled cares and ev libraries because upstream need modified
+    versions of them.
+  * Drop unneeded build-dependency on scons.
+  * New dependency on zlib1g.
+  * Fix DEB_UPSTREAM_URL in debian/rules, and debian/watch.
+  * nodejs.pc file for pkgconfig is no more available.
 
   [ TODO ]
   * Update debian/copyright
-  * Use libuv
-  * Move to cmake, refresh patches. Abandon waf in nodejs-dev.
+    deps/openssl, deps/zlib are now included :( but not needed.
+    cares, ev files has moved somewhere in deps/uv.
+  * nodejs-dbg package was harder to build than before, fix this.
 
  -- Jérémy Lal <kapouer@melix.org>  Sat, 10 Sep 2011 19:20:30 +0200
 
