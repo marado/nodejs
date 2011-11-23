@@ -19,7 +19,7 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-// libuv-broken
+
 
 
 var common = require('../common');
@@ -28,7 +28,7 @@ var http = require('http');
 
 var server = http.Server(function(req, res) {
   res.writeHead(200, {'Content-Type': 'text/plain'});
-  res.end("hello world\n");
+  res.end('hello world\n');
 });
 server.listen(common.PORT, function() {
   var req = http.get({port: common.PORT}, function(res) {

@@ -5,8 +5,8 @@ Use `require('tty')` to access this module.
 Example:
 
     var tty = require('tty');
-    tty.setRawMode(true);
     process.stdin.resume();
+    tty.setRawMode(true);
     process.stdin.on('keypress', function(char, key) {
       if (key && key.ctrl && key.name == 'c') {
         console.log('graceful exit');
@@ -14,16 +14,6 @@ Example:
       }
     });
 
-
-
-### tty.open(path, args=[])
-
-Spawns a new process with the executable pointed to by `path` as the session
-leader to a new pseudo terminal.
-
-Returns an array `[slaveFD, childProcess]`. `slaveFD` is the file descriptor
-of the slave end of the pseudo terminal. `childProcess` is a child process
-object.
 
 
 ### tty.isatty(fd)

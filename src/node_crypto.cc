@@ -36,6 +36,13 @@
 
 #include <errno.h>
 
+/* Sigh. */
+#ifdef _WIN32
+# include <windows.h>
+#else
+# include <pthread.h>
+#endif
+
 #if OPENSSL_VERSION_NUMBER >= 0x10000000L
 # define OPENSSL_CONST const
 #else
@@ -47,8 +54,11 @@
     return ThrowException(Exception::TypeError(String::New("Not a string or buffer"))); \
   }
 
-static const char *PUBLIC_KEY_PFX =  "-----BEGIN PUBLIC KEY-----";
-static const int PUBLIC_KEY_PFX_LEN = strlen(PUBLIC_KEY_PFX);
+static const char PUBLIC_KEY_PFX[] =  "-----BEGIN PUBLIC KEY-----";
+static const int PUBLIC_KEY_PFX_LEN = sizeof(PUBLIC_KEY_PFX) - 1;
+
+static const char PUBRSA_KEY_PFX[] =  "-----BEGIN RSA PUBLIC KEY-----";
+static const int PUBRSA_KEY_PFX_LEN = sizeof(PUBRSA_KEY_PFX) - 1;
 
 static const int X509_NAME_FLAGS = ASN1_STRFLGS_ESC_CTRL
                                  | ASN1_STRFLGS_ESC_MSB
@@ -76,6 +86,69 @@ static Persistent<String> ext_key_usage_symbol;
 
 static Persistent<FunctionTemplate> secure_context_constructor;
 
+#ifdef _WIN32
+
+static HANDLE* locks;
+
+
+static void crypto_lock_init(void) {
+  int i, n;
+
+  n = CRYPTO_num_locks();
+  locks = new HANDLE[n];
+
+  for (i = 0; i < n; i++)
+    if (!(locks[i] = CreateMutex(NULL, FALSE, NULL)))
+      abort();
+}
+
+
+static void crypto_lock_cb(int mode, int n, const char* file, int line) {
+  if (mode & CRYPTO_LOCK)
+    WaitForSingleObject(locks[n], INFINITE);
+  else
+    ReleaseMutex(locks[n]);
+}
+
+
+static unsigned long crypto_id_cb(void) {
+  return (unsigned long) GetCurrentThreadId();
+}
+
+#else /* !_WIN32 */
+
+static pthread_rwlock_t* locks;
+
+
+static void crypto_lock_init(void) {
+  int i, n;
+
+  n = CRYPTO_num_locks();
+  locks = new pthread_rwlock_t[n];
+
+  for (i = 0; i < n; i++)
+    if (pthread_rwlock_init(locks + i, NULL))
+      abort();
+}
+
+
+static void crypto_lock_cb(int mode, int n, const char* file, int line) {
+  if (mode & CRYPTO_LOCK) {
+    if (mode & CRYPTO_READ) pthread_rwlock_rdlock(locks + n);
+    if (mode & CRYPTO_WRITE) pthread_rwlock_wrlock(locks + n);
+  } else {
+    pthread_rwlock_unlock(locks + n);
+  }
+}
+
+
+static unsigned long crypto_id_cb(void) {
+  return (unsigned long) pthread_self();
+}
+
+#endif /* !_WIN32 */
+
+
 void SecureContext::Initialize(Handle<Object> target) {
   HandleScope scope;
 
@@ -93,6 +166,8 @@ void SecureContext::Initialize(Handle<Object> target) {
   NODE_SET_PROTOTYPE_METHOD(t, "addRootCerts", SecureContext::AddRootCerts);
   NODE_SET_PROTOTYPE_METHOD(t, "setCiphers", SecureContext::SetCiphers);
   NODE_SET_PROTOTYPE_METHOD(t, "setOptions", SecureContext::SetOptions);
+  NODE_SET_PROTOTYPE_METHOD(t, "setSessionIdContext",
+                               SecureContext::SetSessionIdContext);
   NODE_SET_PROTOTYPE_METHOD(t, "close", SecureContext::Close);
 
   target->Set(String::NewSymbol("SecureContext"), t->GetFunction());
@@ -176,7 +251,7 @@ static BIO* LoadBIO (Handle<Value> v) {
 
   HandleScope scope;
 
-  int r;
+  int r = -1;
 
   if (v->IsString()) {
     String::Utf8Value s(v->ToString());
@@ -221,14 +296,21 @@ Handle<Value> SecureContext::SetKey(const Arguments& args) {
 
   SecureContext *sc = ObjectWrap::Unwrap<SecureContext>(args.Holder());
 
-  if (args.Length() != 1) {
+  unsigned int len = args.Length();
+  if (len != 1 && len != 2) {
+    return ThrowException(Exception::TypeError(String::New("Bad parameter")));
+  }
+  if (len == 2 && !args[1]->IsString()) {
     return ThrowException(Exception::TypeError(String::New("Bad parameter")));
   }
 
   BIO *bio = LoadBIO(args[0]);
   if (!bio) return False();
 
-  EVP_PKEY* key = PEM_read_bio_PrivateKey(bio, NULL, NULL, NULL);
+  String::Utf8Value passphrase(args[1]->ToString());
+
+  EVP_PKEY* key = PEM_read_bio_PrivateKey(bio, NULL, NULL,
+                                          len == 1 ? NULL : *passphrase);
 
   if (!key) {
     BIO_free(bio);
@@ -333,7 +415,7 @@ Handle<Value> SecureContext::SetCert(const Arguments& args) {
           String::New("SSL_CTX_use_certificate_chain")));
     }
     char string[120];
-    ERR_error_string(err, string);
+    ERR_error_string_n(err, string, sizeof string);
     return ThrowException(Exception::Error(String::New(string)));
   }
 
@@ -474,6 +556,38 @@ Handle<Value> SecureContext::SetOptions(const Arguments& args) {
   return True();
 }
 
+Handle<Value> SecureContext::SetSessionIdContext(const Arguments& args) {
+  HandleScope scope;
+
+  SecureContext *sc = ObjectWrap::Unwrap<SecureContext>(args.Holder());
+
+  if (args.Length() != 1 || !args[0]->IsString()) {
+    return ThrowException(Exception::TypeError(String::New("Bad parameter")));
+  }
+
+  String::Utf8Value sessionIdContext(args[0]->ToString());
+  const unsigned char* sid_ctx = (const unsigned char*) *sessionIdContext;
+  unsigned int sid_ctx_len = sessionIdContext.length();
+
+  int r = SSL_CTX_set_session_id_context(sc->ctx_, sid_ctx, sid_ctx_len);
+  if (r != 1) {
+    Local<String> message;
+    BIO* bio;
+    BUF_MEM* mem;
+    if ((bio = BIO_new(BIO_s_mem()))) {
+      ERR_print_errors(bio);
+      BIO_get_mem_ptr(bio, &mem);
+      message = String::New(mem->data, mem->length);
+      BIO_free(bio);
+    } else {
+      message = String::New("SSL_CTX_set_session_id_context error");
+    }
+    return ThrowException(Exception::TypeError(message));
+  }
+
+  return True();
+}
+
 Handle<Value> SecureContext::Close(const Arguments& args) {
   HandleScope scope;
   SecureContext *sc = ObjectWrap::Unwrap<SecureContext>(args.Holder());
@@ -524,7 +638,10 @@ int Connection::HandleSSLError(const char* func, int rv) {
 
   int err = SSL_get_error(ssl_, rv);
 
-  if (err == SSL_ERROR_WANT_WRITE) {
+  if (err == SSL_ERROR_NONE) {
+    return 0;
+
+  } else if (err == SSL_ERROR_WANT_WRITE) {
     DEBUG_PRINT("[%p] SSL: %s want write\n", ssl_, func);
     return 0;
 
@@ -533,14 +650,24 @@ int Connection::HandleSSLError(const char* func, int rv) {
     return 0;
 
   } else {
-    static char ssl_error_buf[512];
-    ERR_error_string_n(err, ssl_error_buf, sizeof(ssl_error_buf));
-
     HandleScope scope;
-    Local<Value> e = Exception::Error(String::New(ssl_error_buf));
-    handle_->Set(String::New("error"), e);
+    BUF_MEM* mem;
+    BIO *bio;
 
-    DEBUG_PRINT("[%p] SSL: %s failed: (%d:%d) %s\n", ssl_, func, err, rv, ssl_error_buf);
+    assert(err == SSL_ERROR_SSL || err == SSL_ERROR_SYSCALL);
+
+    // XXX We need to drain the error queue for this thread or else OpenSSL
+    // has the possibility of blocking connections? This problem is not well
+    // understood. And we should be somehow propagating these errors up
+    // into JavaScript. There is no test which demonstrates this problem.
+    // https://github.com/joyent/node/issues/1719
+    if ((bio = BIO_new(BIO_s_mem()))) {
+      ERR_print_errors(bio);
+      BIO_get_mem_ptr(bio, &mem);
+      Local<Value> e = Exception::Error(String::New(mem->data, mem->length));
+      handle_->Set(String::New("error"), e);
+      BIO_free(bio);
+    }
 
     return rv;
   }
@@ -726,7 +853,7 @@ int Connection::SelectNextProtoCallback_(SSL *s,
   }
 
   return SSL_TLSEXT_ERR_OK;
-}                                  
+}
 #endif
 
 #ifdef SSL_CTRL_SET_TLSEXT_SERVERNAME_CB
@@ -2499,6 +2626,7 @@ class Decipher : public ObjectWrap {
     int out_len;
     Local<Value> outString ;
 
+    out_value = NULL;
     int r = cipher->DecipherFinal(&out_value, &out_len, true);
 
     if (out_len == 0 || r == 0) {
@@ -3179,9 +3307,22 @@ class Verify : public ObjectWrap {
       return 0;
     }
 
-    // Check if this is a PKCS#8 public key before trying as X.509
+    // Check if this is a PKCS#8 or RSA public key before trying as X.509.
+    // Split this out into a separate function once we have more than one
+    // consumer of public keys.
     if (strncmp(key_pem, PUBLIC_KEY_PFX, PUBLIC_KEY_PFX_LEN) == 0) {
       pkey = PEM_read_bio_PUBKEY(bp, NULL, NULL, NULL);
+      if (pkey == NULL) {
+        ERR_print_errors_fp(stderr);
+        return 0;
+      }
+    } else if (strncmp(key_pem, PUBRSA_KEY_PFX, PUBRSA_KEY_PFX_LEN) == 0) {
+      RSA* rsa = PEM_read_bio_RSAPublicKey(bp, NULL, NULL, NULL);
+      if (rsa) {
+        pkey = EVP_PKEY_new();
+        if (pkey) EVP_PKEY_set1_RSA(pkey, rsa);
+        RSA_free(rsa);
+      }
       if (pkey == NULL) {
         ERR_print_errors_fp(stderr);
         return 0;
@@ -3349,7 +3490,7 @@ class Verify : public ObjectWrap {
     delete [] kbuf;
     delete [] hbuf;
 
-    return scope.Close(Integer::New(r));
+    return Boolean::New(r && r != -1);
   }
 
   Verify () : ObjectWrap () {
@@ -3999,6 +4140,139 @@ PBKDF2(const Arguments& args) {
   return Undefined();
 }
 
+
+typedef int (*RandomBytesGenerator)(unsigned char* buf, int size);
+
+struct RandomBytesRequest {
+  ~RandomBytesRequest();
+  Persistent<Function> callback_;
+  unsigned long error_; // openssl error code or zero
+  uv_work_t work_req_;
+  size_t size_;
+  char* data_;
+};
+
+
+RandomBytesRequest::~RandomBytesRequest() {
+  if (!callback_.IsEmpty()) {
+    callback_.Dispose();
+    callback_.Clear();
+  }
+}
+
+
+void RandomBytesFree(char* data, void* hint) {
+  delete[] data;
+}
+
+
+template <RandomBytesGenerator generator>
+void RandomBytesWork(uv_work_t* work_req) {
+  RandomBytesRequest* req =
+      container_of(work_req, RandomBytesRequest, work_req_);
+
+  int r = generator(reinterpret_cast<unsigned char*>(req->data_), req->size_);
+
+  switch (r) {
+  case 0:
+    // RAND_bytes() returns 0 on error, RAND_pseudo_bytes() returns 0
+    // when the result is not cryptographically strong - the latter
+    // sucks but is not an error
+    if (generator == RAND_bytes)
+      req->error_ = ERR_get_error();
+    break;
+
+  case -1:
+    // not supported - can this actually happen?
+    req->error_ = (unsigned long) -1;
+    break;
+  }
+}
+
+
+void RandomBytesCheck(RandomBytesRequest* req, Handle<Value> argv[2]) {
+  HandleScope scope;
+
+  if (req->error_) {
+    char errmsg[256] = "Operation not supported";
+
+    if (req->error_ != (unsigned long) -1)
+      ERR_error_string_n(req->error_, errmsg, sizeof errmsg);
+
+    argv[0] = Exception::Error(String::New(errmsg));
+    argv[1] = Null();
+  }
+  else {
+    // avoids the malloc + memcpy
+    Buffer* buffer = Buffer::New(req->data_, req->size_, RandomBytesFree, NULL);
+    argv[0] = Null();
+    argv[1] = buffer->handle_;
+  }
+}
+
+
+template <RandomBytesGenerator generator>
+void RandomBytesAfter(uv_work_t* work_req) {
+  RandomBytesRequest* req =
+      container_of(work_req, RandomBytesRequest, work_req_);
+
+  HandleScope scope;
+  Handle<Value> argv[2];
+  RandomBytesCheck(req, argv);
+
+  TryCatch tc;
+  req->callback_->Call(Context::GetCurrent()->Global(), 2, argv);
+
+  if (tc.HasCaught())
+    FatalException(tc);
+
+  delete req;
+}
+
+
+template <RandomBytesGenerator generator>
+Handle<Value> RandomBytes(const Arguments& args) {
+  HandleScope scope;
+
+  // maybe allow a buffer to write to? cuts down on object creation
+  // when generating random data in a loop
+  if (!args[0]->IsUint32()) {
+    Local<String> s = String::New("Argument #1 must be number > 0");
+    return ThrowException(Exception::TypeError(s));
+  }
+
+  const size_t size = args[0]->Uint32Value();
+
+  RandomBytesRequest* req = new RandomBytesRequest();
+  req->error_ = 0;
+  req->data_ = new char[size];
+  req->size_ = size;
+
+  if (args[1]->IsFunction()) {
+    Local<Function> callback_v = Local<Function>(Function::Cast(*args[1]));
+    req->callback_ = Persistent<Function>::New(callback_v);
+
+    uv_queue_work(uv_default_loop(),
+                  &req->work_req_,
+                  RandomBytesWork<generator>,
+                  RandomBytesAfter<generator>);
+
+    return Undefined();
+  }
+  else {
+    Handle<Value> argv[2];
+    RandomBytesWork<generator>(&req->work_req_);
+    RandomBytesCheck(req, argv);
+    delete req;
+
+    if (!argv[0]->IsNull())
+      return ThrowException(argv[0]);
+    else
+      return argv[1];
+  }
+}
+
+
 void InitCrypto(Handle<Object> target) {
   HandleScope scope;
 
@@ -4007,6 +4281,10 @@ void InitCrypto(Handle<Object> target) {
   OpenSSL_add_all_digests();
   SSL_load_error_strings();
   ERR_load_crypto_strings();
+
+  crypto_lock_init();
+  CRYPTO_set_locking_callback(crypto_lock_cb);
+  CRYPTO_set_id_callback(crypto_id_cb);
 
   // Turn off compression. Saves memory - do it in userland.
 #if !defined(OPENSSL_NO_COMP)
@@ -4032,6 +4310,8 @@ void InitCrypto(Handle<Object> target) {
   Verify::Initialize(target);
 
   NODE_SET_METHOD(target, "PBKDF2", PBKDF2);
+  NODE_SET_METHOD(target, "randomBytes", RandomBytes<RAND_bytes>);
+  NODE_SET_METHOD(target, "pseudoRandomBytes", RandomBytes<RAND_pseudo_bytes>);
 
   subject_symbol    = NODE_PSYMBOL("subject");
   issuer_symbol     = NODE_PSYMBOL("issuer");
@@ -4049,5 +4329,5 @@ void InitCrypto(Handle<Object> target) {
 }  // namespace crypto
 }  // namespace node
 
-NODE_MODULE(node_crypto, node::crypto::InitCrypto);
+NODE_MODULE(node_crypto, node::crypto::InitCrypto)
 

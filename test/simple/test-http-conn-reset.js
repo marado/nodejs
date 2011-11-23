@@ -44,8 +44,8 @@ function onListen() {
     assert.ok(false, 'this should never run');
   });
   req.on('error', function(err) {
-    assert.equal(err.message, 'socket hang up');
     assert.equal(err.code, 'ECONNRESET');
+    assert.equal(err.message, 'socket hang up');
     caughtError = true;
   });
   req.end();
@@ -54,3 +54,4 @@ function onListen() {
 process.on('exit', function() {
   assert.equal(caughtError, true);
 });
+

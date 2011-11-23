@@ -19,7 +19,7 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-// libuv-broken
+
 
 
 var common = require('../common');
@@ -50,12 +50,12 @@ if (process.platform !== 'win32') {
 }
 
 child.stdout.setEncoding('utf8');
-child.stdout.addListener('data', function(chunk) {
+child.stdout.on('data', function(chunk) {
   response += chunk;
 });
 
-process.addListener('exit', function() {
-  console.log("response: ", response);
+process.on('exit', function() {
+  console.log('response: ', response);
   assert.equal(1, success_count);
   assert.equal(0, error_count);
   assert.ok(response.indexOf('HELLO=WORLD') >= 0);

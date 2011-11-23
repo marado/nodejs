@@ -19,7 +19,7 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-// libuv-broken
+
 
 
 var common = require('../common');
@@ -30,7 +30,8 @@ var path = require('path');
 var exits = 0;
 
 function errExec(script, callback) {
-  var cmd = '"' + process.argv[0] + '" "' + path.join(common.fixturesDir, script) + '"';
+  var cmd = '"' + process.argv[0] + '" "' +
+      path.join(common.fixturesDir, script) + '"';
   return exec(cmd, function(err, stdout, stderr) {
     // There was some error
     assert.ok(err);
@@ -70,6 +71,6 @@ errExec('throws_error3.js', function(err, stdout, stderr) {
 });
 
 
-process.addListener('exit', function() {
+process.on('exit', function() {
   assert.equal(3, exits);
 });

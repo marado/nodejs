@@ -1,3 +1,24 @@
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 #include <node.h>
 #include <node_buffer.h>
 #include <req_wrap.h>
@@ -11,7 +32,9 @@
   PipeWrap* wrap =  \
       static_cast<PipeWrap*>(args.Holder()->GetPointerFromInternalField(0)); \
   if (!wrap) { \
-    SetErrno(UV_EBADF); \
+    uv_err_t err; \
+    err.code = UV_EBADF; \
+    SetErrno(err); \
     return scope.Close(Integer::New(-1)); \
   }
 
@@ -61,6 +84,7 @@ void PipeWrap::Initialize(Handle<Object> target) {
   t->InstanceTemplate()->SetInternalFieldCount(1);
 
   NODE_SET_PROTOTYPE_METHOD(t, "close", HandleWrap::Close);
+  NODE_SET_PROTOTYPE_METHOD(t, "unref", HandleWrap::Unref);
 
   NODE_SET_PROTOTYPE_METHOD(t, "readStart", StreamWrap::ReadStart);
   NODE_SET_PROTOTYPE_METHOD(t, "readStop", StreamWrap::ReadStop);
@@ -70,6 +94,7 @@ void PipeWrap::Initialize(Handle<Object> target) {
   NODE_SET_PROTOTYPE_METHOD(t, "bind", Bind);
   NODE_SET_PROTOTYPE_METHOD(t, "listen", Listen);
   NODE_SET_PROTOTYPE_METHOD(t, "connect", Connect);
+  NODE_SET_PROTOTYPE_METHOD(t, "open", Open);
 
   pipeConstructor = Persistent<Function>::New(t->GetFunction());
 
@@ -84,16 +109,16 @@ Handle<Value> PipeWrap::New(const Arguments& args) {
   assert(args.IsConstructCall());
 
   HandleScope scope;
-  PipeWrap* wrap = new PipeWrap(args.This());
+  PipeWrap* wrap = new PipeWrap(args.This(), args[0]->IsTrue());
   assert(wrap);
 
   return scope.Close(args.This());
 }
 
 
-PipeWrap::PipeWrap(Handle<Object> object) : StreamWrap(object,
-                                            (uv_stream_t*) &handle_) {
-  int r = uv_pipe_init(uv_default_loop(), &handle_);
+PipeWrap::PipeWrap(Handle<Object> object, bool ipc)
+    : StreamWrap(object, (uv_stream_t*) &handle_) {
+  int r = uv_pipe_init(uv_default_loop(), &handle_, ipc);
   assert(r == 0); // How do we proxy this error up to javascript?
                   // Suggestion: uv_pipe_init() returns void.
   handle_.data = reinterpret_cast<void*>(this);
@@ -111,7 +136,7 @@ Handle<Value> PipeWrap::Bind(const Arguments& args) {
   int r = uv_pipe_bind(&wrap->handle_, *name);
 
   // Error starting the pipe.
-  if (r) SetErrno(uv_last_error(uv_default_loop()).code);
+  if (r) SetErrno(uv_last_error(uv_default_loop()));
 
   return scope.Close(Integer::New(r));
 }
@@ -127,7 +152,7 @@ Handle<Value> PipeWrap::Listen(const Arguments& args) {
   int r = uv_listen((uv_stream_t*)&wrap->handle_, backlog, OnConnection);
 
   // Error starting the pipe.
-  if (r) SetErrno(uv_last_error(uv_default_loop()).code);
+  if (r) SetErrno(uv_last_error(uv_default_loop()));
 
   return scope.Close(Integer::New(r));
 }
@@ -180,7 +205,7 @@ void PipeWrap::AfterConnect(uv_connect_t* req, int status) {
   assert(wrap->object_.IsEmpty() == false);
 
   if (status) {
-    SetErrno(uv_last_error(uv_default_loop()).code);
+    SetErrno(uv_last_error(uv_default_loop()));
   }
 
   Local<Value> argv[3] = {
@@ -195,6 +220,19 @@ void PipeWrap::AfterConnect(uv_connect_t* req, int status) {
 }
 
 
+Handle<Value> PipeWrap::Open(const Arguments& args) {
+  HandleScope scope;
+
+  UNWRAP
+
+  int fd = args[0]->IntegerValue();
+
+  uv_pipe_open(&wrap->handle_, fd);
+
+  return scope.Close(v8::Null());
+}
+
+
 Handle<Value> PipeWrap::Connect(const Arguments& args) {
   HandleScope scope;
 
@@ -204,23 +242,17 @@ Handle<Value> PipeWrap::Connect(const Arguments& args) {
 
   ConnectWrap* req_wrap = new ConnectWrap();
 
-  int r = uv_pipe_connect(&req_wrap->req_,
-                          &wrap->handle_,
-                          *name,
-                          AfterConnect);
+  uv_pipe_connect(&req_wrap->req_,
+                  &wrap->handle_,
+                  *name,
+                  AfterConnect);
 
   req_wrap->Dispatched();
 
-  if (r) {
-    SetErrno(uv_last_error(uv_default_loop()).code);
-    delete req_wrap;
-    return scope.Close(v8::Null());
-  } else {
-    return scope.Close(req_wrap->object_);
-  }
+  return scope.Close(req_wrap->object_);
 }
 
 
 }  // namespace node
 
-NODE_MODULE(node_pipe_wrap, node::PipeWrap::Initialize);
+NODE_MODULE(node_pipe_wrap, node::PipeWrap::Initialize)

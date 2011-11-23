@@ -37,13 +37,6 @@ Emitted when the underlying file descriptor has been closed. Not all streams
 will emit this.  (For example, an incoming HTTP request will not emit
 `'close'`.)
 
-### Event: 'fd'
-
-`function (fd) { }`
-
-Emitted when a file descriptor is received on the stream. Only UNIX streams
-support this functionality; all others will simply never emit this event.
-
 ### stream.readable
 
 A boolean that is `true` by default, but turns `false` after an `'error'`
@@ -100,9 +93,6 @@ This keeps `process.stdout` open so that "Goodbye" can be written at the end.
       process.stdout.write("Goodbye\n");
     });
 
-NOTE: If the source stream does not support `pause()` and `resume()`, this function
-adds simple definitions which simply emit `'pause'` and `'resume'` events on
-the source stream.
 
 ## Writable Stream
 

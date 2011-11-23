@@ -19,7 +19,7 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-// libuv-broken
+
 
 
 var common = require('../common');
@@ -79,6 +79,19 @@ function bashRealpath(path, callback) {
 }
 
 // sub-tests:
+function test_simple_error_callback() {
+  var ncalls = 0;
+
+  fs.realpath('/this/path/does/not/exist', function(err, s) {
+    assert(err);
+    assert(!s);
+    ncalls++;
+  });
+
+  process.on('exit', function() {
+    assert.equal(ncalls, 1);
+  });
+}
 
 function test_simple_relative_symlink(callback) {
   console.log('test_simple_relative_symlink');
@@ -415,6 +428,7 @@ function test_lying_cache_liar(cb) {
 // ----------------------------------------------------------------------------
 
 var tests = [
+  test_simple_error_callback,
   test_simple_relative_symlink,
   test_simple_absolute_symlink,
   test_deep_relative_file_symlink,
@@ -459,7 +473,7 @@ fs.realpath('/', function(err, result) {
 
 
 
-process.addListener('exit', function() {
+process.on('exit', function() {
   unlink.forEach(function(path) { try {fs.unlinkSync(path);} catch (e) {} });
   assert.equal(async_completed, async_expected);
 });

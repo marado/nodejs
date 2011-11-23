@@ -492,6 +492,28 @@ const CodeMap::CodeTreeConfig::Value CodeMap::CodeTreeConfig::kNoValue =
     CodeMap::CodeEntryInfo(NULL, 0);
 
 
+void CodeMap::AddCode(Address addr, CodeEntry* entry, unsigned size) {
+  DeleteAllCoveredCode(addr, addr + size);
+  CodeTree::Locator locator;
+  tree_.Insert(addr, &locator);
+  locator.set_value(CodeEntryInfo(entry, size));
+}
+
+
+void CodeMap::DeleteAllCoveredCode(Address start, Address end) {
+  List<Address> to_delete;
+  Address addr = end - 1;
+  while (addr >= start) {
+    CodeTree::Locator locator;
+    if (!tree_.FindGreatestLessThan(addr, &locator)) break;
+    Address start2 = locator.key(), end2 = start2 + locator.value().size;
+    if (start2 < end && start < end2) to_delete.Add(start2);
+    addr = start2 - 1;
+  }
+  for (int i = 0; i < to_delete.length(); ++i) tree_.Remove(to_delete[i]);
+}
+
+
 CodeEntry* CodeMap::FindEntry(Address addr) {
   CodeTree::Locator locator;
   if (tree_.FindGreatestLessThan(addr, &locator)) {
@@ -517,6 +539,16 @@ int CodeMap::GetSharedId(Address addr) {
     locator.set_value(CodeEntryInfo(kSharedFunctionCodeEntry, id));
     return id;
   }
+}
+
+
+void CodeMap::MoveCode(Address from, Address to) {
+  if (from == to) return;
+  CodeTree::Locator locator;
+  if (!tree_.Find(from, &locator)) return;
+  CodeEntryInfo entry = locator.value();
+  tree_.Remove(from);
+  AddCode(to, entry.entry, entry.size);
 }
 
 
@@ -983,6 +1015,11 @@ int HeapEntry::RetainedSize(bool exact) {
 }
 
 
+Handle<HeapObject> HeapEntry::GetHeapObject() {
+  return snapshot_->collection()->FindHeapObjectById(id());
+}
+
+
 template<class Visitor>
 void HeapEntry::ApplyAndPaintAllReachable(Visitor* visitor) {
   List<HeapEntry*> list(10);
@@ -1343,8 +1380,8 @@ HeapObjectsMap::~HeapObjectsMap() {
 
 
 void HeapObjectsMap::SnapshotGenerationFinished() {
-    initial_fill_mode_ = false;
-    RemoveDeadEntries();
+  initial_fill_mode_ = false;
+  RemoveDeadEntries();
 }
 
 
@@ -1487,6 +1524,24 @@ void HeapSnapshotsCollection::RemoveSnapshot(HeapSnapshot* snapshot) {
   unsigned uid = snapshot->uid();
   snapshots_uids_.Remove(reinterpret_cast<void*>(uid),
                          static_cast<uint32_t>(uid));
+}
+
+
+Handle<HeapObject> HeapSnapshotsCollection::FindHeapObjectById(uint64_t id) {
+  AssertNoAllocation no_allocation;
+  HeapObject* object = NULL;
+  HeapIterator iterator(HeapIterator::kFilterUnreachable);
+  // Make sure that object with the given id is still reachable.
+  for (HeapObject* obj = iterator.next();
+       obj != NULL;
+       obj = iterator.next()) {
+    if (ids_.FindObject(obj->address()) == id) {
+      ASSERT(object == NULL);
+      object = obj;
+      // Can't break -- kFilterUnreachable requires full heap traversal.
+    }
+  }
+  return object != NULL ? Handle<HeapObject>(object) : Handle<HeapObject>();
 }
 
 

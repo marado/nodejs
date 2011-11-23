@@ -38,12 +38,12 @@ var gotEnd = false;
 
 server.listen(common.PORT, function() {
   var request = http.request({
-    port:   common.PORT,
+    port: common.PORT,
     method: 'HEAD',
-    path:   '/'
+    path: '/'
   }, function(response) {
     common.error('response start');
-    response.addListener('end', function() {
+    response.on('end', function() {
       common.error('response end');
       gotEnd = true;
     });
@@ -51,6 +51,6 @@ server.listen(common.PORT, function() {
   request.end();
 });
 
-process.addListener('exit', function() {
+process.on('exit', function() {
   assert.ok(gotEnd);
 });

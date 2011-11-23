@@ -31,7 +31,7 @@ var env = {
 };
 env.__proto__ = {
   'FOO': 'BAR'
-}
+};
 
 if (isWindows) {
   var child = spawn('cmd.exe', ['/c', 'set'], {env: env});
@@ -44,12 +44,12 @@ var response = '';
 
 child.stdout.setEncoding('utf8');
 
-child.stdout.addListener('data', function(chunk) {
+child.stdout.on('data', function(chunk) {
   console.log('stdout: ' + chunk);
   response += chunk;
 });
 
-process.addListener('exit', function() {
+process.on('exit', function() {
   assert.ok(response.indexOf('HELLO=WORLD') >= 0);
   assert.ok(response.indexOf('FOO=BAR') >= 0);
 });

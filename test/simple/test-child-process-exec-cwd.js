@@ -29,10 +29,10 @@ var error_count = 0;
 var pwdcommand, dir;
 
 if (process.platform == 'win32') {
-  pwdcommand = 'echo %cd%'; 
+  pwdcommand = 'echo %cd%';
   dir = 'c:\\windows';
 } else {
-  pwdcommand = 'pwd'; 
+  pwdcommand = 'pwd';
   dir = '/dev';
 }
 
@@ -50,7 +50,7 @@ var child = exec(pwdcommand, {cwd: dir}, function(err, stdout, stderr) {
   }
 });
 
-process.addListener('exit', function() {
+process.on('exit', function() {
   assert.equal(1, success_count);
   assert.equal(0, error_count);
 });

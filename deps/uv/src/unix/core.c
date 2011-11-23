@@ -38,18 +38,22 @@
 #include <limits.h> /* PATH_MAX */
 #include <sys/uio.h> /* writev */
 
+#ifdef __linux__
+# include <sys/ioctl.h>
+#endif
+
 #ifdef __sun
 # include <sys/types.h>
 # include <sys/wait.h>
 #endif
 
-#if defined(__APPLE__)
-#include <mach-o/dyld.h> /* _NSGetExecutablePath */
+#ifdef __APPLE__
+# include <mach-o/dyld.h> /* _NSGetExecutablePath */
 #endif
 
-#if defined(__FreeBSD__)
-#include <sys/sysctl.h>
-#include <sys/wait.h>
+#ifdef __FreeBSD__
+# include <sys/sysctl.h>
+# include <sys/wait.h>
 #endif
 
 static uv_loop_t default_loop_struct;
@@ -63,17 +67,6 @@ static void uv__finish_close(uv_handle_t* handle);
 #ifndef __GNUC__
 #define __attribute__(a)
 #endif
-
-
-void uv_init() {
-  default_loop_ptr = &default_loop_struct;
-#if defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= 1060
-  default_loop_struct.ev = ev_default_loop(EVBACKEND_KQUEUE);
-#else
-  default_loop_struct.ev = ev_default_loop(EVFLAG_AUTO);
-#endif
-  ev_set_userdata(default_loop_struct.ev, default_loop_ptr);
-}
 
 
 void uv_close(uv_handle_t* handle, uv_close_cb close_cb) {
@@ -90,6 +83,7 @@ void uv_close(uv_handle_t* handle, uv_close_cb close_cb) {
       uv_pipe_cleanup((uv_pipe_t*)handle);
       /* Fall through. */
 
+    case UV_TTY:
     case UV_TCP:
       stream = (uv_stream_t*)handle;
 
@@ -147,6 +141,10 @@ void uv_close(uv_handle_t* handle, uv_close_cb close_cb) {
       ev_child_stop(process->loop->ev, &process->child_watcher);
       break;
 
+    case UV_FS_EVENT:
+      uv__fs_event_destroy((uv_fs_event_t*)handle);
+      break;
+
     default:
       assert(0);
   }
@@ -160,7 +158,7 @@ void uv_close(uv_handle_t* handle, uv_close_cb close_cb) {
 }
 
 
-uv_loop_t* uv_loop_new() {
+uv_loop_t* uv_loop_new(void) {
   uv_loop_t* loop = calloc(1, sizeof(uv_loop_t));
   loop->ev = ev_loop_new(0);
   ev_set_userdata(loop->ev, loop);
@@ -175,7 +173,16 @@ void uv_loop_delete(uv_loop_t* loop) {
 }
 
 
-uv_loop_t* uv_default_loop() {
+uv_loop_t* uv_default_loop(void) {
+  if (!default_loop_ptr) {
+    default_loop_ptr = &default_loop_struct;
+#if HAVE_KQUEUE
+    default_loop_struct.ev = ev_default_loop(EVBACKEND_KQUEUE);
+#else
+    default_loop_struct.ev = ev_default_loop(EVFLAG_AUTO);
+#endif
+    ev_set_userdata(default_loop_struct.ev, default_loop_ptr);
+  }
   assert(default_loop_ptr->ev == EV_DEFAULT_UC);
   return default_loop_ptr;
 }
@@ -233,8 +240,11 @@ void uv__finish_close(uv_handle_t* handle) {
 
     case UV_NAMED_PIPE:
     case UV_TCP:
+    case UV_TTY:
       assert(!ev_is_active(&((uv_stream_t*)handle)->read_watcher));
       assert(!ev_is_active(&((uv_stream_t*)handle)->write_watcher));
+      assert(((uv_stream_t*)handle)->fd == -1);
+      uv__stream_destroy((uv_stream_t*)handle);
       break;
 
     case UV_UDP:
@@ -246,6 +256,9 @@ void uv__finish_close(uv_handle_t* handle) {
 
     case UV_PROCESS:
       assert(!ev_is_active(&((uv_process_t*)handle)->child_watcher));
+      break;
+
+    case UV_FS_EVENT:
       break;
 
     default:
@@ -554,7 +567,7 @@ int uv_timer_stop(uv_timer_t* timer) {
 
 int uv_timer_again(uv_timer_t* timer) {
   if (!ev_is_active(&timer->timer_watcher)) {
-    uv_err_new(timer->loop, EINVAL);
+    uv__set_sys_error(timer->loop, EINVAL);
     return -1;
   }
 
@@ -575,6 +588,12 @@ int64_t uv_timer_get_repeat(uv_timer_t* timer) {
 
 static int uv_getaddrinfo_done(eio_req* req) {
   uv_getaddrinfo_t* handle = req->data;
+  struct addrinfo *res = handle->res;
+#if __sun
+  size_t hostlen = strlen(handle->hostname);
+#endif
+
+  handle->res = NULL;
 
   uv_unref(handle->loop);
 
@@ -582,15 +601,24 @@ static int uv_getaddrinfo_done(eio_req* req) {
   free(handle->service);
   free(handle->hostname);
 
-  if (handle->retcode != 0) {
-    /* TODO how to display gai error strings? */
-    uv_err_new(handle->loop, handle->retcode);
+  if (handle->retcode == 0) {
+    /* OK */
+#if EAI_NODATA /* FreeBSD deprecated EAI_NODATA */
+  } else if (handle->retcode == EAI_NONAME || handle->retcode == EAI_NODATA) {
+#else
+  } else if (handle->retcode == EAI_NONAME) {
+#endif
+    uv__set_sys_error(handle->loop, ENOENT); /* FIXME compatibility hack */
+#if __sun
+  } else if (handle->retcode == EAI_MEMORY && hostlen >= MAXHOSTNAMELEN) {
+    uv__set_sys_error(handle->loop, ENOENT);
+#endif
+  } else {
+    handle->loop->last_err.code = UV_EADDRINFO;
+    handle->loop->last_err.sys_errno_ = handle->retcode;
   }
 
-  handle->cb(handle, handle->retcode, handle->res);
-
-  freeaddrinfo(handle->res);
-  handle->res = NULL;
+  handle->cb(handle, handle->retcode, res);
 
   return 0;
 }
@@ -607,7 +635,7 @@ static void getaddrinfo_thread_proc(eio_req *req) {
 
 
 /* stub implementation of uv_getaddrinfo */
-int uv_getaddrinfo(uv_loop_t* loop, 
+int uv_getaddrinfo(uv_loop_t* loop,
                    uv_getaddrinfo_t* handle,
                    uv_getaddrinfo_cb cb,
                    const char* hostname,
@@ -618,25 +646,31 @@ int uv_getaddrinfo(uv_loop_t* loop,
 
   if (handle == NULL || cb == NULL ||
       (hostname == NULL && service == NULL)) {
-    uv_err_new_artificial(loop, UV_EINVAL);
+    uv__set_artificial_error(loop, UV_EINVAL);
     return -1;
   }
 
-  memset(handle, 0, sizeof(uv_getaddrinfo_t));
+  uv__req_init((uv_req_t*)handle);
+  handle->type = UV_GETADDRINFO;
+  handle->loop = loop;
+  handle->cb = cb;
 
   /* TODO don't alloc so much. */
 
   if (hints) {
     handle->hints = malloc(sizeof(struct addrinfo));
-    memcpy(&handle->hints, hints, sizeof(struct addrinfo));
+    memcpy(handle->hints, hints, sizeof(struct addrinfo));
+  }
+  else {
+    handle->hints = NULL;
   }
 
   /* TODO security! check lengths, check return values. */
 
-  handle->loop = loop;
-  handle->cb = cb;
   handle->hostname = hostname ? strdup(hostname) : NULL;
   handle->service = service ? strdup(service) : NULL;
+  handle->res = NULL;
+  handle->retcode = 0;
 
   /* TODO check handle->hostname == NULL */
   /* TODO check handle->service == NULL */
@@ -652,24 +686,38 @@ int uv_getaddrinfo(uv_loop_t* loop,
 }
 
 
+void uv_freeaddrinfo(struct addrinfo* ai) {
+  if (ai)
+    freeaddrinfo(ai);
+}
+
+
 /* Open a socket in non-blocking close-on-exec mode, atomically if possible. */
 int uv__socket(int domain, int type, int protocol) {
-#if defined(SOCK_NONBLOCK) && defined(SOCK_CLOEXEC)
-  return socket(domain, type | SOCK_NONBLOCK | SOCK_CLOEXEC, protocol);
-#else
   int sockfd;
 
-  if ((sockfd = socket(domain, type, protocol)) == -1) {
-    return -1;
-  }
+#if defined(SOCK_NONBLOCK) && defined(SOCK_CLOEXEC)
+  sockfd = socket(domain, type | SOCK_NONBLOCK | SOCK_CLOEXEC, protocol);
 
-  if (uv__nonblock(sockfd, 1) == -1 || uv__cloexec(sockfd, 1) == -1) {
-    uv__close(sockfd);
-    return -1;
-  }
+  if (sockfd != -1)
+    goto out;
 
-  return sockfd;
+  if (errno != EINVAL)
+    goto out;
 #endif
+
+  sockfd = socket(domain, type, protocol);
+
+  if (sockfd == -1)
+    goto out;
+
+  if (uv__nonblock(sockfd, 1) || uv__cloexec(sockfd, 1)) {
+    uv__close(sockfd);
+    sockfd = -1;
+  }
+
+out:
+  return sockfd;
 }
 
 
@@ -678,19 +726,34 @@ int uv__accept(int sockfd, struct sockaddr* saddr, socklen_t slen) {
 
   assert(sockfd >= 0);
 
-  do {
-#if defined(HAVE_ACCEPT4)
+  while (1) {
+#if HAVE_ACCEPT4
     peerfd = accept4(sockfd, saddr, &slen, SOCK_NONBLOCK | SOCK_CLOEXEC);
-#else
-    if ((peerfd = accept(sockfd, saddr, &slen)) != -1) {
-      if (uv__cloexec(peerfd, 1) == -1 || uv__nonblock(peerfd, 1) == -1) {
-        uv__close(peerfd);
-        return -1;
-      }
-    }
+
+    if (peerfd != -1)
+      break;
+
+    if (errno == EINTR)
+      continue;
+
+    if (errno != ENOSYS)
+      break;
 #endif
+
+    if ((peerfd = accept(sockfd, saddr, &slen)) == -1) {
+      if (errno == EINTR)
+        continue;
+      else
+        break;
+    }
+
+    if (uv__cloexec(peerfd, 1) || uv__nonblock(peerfd, 1)) {
+      uv__close(peerfd);
+      peerfd = -1;
+    }
+
+    break;
   }
-  while (peerfd == -1 && errno == EINTR);
 
   return peerfd;
 }
@@ -714,6 +777,9 @@ int uv__close(int fd) {
 
 
 int uv__nonblock(int fd, int set) {
+#if FIONBIO
+  return ioctl(fd, FIONBIO, &set);
+#else
   int flags;
 
   if ((flags = fcntl(fd, F_GETFL)) == -1) {
@@ -731,10 +797,17 @@ int uv__nonblock(int fd, int set) {
   }
 
   return 0;
+#endif
 }
 
 
 int uv__cloexec(int fd, int set) {
+#if __linux__
+  /* Linux knows only FD_CLOEXEC so we can safely omit the fcntl(F_GETFD)
+   * syscall. CHECKME: That's probably true for other Unices as well.
+   */
+  return fcntl(fd, F_SETFD, set ? FD_CLOEXEC : 0);
+#else
   int flags;
 
   if ((flags = fcntl(fd, F_GETFD)) == -1) {
@@ -752,6 +825,7 @@ int uv__cloexec(int fd, int set) {
   }
 
   return 0;
+#endif
 }
 
 
@@ -771,10 +845,3 @@ size_t uv__strlcpy(char* dst, const char* src, size_t size) {
 
   return src - org;
 }
-
-
-uv_stream_t* uv_std_handle(uv_loop_t* loop, uv_std_type type) {
-  assert(0 && "implement me");
-  return NULL;
-}
-

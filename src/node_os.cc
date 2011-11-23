@@ -117,7 +117,7 @@ static Handle<Value> GetCPUInfo(const Arguments& args) {
 
 static Handle<Value> GetFreeMemory(const Arguments& args) {
   HandleScope scope;
-  double amount = Platform::GetFreeMemory();
+  double amount = uv_get_free_memory();
 
   if (amount < 0) {
     return Undefined();
@@ -128,7 +128,7 @@ static Handle<Value> GetFreeMemory(const Arguments& args) {
 
 static Handle<Value> GetTotalMemory(const Arguments& args) {
   HandleScope scope;
-  double amount = Platform::GetTotalMemory();
+  double amount = uv_get_total_memory();
 
   if (amount < 0) {
     return Undefined();
@@ -150,12 +150,13 @@ static Handle<Value> GetUptime(const Arguments& args) {
 
 static Handle<Value> GetLoadAvg(const Arguments& args) {
   HandleScope scope;
-  Local<Array> loads = Array::New(3);
-  int r = Platform::GetLoadAvg(&loads);
+  double loadavg[3];
+  uv_loadavg(loadavg);
 
-  if (r < 0) {
-    return Undefined();
-  }
+  Local<Array> loads = Array::New(3);
+  loads->Set(0, Number::New(loadavg[0]));
+  loads->Set(1, Number::New(loadavg[1]));
+  loads->Set(2, Number::New(loadavg[2]));
 
   return scope.Close(loads);
 }
@@ -165,20 +166,6 @@ static Handle<Value> GetInterfaceAddresses(const Arguments& args) {
   return Platform::GetInterfaceAddresses();
 }
 
-
-#ifdef __MINGW32__
-static Handle<Value> OpenOSHandle(const Arguments& args) {
-  HandleScope scope;
-
-  intptr_t handle = args[0]->IntegerValue();
-
-  int fd = _open_osfhandle(handle, 0);
-  if (fd < 0)
-    return ThrowException(ErrnoException(errno, "_open_osfhandle"));
-
-  return scope.Close(Integer::New(fd));
-}
-#endif // __MINGW32__
 
 void OS::Initialize(v8::Handle<v8::Object> target) {
   HandleScope scope;
@@ -192,13 +179,9 @@ void OS::Initialize(v8::Handle<v8::Object> target) {
   NODE_SET_METHOD(target, "getOSType", GetOSType);
   NODE_SET_METHOD(target, "getOSRelease", GetOSRelease);
   NODE_SET_METHOD(target, "getInterfaceAddresses", GetInterfaceAddresses);
-
-#ifdef __MINGW32__
-  NODE_SET_METHOD(target, "openOSHandle", OpenOSHandle);
-#endif
 }
 
 
 }  // namespace node
 
-NODE_MODULE(node_os, node::OS::Initialize);
+NODE_MODULE(node_os, node::OS::Initialize)

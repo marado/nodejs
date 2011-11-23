@@ -34,6 +34,7 @@
 #include <openssl/x509.h>
 #include <openssl/x509v3.h>
 #include <openssl/hmac.h>
+#include <openssl/rand.h>
 
 #ifdef OPENSSL_NPN_NEGOTIATED
 #include <node_buffer.h>
@@ -65,6 +66,7 @@ class SecureContext : ObjectWrap {
   static v8::Handle<v8::Value> AddRootCerts(const v8::Arguments& args);
   static v8::Handle<v8::Value> SetCiphers(const v8::Arguments& args);
   static v8::Handle<v8::Value> SetOptions(const v8::Arguments& args);
+  static v8::Handle<v8::Value> SetSessionIdContext(const v8::Arguments& args);
   static v8::Handle<v8::Value> Close(const v8::Arguments& args);
 
   SecureContext() : ObjectWrap() {
@@ -191,7 +193,7 @@ class Connection : ObjectWrap {
   BIO *bio_read_;
   BIO *bio_write_;
   SSL *ssl_;
-  
+
   bool is_server_; /* coverity[member_decl] */
 };
 

@@ -26,6 +26,12 @@ Takes two streams and creates a readline interface. The `completer` function
 is used for autocompletion. When given a substring, it returns `[[substr1,
 substr2, ...], originalsubstring]`.
 
+Also `completer` can be run in async mode if it accepts two arguments:
+
+  function completer(linePartial, callback) {
+    callback(null, [['123'], linePartial]);
+  }
+
 `createInterface` is commonly used with `process.stdin` and
 `process.stdout` in order to accept user input:
 
@@ -129,5 +135,5 @@ line interface:
 
 Take a look at this slightly more complicated
 [example](https://gist.github.com/901104), and
-[http-console](http://github.com/cloudhead/http-console) for a real-life use
+[http-console](https://github.com/cloudhead/http-console) for a real-life use
 case.

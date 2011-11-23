@@ -19,7 +19,7 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-// libuv-broken
+
 
 
 var http = require('http'),
@@ -153,7 +153,7 @@ function testHttps() {
       host: 'localhost',
       //agent: false,
       port: common.PORT }, cb).on('error', thrower).end();
-      
+
     https.get({ method: 'GET',
       path: '/setHostFalse' + (counter++),
       host: 'localhost',

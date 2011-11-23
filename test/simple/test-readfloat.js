@@ -1,13 +1,14 @@
 /*
  * Tests to verify we're reading in floats correctly
  */
+var SlowBuffer = process.binding('buffer').SlowBuffer;
 var ASSERT = require('assert');
 
 /*
  * Test (32 bit) float
  */
-function test() {
-  var buffer = new Buffer(4);
+function test(clazz) {
+  var buffer = new clazz(4);
 
   buffer[0] = 0;
   buffer[1] = 0;
@@ -43,12 +44,12 @@ function test() {
   buffer[3] = 0;
   ASSERT.equal(0, buffer.readFloatBE(0));
   ASSERT.equal(0, buffer.readFloatLE(0));
-  ASSERT.equal(false, 1/buffer.readFloatLE(0)<0);
+  ASSERT.equal(false, 1 / buffer.readFloatLE(0) < 0);
 
   buffer[3] = 0x80;
   ASSERT.equal(1.793662034335766e-43, buffer.readFloatBE(0));
   ASSERT.equal(0, buffer.readFloatLE(0));
-  ASSERT.equal(true, 1/buffer.readFloatLE(0)<0);
+  ASSERT.equal(true, 1 / buffer.readFloatLE(0) < 0);
 
   buffer[0] = 0;
   buffer[1] = 0;
@@ -66,4 +67,5 @@ function test() {
 }
 
 
-test();
+test(Buffer);
+test(SlowBuffer);

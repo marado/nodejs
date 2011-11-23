@@ -19,7 +19,7 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-// libuv-broken
+
 
 
 var common = require('../common');
@@ -111,9 +111,9 @@ function startClient() {
   console.log('Making request');
 
   var req = http.request({
-    port:    common.PORT,
-    method:  'GET',
-    path:    '/',
+    port: common.PORT,
+    method: 'GET',
+    path: '/',
     headers: { 'content-length': buffer.length }
   }, function(res) {
     console.log('Got response');

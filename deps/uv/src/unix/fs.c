@@ -46,7 +46,7 @@
     /* async */ \
     req->eio = eiofunc(args, EIO_PRI_DEFAULT, uv__fs_after, req); \
     if (!req->eio) { \
-      uv_err_new(loop, ENOMEM); \
+      uv__set_sys_error(loop, ENOMEM); \
       return -1; \
     } \
     uv_ref(loop); \
@@ -54,9 +54,9 @@
     /* sync */ \
     req->result = func(args); \
     if (req->result) { \
-      uv_err_new(loop, errno); \
-      return -1; \
+      uv__set_sys_error(loop, errno); \
     }  \
+    return req->result; \
   } \
   return 0;
 
@@ -85,8 +85,7 @@ void uv_fs_req_cleanup(uv_fs_t* req) {
 
   switch (req->fs_type) {
     case UV_FS_READDIR:
-      assert((req->result == -1 && req->ptr == NULL)
-          || (req->result >= 0 && req->ptr != NULL));
+      assert(req->result > 0 ? (req->ptr != NULL) : (req->ptr == NULL));
       free(req->ptr);
       req->ptr = NULL;
       break;
@@ -125,16 +124,21 @@ static int uv__fs_after(eio_req* eio) {
        */
       buflen = 0;
       name = req->eio->ptr2;
+
       for (i = 0; i < req->result; i++) {
         namelen = strlen(name);
         buflen += namelen + 1;
-        /* TODO check ENOMEM */
         name += namelen;
         assert(*name == '\0');
         name++;
       }
-      req->ptr = malloc(buflen);
-      memcpy(req->ptr, req->eio->ptr2, buflen);
+
+      if (buflen) {
+        if ((req->ptr = malloc(buflen)))
+          memcpy(req->ptr, req->eio->ptr2, buflen);
+        else
+          uv__set_sys_error(req->loop, ENOMEM);
+      }
       break;
 
     case UV_FS_STAT:
@@ -146,18 +150,19 @@ static int uv__fs_after(eio_req* eio) {
     case UV_FS_READLINK:
       if (req->result == -1) {
         req->ptr = NULL;
-      } else {
-        assert(req->result > 0);
+        break;
+      }
+      assert(req->result > 0);
 
-        if ((name = realloc(req->eio->ptr2, req->result + 1)) == NULL) {
-          /* Not enough memory. Reuse buffer, chop off last byte. */
-          name = req->eio->ptr2;
-          req->result--;
-        }
-
+      /* Make zero-terminated copy of req->eio->ptr2 */
+      if ((req->ptr = name = malloc(req->result + 1))) {
+        memcpy(name, req->eio->ptr2, req->result);
         name[req->result] = '\0';
-        req->ptr = name;
         req->result = 0;
+      }
+      else {
+        req->errorno = ENOMEM;
+        req->result = -1;
       }
       break;
 
@@ -188,7 +193,7 @@ int uv_fs_open(uv_loop_t* loop, uv_fs_t* req, const char* path, int flags,
     uv_ref(loop);
     req->eio = eio_open(path, flags, mode, EIO_PRI_DEFAULT, uv__fs_after, req);
     if (!req->eio) {
-      uv_err_new(loop, ENOMEM);
+      uv__set_sys_error(loop, ENOMEM);
       return -1;
     }
 
@@ -196,11 +201,13 @@ int uv_fs_open(uv_loop_t* loop, uv_fs_t* req, const char* path, int flags,
     /* sync */
     req->result = open(path, flags, mode);
     if (req->result < 0) {
-      uv_err_new(loop, errno);
+      uv__set_sys_error(loop, errno);
       return -1;
     }
 
     uv__cloexec(req->result, 1);
+
+    return req->result;
   }
 
   return 0;
@@ -218,7 +225,7 @@ int uv_fs_read(uv_loop_t* loop, uv_fs_t* req, uv_file fd, void* buf,
         uv__fs_after, req);
 
     if (!req->eio) {
-      uv_err_new(loop, ENOMEM);
+      uv__set_sys_error(loop, ENOMEM);
       return -1;
     }
 
@@ -229,9 +236,11 @@ int uv_fs_read(uv_loop_t* loop, uv_fs_t* req, uv_file fd, void* buf,
       pread(fd, buf, length, offset);
 
     if (req->result < 0) {
-      uv_err_new(loop, errno);
+      uv__set_sys_error(loop, errno);
       return -1;
     }
+
+    return req->result;
   }
 
   return 0;
@@ -253,7 +262,7 @@ int uv_fs_write(uv_loop_t* loop, uv_fs_t* req, uv_file file, void* buf,
     req->eio = eio_write(file, buf, length, offset, EIO_PRI_DEFAULT,
         uv__fs_after, req);
     if (!req->eio) {
-      uv_err_new(loop, ENOMEM);
+      uv__set_sys_error(loop, ENOMEM);
       return -1;
     }
 
@@ -264,9 +273,11 @@ int uv_fs_write(uv_loop_t* loop, uv_fs_t* req, uv_file file, void* buf,
         pwrite(file, buf, length, offset);
 
     if (req->result < 0) {
-      uv_err_new(loop, errno);
+      uv__set_sys_error(loop, errno);
       return -1;
     }
+
+    return req->result;
   }
 
   return 0;
@@ -298,7 +309,7 @@ int uv_fs_readdir(uv_loop_t* loop, uv_fs_t* req, const char* path, int flags,
     uv_ref(loop);
     req->eio = eio_readdir(path, flags, EIO_PRI_DEFAULT, uv__fs_after, req);
     if (!req->eio) {
-      uv_err_new(loop, ENOMEM);
+      uv__set_sys_error(loop, ENOMEM);
       return -1;
     }
 
@@ -306,7 +317,7 @@ int uv_fs_readdir(uv_loop_t* loop, uv_fs_t* req, const char* path, int flags,
     /* sync */
     DIR* dir = opendir(path);
     if (!dir) {
-      uv_err_new(loop, errno);
+      uv__set_sys_error(loop, errno);
       req->result = -1;
       return -1;
     }
@@ -335,10 +346,12 @@ int uv_fs_readdir(uv_loop_t* loop, uv_fs_t* req, const char* path, int flags,
 
     r = closedir(dir);
     if (r) {
-      uv_err_new(loop, errno);
+      uv__set_sys_error(loop, errno);
       req->result = -1;
       return -1;
     }
+
+    return req->result;
   }
 
   return 0;
@@ -369,7 +382,7 @@ int uv_fs_stat(uv_loop_t* loop, uv_fs_t* req, const char* path, uv_fs_cb cb) {
     free(pathdup);
 
     if (!req->eio) {
-      uv_err_new(loop, ENOMEM);
+      uv__set_sys_error(loop, ENOMEM);
       return -1;
     }
 
@@ -380,11 +393,12 @@ int uv_fs_stat(uv_loop_t* loop, uv_fs_t* req, const char* path, uv_fs_cb cb) {
     free(pathdup);
 
     if (req->result < 0) {
-      uv_err_new(loop, errno);
+      uv__set_sys_error(loop, errno);
       return -1;
     }
 
     req->ptr = &req->statbuf;
+    return req->result;
   }
 
   return 0;
@@ -400,7 +414,7 @@ int uv_fs_fstat(uv_loop_t* loop, uv_fs_t* req, uv_file file, uv_fs_cb cb) {
     req->eio = eio_fstat(file, EIO_PRI_DEFAULT, uv__fs_after, req);
 
     if (!req->eio) {
-      uv_err_new(loop, ENOMEM);
+      uv__set_sys_error(loop, ENOMEM);
       return -1;
     }
 
@@ -409,11 +423,12 @@ int uv_fs_fstat(uv_loop_t* loop, uv_fs_t* req, uv_file file, uv_fs_cb cb) {
     req->result = fstat(file, &req->statbuf);
 
     if (req->result < 0) {
-      uv_err_new(loop, errno);
+      uv__set_sys_error(loop, errno);
       return -1;
     }
 
     req->ptr = &req->statbuf;
+    return req->result;
   }
 
   return 0;
@@ -434,7 +449,15 @@ int uv_fs_fsync(uv_loop_t* loop, uv_fs_t* req, uv_file file, uv_fs_cb cb) {
 
 int uv_fs_fdatasync(uv_loop_t* loop, uv_fs_t* req, uv_file file, uv_fs_cb cb) {
   char* path = NULL;
+#if defined(__FreeBSD__) \
+  || (__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1060)
+  /* freebsd and pre-10.6 darwin don't have fdatasync,
+   * do a full fsync instead.
+   */
+  WRAP_EIO(UV_FS_FDATASYNC, eio_fdatasync, fsync, ARGS1(file))
+#else
   WRAP_EIO(UV_FS_FDATASYNC, eio_fdatasync, fdatasync, ARGS1(file))
+#endif
 }
 
 
@@ -473,7 +496,7 @@ int uv_fs_utime(uv_loop_t* loop, uv_fs_t* req, const char* path, double atime,
 }
 
 
-#if defined(HAVE_FUTIMES)
+#if HAVE_FUTIMES
 static int _futime(const uv_file file, double atime, double mtime) {
   struct timeval tv[2];
 
@@ -484,21 +507,25 @@ static int _futime(const uv_file file, double atime, double mtime) {
   tv[1].tv_sec = mtime;
   tv[1].tv_usec = (unsigned long)(mtime * 1000000) % 1000000;
 
+#ifdef __sun
+  return futimesat(file, NULL, tv);
+#else
   return futimes(file, tv);
+#endif
 }
 #endif
 
 
 int uv_fs_futime(uv_loop_t* loop, uv_fs_t* req, uv_file file, double atime,
     double mtime, uv_fs_cb cb) {
+#if HAVE_FUTIMES
   const char* path = NULL;
 
   uv_fs_req_init(loop, req, UV_FS_FUTIME, path, cb);
 
-#if defined(HAVE_FUTIMES)
   WRAP_EIO(UV_FS_FUTIME, eio_futime, _futime, ARGS3(file, atime, mtime))
 #else
-  uv_err_new(loop, ENOSYS);
+  uv__set_sys_error(loop, ENOSYS);
   return -1;
 #endif
 }
@@ -528,7 +555,7 @@ int uv_fs_lstat(uv_loop_t* loop, uv_fs_t* req, const char* path, uv_fs_cb cb) {
     free(pathdup);
 
     if (!req->eio) {
-      uv_err_new(loop, ENOMEM);
+      uv__set_sys_error(loop, ENOMEM);
       return -1;
     }
 
@@ -539,11 +566,12 @@ int uv_fs_lstat(uv_loop_t* loop, uv_fs_t* req, const char* path, uv_fs_cb cb) {
     free(pathdup);
 
     if (req->result < 0) {
-      uv_err_new(loop, errno);
+      uv__set_sys_error(loop, errno);
       return -1;
     }
 
     req->ptr = &req->statbuf;
+    return req->result;
   }
 
   return 0;
@@ -565,10 +593,7 @@ int uv_fs_symlink(uv_loop_t* loop, uv_fs_t* req, const char* path,
 int uv_fs_readlink(uv_loop_t* loop, uv_fs_t* req, const char* path,
     uv_fs_cb cb) {
   ssize_t size;
-  int status;
   char* buf;
-
-  status = -1;
 
   uv_fs_req_init(loop, req, UV_FS_READLINK, path, cb);
 
@@ -577,7 +602,7 @@ int uv_fs_readlink(uv_loop_t* loop, uv_fs_t* req, const char* path,
       uv_ref(loop);
       return 0;
     } else {
-      uv_err_new(loop, ENOMEM);
+      uv__set_sys_error(loop, ENOMEM);
       return -1;
     }
   } else {
@@ -593,7 +618,7 @@ int uv_fs_readlink(uv_loop_t* loop, uv_fs_t* req, const char* path,
     }
 
     if ((buf = malloc(size + 1)) == NULL) {
-      uv_err_new(loop, ENOMEM);
+      uv__set_sys_error(loop, ENOMEM);
       return -1;
     }
 
@@ -609,7 +634,7 @@ int uv_fs_readlink(uv_loop_t* loop, uv_fs_t* req, const char* path,
       req->ptr = buf;
     }
 
-    return 0;
+    return req->result;
   }
 
   assert(0 && "unreachable");
@@ -670,7 +695,7 @@ int uv_queue_work(uv_loop_t* loop, uv_work_t* req, uv_work_cb work_cb,
   req->eio = eio_custom(uv__work, EIO_PRI_DEFAULT, uv__after_work, req);
 
   if (!req->eio) {
-    uv_err_new(loop, ENOMEM);
+    uv__set_sys_error(loop, ENOMEM);
     return -1;
   }
 

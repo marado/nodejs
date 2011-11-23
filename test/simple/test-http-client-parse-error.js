@@ -31,17 +31,17 @@ var srv = net.createServer(function(c) {
 
   console.log('connection');
 
-  c.addListener('end', function() { c.end(); });
+  c.on('end', function() { c.end(); });
 });
 
 var parseError = false;
 
 srv.listen(common.PORT, '127.0.0.1', function() {
   var req = http.request({
-    host:   '127.0.0.1',
-    port:   common.PORT,
+    host: '127.0.0.1',
+    port: common.PORT,
     method: 'GET',
-    path:   '/'});
+    path: '/'});
   req.end();
 
   req.on('error', function(e) {
@@ -53,7 +53,7 @@ srv.listen(common.PORT, '127.0.0.1', function() {
 });
 
 
-process.addListener('exit', function() {
+process.on('exit', function() {
   assert.ok(parseError);
 });
 

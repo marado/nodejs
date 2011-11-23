@@ -238,9 +238,8 @@ class CpuProfile {
 class CodeMap {
  public:
   CodeMap() : next_shared_id_(1) { }
-  INLINE(void AddCode(Address addr, CodeEntry* entry, unsigned size));
-  INLINE(void MoveCode(Address from, Address to));
-  INLINE(void DeleteCode(Address addr));
+  void AddCode(Address addr, CodeEntry* entry, unsigned size);
+  void MoveCode(Address from, Address to);
   CodeEntry* FindEntry(Address addr);
   int GetSharedId(Address addr);
 
@@ -269,6 +268,8 @@ class CodeMap {
    public:
     void Call(const Address& key, const CodeEntryInfo& value);
   };
+
+  void DeleteAllCoveredCode(Address start, Address end);
 
   // Fake CodeEntry pointer to distinguish shared function entries.
   static CodeEntry* const kSharedFunctionCodeEntry;
@@ -584,6 +585,8 @@ class HeapEntry BASE_EMBEDDED {
 
   void Print(int max_depth, int indent);
 
+  Handle<HeapObject> GetHeapObject();
+
   static int EntriesSize(int entries_count,
                          int children_count,
                          int retainers_count);
@@ -762,6 +765,7 @@ class HeapSnapshotsCollection {
   TokenEnumerator* token_enumerator() { return token_enumerator_; }
 
   uint64_t GetObjectId(Address addr) { return ids_.FindObject(addr); }
+  Handle<HeapObject> FindHeapObjectById(uint64_t id);
   void ObjectMoveEvent(Address from, Address to) { ids_.MoveObject(from, to); }
 
  private:

@@ -113,7 +113,7 @@ static void spawn() {
   options.args = args;
   options.exit_cb = exit_cb;
 
-  uv_pipe_init(loop, &out);
+  uv_pipe_init(loop, &out, 0);
   options.stdout_stream = &out;
 
   r = uv_spawn(loop, &process, options);
@@ -132,7 +132,6 @@ BENCHMARK_IMPL(spawn) {
   int r;
   static int64_t start_time, end_time;
 
-  uv_init();
   loop = uv_default_loop();
 
   r = uv_exepath(exepath, &exepath_size);

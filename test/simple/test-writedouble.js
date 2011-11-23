@@ -1,10 +1,11 @@
 /*
  * Tests to verify we're writing doubles correctly
  */
+var SlowBuffer = process.binding('buffer').SlowBuffer;
 var ASSERT = require('assert');
 
-function test() {
-  var buffer = new Buffer(16);
+function test(clazz) {
+  var buffer = new clazz(16);
 
   buffer.writeDoubleBE(2.225073858507201e-308, 0);
   buffer.writeDoubleLE(2.225073858507201e-308, 8);
@@ -82,8 +83,8 @@ function test() {
   ASSERT.equal(0xef, buffer[14]);
   ASSERT.equal(0x7f, buffer[15]);
 
-  buffer.writeDoubleBE(0*-1, 0);
-  buffer.writeDoubleLE(0*-1, 8);
+  buffer.writeDoubleBE(0 * -1, 0);
+  buffer.writeDoubleLE(0 * -1, 8);
   ASSERT.equal(0x80, buffer[0]);
   ASSERT.equal(0x00, buffer[1]);
   ASSERT.equal(0x00, buffer[2]);
@@ -103,4 +104,5 @@ function test() {
 }
 
 
-test();
+test(Buffer);
+test(SlowBuffer);

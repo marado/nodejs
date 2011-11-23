@@ -1,13 +1,14 @@
 /*
  * Tests to verify we're reading in doubles correctly
  */
+var SlowBuffer = process.binding('buffer').SlowBuffer;
 var ASSERT = require('assert');
 
 /*
  * Test (64 bit) double
  */
-function test() {
-  var buffer = new Buffer(8);
+function test(clazz) {
+  var buffer = new clazz(8);
 
   buffer[0] = 0x55;
   buffer[1] = 0x55;
@@ -85,12 +86,12 @@ function test() {
   buffer[6] = 0;
   ASSERT.equal(0, buffer.readDoubleBE(0));
   ASSERT.equal(0, buffer.readDoubleLE(0));
-  ASSERT.equal(false, 1/buffer.readDoubleLE(0)<0);
+  ASSERT.equal(false, 1 / buffer.readDoubleLE(0) < 0);
 
   buffer[7] = 0x80;
   ASSERT.equal(6.3e-322, buffer.readDoubleBE(0));
   ASSERT.equal(0, buffer.readDoubleLE(0));
-  ASSERT.equal(true, 1/buffer.readDoubleLE(0)<0);
+  ASSERT.equal(true, 1 / buffer.readDoubleLE(0) < 0);
 
   buffer[6] = 0xf0;
   buffer[7] = 0x7f;
@@ -104,4 +105,5 @@ function test() {
 }
 
 
-test();
+test(Buffer);
+test(SlowBuffer);

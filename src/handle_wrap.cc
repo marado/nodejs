@@ -1,3 +1,24 @@
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 #include <node.h>
 #include <handle_wrap.h>
 
@@ -24,13 +45,32 @@ using v8::Integer;
   HandleWrap* wrap =  \
       static_cast<HandleWrap*>(args.Holder()->GetPointerFromInternalField(0)); \
   if (!wrap) { \
-    SetErrno(UV_EBADF); \
+    uv_err_t err; \
+    err.code = UV_EBADF; \
+    SetErrno(err); \
     return scope.Close(Integer::New(-1)); \
   }
 
 
 void HandleWrap::Initialize(Handle<Object> target) {
   /* Doesn't do anything at the moment. */
+}
+
+
+// This function is used only for process.stdout. It's put here instead of
+// in TTYWrap because here we have access to the Close binding.
+Handle<Value> HandleWrap::Unref(const Arguments& args) {
+  HandleScope scope;
+
+  UNWRAP
+
+  // Calling this function twice should never happen.
+  assert(wrap->unref == false);
+
+  wrap->unref = true;
+  uv_unref(uv_default_loop());
+
+  return v8::Undefined();
 }
 
 
@@ -42,6 +82,11 @@ Handle<Value> HandleWrap::Close(const Arguments& args) {
   assert(!wrap->object_.IsEmpty());
   uv_close(wrap->handle__, OnClose);
 
+  if (wrap->unref) {
+    uv_ref(uv_default_loop());
+    wrap->unref = false;
+  }
+
   wrap->StateChange();
 
   return v8::Null();
@@ -49,6 +94,7 @@ Handle<Value> HandleWrap::Close(const Arguments& args) {
 
 
 HandleWrap::HandleWrap(Handle<Object> object, uv_handle_t* h) {
+  unref = false;
   handle__ = h;
   if (h) {
     h->data = this;

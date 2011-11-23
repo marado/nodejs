@@ -32,7 +32,7 @@ var net = require('net');
 // Create a TCP server
 var srv = net.createServer(function(c) {
   var data = '';
-  c.addListener('data', function(d) {
+  c.on('data', function(d) {
     data += d.toString('utf8');
 
     c.write('HTTP/1.1 101\r\n');
@@ -43,7 +43,7 @@ var srv = net.createServer(function(c) {
     c.write('nurtzo');
   });
 
-  c.addListener('end', function() {
+  c.on('end', function() {
     c.end();
   });
 });
@@ -73,20 +73,20 @@ srv.listen(common.PORT, '127.0.0.1', function() {
                             'connection': 'upgrade',
                             'upgrade': 'websocket' };
     assert.deepEqual(expectedHeaders, res.headers);
-    assert.equal(http.globalAgent.sockets[options.host+':'+options.port].length, 1);
-    
-    process.nextTick(function () {
+    assert.equal(http.globalAgent.sockets[options.host + ':' + options.port].length, 1);
+
+    process.nextTick(function() {
       // Make sure this request got removed from the pool.
-      assert.equal(http.globalAgent.sockets[options.host+':'+options.port].length, 0);
+      assert.equal(http.globalAgent.sockets[options.host + ':' + options.port].length, 0);
       socket.end();
       srv.close();
-      
+
       gotUpgrade = true;
-    })
+    });
   });
 
 });
 
-process.addListener('exit', function() {
+process.on('exit', function() {
   assert.ok(gotUpgrade);
 });

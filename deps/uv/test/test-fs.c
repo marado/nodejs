@@ -155,7 +155,7 @@ static void fchmod_cb(uv_fs_t* req) {
   ASSERT(req->result == 0);
   fchmod_cb_count++;
   uv_fs_req_cleanup(req);
-  check_permission("test_file", (int)req->data);
+  check_permission("test_file", *(int*)req->data);
 }
 
 
@@ -164,7 +164,7 @@ static void chmod_cb(uv_fs_t* req) {
   ASSERT(req->result == 0);
   chmod_cb_count++;
   uv_fs_req_cleanup(req);
-  check_permission("test_file", (int)req->data);
+  check_permission("test_file", *(int*)req->data);
 }
 
 
@@ -263,6 +263,19 @@ static void open_cb(uv_fs_t* req) {
 }
 
 
+static void open_cb_simple(uv_fs_t* req) {
+  ASSERT(req->fs_type == UV_FS_OPEN);
+  if (req->result < 0) {
+    /* TODO get error with uv_last_error() */
+    fprintf(stderr, "async open error: %d\n", req->errorno);
+    ASSERT(0);
+  }
+  open_cb_count++;
+  ASSERT(req->path);
+  uv_fs_req_cleanup(req);
+}
+
+
 static void fsync_cb(uv_fs_t* req) {
   int r;
   ASSERT(req == &fsync_req);
@@ -354,6 +367,27 @@ static void readdir_cb(uv_fs_t* req) {
 }
 
 
+static void empty_readdir_cb(uv_fs_t* req) {
+  ASSERT(req == &readdir_req);
+  ASSERT(req->fs_type == UV_FS_READDIR);
+  ASSERT(req->result == 0);
+  ASSERT(req->ptr == NULL);
+  uv_fs_req_cleanup(req);
+  readdir_cb_count++;
+}
+
+
+static void file_readdir_cb(uv_fs_t* req) {
+  ASSERT(req == &readdir_req);
+  ASSERT(req->fs_type == UV_FS_READDIR);
+  ASSERT(req->result == -1);
+  ASSERT(req->ptr == NULL);
+  ASSERT(uv_last_error(req->loop).code == UV_ENOTDIR);
+  uv_fs_req_cleanup(req);
+  readdir_cb_count++;
+}
+
+
 static void stat_cb(uv_fs_t* req) {
   ASSERT(req == &stat_req);
   ASSERT(req->fs_type == UV_FS_STAT || req->fs_type == UV_FS_LSTAT);
@@ -387,11 +421,10 @@ TEST_IMPL(fs_file_noent) {
   uv_fs_t req;
   int r;
 
-  uv_init();
   loop = uv_default_loop();
 
   r = uv_fs_open(loop, &req, "does_not_exist", O_RDONLY, 0, NULL);
-  ASSERT(r == 0);
+  ASSERT(r == -1);
   ASSERT(req.result == -1);
   ASSERT(uv_last_error(loop).code == UV_ENOENT);
   uv_fs_req_cleanup(&req);
@@ -425,14 +458,10 @@ static void check_utime(const char* path, double atime, double mtime) {
   ASSERT(s->st_mtime == mtime);
 #elif !defined(_POSIX_C_SOURCE) || defined(_DARWIN_C_SOURCE)
   ASSERT(s->st_atimespec.tv_sec  == atime);
-  ASSERT(s->st_atimespec.tv_nsec == 0); /* FIXME check sub-second precision */
   ASSERT(s->st_mtimespec.tv_sec  == mtime);
-  ASSERT(s->st_mtimespec.tv_nsec == 0); /* FIXME check sub-second precision */
 #else
   ASSERT(s->st_atim.tv_sec  == atime);
-  ASSERT(s->st_atim.tv_nsec == 0); /* FIXME check sub-second precision */
   ASSERT(s->st_mtim.tv_sec  == mtime);
-  ASSERT(s->st_mtim.tv_nsec == 0); /* FIXME check sub-second precision */
 #endif
 
   uv_fs_req_cleanup(&req);
@@ -476,7 +505,6 @@ TEST_IMPL(fs_file_async) {
   unlink("test_file");
   unlink("test_file2");
 
-  uv_init();
   loop = uv_default_loop();
 
   r = uv_fs_open(loop, &open_req1, "test_file", O_WRONLY | O_CREAT,
@@ -539,73 +567,72 @@ TEST_IMPL(fs_file_sync) {
   unlink("test_file");
   unlink("test_file2");
 
-  uv_init();
   loop = uv_default_loop();
 
   r = uv_fs_open(loop, &open_req1, "test_file", O_WRONLY | O_CREAT,
       S_IWRITE | S_IREAD, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(open_req1.result != -1);
   uv_fs_req_cleanup(&open_req1);
 
   r = uv_fs_write(loop, &write_req, open_req1.result, test_buf,
       sizeof(test_buf), -1, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(write_req.result != -1);
   uv_fs_req_cleanup(&write_req);
 
   r = uv_fs_close(loop, &close_req, open_req1.result, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(close_req.result != -1);
   uv_fs_req_cleanup(&close_req);
 
   r = uv_fs_open(loop, &open_req1, "test_file", O_RDWR, 0, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(open_req1.result != -1);
   uv_fs_req_cleanup(&open_req1);
 
   r = uv_fs_read(loop, &read_req, open_req1.result, buf, sizeof(buf), -1,
       NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(read_req.result != -1);
   ASSERT(strcmp(buf, test_buf) == 0);
   uv_fs_req_cleanup(&read_req);
 
   r = uv_fs_ftruncate(loop, &ftruncate_req, open_req1.result, 7, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(ftruncate_req.result != -1);
   uv_fs_req_cleanup(&ftruncate_req);
 
   r = uv_fs_close(loop, &close_req, open_req1.result, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(close_req.result != -1);
   uv_fs_req_cleanup(&close_req);
 
   r = uv_fs_rename(loop, &rename_req, "test_file", "test_file2", NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(rename_req.result != -1);
   uv_fs_req_cleanup(&rename_req);
 
   r = uv_fs_open(loop, &open_req1, "test_file2", O_RDONLY, 0, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(open_req1.result != -1);
   uv_fs_req_cleanup(&open_req1);
 
   memset(buf, 0, sizeof(buf));
   r = uv_fs_read(loop, &read_req, open_req1.result, buf, sizeof(buf), -1,
       NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(read_req.result != -1);
   ASSERT(strcmp(buf, "test-bu") == 0);
   uv_fs_req_cleanup(&read_req);
 
   r = uv_fs_close(loop, &close_req, open_req1.result, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(close_req.result != -1);
   uv_fs_req_cleanup(&close_req);
 
   r = uv_fs_unlink(loop, &unlink_req, "test_file2", NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(unlink_req.result != -1);
   uv_fs_req_cleanup(&unlink_req);
 
@@ -625,7 +652,6 @@ TEST_IMPL(fs_async_dir) {
   unlink("test_dir/file2");
   rmdir("test_dir");
 
-  uv_init();
   loop = uv_default_loop();
 
   r = uv_fs_mkdir(loop, &mkdir_req, "test_dir", 0755, mkdir_cb);
@@ -637,7 +663,7 @@ TEST_IMPL(fs_async_dir) {
   /* Create 2 files synchronously. */
   r = uv_fs_open(loop, &open_req1, "test_dir/file1", O_WRONLY | O_CREAT,
       S_IWRITE | S_IREAD, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   uv_fs_req_cleanup(&open_req1);
   r = uv_fs_close(loop, &close_req, open_req1.result, NULL);
   ASSERT(r == 0);
@@ -645,7 +671,7 @@ TEST_IMPL(fs_async_dir) {
 
   r = uv_fs_open(loop, &open_req1, "test_dir/file2", O_WRONLY | O_CREAT,
       S_IWRITE | S_IREAD, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   uv_fs_req_cleanup(&open_req1);
   r = uv_fs_close(loop, &close_req, open_req1.result, NULL);
   ASSERT(r == 0);
@@ -659,6 +685,7 @@ TEST_IMPL(fs_async_dir) {
 
   /* sync uv_fs_readdir */
   r = uv_fs_readdir(loop, &readdir_req, "test_dir", 0, NULL);
+  ASSERT(r == 2);
   ASSERT(readdir_req.result == 2);
   ASSERT(readdir_req.ptr);
   ASSERT(memcmp(readdir_req.ptr, "file1\0file2\0", 12) == 0
@@ -712,8 +739,9 @@ TEST_IMPL(fs_async_sendfile) {
   int f, r;
   struct stat s1, s2;
 
+  loop = uv_default_loop();
+
   /* Setup. */
-  uv_init();
   unlink("test_file");
   unlink("test_file2");
 
@@ -733,16 +761,14 @@ TEST_IMPL(fs_async_sendfile) {
   ASSERT(r == 0);
 
   /* Test starts here. */
-  loop = uv_default_loop();
-
   r = uv_fs_open(loop, &open_req1, "test_file", O_RDWR, 0, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(open_req1.result != -1);
   uv_fs_req_cleanup(&open_req1);
 
   r = uv_fs_open(loop, &open_req2, "test_file2", O_WRONLY | O_CREAT,
       S_IWRITE | S_IREAD, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(open_req2.result != -1);
   uv_fs_req_cleanup(&open_req2);
 
@@ -781,19 +807,17 @@ TEST_IMPL(fs_fstat) {
   /* Setup. */
   unlink("test_file");
 
-  uv_init();
-
   loop = uv_default_loop();
 
   r = uv_fs_open(loop, &req, "test_file", O_RDWR | O_CREAT,
       S_IWRITE | S_IREAD, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(req.result != -1);
   file = req.result;
   uv_fs_req_cleanup(&req);
 
   r = uv_fs_write(loop, &req, file, test_buf, sizeof(test_buf), -1, NULL);
-  ASSERT(r == 0);
+  ASSERT(r == sizeof(test_buf));
   ASSERT(req.result == sizeof(test_buf));
   uv_fs_req_cleanup(&req);
 
@@ -837,19 +861,17 @@ TEST_IMPL(fs_chmod) {
   /* Setup. */
   unlink("test_file");
 
-  uv_init();
-
   loop = uv_default_loop();
 
   r = uv_fs_open(loop, &req, "test_file", O_RDWR | O_CREAT,
       S_IWRITE | S_IREAD, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(req.result != -1);
   file = req.result;
   uv_fs_req_cleanup(&req);
 
   r = uv_fs_write(loop, &req, file, test_buf, sizeof(test_buf), -1, NULL);
-  ASSERT(r == 0);
+  ASSERT(r == sizeof(test_buf));
   ASSERT(req.result == sizeof(test_buf));
   uv_fs_req_cleanup(&req);
 
@@ -881,7 +903,10 @@ TEST_IMPL(fs_chmod) {
 
 #ifndef _WIN32
   /* async chmod */
-  req.data = (void*)0200;
+  {
+    static int mode = 0200;
+    req.data = &mode;
+  }
   r = uv_fs_chmod(loop, &req, "test_file", 0200, chmod_cb);
   ASSERT(r == 0);
   uv_run(loop);
@@ -890,14 +915,20 @@ TEST_IMPL(fs_chmod) {
 #endif
 
   /* async chmod */
-  req.data = (void*)0400;
+  {
+    static int mode = 0400;
+    req.data = &mode;
+  }
   r = uv_fs_chmod(loop, &req, "test_file", 0400, chmod_cb);
   ASSERT(r == 0);
   uv_run(loop);
   ASSERT(chmod_cb_count == 1);
 
   /* async fchmod */
-  req.data = (void*)0600;
+  {
+    static int mode = 0600;
+    req.data = &mode;
+  }
   r = uv_fs_fchmod(loop, &req, file, 0600, fchmod_cb);
   ASSERT(r == 0);
   uv_run(loop);
@@ -926,13 +957,11 @@ TEST_IMPL(fs_chown) {
   /* Setup. */
   unlink("test_file");
 
-  uv_init();
-
   loop = uv_default_loop();
 
   r = uv_fs_open(loop, &req, "test_file", O_RDWR | O_CREAT,
       S_IWRITE | S_IREAD, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(req.result != -1);
   file = req.result;
   uv_fs_req_cleanup(&req);
@@ -987,19 +1016,17 @@ TEST_IMPL(fs_link) {
   unlink("test_file_link");
   unlink("test_file_link2");
 
-  uv_init();
-
   loop = uv_default_loop();
 
   r = uv_fs_open(loop, &req, "test_file", O_RDWR | O_CREAT,
       S_IWRITE | S_IREAD, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(req.result != -1);
   file = req.result;
   uv_fs_req_cleanup(&req);
 
   r = uv_fs_write(loop, &req, file, test_buf, sizeof(test_buf), -1, NULL);
-  ASSERT(r == 0);
+  ASSERT(r == sizeof(test_buf));
   ASSERT(req.result == sizeof(test_buf));
   uv_fs_req_cleanup(&req);
 
@@ -1012,14 +1039,14 @@ TEST_IMPL(fs_link) {
   uv_fs_req_cleanup(&req);
 
   r = uv_fs_open(loop, &req, "test_file_link", O_RDWR, 0, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(req.result != -1);
   link = req.result;
   uv_fs_req_cleanup(&req);
 
   memset(buf, 0, sizeof(buf));
   r = uv_fs_read(loop, &req, link, buf, sizeof(buf), 0, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(req.result != -1);
   ASSERT(strcmp(buf, test_buf) == 0);
 
@@ -1032,14 +1059,14 @@ TEST_IMPL(fs_link) {
   ASSERT(link_cb_count == 1);
 
   r = uv_fs_open(loop, &req, "test_file_link2", O_RDWR, 0, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(req.result != -1);
   link = req.result;
   uv_fs_req_cleanup(&req);
 
   memset(buf, 0, sizeof(buf));
   r = uv_fs_read(loop, &req, link, buf, sizeof(buf), 0, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(req.result != -1);
   ASSERT(strcmp(buf, test_buf) == 0);
 
@@ -1073,19 +1100,17 @@ TEST_IMPL(fs_symlink) {
   unlink("test_file_symlink_symlink");
   unlink("test_file_symlink2_symlink");
 
-  uv_init();
-
   loop = uv_default_loop();
 
   r = uv_fs_open(loop, &req, "test_file", O_RDWR | O_CREAT,
       S_IWRITE | S_IREAD, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(req.result != -1);
   file = req.result;
   uv_fs_req_cleanup(&req);
 
   r = uv_fs_write(loop, &req, file, test_buf, sizeof(test_buf), -1, NULL);
-  ASSERT(r == 0);
+  ASSERT(r == sizeof(test_buf));
   ASSERT(req.result == sizeof(test_buf));
   uv_fs_req_cleanup(&req);
 
@@ -1093,10 +1118,9 @@ TEST_IMPL(fs_symlink) {
 
   /* sync symlink */
   r = uv_fs_symlink(loop, &req, "test_file", "test_file_symlink", 0, NULL);
-  ASSERT(r == 0);
 #ifdef _WIN32
-  if (req.result == -1) {
-    if (req.errorno == ENOSYS) {
+  if (r == -1) {
+    if (uv_last_error(loop).code == UV_ENOTSUP) {
       /*
        * Windows doesn't support symlinks on older versions.
        * We just pass the test and bail out early if we get ENOTSUP.
@@ -1111,27 +1135,28 @@ TEST_IMPL(fs_symlink) {
     }
   }
 #endif
+  ASSERT(r == 0);
   ASSERT(req.result == 0);
   uv_fs_req_cleanup(&req);
 
   r = uv_fs_open(loop, &req, "test_file_symlink", O_RDWR, 0, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(req.result != -1);
   link = req.result;
   uv_fs_req_cleanup(&req);
 
   memset(buf, 0, sizeof(buf));
   r = uv_fs_read(loop, &req, link, buf, sizeof(buf), 0, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(req.result != -1);
   ASSERT(strcmp(buf, test_buf) == 0);
 
   close(link);
 
   r = uv_fs_symlink(loop, &req, "test_file_symlink", "test_file_symlink_symlink", 0, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   r = uv_fs_readlink(loop, &req, "test_file_symlink_symlink", NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(strcmp(req.ptr, "test_file_symlink") == 0);
   uv_fs_req_cleanup(&req);
 
@@ -1142,23 +1167,23 @@ TEST_IMPL(fs_symlink) {
   ASSERT(symlink_cb_count == 1);
 
   r = uv_fs_open(loop, &req, "test_file_symlink2", O_RDWR, 0, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(req.result != -1);
   link = req.result;
   uv_fs_req_cleanup(&req);
 
   memset(buf, 0, sizeof(buf));
   r = uv_fs_read(loop, &req, link, buf, sizeof(buf), 0, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   ASSERT(req.result != -1);
   ASSERT(strcmp(buf, test_buf) == 0);
 
   close(link);
 
   r = uv_fs_symlink(loop, &req, "test_file_symlink2", "test_file_symlink2_symlink", 0, NULL);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   r = uv_fs_readlink(loop, &req, "test_file_symlink2_symlink", readlink_cb);
-  ASSERT(r == 0);
+  ASSERT(r != -1);
   uv_run(loop);
   ASSERT(readlink_cb_count == 1);
 
@@ -1181,20 +1206,27 @@ TEST_IMPL(fs_symlink) {
 
 TEST_IMPL(fs_utime) {
   utime_check_t checkme;
-  const char* path = ".";
+  const char* path = "test_file";
   double atime;
   double mtime;
   uv_fs_t req;
   int r;
 
-  uv_init();
+  /* Setup. */
   loop = uv_default_loop();
+  unlink(path);
+  r = uv_fs_open(loop, &req, path, O_RDWR | O_CREAT,
+      S_IWRITE | S_IREAD, NULL);
+  ASSERT(r != -1);
+  ASSERT(req.result != -1);
+  uv_fs_req_cleanup(&req);
+  close(r);
 
   atime = mtime = 400497753; /* 1982-09-10 11:22:33 */
 
   r = uv_fs_utime(loop, &req, path, atime, mtime, NULL);
   ASSERT(r == 0);
-  ASSERT(utime_req.result == 0);
+  ASSERT(req.result == 0);
   uv_fs_req_cleanup(&req);
 
   r = uv_fs_stat(loop, &req, path, NULL);
@@ -1215,26 +1247,36 @@ TEST_IMPL(fs_utime) {
   uv_run(loop);
   ASSERT(utime_cb_count == 1);
 
+  /* Cleanup. */
+  unlink(path);
+
   return 0;
 }
 
 
 TEST_IMPL(fs_futime) {
   utime_check_t checkme;
-  const char* path = ".";
+  const char* path = "test_file";
   double atime;
   double mtime;
   uv_file file;
   uv_fs_t req;
   int r;
 
-  uv_init();
+  /* Setup. */
   loop = uv_default_loop();
+  unlink(path);
+  r = uv_fs_open(loop, &req, path, O_RDWR | O_CREAT,
+      S_IWRITE | S_IREAD, NULL);
+  ASSERT(r != -1);
+  ASSERT(req.result != -1);
+  uv_fs_req_cleanup(&req);
+  close(r);
 
   atime = mtime = 400497753; /* 1982-09-10 11:22:33 */
 
-  r = uv_fs_open(loop, &req, path, O_RDONLY, 0, NULL);
-  ASSERT(r == 0);
+  r = uv_fs_open(loop, &req, path, O_RDWR, 0, NULL);
+  ASSERT(r != -1);
   ASSERT(req.result != -1);
   file = req.result; /* FIXME probably not how it's supposed to be used */
   uv_fs_req_cleanup(&req);
@@ -1262,6 +1304,175 @@ TEST_IMPL(fs_futime) {
   ASSERT(r == 0);
   uv_run(loop);
   ASSERT(futime_cb_count == 1);
+
+  /* Cleanup. */
+  unlink(path);
+
+  return 0;
+}
+
+
+TEST_IMPL(fs_stat_missing_path) {
+  uv_fs_t req;
+  int r;
+
+  loop = uv_default_loop();
+
+  r = uv_fs_stat(loop, &req, "non_existent_file", NULL);
+  ASSERT(r == -1);
+  ASSERT(req.result == -1);
+  ASSERT(uv_last_error(loop).code == UV_ENOENT);
+  uv_fs_req_cleanup(&req);
+
+  return 0;
+}
+
+
+TEST_IMPL(fs_readdir_empty_dir) {
+  const char* path;
+  uv_fs_t req;
+  int r;
+
+  path = "./empty_dir/";
+  loop = uv_default_loop();
+
+  uv_fs_mkdir(loop, &req, path, 0777, NULL);
+  uv_fs_req_cleanup(&req);
+
+  r = uv_fs_readdir(loop, &req, path, 0, NULL);
+  ASSERT(r == 0);
+  ASSERT(req.result == 0);
+  ASSERT(req.ptr == NULL);
+  uv_fs_req_cleanup(&req);
+
+  r = uv_fs_readdir(loop, &readdir_req, path, 0, empty_readdir_cb);
+  ASSERT(r == 0);
+
+  ASSERT(readdir_cb_count == 0);
+  uv_run(loop);
+  ASSERT(readdir_cb_count == 1);
+
+  uv_fs_rmdir(loop, &req, path, NULL);
+  uv_fs_req_cleanup(&req);
+
+  return 0;
+}
+
+
+TEST_IMPL(fs_readdir_file) {
+  const char* path;
+  int r;
+
+  path = "test/fixtures/empty_file";
+  loop = uv_default_loop();
+
+  r = uv_fs_readdir(loop, &readdir_req, path, 0, NULL);
+  ASSERT(r == -1);
+  ASSERT(uv_last_error(loop).code == UV_ENOTDIR);
+
+  r = uv_fs_readdir(loop, &readdir_req, path, 0, file_readdir_cb);
+  ASSERT(r == 0);
+
+  ASSERT(readdir_cb_count == 0);
+  uv_run(loop);
+  ASSERT(readdir_cb_count == 1);
+
+  return 0;
+}
+
+
+TEST_IMPL(fs_open_dir) {
+  const char* path;
+  uv_fs_t req;
+  int r, file;
+
+  path = ".";
+  loop = uv_default_loop();
+
+  r = uv_fs_open(loop, &req, path, O_RDONLY, 0, NULL);
+  ASSERT(r != -1);
+  ASSERT(req.result != -1);
+  ASSERT(req.ptr == NULL);
+  file = r;
+  uv_fs_req_cleanup(&req);
+
+  r = uv_fs_close(loop, &req, file, NULL);
+  ASSERT(r == 0);
+
+  r = uv_fs_open(loop, &req, path, O_RDONLY, 0, open_cb_simple);
+  ASSERT(r == 0);
+
+  ASSERT(open_cb_count == 0);
+  uv_run(loop);
+  ASSERT(open_cb_count == 1);
+
+  return 0;
+}
+
+
+TEST_IMPL(fs_file_open_append) {
+  int r;
+
+  /* Setup. */
+  unlink("test_file");
+
+  loop = uv_default_loop();
+
+  r = uv_fs_open(loop, &open_req1, "test_file", O_WRONLY | O_CREAT,
+      S_IWRITE | S_IREAD, NULL);
+  ASSERT(r != -1);
+  ASSERT(open_req1.result != -1);
+  uv_fs_req_cleanup(&open_req1);
+
+  r = uv_fs_write(loop, &write_req, open_req1.result, test_buf,
+      sizeof(test_buf), -1, NULL);
+  ASSERT(r != -1);
+  ASSERT(write_req.result != -1);
+  uv_fs_req_cleanup(&write_req);
+
+  r = uv_fs_close(loop, &close_req, open_req1.result, NULL);
+  ASSERT(r != -1);
+  ASSERT(close_req.result != -1);
+  uv_fs_req_cleanup(&close_req);
+
+  r = uv_fs_open(loop, &open_req1, "test_file", O_RDWR | O_APPEND, 0, NULL);
+  ASSERT(r != -1);
+  ASSERT(open_req1.result != -1);
+  uv_fs_req_cleanup(&open_req1);
+
+  r = uv_fs_write(loop, &write_req, open_req1.result, test_buf,
+      sizeof(test_buf), -1, NULL);
+  ASSERT(r != -1);
+  ASSERT(write_req.result != -1);
+  uv_fs_req_cleanup(&write_req);
+
+  r = uv_fs_close(loop, &close_req, open_req1.result, NULL);
+  ASSERT(r != -1);
+  ASSERT(close_req.result != -1);
+  uv_fs_req_cleanup(&close_req);
+
+  r = uv_fs_open(loop, &open_req1, "test_file", O_RDONLY, S_IREAD, NULL);
+  ASSERT(r != -1);
+  ASSERT(open_req1.result != -1);
+  uv_fs_req_cleanup(&open_req1);
+
+  r = uv_fs_read(loop, &read_req, open_req1.result, buf, sizeof(buf), -1,
+      NULL);
+  printf("read = %d\n", r);
+  ASSERT(r == 26);
+  ASSERT(read_req.result == 26);
+  ASSERT(memcmp(buf,
+                "test-buffer\n\0test-buffer\n\0",
+                sizeof("test-buffer\n\0test-buffer\n\0") - 1) == 0);
+  uv_fs_req_cleanup(&read_req);
+
+  r = uv_fs_close(loop, &close_req, open_req1.result, NULL);
+  ASSERT(r != -1);
+  ASSERT(close_req.result != -1);
+  uv_fs_req_cleanup(&close_req);
+
+  /* Cleanup */
+  unlink("test_file");
 
   return 0;
 }

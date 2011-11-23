@@ -18,11 +18,9 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 
-CC = $(PREFIX)gcc
-AR = $(PREFIX)ar
 E=
 CSTDFLAG=--std=c89 -pedantic -Wall -Wextra -Wno-unused-parameter
-CFLAGS=-g
+CFLAGS += -g
 CPPFLAGS += -Isrc/unix/ev
 LINKFLAGS=-lm
 
@@ -30,6 +28,7 @@ CPPFLAGS += -D_LARGEFILE_SOURCE
 CPPFLAGS += -D_FILE_OFFSET_BITS=64
 
 OBJS += src/unix/core.o
+OBJS += src/unix/dl.o
 OBJS += src/unix/fs.o
 OBJS += src/unix/cares.o
 OBJS += src/unix/udp.o
@@ -37,22 +36,25 @@ OBJS += src/unix/error.o
 OBJS += src/unix/process.o
 OBJS += src/unix/tcp.o
 OBJS += src/unix/pipe.o
+OBJS += src/unix/tty.o
 OBJS += src/unix/stream.o
 
 ifeq (SunOS,$(uname_S))
 EV_CONFIG=config_sunos.h
 EIO_CONFIG=config_sunos.h
 CPPFLAGS += -Isrc/ares/config_sunos -D__EXTENSIONS__ -D_XOPEN_SOURCE=500
-LINKFLAGS+=-lsocket -lnsl
+LINKFLAGS+=-lsocket -lnsl -lkstat
 OBJS += src/unix/sunos.o
 endif
 
 ifeq (Darwin,$(uname_S))
 EV_CONFIG=config_darwin.h
 EIO_CONFIG=config_darwin.h
+CPPFLAGS += -D__DARWIN_64_BIT_INO_T=1
 CPPFLAGS += -Isrc/ares/config_darwin
 LINKFLAGS+=-framework CoreServices
 OBJS += src/unix/darwin.o
+OBJS += src/unix/kqueue.o
 endif
 
 ifeq (Linux,$(uname_S))
@@ -70,6 +72,16 @@ EIO_CONFIG=config_freebsd.h
 CPPFLAGS += -Isrc/ares/config_freebsd
 LINKFLAGS+=
 OBJS += src/unix/freebsd.o
+OBJS += src/unix/kqueue.o
+endif
+
+ifeq (DragonFly,$(uname_S))
+EV_CONFIG=config_freebsd.h
+EIO_CONFIG=config_freebsd.h
+CPPFLAGS += -Isrc/ares/config_freebsd
+LINKFLAGS+=
+OBJS += src/unix/freebsd.o
+OBJS += src/unix/kqueue.o
 endif
 
 ifeq (NetBSD,$(uname_S))
@@ -78,6 +90,16 @@ EIO_CONFIG=config_netbsd.h
 CPPFLAGS += -Isrc/ares/config_netbsd
 LINKFLAGS+=
 OBJS += src/unix/netbsd.o
+OBJS += src/unix/kqueue.o
+endif
+
+ifeq (OpenBSD,$(uname_S))
+EV_CONFIG=config_openbsd.h
+EIO_CONFIG=config_openbsd.h
+CPPFLAGS += -Isrc/ares/config_openbsd
+LINKFLAGS+=
+OBJS += src/unix/openbsd.o
+OBJS += src/unix/kqueue.o
 endif
 
 ifneq (,$(findstring CYGWIN,$(uname_S)))
