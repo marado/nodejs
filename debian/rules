@@ -17,7 +17,7 @@ DEB_CONFIGURE_SCRIPT_ENV += PREFIX="/usr"
 DEB_DESTDIR = $(CURDIR)/debian/tmp
 DEB_MAKE_CLEAN_TARGET = clean
 #  * relax regression tests when targeted experimental suite
-exp-relax-check := $(if $(shell dpkg-parsechangelog | grep -Fx 'Distribution: experimental'),-i)
+exp-relax-check := $(if $(shell dpkg-parsechangelog | grep -x 'Distribution: \(experimental\|UNRELEASED\)'),-i)
 DEB_MAKE_CHECK_TARGET = $(exp-relax-check) test
 
 # properly clean files from build, waf, test, python
