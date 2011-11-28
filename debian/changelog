@@ -1,4 +1,4 @@
-nodejs (0.6.2-1) UNRELEASED-TO-EXPERIMENTAL; urgency=low
+nodejs (0.6.2-1) UNRELEASED; urgency=low
 
   * New upstream release
   * Use bundled cares and ev libraries because upstream need modified
