@@ -9,6 +9,7 @@ DM-Upload-Allowed: yes
 Build-Depends: @cdbs@,
  python,
  libv8-dev (>= 3.6.6),
+ libv8-dev (<< 3.7),
  binutils,
  libssl-dev (>= 0.9.8),
  openssl (>= 0.9.8),
@@ -28,6 +29,7 @@ Depends: nodejs (= ${binary:Version}),
  ${misc:Depends},
  python,
  libv8-dev (>= 3.6.6),
+ libv8-dev (<< 3.7),
  libssl-dev (>= 0.9.8)
 Description: Development files for Node.js
  Node.js provides an event-based server-side javascript engine.
