@@ -2,16 +2,15 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>child_processes - Node.js v0.6.2 Manual &amp; Documentation</title>
-  <link type="image/x-icon" rel="icon" href="/favicon.ico" />
-  <link type="image/x-icon" rel="shortcut icon" href="/favicon.ico" />
-  <link rel="stylesheet" href="assets/style.css" type="text/css" media="all" />
-  <link rel="stylesheet" href="assets/sh.css" type="text/css" media="all"/>
+  <title>child_processes - Node.js v0.6.5 Manual &amp; Documentation</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/sh.css" />
+  <link rel="canonical" href="http://nodejs.org/docs/latest/api/child_processes.html"/>
 </head>
 <body>
   <div id="container">
     <header>
-      <h1>Node.js v0.6.2 Manual &amp; Documentation</h1>
+      <h1>Node.js v0.6.5 Manual &amp; Documentation</h1>
       <div id="gtoc">
         <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
       </div>
@@ -219,7 +218,7 @@ leaner than <code>child_process.exec</code>. It has the same options.</p>
 processes. In addition to having all the methods in a normal ChildProcess
 instance, the returned object has a communication channel built-in. The
 channel is written to with <code>child.send(message, [sendHandle])</code> and messages
-are recieved by a <code>'message'</code> event on the child.</p>
+are received by a <code>'message'</code> event on the child.</p>
 
 <p>For example:</p>
 
@@ -292,8 +291,8 @@ process may not actually kill it.  <code>kill</code> really just sends a signal 
 
 <p>See <code>kill(2)</code></p>
   </div>
-  <script type="text/javascript" src="assets/sh_main.js"></script>
-  <script type="text/javascript" src="assets/sh_javascript.min.js"></script>
-  <script type="text/javascript">highlight(undefined, undefined, 'pre');</script>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
 </body>
 </html>
