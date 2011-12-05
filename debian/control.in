@@ -9,7 +9,7 @@ DM-Upload-Allowed: yes
 Build-Depends: @cdbs@,
  python,
  libev-dev (>= 4.0),
- libv8-dev (>= 3.4.14.21),
+ libv8-dev (>= 3.5.10.24),
  scons (>= 1.2.0),
  libc-ares-dev (>= 1.7.3),
  binutils,
@@ -29,7 +29,7 @@ Depends: nodejs (= ${binary:Version}),
  ${misc:Depends},
  python,
  libev-dev (>= 4.0),
- libv8-dev (>= 3.4.14.13),
+ libv8-dev (>= 3.5.10.24),
  libc-ares-dev (>= 1.7.3),
  libssl-dev (>= 0.9.8)
 Description: Development files for Node.js
