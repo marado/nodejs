@@ -16,6 +16,7 @@ Build-Depends: cdbs (>= 0.4.70~),
  libc-ares-dev (>= 1.7.3),
  binutils,
  libssl-dev (>= 0.9.8),
+ openssl (>= 0.9.8),
  pkg-config,
  bash-completion,
  curl
