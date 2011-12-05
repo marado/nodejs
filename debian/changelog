@@ -1,6 +1,8 @@
 nodejs (0.4.12-2) unstable; urgency=low
 
   * Port to libv8 3.5 branch and depend on it.
+  * Force nodejs-dev to depend on libv8-dev << 3.6, to avoid API
+    incompatibilities between nodejs-dev and libv8-dev.
   * Do not search modules in /usr/local/lib/nodejs, see README.Debian.
   * Remove useless debian/patches/1006_version.patch
   * Drop unneeded dependency on Scons.
