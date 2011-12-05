@@ -2,16 +2,15 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>http - Node.js v0.6.2 Manual &amp; Documentation</title>
-  <link type="image/x-icon" rel="icon" href="/favicon.ico" />
-  <link type="image/x-icon" rel="shortcut icon" href="/favicon.ico" />
-  <link rel="stylesheet" href="assets/style.css" type="text/css" media="all" />
-  <link rel="stylesheet" href="assets/sh.css" type="text/css" media="all"/>
+  <title>http - Node.js v0.6.5 Manual &amp; Documentation</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/sh.css" />
+  <link rel="canonical" href="http://nodejs.org/docs/latest/api/http.html"/>
 </head>
 <body>
   <div id="container">
     <header>
-      <h1>Node.js v0.6.2 Manual &amp; Documentation</h1>
+      <h1>Node.js v0.6.5 Manual &amp; Documentation</h1>
       <div id="gtoc">
         <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
       </div>
@@ -385,7 +384,7 @@ with <a href="url.html#url.parse">url.parse()</a>.</p>
 <p>Options:</p>
 
 <ul><li><code>host</code>: A domain name or IP address of the server to issue the request to.
-Defaults to <code>'localhost'</code>.</li><li><code>hostname</code>: To support <code>url.parse()</code> <code>hostname</code> is prefered over <code>host</code></li><li><code>port</code>: Port of remote server. Defaults to 80.</li><li><code>socketPath</code>: Unix Domain Socket (use one of host:port or socketPath)</li><li><code>method</code>: A string specifying the HTTP request method. Defaults to <code>'GET'</code>.</li><li><code>path</code>: Request path. Defaults to <code>'/'</code>. Should include query string if any.
+Defaults to <code>'localhost'</code>.</li><li><code>hostname</code>: To support <code>url.parse()</code> <code>hostname</code> is preferred over <code>host</code></li><li><code>port</code>: Port of remote server. Defaults to 80.</li><li><code>socketPath</code>: Unix Domain Socket (use one of host:port or socketPath)</li><li><code>method</code>: A string specifying the HTTP request method. Defaults to <code>'GET'</code>.</li><li><code>path</code>: Request path. Defaults to <code>'/'</code>. Should include query string if any.
 E.G. <code>'/index.html?page=12'</code></li><li><code>headers</code>: An object containing request headers.</li><li><code>auth</code>: Basic authentication i.e. <code>'user:password'</code> to compute an
 Authorization header.</li><li><code>agent</code>: Controls <a href="#http.Agent">Agent</a> behavior. When an Agent is used
 request will default to <code>Connection: keep-alive</code>. Possible values:<ul><li><code>undefined</code> (default): use <a href="#http.globalAgent">global Agent</a> for this host
@@ -437,7 +436,7 @@ on the returned request object.</p>
 the server should be persisted until the next request.</p></li><li><p>Sending a 'Content-length' header will disable the default chunked encoding.</p></li><li><p>Sending an 'Expect' header will immediately send the request headers.
 Usually, when sending 'Expect: 100-continue', you should both set a timeout
 and listen for the <code>continue</code> event. See RFC2616 Section 8.2.3 for more
-information.</p></li><li><p>Sending an Authorization header will override useing the <code>auth</code> option
+information.</p></li><li><p>Sending an Authorization header will override using the <code>auth</code> option
 to compute basic authentication.</p></li></ul>
 
 <h2 id="http.get">http.get(options, callback)</h2>
@@ -735,8 +734,8 @@ Defaults to <code>null</code>, which means that the <code>'data'</code> event wi
 
 <p>Resumes a paused response.</p>
   </div>
-  <script type="text/javascript" src="assets/sh_main.js"></script>
-  <script type="text/javascript" src="assets/sh_javascript.min.js"></script>
-  <script type="text/javascript">highlight(undefined, undefined, 'pre');</script>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
 </body>
 </html>

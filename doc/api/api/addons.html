@@ -2,16 +2,15 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>addons - Node.js v0.6.2 Manual &amp; Documentation</title>
-  <link type="image/x-icon" rel="icon" href="/favicon.ico" />
-  <link type="image/x-icon" rel="shortcut icon" href="/favicon.ico" />
-  <link rel="stylesheet" href="assets/style.css" type="text/css" media="all" />
-  <link rel="stylesheet" href="assets/sh.css" type="text/css" media="all"/>
+  <title>addons - Node.js v0.6.5 Manual &amp; Documentation</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/sh.css" />
+  <link rel="canonical" href="http://nodejs.org/docs/latest/api/addons.html"/>
 </head>
 <body>
   <div id="container">
     <header>
-      <h1>Node.js v0.6.2 Manual &amp; Documentation</h1>
+      <h1>Node.js v0.6.5 Manual &amp; Documentation</h1>
       <div id="gtoc">
         <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
       </div>
@@ -65,6 +64,9 @@ NODE_MODULE(module_name, Initialize)</code></pre>
 
 <p>There is no semi-colon after <code>NODE_MODULE</code> as it's not a function (see <code>node.h</code>).</p>
 
+<p>The <code>module_name</code> needs to match the filename of the final binary (minus the
+.node suffix).</p>
+
 <p>The source code needs to be built into <code>hello.node</code>, the binary Addon. To
 do this we create a file called <code>wscript</code> which is python code and looks
 like this:</p>
@@ -101,8 +103,8 @@ console.log(addon.hello()); // 'world'</code></pre>
 <p>For the moment, that is all the documentation on addons. Please see
 <a href="https://github.com/ry/node_postgres">https://github.com/ry/node_postgres</a> for a real example.</p>
   </div>
-  <script type="text/javascript" src="assets/sh_main.js"></script>
-  <script type="text/javascript" src="assets/sh_javascript.min.js"></script>
-  <script type="text/javascript">highlight(undefined, undefined, 'pre');</script>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
 </body>
 </html>
