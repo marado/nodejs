@@ -7,6 +7,8 @@ nodejs (0.6.2-1) UNRELEASED; urgency=low
   * New dependency on zlib1g.
   * Fix DEB_UPSTREAM_URL in debian/rules, and debian/watch.
   * nodejs.pc file for pkgconfig is no more available.
+  * Tighten dependency on libv8-dev, it usually requires a patch to
+    support greater minor revisions.
 
   [ TODO ]
   * Update debian/copyright
@@ -15,6 +17,38 @@ nodejs (0.6.2-1) UNRELEASED; urgency=low
   * nodejs-dbg package was harder to build than before, fix this.
 
  -- Jérémy Lal <kapouer@melix.org>  Sat, 10 Sep 2011 19:20:30 +0200
+
+nodejs (0.4.12-2) unstable; urgency=low
+
+  * Port to libv8 3.5 branch and depend on it.
+  * Force nodejs-dev to depend on libv8-dev << 3.6, to avoid API
+    incompatibilities between nodejs-dev and libv8-dev.
+    This will help fixing bug#650552, thanks to Jonas Smedegaard.
+  * Do not search modules in /usr/local/lib/nodejs, see README.Debian.
+  * Remove useless debian/patches/1006_version.patch
+  * Drop unneeded dependency on Scons.
+  * Build-Depends on openssl, some tests spawn /usr/bin/openssl.
+
+ -- Jérémy Lal <kapouer@melix.org>  Mon, 05 Dec 2011 11:34:27 +0100
+
+nodejs (0.4.12-1) unstable; urgency=low
+
+  * New upstream release 
+  * Port to libv8 3.4 branch and depend on it. Closes:bug#642731.
+  * debian/gbp.conf: fix syntax, filter 'doc/logos/*' or else
+    pristine-tar will complain.
+
+ -- Jérémy Lal <kapouer@melix.org>  Tue, 27 Sep 2011 16:10:10 +0200
+
+nodejs (0.4.11-1) unstable; urgency=low
+
+  * New upstream release
+  * debian/gbp.conf: Filter out doc/logos, unused, too big, and
+    upstream removed it from 0.5 tarballs.
+  * debian/patches/1006_version.patch : upstream forgot to update
+    VERSION flag in wscript.
+
+ -- Jérémy Lal <kapouer@melix.org>  Thu, 18 Aug 2011 15:09:01 +0200
 
 nodejs (0.4.10-1) unstable; urgency=low
 
