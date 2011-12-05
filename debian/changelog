@@ -9,7 +9,7 @@ nodejs (0.4.12-2) unstable; urgency=low
   * Drop unneeded dependency on Scons.
   * Build-Depends on openssl, some tests spawn /usr/bin/openssl.
 
- -- Jérémy Lal <kapouer@melix.org>  Mon, 05 Dec 2011 11:14:42 +0100
+ -- Jérémy Lal <kapouer@melix.org>  Mon, 05 Dec 2011 11:34:27 +0100
 
 nodejs (0.4.12-1) unstable; urgency=low
 
