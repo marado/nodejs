@@ -1,9 +1,11 @@
 Description: Port to v8 3.5.x
- Running node 0.4.11 with v8 3.5 instead of v8 3.1 needs some
+ Running node 0.4.12 with v8 3.5 instead of v8 3.1 needs some
  trivial patches: fix 'util.inspect', String::NO_HINTS, and tests expectations.
+ Also one less trivial patch without which tests fail.
+Origin: https://github.com/joyent/node/commit/59b815b
 Forwarded: not-needed
 Author: Jérémy Lal <kapouer@melix.org>
-Last-Update: 2011-10-29
+Last-Update: 2011-12-05
 --- a/test/message/stack_overflow.out
 +++ b/test/message/stack_overflow.out
 @@ -1,6 +1,6 @@
@@ -133,3 +135,25 @@ Last-Update: 2011-10-29
      if (last_char != 0 || written > s->Utf8Length()) {
        written--;
      }
+--- a/test/common.js
++++ b/test/common.js
+@@ -75,6 +75,19 @@
+     knownGlobals.push(DTRACE_NET_SOCKET_WRITE);
+   }
+ 
++  if (global.ArrayBuffer) {
++    knownGlobals.push(ArrayBuffer);
++    knownGlobals.push(Int8Array);
++    knownGlobals.push(Uint8Array);
++    knownGlobals.push(Int16Array);
++    knownGlobals.push(Uint16Array);
++    knownGlobals.push(Int32Array);
++    knownGlobals.push(Uint32Array);
++    knownGlobals.push(Float32Array);
++    knownGlobals.push(Float64Array);
++    knownGlobals.push(DataView);
++  }
++
+   for (var x in global) {
+     var found = false;
+ 
