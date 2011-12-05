@@ -1,8 +1,8 @@
 --- a/wscript
 +++ b/wscript
-@@ -276,7 +276,7 @@
- 
+@@ -284,7 +284,7 @@
    conf.env["USE_GDBJIT"] = o.use_gdbjit
+   conf.env['USE_NPM'] = not o.without_npm
  
 -  if not conf.env["USE_SHARED_ZLIB"] and not sys.platform.startswith("win32"):
 +  if conf.env["USE_SHARED_ZLIB"] and not sys.platform.startswith("win32"):
