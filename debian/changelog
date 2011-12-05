@@ -1,10 +1,11 @@
-nodejs (0.4.12-2) UNRELEASED; urgency=low
+nodejs (0.4.12-2) unstable; urgency=low
 
   * Port to libv8 3.5 branch and depend on it.
-  * Do not search modules in /usr/local/lib/nodejs.
+  * Do not search modules in /usr/local/lib/nodejs, see README.Debian.
   * Remove useless debian/patches/1006_version.patch
+  * Drop unneeded dependency on Scons.
 
- -- Jérémy Lal <kapouer@melix.org>  Tue, 04 Oct 2011 22:22:31 +0200
+ -- Jérémy Lal <kapouer@melix.org>  Mon, 05 Dec 2011 09:38:26 +0100
 
 nodejs (0.4.12-1) unstable; urgency=low
 
