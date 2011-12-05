@@ -31,7 +31,7 @@ Depends: nodejs (= ${binary:Version}),
  ${misc:Depends},
  python,
  libev-dev (>= 4.0),
- libv8-dev (>= 3.5.10.24),
+ libv8-dev (>= 3.5.10.24), libv8-dev (<< 3.6)
  libc-ares-dev (>= 1.7.3),
  libssl-dev (>= 0.9.8)
 Description: Development files for Node.js
