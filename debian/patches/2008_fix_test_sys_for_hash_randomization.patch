@@ -1,0 +1,54 @@
+Description: fix test-sys for hash randomization
+ node 0.4.12-3 is built against libv8 >= 3.6.6.14-2, which includes the patch
+ that randomizes hash keys.
+Origin: https://github.com/joyent/node/commit/8bd80f49
+Forwarded: not-needed
+Author: Ryan Dahl <ry@tinyclouds.org>
+Last-Update: 2012-01-06
+---
+diff --git a/test/simple/test-sys.js b/test/simple/test-sys.js
+index bc2859a..cc34991 100644
+--- a/test/simple/test-sys.js
++++ b/test/simple/test-sys.js
+@@ -60,17 +60,29 @@ assert.equal('{ visible: 1 }',
+     common.inspect(Object.create({},
+     {visible: {value: 1, enumerable: true}, hidden: {value: 2}}))
+ );
+-assert.equal('{ [hidden]: 2, visible: 1 }',
+-    common.inspect(Object.create({},
+-    {visible: {value: 1, enumerable: true}, hidden: {value: 2}}), true)
+-);
++
++// Due to the hash seed randomization it's not deterministic the order that
++// the following ways this hash is displayed.
++// See http://codereview.chromium.org/9124004/
++
++var out = common.inspect(Object.create({},
++    {visible: {value: 1, enumerable: true}, hidden: {value: 2}}), true);
++if (out !== '{ [hidden]: 2, visible: 1 }' &&
++    out !== '{ visible: 1, [hidden]: 2 }') {
++  assert.ok(false);
++}
++
+ 
+ // Objects without prototype
+-assert.equal('{ [hidden]: \'secret\', name: \'Tim\' }',
+-    common.inspect(Object.create(null,
+-                                 {name: {value: 'Tim', enumerable: true},
+-                                   hidden: {value: 'secret'}}), true)
+-);
++var out = common.inspect(Object.create(null,
++    { name: {value: 'Tim', enumerable: true},
++      hidden: {value: 'secret'}}), true);
++if (out !== "{ [hidden]: 'secret', name: 'Tim' }" &&
++    out !== "{ name: 'Tim', [hidden]: 'secret' }") {
++  assert(false);
++}
++
++
+ assert.equal('{ name: \'Tim\' }',
+     common.inspect(Object.create(null,
+                                  {name: {value: 'Tim', enumerable: true},
+-- 
+1.7.5.4
+
