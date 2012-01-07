@@ -1,6 +1,7 @@
 nodejs (0.4.12-3) unstable; urgency=low
 
-  * Port to libv8 3.6 branch. 
+  * Port to libv8 3.6 (>= 3.6.6.14-2),
+    a test is fixed to take care of the v8 hash randomization patch.
 
  -- Jérémy Lal <kapouer@melix.org>  Sat, 07 Jan 2012 19:07:45 +0100
 
