@@ -1,9 +1,9 @@
 nodejs (0.4.12-3) unstable; urgency=low
 
   * Depend on libv8 3.6 (>= 3.6.6.14-2), because it fixes CVE-2011-5037.
-    Import upstream patch to fix a test broken by the v8 fix.
+    This breaks test/simple/test-sys.js, fixed by an upstream patch.
 
- -- Jérémy Lal <kapouer@melix.org>  Sat, 07 Jan 2012 19:07:45 +0100
+ -- Jérémy Lal <kapouer@melix.org>  Sun, 08 Jan 2012 12:00:02 +0100
 
 nodejs (0.4.12-2) unstable; urgency=low
 
