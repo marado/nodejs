@@ -548,6 +548,7 @@ Files: AUTHORS
  cmake/v8_build.cmake
  config.h.cmake
  configure
+ debian/NEWS
  debian/README.Debian
  debian/README.source
  debian/TODO
@@ -569,14 +570,13 @@ Files: AUTHORS
  debian/nodejs.manpages
  debian/nodejs.postinst
  debian/nodejs.prerm
- debian/patches/1001_no_ssl_v2.patch
- debian/patches/1006_version.patch
  debian/patches/2001_FHS_paths_for_nodejs.patch
  debian/patches/2002_build_without_libv8_debug.patch
  debian/patches/2004_libev_compatibility.patch
  debian/patches/2005_expected_failing_tests.patch
  debian/patches/2006_use_system_libeio.patch
- debian/patches/2007-v8-3.4-port.patch
+ debian/patches/2007_v8_3.5_port.patch
+ debian/patches/2008_fix_test_sys_for_hash_randomization.patch
  debian/patches/series
  debian/rules
  debian/source/format
