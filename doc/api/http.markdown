@@ -103,21 +103,24 @@ IPv4 address (`INADDR_ANY`).
 
 To listen to a unix socket, supply a filename instead of port and hostname.
 
-This function is asynchronous. The last parameter `callback` will be called
-when the server has been bound to the port.
+This function is asynchronous. The last parameter `callback` will be added as
+a listener for the ['listening'](net.html#event_listening_) event.
+See also [net.Server.listen()](net.html#server.listen).
 
 
 ### server.listen(path, [callback])
 
 Start a UNIX socket server listening for connections on the given `path`.
 
-This function is asynchronous. The last parameter `callback` will be called
-when the server has been bound.
+This function is asynchronous. The last parameter `callback` will be added as
+a listener for the ['listening'](net.html#event_listening_) event.
+See also [net.Server.listen()](net.html#server.listen).
 
 
 ### server.close()
 
 Stops the server from accepting new connections.
+See [net.Server.close()](net.html#server.close).
 
 
 ## http.ServerRequest
@@ -213,7 +216,7 @@ Also `request.httpVersionMajor` is the first integer and
 `request.httpVersionMinor` is the second.
 
 
-### request.setEncoding(encoding=null)
+### request.setEncoding([encoding])
 
 Set the encoding for the request body. Either `'utf8'` or `'binary'`. Defaults
 to `null`, which means that the `'data'` event will emit a `Buffer` object..
@@ -243,6 +246,13 @@ authentication details.
 
 This object is created internally by a HTTP server--not by the user. It is
 passed as the second parameter to the `'request'` event. It is a `Writable Stream`.
+
+### Event: 'close'
+
+`function () { }`
+
+Indicates that the underlaying connection was terminated before
+`response.end()` was called or able to flush.
 
 ### response.writeContinue()
 
@@ -324,7 +334,7 @@ Example:
     response.removeHeader("Content-Encoding");
 
 
-### response.write(chunk, encoding='utf8')
+### response.write(chunk, [encoding])
 
 If this method is called and `response.writeHead()` has not been called, it will
 switch to implicit header mode and flush the implicit headers.
@@ -644,13 +654,13 @@ A client server pair that show you how to listen for the `upgrade` event using `
 
 ### Event: 'continue'
 
-`function ()`
+`function () { }`
 
 Emitted when the server sends a '100 Continue' HTTP response, usually because
 the request contained 'Expect: 100-continue'. This is an instruction that
 the client should send the request body.
 
-### request.write(chunk, encoding='utf8')
+### request.write(chunk, [encoding])
 
 Sends a chunk of the body.  By calling this method
 many times, the user can stream a request body to a
@@ -661,8 +671,8 @@ creating the request.
 The `chunk` argument should be an array of integers
 or a string.
 
-The `encoding` argument is optional and only
-applies when `chunk` is a string.
+The `encoding` argument is optional and only applies when `chunk` is a string.
+Defaults to `'utf8'`.
 
 
 ### request.end([data], [encoding])
@@ -671,8 +681,8 @@ Finishes sending the request. If any parts of the body are
 unsent, it will flush them to the stream. If the request is
 chunked, this will send the terminating `'0\r\n\r\n'`.
 
-If `data` is specified, it is equivalent to calling `request.write(data, encoding)`
-followed by `request.end()`.
+If `data` is specified, it is equivalent to calling
+`request.write(data, encoding)` followed by `request.end()`.
 
 ### request.abort()
 
@@ -684,13 +694,13 @@ Once a socket is assigned to this request and is connected
 [socket.setTimeout(timeout, [callback])](net.html#socket.setTimeout)
 will be called.
 
-### request.setNoDelay(noDelay=true)
+### request.setNoDelay([noDelay])
 
 Once a socket is assigned to this request and is connected 
 [socket.setNoDelay(noDelay)](net.html#socket.setNoDelay)
 will be called.
 
-### request.setSocketKeepAlive(enable=false, [initialDelay])
+### request.setSocketKeepAlive([enable], [initialDelay])
 
 Once a socket is assigned to this request and is connected 
 [socket.setKeepAlive(enable, [initialDelay])](net.html#socket.setKeepAlive)
@@ -745,10 +755,11 @@ The response headers object.
 
 The response trailers object. Only populated after the 'end' event.
 
-### response.setEncoding(encoding=null)
+### response.setEncoding([encoding])
 
-Set the encoding for the response body. Either `'utf8'`, `'ascii'`, or `'base64'`.
-Defaults to `null`, which means that the `'data'` event will emit a `Buffer` object..
+Set the encoding for the response body. Either `'utf8'`, `'ascii'`, or
+`'base64'`. Defaults to `null`, which means that the `'data'` event will emit
+a `Buffer` object..
 
 ### response.pause()
 
