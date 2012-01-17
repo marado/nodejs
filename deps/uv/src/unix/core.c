@@ -169,7 +169,15 @@ uv_loop_t* uv_loop_new(void) {
 void uv_loop_delete(uv_loop_t* loop) {
   uv_ares_destroy(loop, loop->channel);
   ev_loop_destroy(loop->ev);
-  free(loop);
+
+#ifndef NDEBUG
+  memset(loop, 0, sizeof *loop);
+#endif
+
+  if (loop == default_loop_ptr)
+    default_loop_ptr = NULL;
+  else
+    free(loop);
 }
 
 
@@ -309,8 +317,8 @@ int64_t uv_now(uv_loop_t* loop) {
 }
 
 
-void uv__req_init(uv_req_t* req) {
-  /* loop->counters.req_init++; */
+void uv__req_init(uv_loop_t* loop, uv_req_t* req) {
+  loop->counters.req_init++;
   req->type = UV_UNKNOWN_REQ;
 }
 
@@ -650,7 +658,7 @@ int uv_getaddrinfo(uv_loop_t* loop,
     return -1;
   }
 
-  uv__req_init((uv_req_t*)handle);
+  uv__req_init(loop, (uv_req_t*)handle);
   handle->type = UV_GETADDRINFO;
   handle->loop = loop;
   handle->cb = cb;
@@ -727,8 +735,8 @@ int uv__accept(int sockfd, struct sockaddr* saddr, socklen_t slen) {
   assert(sockfd >= 0);
 
   while (1) {
-#if HAVE_ACCEPT4
-    peerfd = accept4(sockfd, saddr, &slen, SOCK_NONBLOCK | SOCK_CLOEXEC);
+#if HAVE_SYS_ACCEPT4
+    peerfd = sys_accept4(sockfd, saddr, &slen, SOCK_NONBLOCK | SOCK_CLOEXEC);
 
     if (peerfd != -1)
       break;

@@ -1,22 +1,22 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>dns - Node.js v0.6.5 Manual &amp; Documentation</title>
-  <link rel="stylesheet" href="assets/style.css" />
-  <link rel="stylesheet" href="assets/sh.css" />
-  <link rel="canonical" href="http://nodejs.org/docs/latest/api/dns.html"/>
+  <meta charset="utf-8">
+  <title>dns - Node.js v0.6.7 Manual &amp; Documentation</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="http://nodejs.org/docs/latest/api/dns.html">
 </head>
 <body>
   <div id="container">
     <header>
-      <h1>Node.js v0.6.5 Manual &amp; Documentation</h1>
+      <h1>Node.js v0.6.7 Manual &amp; Documentation</h1>
       <div id="gtoc">
         <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
       </div>
-      <hr />
+      <hr>
     </header>
-    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#dNS">DNS</a><ul><li><a href="#dns.lookup">dns.lookup(domain, family=null, callback)</a></li><li><a href="#dns.resolve">dns.resolve(domain, rrtype='A', callback)</a></li><li><a href="#dns.resolve4">dns.resolve4(domain, callback)</a></li><li><a href="#dns.resolve6">dns.resolve6(domain, callback)</a></li><li><a href="#dns.resolveMx">dns.resolveMx(domain, callback)</a></li><li><a href="#dns.resolveTxt">dns.resolveTxt(domain, callback)</a></li><li><a href="#dns.resolveSrv">dns.resolveSrv(domain, callback)</a></li><li><a href="#dns.reverse">dns.reverse(ip, callback)</a></li><li><a href="#dns.resolveNs">dns.resolveNs(domain, callback)</a></li><li><a href="#dns.resolveCname">dns.resolveCname(domain, callback)</a></li></ul></li></ul><hr /></div>
+    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#dNS">DNS</a><ul><li><a href="#dns.lookup">dns.lookup(domain, [family], callback)</a></li><li><a href="#dns.resolve">dns.resolve(domain, [rrtype], callback)</a></li><li><a href="#dns.resolve4">dns.resolve4(domain, callback)</a></li><li><a href="#dns.resolve6">dns.resolve6(domain, callback)</a></li><li><a href="#dns.resolveMx">dns.resolveMx(domain, callback)</a></li><li><a href="#dns.resolveTxt">dns.resolveTxt(domain, callback)</a></li><li><a href="#dns.resolveSrv">dns.resolveSrv(domain, callback)</a></li><li><a href="#dns.reverse">dns.reverse(ip, callback)</a></li><li><a href="#dns.resolveNs">dns.resolveNs(domain, callback)</a></li><li><a href="#dns.resolveCname">dns.resolveCname(domain, callback)</a></li></ul></li></ul><hr /></div>
 <h2 id="dNS">DNS</h2>
 
 <p>Use <code>require('dns')</code> to access this module. All methods in the dns module
@@ -50,23 +50,25 @@ dns.resolve4('www.google.com', function (err, addresses) {
   });
 });</code></pre>
 
-<h3 id="dns.lookup">dns.lookup(domain, family=null, callback) <a href="#dns.lookup">#</a></h3>
+<h3 id="dns.lookup">dns.lookup(domain, [family], callback) <a href="#dns.lookup">#</a></h3>
 
 <p>Resolves a domain (e.g. <code>'google.com'</code>) into the first found A (IPv4) or
-AAAA (IPv6) record.</p>
+AAAA (IPv6) record.
+The <code>family</code> can be the integer <code>4</code> or <code>6</code>. Defaults to <code>null</code> that indicates
+both Ip v4 and v6 address family.</p>
 
 <p>The callback has arguments <code>(err, address, family)</code>.  The <code>address</code> argument
 is a string representation of a IP v4 or v6 address. The <code>family</code> argument
 is either the integer 4 or 6 and denotes the family of <code>address</code> (not
 necessarily the value initially passed to <code>lookup</code>).</p>
 
-<h3 id="dns.resolve">dns.resolve(domain, rrtype='A', callback) <a href="#dns.resolve">#</a></h3>
+<h3 id="dns.resolve">dns.resolve(domain, [rrtype], callback) <a href="#dns.resolve">#</a></h3>
 
 <p>Resolves a domain (e.g. <code>'google.com'</code>) into an array of the record types
-specified by rrtype. Valid rrtypes are <code>A</code> (IPV4 addresses), <code>AAAA</code> (IPV6
-addresses), <code>MX</code> (mail exchange records), <code>TXT</code> (text records), <code>SRV</code> (SRV
-records), <code>PTR</code> (used for reverse IP lookups), <code>NS</code> (name server records)
-and <code>CNAME</code> (canonical name records).</p>
+specified by rrtype. Valid rrtypes are <code>'A'</code> (IPV4 addresses, default),
+<code>'AAAA'</code> (IPV6 addresses), <code>'MX'</code> (mail exchange records), <code>'TXT'</code> (text
+records), <code>'SRV'</code> (SRV records), <code>'PTR'</code> (used for reverse IP lookups),
+<code>'NS'</code> (name server records) and <code>'CNAME'</code> (canonical name records).</p>
 
 <p>The callback has arguments <code>(err, addresses)</code>.  The type of each item
 in <code>addresses</code> is determined by the record type, and described in the
@@ -134,5 +136,15 @@ object.</p>
   <script src="assets/sh_main.js"></script>
   <script src="assets/sh_javascript.min.js"></script>
   <script>highlight(undefined, undefined, 'pre');</script>
+  <script>
+    var gaJsHost = (("https:" == document.location.protocol) ?
+    "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+  <script>
+    try {
+      var pageTracker = _gat._getTracker("UA-10874194-2");
+      pageTracker._trackPageview();
+      } catch(err) {}</script>
 </body>
 </html>

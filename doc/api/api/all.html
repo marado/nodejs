@@ -1,22 +1,22 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>all - Node.js v0.6.5 Manual &amp; Documentation</title>
-  <link rel="stylesheet" href="assets/style.css" />
-  <link rel="stylesheet" href="assets/sh.css" />
-  <link rel="canonical" href="http://nodejs.org/docs/latest/api/all.html"/>
+  <meta charset="utf-8">
+  <title>all - Node.js v0.6.7 Manual &amp; Documentation</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="http://nodejs.org/docs/latest/api/all.html">
 </head>
 <body>
   <div id="container">
     <header>
-      <h1>Node.js v0.6.5 Manual &amp; Documentation</h1>
+      <h1>Node.js v0.6.7 Manual &amp; Documentation</h1>
       <div id="gtoc">
         <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
       </div>
-      <hr />
+      <hr>
     </header>
-    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#synopsis">Synopsis</a></li><li><a href="#global_Objects">Global Objects</a><ul><li><a href="#global">global</a></li><li><a href="#process">process</a></li><li><a href="#console">console</a></li><li><a href="#buffer">Buffer</a></li><li><a href="#require">require()</a></li><li><a href="#require.resolve">require.resolve()</a></li><li><a href="#require.cache">require.cache</a></li><li><a href="#__filename">__filename</a></li><li><a href="#__dirname">__dirname</a></li><li><a href="#module">module</a></li><li><a href="#exports">exports</a></li><li><a href="#setTimeout">setTimeout(cb, ms)</a></li><li><a href="#clearTimeout">clearTimeout(t)</a></li><li><a href="#setInterval">setInterval(cb, ms)</a></li><li><a href="#clearInterval">clearInterval(t)</a></li></ul></li><li><a href="#console">console</a><ul><li><a href="#console.log">console.log()</a></li><li><a href="#console.info">console.info()</a></li><li><a href="#console.warn">console.warn()</a></li><li><a href="#console.error">console.error()</a></li><li><a href="#console.dir">console.dir(obj)</a></li><li><a href="#console.time">console.time(label)</a></li><li><a href="#console.timeEnd">console.timeEnd(label)</a></li><li><a href="#console.trace">console.trace()</a></li><li><a href="#console.assert">console.assert()</a></li></ul></li><li><a href="#timers">Timers</a><ul><li><a href="#setTimeout">setTimeout(callback, delay, [arg], [...])</a></li><li><a href="#clearTimeout">clearTimeout(timeoutId)</a></li><li><a href="#setInterval">setInterval(callback, delay, [arg], [...])</a></li><li><a href="#clearInterval">clearInterval(intervalId)</a></li></ul></li><li><a href="#modules">Modules</a><ul><li><a href="#cycles">Cycles</a></li><li><a href="#core_Modules">Core Modules</a></li><li><a href="#file_Modules">File Modules</a></li><li><a href="#loading_from_node_modules_Folders">Loading from `node_modules` Folders</a></li><li><a href="#folders_as_Modules">Folders as Modules</a></li><li><a href="#caching">Caching</a><ul><li><a href="#module_Caching_Caveats">Module Caching Caveats</a></li></ul></li><li><a href="#module.exports">module.exports</a></li><li><a href="#module.require">module.require</a></li><li><a href="#all_Together...">All Together...</a></li><li><a href="#loading_from_the_global_folders">Loading from the global folders</a></li><li><a href="#accessing_the_main_module">Accessing the main module</a></li></ul></li><li><a href="#addenda_Package_Manager_Tips">Addenda: Package Manager Tips</a></li><li><a href="#addons">Addons</a></li><li><a href="#process">process</a><ul><li><a href="#event_exit_">Event: 'exit'</a></li><li><a href="#event_uncaughtException_">Event: 'uncaughtException'</a></li><li><a href="#signal_Events">Signal Events</a></li><li><a href="#process.stdout">process.stdout</a></li><li><a href="#process.stderr">process.stderr</a></li><li><a href="#process.stdin">process.stdin</a></li><li><a href="#process.argv">process.argv</a></li><li><a href="#process.execPath">process.execPath</a></li><li><a href="#process.chdir">process.chdir(directory)</a></li><li><a href="#process.cwd">process.cwd()</a></li><li><a href="#process.env">process.env</a></li><li><a href="#process.exit">process.exit(code=0)</a></li><li><a href="#process.getgid">process.getgid()</a></li><li><a href="#process.setgid">process.setgid(id)</a></li><li><a href="#process.getuid">process.getuid()</a></li><li><a href="#process.setuid">process.setuid(id)</a></li><li><a href="#process.version">process.version</a></li><li><a href="#process.versions">process.versions</a></li><li><a href="#process.installPrefix">process.installPrefix</a></li><li><a href="#process.kill">process.kill(pid, signal='SIGTERM')</a></li><li><a href="#process.pid">process.pid</a></li><li><a href="#process.title">process.title</a></li><li><a href="#process.arch">process.arch</a></li><li><a href="#process.platform">process.platform</a></li><li><a href="#process.memoryUsage">process.memoryUsage()</a></li><li><a href="#process.nextTick">process.nextTick(callback)</a></li><li><a href="#process.umask">process.umask([mask])</a></li><li><a href="#process.uptime">process.uptime()</a></li></ul></li><li><a href="#util">util</a><ul><li><a href="#util.format">util.format()</a></li><li><a href="#util.debug">util.debug(string)</a></li><li><a href="#util.log">util.log(string)</a></li><li><a href="#util.inspect">util.inspect(object, showHidden=false, depth=2)</a></li><li><a href="#util.isArray">util.isArray(object)</a></li><li><a href="#util.isRegExp">util.isRegExp(object)</a></li><li><a href="#util.isDate">util.isDate(object)</a></li><li><a href="#util.isError">util.isError(object)</a></li><li><a href="#util.pump">util.pump(readableStream, writableStream, [callback])</a></li><li><a href="#util.inherits">util.inherits(constructor, superConstructor)</a></li></ul></li><li><a href="#events">Events</a><ul><li><a href="#events.EventEmitter">events.EventEmitter</a><ul><li><a href="#emitter.addListener">emitter.addListener(event, listener)</a></li><li><a href="#emitter.on">emitter.on(event, listener)</a></li><li><a href="#emitter.once">emitter.once(event, listener)</a></li><li><a href="#emitter.removeListener">emitter.removeListener(event, listener)</a></li><li><a href="#emitter.removeAllListeners">emitter.removeAllListeners([event])</a></li><li><a href="#emitter.setMaxListeners">emitter.setMaxListeners(n)</a></li><li><a href="#emitter.listeners">emitter.listeners(event)</a></li><li><a href="#emitter.emit">emitter.emit(event, [arg1], [arg2], [...])</a></li><li><a href="#event_newListener_">Event: 'newListener'</a></li></ul></li></ul></li><li><a href="#buffers">Buffers</a><ul><li><a href="#new_Buffer">new Buffer(size)</a></li><li><a href="#new_Buffer">new Buffer(array)</a></li><li><a href="#new_Buffer">new Buffer(str, encoding='utf8')</a></li><li><a href="#buffer.write">buffer.write(string, offset=0, length=buffer.length-offset, encoding='utf8')</a></li><li><a href="#buffer.toString">buffer.toString(encoding, start=0, end=buffer.length)</a></li><li><a href="#buffer_index_">buffer[index]</a></li><li><a href="#buffer.isBuffer">Buffer.isBuffer(obj)</a></li><li><a href="#buffer.byteLength">Buffer.byteLength(string, encoding='utf8')</a></li><li><a href="#buffer.length">buffer.length</a></li><li><a href="#buffer.copy">buffer.copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)</a></li><li><a href="#buffer.slice">buffer.slice(start, end=buffer.length)</a></li><li><a href="#buffer.readUInt8">buffer.readUInt8(offset, noAssert=false)</a></li><li><a href="#buffer.readUInt16LE">buffer.readUInt16LE(offset, noAssert=false)</a></li><li><a href="#buffer.readUInt16BE">buffer.readUInt16BE(offset, noAssert=false)</a></li><li><a href="#buffer.readUInt32LE">buffer.readUInt32LE(offset, noAssert=false)</a></li><li><a href="#buffer.readUInt32BE">buffer.readUInt32BE(offset, noAssert=false)</a></li><li><a href="#buffer.readInt8">buffer.readInt8(offset, noAssert=false)</a></li><li><a href="#buffer.readInt16LE">buffer.readInt16LE(offset, noAssert=false)</a></li><li><a href="#buffer.readInt16BE">buffer.readInt16BE(offset, noAssert=false)</a></li><li><a href="#buffer.readInt32LE">buffer.readInt32LE(offset, noAssert=false)</a></li><li><a href="#buffer.readInt32BE">buffer.readInt32BE(offset, noAssert=false)</a></li><li><a href="#buffer.readFloatLE">buffer.readFloatLE(offset, noAssert=false)</a></li><li><a href="#buffer.readFloatBE">buffer.readFloatBE(offset, noAssert=false)</a></li><li><a href="#buffer.readDoubleLE">buffer.readDoubleLE(offset, noAssert=false)</a></li><li><a href="#buffer.readDoubleBE">buffer.readDoubleBE(offset, noAssert=false)</a></li><li><a href="#buffer.writeUInt8">buffer.writeUInt8(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeUInt16LE">buffer.writeUInt16LE(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeUInt16BE">buffer.writeUInt16BE(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeUInt32LE">buffer.writeUInt32LE(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeUInt32BE">buffer.writeUInt32BE(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeInt8">buffer.writeInt8(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeInt16LE">buffer.writeInt16LE(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeInt16BE">buffer.writeInt16BE(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeInt32LE">buffer.writeInt32LE(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeInt32BE">buffer.writeInt32BE(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeFloatLE">buffer.writeFloatLE(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeFloatBE">buffer.writeFloatBE(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeDoubleLE">buffer.writeDoubleLE(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeDoubleBE">buffer.writeDoubleBE(value, offset, noAssert=false)</a></li><li><a href="#buffer.fill">buffer.fill(value, offset=0, end=buffer.length)</a></li><li><a href="#iNSPECT_MAX_BYTES">INSPECT_MAX_BYTES</a></li></ul></li><li><a href="#streams">Streams</a></li><li><a href="#readable_Stream">Readable Stream</a><ul><li><a href="#event_data_">Event: 'data'</a></li><li><a href="#event_end_">Event: 'end'</a></li><li><a href="#event_error_">Event: 'error'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#stream.readable">stream.readable</a></li><li><a href="#stream.setEncoding">stream.setEncoding(encoding)</a></li><li><a href="#stream.pause">stream.pause()</a></li><li><a href="#stream.resume">stream.resume()</a></li><li><a href="#stream.destroy">stream.destroy()</a></li><li><a href="#stream.destroySoon">stream.destroySoon()</a></li><li><a href="#stream.pipe">stream.pipe(destination, [options])</a></li></ul></li><li><a href="#writable_Stream">Writable Stream</a><ul><li><a href="#event_drain_">Event: 'drain'</a></li><li><a href="#event_error_">Event: 'error'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#event_pipe_">Event: 'pipe'</a></li><li><a href="#stream.writable">stream.writable</a></li><li><a href="#stream.write">stream.write(string, encoding='utf8', [fd])</a></li><li><a href="#stream.write">stream.write(buffer)</a></li><li><a href="#stream.end">stream.end()</a></li><li><a href="#stream.end">stream.end(string, encoding)</a></li><li><a href="#stream.end">stream.end(buffer)</a></li><li><a href="#stream.destroy">stream.destroy()</a></li><li><a href="#stream.destroySoon">stream.destroySoon()</a></li></ul></li><li><a href="#crypto">Crypto</a><ul><li><a href="#crypto.createCredentials">crypto.createCredentials(details)</a></li><li><a href="#crypto.createHash">crypto.createHash(algorithm)</a></li><li><a href="#hash.update">hash.update(data)</a></li><li><a href="#hash.digest">hash.digest(encoding='binary')</a></li><li><a href="#crypto.createHmac">crypto.createHmac(algorithm, key)</a></li><li><a href="#hmac.update">hmac.update(data)</a></li><li><a href="#hmac.digest">hmac.digest(encoding='binary')</a></li><li><a href="#crypto.createCipher">crypto.createCipher(algorithm, password)</a></li><li><a href="#crypto.createCipheriv">crypto.createCipheriv(algorithm, key, iv)</a></li><li><a href="#cipher.update">cipher.update(data, input_encoding='binary', output_encoding='binary')</a></li><li><a href="#cipher.final">cipher.final(output_encoding='binary')</a></li><li><a href="#crypto.createDecipher">crypto.createDecipher(algorithm, password)</a></li><li><a href="#crypto.createDecipheriv">crypto.createDecipheriv(algorithm, key, iv)</a></li><li><a href="#decipher.update">decipher.update(data, input_encoding='binary', output_encoding='binary')</a></li><li><a href="#decipher.final">decipher.final(output_encoding='binary')</a></li><li><a href="#crypto.createSign">crypto.createSign(algorithm)</a></li><li><a href="#signer.update">signer.update(data)</a></li><li><a href="#signer.sign">signer.sign(private_key, output_format='binary')</a></li><li><a href="#crypto.createVerify">crypto.createVerify(algorithm)</a></li><li><a href="#verifier.update">verifier.update(data)</a></li><li><a href="#verifier.verify">verifier.verify(object, signature, signature_format='binary')</a></li><li><a href="#crypto.createDiffieHellman">crypto.createDiffieHellman(prime_length)</a></li><li><a href="#crypto.createDiffieHellman">crypto.createDiffieHellman(prime, encoding='binary')</a></li><li><a href="#diffieHellman.generateKeys">diffieHellman.generateKeys(encoding='binary')</a></li><li><a href="#diffieHellman.computeSecret">diffieHellman.computeSecret(other_public_key, input_encoding='binary', output_encoding=input_encoding)</a></li><li><a href="#diffieHellman.getPrime">diffieHellman.getPrime(encoding='binary')</a></li><li><a href="#diffieHellman.getGenerator">diffieHellman.getGenerator(encoding='binary')</a></li><li><a href="#diffieHellman.getPublicKey">diffieHellman.getPublicKey(encoding='binary')</a></li><li><a href="#diffieHellman.getPrivateKey">diffieHellman.getPrivateKey(encoding='binary')</a></li><li><a href="#diffieHellman.setPublicKey">diffieHellman.setPublicKey(public_key, encoding='binary')</a></li><li><a href="#diffieHellman.setPrivateKey">diffieHellman.setPrivateKey(public_key, encoding='binary')</a></li><li><a href="#pbkdf2">pbkdf2(password, salt, iterations, keylen, callback)</a></li><li><a href="#randomBytes">randomBytes(size, [callback])</a></li></ul></li><li><a href="#tLS_">TLS (SSL)</a><ul><li><a href="#tls.createServer">tls.createServer(options, [secureConnectionListener])</a></li><li><a href="#tls.connect">tls.connect(port, [host], [options], [secureConnectListener])</a></li></ul></li><li><a href="#sTARTTLS">STARTTLS</a></li><li><a href="#nPN_and_SNI">NPN and SNI</a></li><li><a href="#pair_tls.createSecurePair">pair = tls.createSecurePair([credentials], [isServer], [requestCert], [rejectUnauthorized])</a><ul><li><a href="#event_secure_">Event: 'secure'</a></li></ul></li><li><a href="#tls.Server">tls.Server</a><ul><li><a href="#event_secureConnection_">Event: 'secureConnection'</a></li><li><a href="#server.listen">server.listen(port, [host], [callback])</a></li><li><a href="#server.close">server.close()</a></li><li><a href="#server.address">server.address()</a></li><li><a href="#server.addContext">server.addContext(hostname, credentials)</a></li><li><a href="#server.maxConnections">server.maxConnections</a></li><li><a href="#server.connections">server.connections</a></li></ul></li><li><a href="#tls.CleartextStream">tls.CleartextStream</a><ul><li><a href="#event_secureConnect_">Event: 'secureConnect'</a></li><li><a href="#cleartextStream.authorized">cleartextStream.authorized</a></li><li><a href="#cleartextStream.authorizationError">cleartextStream.authorizationError</a></li><li><a href="#cleartextStream.getPeerCertificate">cleartextStream.getPeerCertificate()</a></li><li><a href="#cleartextStream.address">cleartextStream.address()</a></li><li><a href="#cleartextStream.remoteAddress">cleartextStream.remoteAddress</a></li><li><a href="#cleartextStream.remotePort">cleartextStream.remotePort</a></li></ul></li></ul></li><li><a href="#file_System">File System</a><ul><li><a href="#fs.rename">fs.rename(path1, path2, [callback])</a></li><li><a href="#fs.renameSync">fs.renameSync(path1, path2)</a></li><li><a href="#fs.truncate">fs.truncate(fd, len, [callback])</a></li><li><a href="#fs.truncateSync">fs.truncateSync(fd, len)</a></li><li><a href="#fs.chown">fs.chown(path, uid, gid, [callback])</a></li><li><a href="#fs.chownSync">fs.chownSync(path, uid, gid)</a></li><li><a href="#fs.fchown">fs.fchown(fd, uid, gid, [callback])</a></li><li><a href="#fs.fchownSync">fs.fchownSync(fd, uid, gid)</a></li><li><a href="#fs.lchown">fs.lchown(path, uid, gid, [callback])</a></li><li><a href="#fs.lchownSync">fs.lchownSync(path, uid, gid)</a></li><li><a href="#fs.chmod">fs.chmod(path, mode, [callback])</a></li><li><a href="#fs.chmodSync">fs.chmodSync(path, mode)</a></li><li><a href="#fs.fchmod">fs.fchmod(fd, mode, [callback])</a></li><li><a href="#fs.fchmodSync">fs.fchmodSync(fd, mode)</a></li><li><a href="#fs.lchmod">fs.lchmod(path, mode, [callback])</a></li><li><a href="#fs.lchmodSync">fs.lchmodSync(path, mode)</a></li><li><a href="#fs.stat">fs.stat(path, [callback])</a></li><li><a href="#fs.lstat">fs.lstat(path, [callback])</a></li><li><a href="#fs.fstat">fs.fstat(fd, [callback])</a></li><li><a href="#fs.statSync">fs.statSync(path)</a></li><li><a href="#fs.lstatSync">fs.lstatSync(path)</a></li><li><a href="#fs.fstatSync">fs.fstatSync(fd)</a></li><li><a href="#fs.link">fs.link(srcpath, dstpath, [callback])</a></li><li><a href="#fs.linkSync">fs.linkSync(srcpath, dstpath)</a></li><li><a href="#fs.symlink">fs.symlink(linkdata, path, [callback])</a></li><li><a href="#fs.symlinkSync">fs.symlinkSync(linkdata, path)</a></li><li><a href="#fs.readlink">fs.readlink(path, [callback])</a></li><li><a href="#fs.readlinkSync">fs.readlinkSync(path)</a></li><li><a href="#fs.realpath">fs.realpath(path, [callback])</a></li><li><a href="#fs.realpathSync">fs.realpathSync(path)</a></li><li><a href="#fs.unlink">fs.unlink(path, [callback])</a></li><li><a href="#fs.unlinkSync">fs.unlinkSync(path)</a></li><li><a href="#fs.rmdir">fs.rmdir(path, [callback])</a></li><li><a href="#fs.rmdirSync">fs.rmdirSync(path)</a></li><li><a href="#fs.mkdir">fs.mkdir(path, [mode], [callback])</a></li><li><a href="#fs.mkdirSync">fs.mkdirSync(path, [mode])</a></li><li><a href="#fs.readdir">fs.readdir(path, [callback])</a></li><li><a href="#fs.readdirSync">fs.readdirSync(path)</a></li><li><a href="#fs.close">fs.close(fd, [callback])</a></li><li><a href="#fs.closeSync">fs.closeSync(fd)</a></li><li><a href="#fs.open">fs.open(path, flags, [mode], [callback])</a></li><li><a href="#fs.openSync">fs.openSync(path, flags, [mode])</a></li><li><a href="#fs.utimes">fs.utimes(path, atime, mtime, [callback])</a></li><li><a href="#fs.utimesSync">fs.utimesSync(path, atime, mtime)</a></li><li><a href="#fs.futimes">fs.futimes(fd, atime, mtime, [callback])</a></li><li><a href="#fs.futimesSync">fs.futimesSync(fd, atime, mtime)</a></li><li><a href="#fs.fsync">fs.fsync(fd, [callback])</a></li><li><a href="#fs.fsyncSync">fs.fsyncSync(fd)</a></li><li><a href="#fs.write">fs.write(fd, buffer, offset, length, position, [callback])</a></li><li><a href="#fs.writeSync">fs.writeSync(fd, buffer, offset, length, position)</a></li><li><a href="#fs.writeSync">fs.writeSync(fd, str, position, encoding='utf8')</a></li><li><a href="#fs.read">fs.read(fd, buffer, offset, length, position, [callback])</a></li><li><a href="#fs.readSync">fs.readSync(fd, buffer, offset, length, position)</a></li><li><a href="#fs.readSync">fs.readSync(fd, length, position, encoding)</a></li><li><a href="#fs.readFile">fs.readFile(filename, [encoding], [callback])</a></li><li><a href="#fs.readFileSync">fs.readFileSync(filename, [encoding])</a></li><li><a href="#fs.writeFile">fs.writeFile(filename, data, encoding='utf8', [callback])</a></li><li><a href="#fs.writeFileSync">fs.writeFileSync(filename, data, encoding='utf8')</a></li><li><a href="#fs.watchFile">fs.watchFile(filename, [options], listener)</a></li><li><a href="#fs.unwatchFile">fs.unwatchFile(filename)</a></li><li><a href="#fs.watch">fs.watch(filename, [options], listener)</a></li></ul></li><li><a href="#fs.Stats">fs.Stats</a></li><li><a href="#fs.ReadStream">fs.ReadStream</a><ul><li><a href="#event_open_">Event: 'open'</a></li><li><a href="#fs.createReadStream">fs.createReadStream(path, [options])</a></li></ul></li><li><a href="#fs.WriteStream">fs.WriteStream</a><ul><li><a href="#event_open_">Event: 'open'</a></li><li><a href="#file.bytesWritten">file.bytesWritten</a></li><li><a href="#fs.createWriteStream">fs.createWriteStream(path, [options])</a></li></ul></li><li><a href="#fs.FSWatcher">fs.FSWatcher</a><ul><li><a href="#watcher.close">watcher.close()</a></li><li><a href="#event_change_">Event: 'change'</a></li><li><a href="#event_error_">Event: 'error'</a></li></ul></li></ul></li><li><a href="#path">Path</a><ul><li><a href="#path.normalize">path.normalize(p)</a></li><li><a href="#path.join">path.join([path1], [path2], [...])</a></li><li><a href="#path.resolve">path.resolve([from ...], to)</a></li><li><a href="#path.relative">path.relative(from, to)</a></li><li><a href="#path.dirname">path.dirname(p)</a></li><li><a href="#path.basename">path.basename(p, [ext])</a></li><li><a href="#path.extname">path.extname(p)</a></li><li><a href="#path.exists">path.exists(p, [callback])</a></li><li><a href="#path.existsSync">path.existsSync(p)</a></li></ul></li><li><a href="#net">net</a><ul><li><a href="#net.createServer">net.createServer([options], [connectionListener])</a></li><li><a href="#net.connect">net.connect(arguments...)</a></li><li><a href="#net.createConnection">net.createConnection(arguments...)</a></li><li><a href="#net.Server">net.Server</a><ul><li><a href="#server.listen">server.listen(port, [host], [listeningListener])</a></li><li><a href="#server.listen">server.listen(path, [listeningListener])</a></li><li><a href="#server.pause">server.pause(msecs)</a></li><li><a href="#server.close">server.close()</a></li><li><a href="#server.address">server.address()</a></li><li><a href="#server.maxConnections">server.maxConnections</a></li><li><a href="#server.connections">server.connections</a></li><li><a href="#event_listening_">Event: 'listening'</a></li><li><a href="#event_connection_">Event: 'connection'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#event_error_">Event: 'error'</a></li></ul></li><li><a href="#net.Socket">net.Socket</a><ul><li><a href="#new_net.Socket">new net.Socket([options])</a></li><li><a href="#socket.connect">socket.connect(port, [host], [connectListener])</a></li><li><a href="#socket.connect">socket.connect(path, [connectListener])</a></li><li><a href="#socket.bufferSize">socket.bufferSize</a></li><li><a href="#socket.setEncoding">socket.setEncoding(encoding=null)</a></li><li><a href="#socket.setSecure">socket.setSecure()</a></li><li><a href="#socket.write">socket.write(data, [encoding], [callback])</a></li><li><a href="#socket.write">socket.write(data, [encoding], [callback])</a></li><li><a href="#socket.end">socket.end([data], [encoding])</a></li><li><a href="#socket.destroy">socket.destroy()</a></li><li><a href="#socket.pause">socket.pause()</a></li><li><a href="#socket.resume">socket.resume()</a></li><li><a href="#socket.setTimeout">socket.setTimeout(timeout, [callback])</a></li><li><a href="#socket.setNoDelay">socket.setNoDelay(noDelay=true)</a></li><li><a href="#socket.setKeepAlive">socket.setKeepAlive(enable=false, [initialDelay])</a></li><li><a href="#socket.address">socket.address()</a></li><li><a href="#socket.remoteAddress">socket.remoteAddress</a></li><li><a href="#socket.remotePort">socket.remotePort</a></li><li><a href="#socket.bytesRead">socket.bytesRead</a></li><li><a href="#socket.bytesWritten">socket.bytesWritten</a></li><li><a href="#event_connect_">Event: 'connect'</a></li><li><a href="#event_data_">Event: 'data'</a></li><li><a href="#event_end_">Event: 'end'</a></li><li><a href="#event_timeout_">Event: 'timeout'</a></li><li><a href="#event_drain_">Event: 'drain'</a></li><li><a href="#event_error_">Event: 'error'</a></li><li><a href="#event_close_">Event: 'close'</a></li></ul></li><li><a href="#net.isIP">net.isIP</a><ul><li><a href="#net.isIP">net.isIP(input)</a></li><li><a href="#net.isIPv4">net.isIPv4(input)</a></li><li><a href="#net.isIPv6">net.isIPv6(input)</a></li></ul></li></ul></li><li><a href="#uDP_Datagram_Sockets">UDP / Datagram Sockets</a><ul><li><a href="#event_message_">Event: 'message'</a></li><li><a href="#event_listening_">Event: 'listening'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#event_error_">Event: 'error'</a></li><li><a href="#dgram.createSocket">dgram.createSocket(type, [callback])</a></li><li><a href="#dgram.send">dgram.send(buf, offset, length, port, address, [callback])</a></li><li><a href="#dgram.bind">dgram.bind(port, [address])</a></li><li><a href="#dgram.close">dgram.close()</a></li><li><a href="#dgram.address">dgram.address()</a></li><li><a href="#dgram.setBroadcast">dgram.setBroadcast(flag)</a></li><li><a href="#dgram.setTTL">dgram.setTTL(ttl)</a></li><li><a href="#dgram.setMulticastTTL">dgram.setMulticastTTL(ttl)</a></li><li><a href="#dgram.setMulticastLoopback">dgram.setMulticastLoopback(flag)</a></li><li><a href="#dgram.addMembership">dgram.addMembership(multicastAddress, [multicastInterface])</a></li><li><a href="#dgram.dropMembership">dgram.dropMembership(multicastAddress, [multicastInterface])</a></li></ul></li><li><a href="#dNS">DNS</a><ul><li><a href="#dns.lookup">dns.lookup(domain, family=null, callback)</a></li><li><a href="#dns.resolve">dns.resolve(domain, rrtype='A', callback)</a></li><li><a href="#dns.resolve4">dns.resolve4(domain, callback)</a></li><li><a href="#dns.resolve6">dns.resolve6(domain, callback)</a></li><li><a href="#dns.resolveMx">dns.resolveMx(domain, callback)</a></li><li><a href="#dns.resolveTxt">dns.resolveTxt(domain, callback)</a></li><li><a href="#dns.resolveSrv">dns.resolveSrv(domain, callback)</a></li><li><a href="#dns.reverse">dns.reverse(ip, callback)</a></li><li><a href="#dns.resolveNs">dns.resolveNs(domain, callback)</a></li><li><a href="#dns.resolveCname">dns.resolveCname(domain, callback)</a></li></ul></li><li><a href="#hTTP">HTTP</a></li><li><a href="#http.Server">http.Server</a><ul><li><a href="#event_request_">Event: 'request'</a></li><li><a href="#event_connection_">Event: 'connection'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#event_checkContinue_">Event: 'checkContinue'</a></li><li><a href="#event_upgrade_">Event: 'upgrade'</a></li><li><a href="#event_clientError_">Event: 'clientError'</a></li><li><a href="#http.createServer">http.createServer([requestListener])</a></li><li><a href="#server.listen">server.listen(port, [hostname], [callback])</a></li><li><a href="#server.listen">server.listen(path, [callback])</a></li><li><a href="#server.close">server.close()</a></li></ul></li><li><a href="#http.ServerRequest">http.ServerRequest</a><ul><li><a href="#event_data_">Event: 'data'</a></li><li><a href="#event_end_">Event: 'end'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#request.method">request.method</a></li><li><a href="#request.url">request.url</a></li><li><a href="#request.headers">request.headers</a></li><li><a href="#request.trailers">request.trailers</a></li><li><a href="#request.httpVersion">request.httpVersion</a></li><li><a href="#request.setEncoding">request.setEncoding(encoding=null)</a></li><li><a href="#request.pause">request.pause()</a></li><li><a href="#request.resume">request.resume()</a></li><li><a href="#request.connection">request.connection</a></li></ul></li><li><a href="#http.ServerResponse">http.ServerResponse</a><ul><li><a href="#response.writeContinue">response.writeContinue()</a></li><li><a href="#response.writeHead">response.writeHead(statusCode, [reasonPhrase], [headers])</a></li><li><a href="#response.statusCode">response.statusCode</a></li><li><a href="#response.setHeader">response.setHeader(name, value)</a></li><li><a href="#response.getHeader">response.getHeader(name)</a></li><li><a href="#response.removeHeader">response.removeHeader(name)</a></li><li><a href="#response.write">response.write(chunk, encoding='utf8')</a></li><li><a href="#response.addTrailers">response.addTrailers(headers)</a></li><li><a href="#response.end">response.end([data], [encoding])</a></li></ul></li><li><a href="#http.request">http.request(options, callback)</a></li><li><a href="#http.get">http.get(options, callback)</a></li><li><a href="#http.Agent">http.Agent</a></li><li><a href="#http.globalAgent">http.globalAgent</a><ul><li><a href="#agent.maxSockets">agent.maxSockets</a></li><li><a href="#agent.sockets">agent.sockets</a></li><li><a href="#agent.requests">agent.requests</a></li></ul></li><li><a href="#http.ClientRequest">http.ClientRequest</a><ul><li><a href="#event_response_">Event 'response'</a></li><li><a href="#event_socket_">Event: 'socket'</a></li><li><a href="#event_upgrade_">Event: 'upgrade'</a></li><li><a href="#event_continue_">Event: 'continue'</a></li><li><a href="#request.write">request.write(chunk, encoding='utf8')</a></li><li><a href="#request.end">request.end([data], [encoding])</a></li><li><a href="#request.abort">request.abort()</a></li><li><a href="#request.setTimeout">request.setTimeout(timeout, [callback])</a></li><li><a href="#request.setNoDelay">request.setNoDelay(noDelay=true)</a></li><li><a href="#request.setSocketKeepAlive">request.setSocketKeepAlive(enable=false, [initialDelay])</a></li></ul></li><li><a href="#http.ClientResponse">http.ClientResponse</a><ul><li><a href="#event_data_">Event: 'data'</a></li><li><a href="#event_end_">Event: 'end'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#response.statusCode">response.statusCode</a></li><li><a href="#response.httpVersion">response.httpVersion</a></li><li><a href="#response.headers">response.headers</a></li><li><a href="#response.trailers">response.trailers</a></li><li><a href="#response.setEncoding">response.setEncoding(encoding=null)</a></li><li><a href="#response.pause">response.pause()</a></li><li><a href="#response.resume">response.resume()</a></li></ul></li><li><a href="#hTTPS">HTTPS</a></li><li><a href="#https.Server">https.Server</a></li><li><a href="#https.createServer">https.createServer(options, [requestListener])</a></li><li><a href="#https.request">https.request(options, callback)</a></li><li><a href="#https.get">https.get(options, callback)</a></li><li><a href="#https.Agent">https.Agent</a></li><li><a href="#https.globalAgent">https.globalAgent</a></li><li><a href="#uRL">URL</a><ul><li><a href="#url.parse">url.parse(urlStr, parseQueryString=false, slashesDenoteHost=false)</a></li><li><a href="#url.format">url.format(urlObj)</a></li><li><a href="#url.resolve">url.resolve(from, to)</a></li></ul></li><li><a href="#query_String">Query String</a><ul><li><a href="#querystring.stringify">querystring.stringify(obj, sep='&', eq='=')</a></li><li><a href="#querystring.parse">querystring.parse(str, sep='&', eq='=')</a></li><li><a href="#querystring.escape">querystring.escape</a></li><li><a href="#querystring.unescape">querystring.unescape</a></li></ul></li><li><a href="#readline">Readline</a><ul><li><a href="#rl.createInterface">rl.createInterface(input, output, completer)</a></li><li><a href="#rl.setPrompt">rl.setPrompt(prompt, length)</a></li><li><a href="#rl.prompt">rl.prompt()</a></li><li><a href="#rl.question">rl.question(query, callback)</a></li><li><a href="#rl.close">rl.close()</a></li><li><a href="#rl.pause">rl.pause()</a></li><li><a href="#rl.resume">rl.resume()</a></li><li><a href="#rl.write">rl.write()</a></li><li><a href="#event_line_">Event: 'line'</a></li><li><a href="#event_close_">Event: 'close'</a></li></ul></li><li><a href="#rEPL">REPL</a><ul><li><a href="#repl.start">repl.start(prompt='> ', stream=process.stdin, eval=eval, useGlobal=false, ignoreUndefined=false)</a></li><li><a href="#rEPL_Features">REPL Features</a></li></ul></li><li><a href="#executing_JavaScript">Executing JavaScript</a><ul><li><a href="#vm.runInThisContext">vm.runInThisContext(code, [filename])</a></li><li><a href="#vm.runInNewContext">vm.runInNewContext(code, [sandbox], [filename])</a></li><li><a href="#vm.runInContext">vm.runInContext(code, context, [filename])</a></li><li><a href="#vm.createContext">vm.createContext([initSandbox])</a></li><li><a href="#vm.createScript">vm.createScript(code, [filename])</a></li><li><a href="#script.runInThisContext">script.runInThisContext()</a></li><li><a href="#script.runInNewContext">script.runInNewContext([sandbox])</a></li></ul></li><li><a href="#child_Processes">Child Processes</a><ul><li><a href="#event_exit_">Event:  'exit'</a></li><li><a href="#child.stdin">child.stdin</a></li><li><a href="#child.stdout">child.stdout</a></li><li><a href="#child.stderr">child.stderr</a></li><li><a href="#child.pid">child.pid</a></li><li><a href="#child_process.spawn">child_process.spawn(command, args=[], [options])</a></li><li><a href="#child_process.exec">child_process.exec(command, [options], callback)</a></li><li><a href="#child_process.execFile">child_process.execFile(file, args, options, callback)</a></li><li><a href="#child_process.fork">child_process.fork(modulePath, arguments, options)</a></li><li><a href="#child.kill">child.kill(signal='SIGTERM')</a></li></ul></li><li><a href="#assert">Assert</a><ul><li><a href="#assert.fail">assert.fail(actual, expected, message, operator)</a></li><li><a href="#assert_assert.ok">assert(value, message), assert.ok(value, [message])</a></li><li><a href="#assert.equal">assert.equal(actual, expected, [message])</a></li><li><a href="#assert.notEqual">assert.notEqual(actual, expected, [message])</a></li><li><a href="#assert.deepEqual">assert.deepEqual(actual, expected, [message])</a></li><li><a href="#assert.notDeepEqual">assert.notDeepEqual(actual, expected, [message])</a></li><li><a href="#assert.strictEqual">assert.strictEqual(actual, expected, [message])</a></li><li><a href="#assert.notStrictEqual">assert.notStrictEqual(actual, expected, [message])</a></li><li><a href="#assert.throws">assert.throws(block, [error], [message])</a></li><li><a href="#assert.doesNotThrow">assert.doesNotThrow(block, [error], [message])</a></li><li><a href="#assert.ifError">assert.ifError(value)</a></li></ul></li><li><a href="#tTY">TTY</a><ul><li><a href="#tty.isatty">tty.isatty(fd)</a></li><li><a href="#tty.setRawMode">tty.setRawMode(mode)</a></li><li><a href="#tty.setWindowSize">tty.setWindowSize(fd, row, col)</a></li><li><a href="#tty.getWindowSize">tty.getWindowSize(fd)</a></li></ul></li><li><a href="#zlib">Zlib</a><ul><li><a href="#examples">Examples</a></li><li><a href="#constants">Constants</a></li><li><a href="#zlib.createGzip">zlib.createGzip([options])</a></li><li><a href="#zlib.createGunzip">zlib.createGunzip([options])</a></li><li><a href="#zlib.createDeflate">zlib.createDeflate([options])</a></li><li><a href="#zlib.createInflate">zlib.createInflate([options])</a></li><li><a href="#zlib.createDeflateRaw">zlib.createDeflateRaw([options])</a></li><li><a href="#zlib.createInflateRaw">zlib.createInflateRaw([options])</a></li><li><a href="#zlib.createUnzip">zlib.createUnzip([options])</a></li><li><a href="#zlib.Gzip">zlib.Gzip</a></li><li><a href="#zlib.Gunzip">zlib.Gunzip</a></li><li><a href="#zlib.Deflate">zlib.Deflate</a></li><li><a href="#zlib.Inflate">zlib.Inflate</a></li><li><a href="#zlib.DeflateRaw">zlib.DeflateRaw</a></li><li><a href="#zlib.InflateRaw">zlib.InflateRaw</a></li><li><a href="#zlib.Unzip">zlib.Unzip</a></li></ul></li><li><a href="#convenience_Methods">Convenience Methods</a><ul><li><a href="#zlib.deflate">zlib.deflate(buf, callback)</a></li><li><a href="#zlib.deflateRaw">zlib.deflateRaw(buf, callback)</a></li><li><a href="#zlib.gzip">zlib.gzip(buf, callback)</a></li><li><a href="#zlib.gunzip">zlib.gunzip(buf, callback)</a></li><li><a href="#zlib.inflate">zlib.inflate(buf, callback)</a></li><li><a href="#zlib.inflateRaw">zlib.inflateRaw(buf, callback)</a></li><li><a href="#zlib.unzip">zlib.unzip(buf, callback)</a></li></ul></li><li><a href="#options">Options</a><ul><li><a href="#memory_Usage_Tuning">Memory Usage Tuning</a></li></ul></li><li><a href="#os_Module">os Module</a><ul><li><a href="#os.hostname">os.hostname()</a></li><li><a href="#os.type">os.type()</a></li><li><a href="#os.platform">os.platform()</a></li><li><a href="#os.arch">os.arch()</a></li><li><a href="#os.release">os.release()</a></li><li><a href="#os.uptime">os.uptime()</a></li><li><a href="#os.loadavg">os.loadavg()</a></li><li><a href="#os.totalmem">os.totalmem()</a></li><li><a href="#os.freemem">os.freemem()</a></li><li><a href="#os.cpus">os.cpus()</a></li><li><a href="#os.networkInterfaces">os.networkInterfaces()</a></li></ul></li><li><a href="#debugger">Debugger</a><ul><li><a href="#watchers">Watchers</a></li><li><a href="#commands_reference">Commands reference</a><ul><li><a href="#stepping">Stepping</a></li><li><a href="#breakpoints">Breakpoints</a></li><li><a href="#info">Info</a></li><li><a href="#execution_control">Execution control</a></li><li><a href="#various">Various</a></li></ul></li><li><a href="#advanced_Usage">Advanced Usage</a></li></ul></li><li><a href="#cluster">Cluster</a><ul><li><a href="#cluster.fork">cluster.fork()</a></li><li><a href="#cluster.isMaster">cluster.isMaster</a></li><li><a href="#cluster.isWorker">cluster.isWorker</a></li><li><a href="#event_death_">Event: 'death'</a></li></ul></li></ul></li><li><a href="#appendixes">Appendixes</a><ul><li><a href="#appendix_1_Third_Party_Modules">Appendix 1 - Third Party Modules</a></li></ul><hr /></div>
+    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#synopsis">Synopsis</a></li><li><a href="#global_Objects">Global Objects</a><ul><li><a href="#global">global</a></li><li><a href="#process">process</a></li><li><a href="#console">console</a></li><li><a href="#buffer">Buffer</a></li><li><a href="#require">require()</a></li><li><a href="#require.resolve">require.resolve()</a></li><li><a href="#require.cache">require.cache</a></li><li><a href="#__filename">__filename</a></li><li><a href="#__dirname">__dirname</a></li><li><a href="#module">module</a></li><li><a href="#exports">exports</a></li><li><a href="#setTimeout">setTimeout(cb, ms)</a></li><li><a href="#clearTimeout">clearTimeout(t)</a></li><li><a href="#setInterval">setInterval(cb, ms)</a></li><li><a href="#clearInterval">clearInterval(t)</a></li></ul></li><li><a href="#console">console</a><ul><li><a href="#console.log">console.log()</a></li><li><a href="#console.info">console.info()</a></li><li><a href="#console.warn">console.warn()</a></li><li><a href="#console.error">console.error()</a></li><li><a href="#console.dir">console.dir(obj)</a></li><li><a href="#console.time">console.time(label)</a></li><li><a href="#console.timeEnd">console.timeEnd(label)</a></li><li><a href="#console.trace">console.trace()</a></li><li><a href="#console.assert">console.assert()</a></li></ul></li><li><a href="#timers">Timers</a><ul><li><a href="#setTimeout">setTimeout(callback, delay, [arg], [...])</a></li><li><a href="#clearTimeout">clearTimeout(timeoutId)</a></li><li><a href="#setInterval">setInterval(callback, delay, [arg], [...])</a></li><li><a href="#clearInterval">clearInterval(intervalId)</a></li></ul></li><li><a href="#modules">Modules</a><ul><li><a href="#cycles">Cycles</a></li><li><a href="#core_Modules">Core Modules</a></li><li><a href="#file_Modules">File Modules</a></li><li><a href="#loading_from_node_modules_Folders">Loading from `node_modules` Folders</a></li><li><a href="#folders_as_Modules">Folders as Modules</a></li><li><a href="#caching">Caching</a><ul><li><a href="#module_Caching_Caveats">Module Caching Caveats</a></li></ul></li><li><a href="#module.exports">module.exports</a></li><li><a href="#module.require">module.require</a></li><li><a href="#all_Together...">All Together...</a></li><li><a href="#loading_from_the_global_folders">Loading from the global folders</a></li><li><a href="#accessing_the_main_module">Accessing the main module</a></li></ul></li><li><a href="#addenda_Package_Manager_Tips">Addenda: Package Manager Tips</a></li><li><a href="#addons">Addons</a></li><li><a href="#process">process</a><ul><li><a href="#event_exit_">Event: 'exit'</a></li><li><a href="#event_uncaughtException_">Event: 'uncaughtException'</a></li><li><a href="#signal_Events">Signal Events</a></li><li><a href="#process.stdout">process.stdout</a></li><li><a href="#process.stderr">process.stderr</a></li><li><a href="#process.stdin">process.stdin</a></li><li><a href="#process.argv">process.argv</a></li><li><a href="#process.execPath">process.execPath</a></li><li><a href="#process.chdir">process.chdir(directory)</a></li><li><a href="#process.cwd">process.cwd()</a></li><li><a href="#process.env">process.env</a></li><li><a href="#process.exit">process.exit([code])</a></li><li><a href="#process.getgid">process.getgid()</a></li><li><a href="#process.setgid">process.setgid(id)</a></li><li><a href="#process.getuid">process.getuid()</a></li><li><a href="#process.setuid">process.setuid(id)</a></li><li><a href="#process.version">process.version</a></li><li><a href="#process.versions">process.versions</a></li><li><a href="#process.installPrefix">process.installPrefix</a></li><li><a href="#process.kill">process.kill(pid, [signal])</a></li><li><a href="#process.pid">process.pid</a></li><li><a href="#process.title">process.title</a></li><li><a href="#process.arch">process.arch</a></li><li><a href="#process.platform">process.platform</a></li><li><a href="#process.memoryUsage">process.memoryUsage()</a></li><li><a href="#process.nextTick">process.nextTick(callback)</a></li><li><a href="#process.umask">process.umask([mask])</a></li><li><a href="#process.uptime">process.uptime()</a></li></ul></li><li><a href="#util">util</a><ul><li><a href="#util.format">util.format()</a></li><li><a href="#util.debug">util.debug(string)</a></li><li><a href="#util.log">util.log(string)</a></li><li><a href="#util.inspect">util.inspect(object, [showHidden], [depth], [colors])</a></li><li><a href="#util.isArray">util.isArray(object)</a></li><li><a href="#util.isRegExp">util.isRegExp(object)</a></li><li><a href="#util.isDate">util.isDate(object)</a></li><li><a href="#util.isError">util.isError(object)</a></li><li><a href="#util.pump">util.pump(readableStream, writableStream, [callback])</a></li><li><a href="#util.inherits">util.inherits(constructor, superConstructor)</a></li></ul></li><li><a href="#events">Events</a><ul><li><a href="#events.EventEmitter">events.EventEmitter</a><ul><li><a href="#emitter.addListener">emitter.addListener(event, listener)</a></li><li><a href="#emitter.on">emitter.on(event, listener)</a></li><li><a href="#emitter.once">emitter.once(event, listener)</a></li><li><a href="#emitter.removeListener">emitter.removeListener(event, listener)</a></li><li><a href="#emitter.removeAllListeners">emitter.removeAllListeners([event])</a></li><li><a href="#emitter.setMaxListeners">emitter.setMaxListeners(n)</a></li><li><a href="#emitter.listeners">emitter.listeners(event)</a></li><li><a href="#emitter.emit">emitter.emit(event, [arg1], [arg2], [...])</a></li><li><a href="#event_newListener_">Event: 'newListener'</a></li></ul></li></ul></li><li><a href="#buffers">Buffers</a><ul><li><a href="#new_Buffer">new Buffer(size)</a></li><li><a href="#new_Buffer">new Buffer(array)</a></li><li><a href="#new_Buffer">new Buffer(str, [encoding])</a></li><li><a href="#buffer.write">buffer.write(string, [offset], [length], [encoding])</a></li><li><a href="#buffer.toString">buffer.toString(encoding, [start], [end])</a></li><li><a href="#buffer_index_">buffer[index]</a></li><li><a href="#buffer.isBuffer">Buffer.isBuffer(obj)</a></li><li><a href="#buffer.byteLength">Buffer.byteLength(string, [encoding])</a></li><li><a href="#buffer.length">buffer.length</a></li><li><a href="#buffer.copy">buffer.copy(targetBuffer, [targetStart], [sourceStart], [sourceEnd])</a></li><li><a href="#buffer.slice">buffer.slice([start], [end])</a></li><li><a href="#buffer.readUInt8">buffer.readUInt8(offset, [noAssert])</a></li><li><a href="#buffer.readUInt16LE">buffer.readUInt16LE(offset, [noAssert])</a></li><li><a href="#buffer.readUInt16BE">buffer.readUInt16BE(offset, [noAssert])</a></li><li><a href="#buffer.readUInt32LE">buffer.readUInt32LE(offset, [noAssert])</a></li><li><a href="#buffer.readUInt32BE">buffer.readUInt32BE(offset, [noAssert])</a></li><li><a href="#buffer.readInt8">buffer.readInt8(offset, [noAssert])</a></li><li><a href="#buffer.readInt16LE">buffer.readInt16LE(offset, [noAssert])</a></li><li><a href="#buffer.readInt16BE">buffer.readInt16BE(offset, [noAssert])</a></li><li><a href="#buffer.readInt32LE">buffer.readInt32LE(offset, [noAssert])</a></li><li><a href="#buffer.readInt32BE">buffer.readInt32BE(offset, [noAssert])</a></li><li><a href="#buffer.readFloatLE">buffer.readFloatLE(offset, [noAssert])</a></li><li><a href="#buffer.readFloatBE">buffer.readFloatBE(offset, [noAssert])</a></li><li><a href="#buffer.readDoubleLE">buffer.readDoubleLE(offset, [noAssert])</a></li><li><a href="#buffer.readDoubleBE">buffer.readDoubleBE(offset, [noAssert])</a></li><li><a href="#buffer.writeUInt8">buffer.writeUInt8(value, offset, [noAssert])</a></li><li><a href="#buffer.writeUInt16LE">buffer.writeUInt16LE(value, offset, [noAssert])</a></li><li><a href="#buffer.writeUInt16BE">buffer.writeUInt16BE(value, offset, [noAssert])</a></li><li><a href="#buffer.writeUInt32LE">buffer.writeUInt32LE(value, offset, [noAssert])</a></li><li><a href="#buffer.writeUInt32BE">buffer.writeUInt32BE(value, offset, [noAssert])</a></li><li><a href="#buffer.writeInt8">buffer.writeInt8(value, offset, [noAssert])</a></li><li><a href="#buffer.writeInt16LE">buffer.writeInt16LE(value, offset, [noAssert])</a></li><li><a href="#buffer.writeInt16BE">buffer.writeInt16BE(value, offset, [noAssert])</a></li><li><a href="#buffer.writeInt32LE">buffer.writeInt32LE(value, offset, [noAssert])</a></li><li><a href="#buffer.writeInt32BE">buffer.writeInt32BE(value, offset, [noAssert])</a></li><li><a href="#buffer.writeFloatLE">buffer.writeFloatLE(value, offset, [noAssert])</a></li><li><a href="#buffer.writeFloatBE">buffer.writeFloatBE(value, offset, [noAssert])</a></li><li><a href="#buffer.writeDoubleLE">buffer.writeDoubleLE(value, offset, [noAssert])</a></li><li><a href="#buffer.writeDoubleBE">buffer.writeDoubleBE(value, offset, [noAssert])</a></li><li><a href="#buffer.fill">buffer.fill(value, [offset], [end])</a></li><li><a href="#iNSPECT_MAX_BYTES">INSPECT_MAX_BYTES</a></li></ul></li><li><a href="#streams">Streams</a></li><li><a href="#readable_Stream">Readable Stream</a><ul><li><a href="#event_data_">Event: 'data'</a></li><li><a href="#event_end_">Event: 'end'</a></li><li><a href="#event_error_">Event: 'error'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#stream.readable">stream.readable</a></li><li><a href="#stream.setEncoding">stream.setEncoding(encoding)</a></li><li><a href="#stream.pause">stream.pause()</a></li><li><a href="#stream.resume">stream.resume()</a></li><li><a href="#stream.destroy">stream.destroy()</a></li><li><a href="#stream.destroySoon">stream.destroySoon()</a></li><li><a href="#stream.pipe">stream.pipe(destination, [options])</a></li></ul></li><li><a href="#writable_Stream">Writable Stream</a><ul><li><a href="#event_drain_">Event: 'drain'</a></li><li><a href="#event_error_">Event: 'error'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#event_pipe_">Event: 'pipe'</a></li><li><a href="#stream.writable">stream.writable</a></li><li><a href="#stream.write">stream.write(string, [encoding], [fd])</a></li><li><a href="#stream.write">stream.write(buffer)</a></li><li><a href="#stream.end">stream.end()</a></li><li><a href="#stream.end">stream.end(string, encoding)</a></li><li><a href="#stream.end">stream.end(buffer)</a></li><li><a href="#stream.destroy">stream.destroy()</a></li><li><a href="#stream.destroySoon">stream.destroySoon()</a></li></ul></li><li><a href="#crypto">Crypto</a><ul><li><a href="#crypto.createCredentials">crypto.createCredentials(details)</a></li><li><a href="#crypto.createHash">crypto.createHash(algorithm)</a></li><li><a href="#hash.update">hash.update(data, [input_encoding])</a></li><li><a href="#hash.digest">hash.digest([encoding])</a></li><li><a href="#crypto.createHmac">crypto.createHmac(algorithm, key)</a></li><li><a href="#hmac.update">hmac.update(data)</a></li><li><a href="#hmac.digest">hmac.digest([encoding])</a></li><li><a href="#crypto.createCipher">crypto.createCipher(algorithm, password)</a></li><li><a href="#crypto.createCipheriv">crypto.createCipheriv(algorithm, key, iv)</a></li><li><a href="#cipher.update">cipher.update(data, [input_encoding], [output_encoding])</a></li><li><a href="#cipher.final">cipher.final([output_encoding])</a></li><li><a href="#crypto.createDecipher">crypto.createDecipher(algorithm, password)</a></li><li><a href="#crypto.createDecipheriv">crypto.createDecipheriv(algorithm, key, iv)</a></li><li><a href="#decipher.update">decipher.update(data, [input_encoding], [output_encoding])</a></li><li><a href="#decipher.final">decipher.final([output_encoding])</a></li><li><a href="#crypto.createSign">crypto.createSign(algorithm)</a></li><li><a href="#signer.update">signer.update(data)</a></li><li><a href="#signer.sign">signer.sign(private_key, [output_format])</a></li><li><a href="#crypto.createVerify">crypto.createVerify(algorithm)</a></li><li><a href="#verifier.update">verifier.update(data)</a></li><li><a href="#verifier.verify">verifier.verify(object, signature, [signature_format])</a></li><li><a href="#crypto.createDiffieHellman">crypto.createDiffieHellman(prime_length)</a></li><li><a href="#crypto.createDiffieHellman">crypto.createDiffieHellman(prime, [encoding])</a></li><li><a href="#diffieHellman.generateKeys">diffieHellman.generateKeys([encoding])</a></li><li><a href="#diffieHellman.computeSecret">diffieHellman.computeSecret(other_public_key, [input_encoding], [output_encoding])</a></li><li><a href="#diffieHellman.getPrime">diffieHellman.getPrime([encoding])</a></li><li><a href="#diffieHellman.getGenerator">diffieHellman.getGenerator([encoding])</a></li><li><a href="#diffieHellman.getPublicKey">diffieHellman.getPublicKey([encoding])</a></li><li><a href="#diffieHellman.getPrivateKey">diffieHellman.getPrivateKey([encoding])</a></li><li><a href="#diffieHellman.setPublicKey">diffieHellman.setPublicKey(public_key, [encoding])</a></li><li><a href="#diffieHellman.setPrivateKey">diffieHellman.setPrivateKey(public_key, [encoding])</a></li><li><a href="#pbkdf2">pbkdf2(password, salt, iterations, keylen, callback)</a></li><li><a href="#randomBytes">randomBytes(size, [callback])</a></li></ul></li><li><a href="#tLS_">TLS (SSL)</a><ul><li><a href="#tls.createServer">tls.createServer(options, [secureConnectionListener])</a></li><li><a href="#tls.connect">tls.connect(port, [host], [options], [secureConnectListener])</a></li></ul></li><li><a href="#sTARTTLS">STARTTLS</a></li><li><a href="#nPN_and_SNI">NPN and SNI</a></li><li><a href="#pair_tls.createSecurePair">pair = tls.createSecurePair([credentials], [isServer], [requestCert], [rejectUnauthorized])</a><ul><li><a href="#event_secure_">Event: 'secure'</a></li></ul></li><li><a href="#tls.Server">tls.Server</a><ul><li><a href="#event_secureConnection_">Event: 'secureConnection'</a></li></ul></li><li><a href="#event_clientError_">Event: 'clientError'</a><ul><li><a href="#server.listen">server.listen(port, [host], [callback])</a></li><li><a href="#server.close">server.close()</a></li><li><a href="#server.address">server.address()</a></li><li><a href="#server.addContext">server.addContext(hostname, credentials)</a></li><li><a href="#server.maxConnections">server.maxConnections</a></li><li><a href="#server.connections">server.connections</a></li></ul></li><li><a href="#tls.CleartextStream">tls.CleartextStream</a><ul><li><a href="#event_secureConnect_">Event: 'secureConnect'</a></li><li><a href="#cleartextStream.authorized">cleartextStream.authorized</a></li><li><a href="#cleartextStream.authorizationError">cleartextStream.authorizationError</a></li><li><a href="#cleartextStream.getPeerCertificate">cleartextStream.getPeerCertificate()</a></li><li><a href="#cleartextStream.address">cleartextStream.address()</a></li><li><a href="#cleartextStream.remoteAddress">cleartextStream.remoteAddress</a></li><li><a href="#cleartextStream.remotePort">cleartextStream.remotePort</a></li></ul></li></ul></li><li><a href="#file_System">File System</a><ul><li><a href="#fs.rename">fs.rename(path1, path2, [callback])</a></li><li><a href="#fs.renameSync">fs.renameSync(path1, path2)</a></li><li><a href="#fs.truncate">fs.truncate(fd, len, [callback])</a></li><li><a href="#fs.truncateSync">fs.truncateSync(fd, len)</a></li><li><a href="#fs.chown">fs.chown(path, uid, gid, [callback])</a></li><li><a href="#fs.chownSync">fs.chownSync(path, uid, gid)</a></li><li><a href="#fs.fchown">fs.fchown(fd, uid, gid, [callback])</a></li><li><a href="#fs.fchownSync">fs.fchownSync(fd, uid, gid)</a></li><li><a href="#fs.lchown">fs.lchown(path, uid, gid, [callback])</a></li><li><a href="#fs.lchownSync">fs.lchownSync(path, uid, gid)</a></li><li><a href="#fs.chmod">fs.chmod(path, mode, [callback])</a></li><li><a href="#fs.chmodSync">fs.chmodSync(path, mode)</a></li><li><a href="#fs.fchmod">fs.fchmod(fd, mode, [callback])</a></li><li><a href="#fs.fchmodSync">fs.fchmodSync(fd, mode)</a></li><li><a href="#fs.lchmod">fs.lchmod(path, mode, [callback])</a></li><li><a href="#fs.lchmodSync">fs.lchmodSync(path, mode)</a></li><li><a href="#fs.stat">fs.stat(path, [callback])</a></li><li><a href="#fs.lstat">fs.lstat(path, [callback])</a></li><li><a href="#fs.fstat">fs.fstat(fd, [callback])</a></li><li><a href="#fs.statSync">fs.statSync(path)</a></li><li><a href="#fs.lstatSync">fs.lstatSync(path)</a></li><li><a href="#fs.fstatSync">fs.fstatSync(fd)</a></li><li><a href="#fs.link">fs.link(srcpath, dstpath, [callback])</a></li><li><a href="#fs.linkSync">fs.linkSync(srcpath, dstpath)</a></li><li><a href="#fs.symlink">fs.symlink(linkdata, path, [type], [callback])</a></li><li><a href="#fs.symlinkSync">fs.symlinkSync(linkdata, path, [type])</a></li><li><a href="#fs.readlink">fs.readlink(path, [callback])</a></li><li><a href="#fs.readlinkSync">fs.readlinkSync(path)</a></li><li><a href="#fs.realpath">fs.realpath(path, [callback])</a></li><li><a href="#fs.realpathSync">fs.realpathSync(path)</a></li><li><a href="#fs.unlink">fs.unlink(path, [callback])</a></li><li><a href="#fs.unlinkSync">fs.unlinkSync(path)</a></li><li><a href="#fs.rmdir">fs.rmdir(path, [callback])</a></li><li><a href="#fs.rmdirSync">fs.rmdirSync(path)</a></li><li><a href="#fs.mkdir">fs.mkdir(path, [mode], [callback])</a></li><li><a href="#fs.mkdirSync">fs.mkdirSync(path, [mode])</a></li><li><a href="#fs.readdir">fs.readdir(path, [callback])</a></li><li><a href="#fs.readdirSync">fs.readdirSync(path)</a></li><li><a href="#fs.close">fs.close(fd, [callback])</a></li><li><a href="#fs.closeSync">fs.closeSync(fd)</a></li><li><a href="#fs.open">fs.open(path, flags, [mode], [callback])</a></li><li><a href="#fs.openSync">fs.openSync(path, flags, [mode])</a></li><li><a href="#fs.utimes">fs.utimes(path, atime, mtime, [callback])</a></li><li><a href="#fs.utimesSync">fs.utimesSync(path, atime, mtime)</a></li><li><a href="#fs.futimes">fs.futimes(fd, atime, mtime, [callback])</a></li><li><a href="#fs.futimesSync">fs.futimesSync(fd, atime, mtime)</a></li><li><a href="#fs.fsync">fs.fsync(fd, [callback])</a></li><li><a href="#fs.fsyncSync">fs.fsyncSync(fd)</a></li><li><a href="#fs.write">fs.write(fd, buffer, offset, length, position, [callback])</a></li><li><a href="#fs.writeSync">fs.writeSync(fd, buffer, offset, length, position)</a></li><li><a href="#fs.writeSync">fs.writeSync(fd, str, position, [encoding])</a></li><li><a href="#fs.read">fs.read(fd, buffer, offset, length, position, [callback])</a></li><li><a href="#fs.readSync">fs.readSync(fd, buffer, offset, length, position)</a></li><li><a href="#fs.readSync">fs.readSync(fd, length, position, encoding)</a></li><li><a href="#fs.readFile">fs.readFile(filename, [encoding], [callback])</a></li><li><a href="#fs.readFileSync">fs.readFileSync(filename, [encoding])</a></li><li><a href="#fs.writeFile">fs.writeFile(filename, data, [encoding], [callback])</a></li><li><a href="#fs.writeFileSync">fs.writeFileSync(filename, data, [encoding])</a></li><li><a href="#fs.watchFile">fs.watchFile(filename, [options], listener)</a></li><li><a href="#fs.unwatchFile">fs.unwatchFile(filename)</a></li><li><a href="#fs.watch">fs.watch(filename, [options], listener)</a></li></ul></li><li><a href="#fs.Stats">fs.Stats</a></li><li><a href="#fs.ReadStream">fs.ReadStream</a><ul><li><a href="#event_open_">Event: 'open'</a></li><li><a href="#fs.createReadStream">fs.createReadStream(path, [options])</a></li></ul></li><li><a href="#fs.WriteStream">fs.WriteStream</a><ul><li><a href="#event_open_">Event: 'open'</a></li><li><a href="#file.bytesWritten">file.bytesWritten</a></li><li><a href="#fs.createWriteStream">fs.createWriteStream(path, [options])</a></li></ul></li><li><a href="#fs.FSWatcher">fs.FSWatcher</a><ul><li><a href="#watcher.close">watcher.close()</a></li><li><a href="#event_change_">Event: 'change'</a></li><li><a href="#event_error_">Event: 'error'</a></li></ul></li></ul></li><li><a href="#path">Path</a><ul><li><a href="#path.normalize">path.normalize(p)</a></li><li><a href="#path.join">path.join([path1], [path2], [...])</a></li><li><a href="#path.resolve">path.resolve([from ...], to)</a></li><li><a href="#path.relative">path.relative(from, to)</a></li><li><a href="#path.dirname">path.dirname(p)</a></li><li><a href="#path.basename">path.basename(p, [ext])</a></li><li><a href="#path.extname">path.extname(p)</a></li><li><a href="#path.exists">path.exists(p, [callback])</a></li><li><a href="#path.existsSync">path.existsSync(p)</a></li></ul></li><li><a href="#net">net</a><ul><li><a href="#net.createServer">net.createServer([options], [connectionListener])</a></li><li><a href="#net.connect">net.connect(arguments...)</a></li><li><a href="#net.createConnection">net.createConnection(arguments...)</a></li><li><a href="#net.Server">net.Server</a><ul><li><a href="#server.listen">server.listen(port, [host], [listeningListener])</a></li><li><a href="#server.listen">server.listen(path, [listeningListener])</a></li><li><a href="#server.pause">server.pause(msecs)</a></li><li><a href="#server.close">server.close()</a></li><li><a href="#server.address">server.address()</a></li><li><a href="#server.maxConnections">server.maxConnections</a></li><li><a href="#server.connections">server.connections</a></li><li><a href="#event_listening_">Event: 'listening'</a></li><li><a href="#event_connection_">Event: 'connection'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#event_error_">Event: 'error'</a></li></ul></li><li><a href="#net.Socket">net.Socket</a><ul><li><a href="#new_net.Socket">new net.Socket([options])</a></li><li><a href="#socket.connect">socket.connect(port, [host], [connectListener])</a></li><li><a href="#socket.connect">socket.connect(path, [connectListener])</a></li><li><a href="#socket.bufferSize">socket.bufferSize</a></li><li><a href="#socket.setEncoding">socket.setEncoding([encoding])</a></li><li><a href="#socket.setSecure">socket.setSecure()</a></li><li><a href="#socket.write">socket.write(data, [encoding], [callback])</a></li><li><a href="#socket.write">socket.write(data, [encoding], [callback])</a></li><li><a href="#socket.end">socket.end([data], [encoding])</a></li><li><a href="#socket.destroy">socket.destroy()</a></li><li><a href="#socket.pause">socket.pause()</a></li><li><a href="#socket.resume">socket.resume()</a></li><li><a href="#socket.setTimeout">socket.setTimeout(timeout, [callback])</a></li><li><a href="#socket.setNoDelay">socket.setNoDelay([noDelay])</a></li><li><a href="#socket.setKeepAlive">socket.setKeepAlive([enable], [initialDelay])</a></li><li><a href="#socket.address">socket.address()</a></li><li><a href="#socket.remoteAddress">socket.remoteAddress</a></li><li><a href="#socket.remotePort">socket.remotePort</a></li><li><a href="#socket.bytesRead">socket.bytesRead</a></li><li><a href="#socket.bytesWritten">socket.bytesWritten</a></li><li><a href="#event_connect_">Event: 'connect'</a></li><li><a href="#event_data_">Event: 'data'</a></li><li><a href="#event_end_">Event: 'end'</a></li><li><a href="#event_timeout_">Event: 'timeout'</a></li><li><a href="#event_drain_">Event: 'drain'</a></li><li><a href="#event_error_">Event: 'error'</a></li><li><a href="#event_close_">Event: 'close'</a></li></ul></li><li><a href="#net.isIP">net.isIP</a><ul><li><a href="#net.isIP">net.isIP(input)</a></li><li><a href="#net.isIPv4">net.isIPv4(input)</a></li><li><a href="#net.isIPv6">net.isIPv6(input)</a></li></ul></li></ul></li><li><a href="#uDP_Datagram_Sockets">UDP / Datagram Sockets</a><ul><li><a href="#event_message_">Event: 'message'</a></li><li><a href="#event_listening_">Event: 'listening'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#event_error_">Event: 'error'</a></li><li><a href="#dgram.createSocket">dgram.createSocket(type, [callback])</a></li><li><a href="#dgram.send">dgram.send(buf, offset, length, port, address, [callback])</a></li><li><a href="#dgram.bind">dgram.bind(port, [address])</a></li><li><a href="#dgram.close">dgram.close()</a></li><li><a href="#dgram.address">dgram.address()</a></li><li><a href="#dgram.setBroadcast">dgram.setBroadcast(flag)</a></li><li><a href="#dgram.setTTL">dgram.setTTL(ttl)</a></li><li><a href="#dgram.setMulticastTTL">dgram.setMulticastTTL(ttl)</a></li><li><a href="#dgram.setMulticastLoopback">dgram.setMulticastLoopback(flag)</a></li><li><a href="#dgram.addMembership">dgram.addMembership(multicastAddress, [multicastInterface])</a></li><li><a href="#dgram.dropMembership">dgram.dropMembership(multicastAddress, [multicastInterface])</a></li></ul></li><li><a href="#dNS">DNS</a><ul><li><a href="#dns.lookup">dns.lookup(domain, [family], callback)</a></li><li><a href="#dns.resolve">dns.resolve(domain, [rrtype], callback)</a></li><li><a href="#dns.resolve4">dns.resolve4(domain, callback)</a></li><li><a href="#dns.resolve6">dns.resolve6(domain, callback)</a></li><li><a href="#dns.resolveMx">dns.resolveMx(domain, callback)</a></li><li><a href="#dns.resolveTxt">dns.resolveTxt(domain, callback)</a></li><li><a href="#dns.resolveSrv">dns.resolveSrv(domain, callback)</a></li><li><a href="#dns.reverse">dns.reverse(ip, callback)</a></li><li><a href="#dns.resolveNs">dns.resolveNs(domain, callback)</a></li><li><a href="#dns.resolveCname">dns.resolveCname(domain, callback)</a></li></ul></li><li><a href="#hTTP">HTTP</a></li><li><a href="#http.Server">http.Server</a><ul><li><a href="#event_request_">Event: 'request'</a></li><li><a href="#event_connection_">Event: 'connection'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#event_checkContinue_">Event: 'checkContinue'</a></li><li><a href="#event_upgrade_">Event: 'upgrade'</a></li><li><a href="#event_clientError_">Event: 'clientError'</a></li><li><a href="#http.createServer">http.createServer([requestListener])</a></li><li><a href="#server.listen">server.listen(port, [hostname], [callback])</a></li><li><a href="#server.listen">server.listen(path, [callback])</a></li><li><a href="#server.close">server.close()</a></li></ul></li><li><a href="#http.ServerRequest">http.ServerRequest</a><ul><li><a href="#event_data_">Event: 'data'</a></li><li><a href="#event_end_">Event: 'end'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#request.method">request.method</a></li><li><a href="#request.url">request.url</a></li><li><a href="#request.headers">request.headers</a></li><li><a href="#request.trailers">request.trailers</a></li><li><a href="#request.httpVersion">request.httpVersion</a></li><li><a href="#request.setEncoding">request.setEncoding([encoding])</a></li><li><a href="#request.pause">request.pause()</a></li><li><a href="#request.resume">request.resume()</a></li><li><a href="#request.connection">request.connection</a></li></ul></li><li><a href="#http.ServerResponse">http.ServerResponse</a><ul><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#response.writeContinue">response.writeContinue()</a></li><li><a href="#response.writeHead">response.writeHead(statusCode, [reasonPhrase], [headers])</a></li><li><a href="#response.statusCode">response.statusCode</a></li><li><a href="#response.setHeader">response.setHeader(name, value)</a></li><li><a href="#response.getHeader">response.getHeader(name)</a></li><li><a href="#response.removeHeader">response.removeHeader(name)</a></li><li><a href="#response.write">response.write(chunk, [encoding])</a></li><li><a href="#response.addTrailers">response.addTrailers(headers)</a></li><li><a href="#response.end">response.end([data], [encoding])</a></li></ul></li><li><a href="#http.request">http.request(options, callback)</a></li><li><a href="#http.get">http.get(options, callback)</a></li><li><a href="#http.Agent">http.Agent</a></li><li><a href="#http.globalAgent">http.globalAgent</a><ul><li><a href="#agent.maxSockets">agent.maxSockets</a></li><li><a href="#agent.sockets">agent.sockets</a></li><li><a href="#agent.requests">agent.requests</a></li></ul></li><li><a href="#http.ClientRequest">http.ClientRequest</a><ul><li><a href="#event_response_">Event 'response'</a></li><li><a href="#event_socket_">Event: 'socket'</a></li><li><a href="#event_upgrade_">Event: 'upgrade'</a></li><li><a href="#event_continue_">Event: 'continue'</a></li><li><a href="#request.write">request.write(chunk, [encoding])</a></li><li><a href="#request.end">request.end([data], [encoding])</a></li><li><a href="#request.abort">request.abort()</a></li><li><a href="#request.setTimeout">request.setTimeout(timeout, [callback])</a></li><li><a href="#request.setNoDelay">request.setNoDelay([noDelay])</a></li><li><a href="#request.setSocketKeepAlive">request.setSocketKeepAlive([enable], [initialDelay])</a></li></ul></li><li><a href="#http.ClientResponse">http.ClientResponse</a><ul><li><a href="#event_data_">Event: 'data'</a></li><li><a href="#event_end_">Event: 'end'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#response.statusCode">response.statusCode</a></li><li><a href="#response.httpVersion">response.httpVersion</a></li><li><a href="#response.headers">response.headers</a></li><li><a href="#response.trailers">response.trailers</a></li><li><a href="#response.setEncoding">response.setEncoding([encoding])</a></li><li><a href="#response.pause">response.pause()</a></li><li><a href="#response.resume">response.resume()</a></li></ul></li><li><a href="#hTTPS">HTTPS</a></li><li><a href="#https.Server">https.Server</a></li><li><a href="#https.createServer">https.createServer(options, [requestListener])</a></li><li><a href="#https.request">https.request(options, callback)</a></li><li><a href="#https.get">https.get(options, callback)</a></li><li><a href="#https.Agent">https.Agent</a></li><li><a href="#https.globalAgent">https.globalAgent</a></li><li><a href="#uRL">URL</a><ul><li><a href="#url.parse">url.parse(urlStr, [parseQueryString], [slashesDenoteHost])</a></li><li><a href="#url.format">url.format(urlObj)</a></li><li><a href="#url.resolve">url.resolve(from, to)</a></li></ul></li><li><a href="#query_String">Query String</a><ul><li><a href="#querystring.stringify">querystring.stringify(obj, [sep], [eq])</a></li><li><a href="#querystring.parse">querystring.parse(str, [sep], [eq])</a></li><li><a href="#querystring.escape">querystring.escape</a></li><li><a href="#querystring.unescape">querystring.unescape</a></li></ul></li><li><a href="#readline">Readline</a><ul><li><a href="#rl.createInterface">rl.createInterface(input, output, completer)</a></li><li><a href="#rl.setPrompt">rl.setPrompt(prompt, length)</a></li><li><a href="#rl.prompt">rl.prompt()</a></li><li><a href="#rl.question">rl.question(query, callback)</a></li><li><a href="#rl.close">rl.close()</a></li><li><a href="#rl.pause">rl.pause()</a></li><li><a href="#rl.resume">rl.resume()</a></li><li><a href="#rl.write">rl.write()</a></li><li><a href="#event_line_">Event: 'line'</a></li><li><a href="#event_close_">Event: 'close'</a></li></ul></li><li><a href="#rEPL">REPL</a><ul><li><a href="#repl.start">repl.start([prompt], [stream], [eval], [useGlobal], [ignoreUndefined])</a></li><li><a href="#rEPL_Features">REPL Features</a></li></ul></li><li><a href="#executing_JavaScript">Executing JavaScript</a><ul><li><a href="#vm.runInThisContext">vm.runInThisContext(code, [filename])</a></li><li><a href="#vm.runInNewContext">vm.runInNewContext(code, [sandbox], [filename])</a></li><li><a href="#vm.runInContext">vm.runInContext(code, context, [filename])</a></li><li><a href="#vm.createContext">vm.createContext([initSandbox])</a></li><li><a href="#vm.createScript">vm.createScript(code, [filename])</a></li><li><a href="#script.runInThisContext">script.runInThisContext()</a></li><li><a href="#script.runInNewContext">script.runInNewContext([sandbox])</a></li></ul></li><li><a href="#child_Processes">Child Processes</a><ul><li><a href="#event_exit_">Event:  'exit'</a></li><li><a href="#child.stdin">child.stdin</a></li><li><a href="#child.stdout">child.stdout</a></li><li><a href="#child.stderr">child.stderr</a></li><li><a href="#child.pid">child.pid</a></li><li><a href="#child_process.spawn">child_process.spawn(command, [args], [options])</a></li><li><a href="#child_process.exec">child_process.exec(command, [options], callback)</a></li><li><a href="#child_process.execFile">child_process.execFile(file, args, options, callback)</a></li><li><a href="#child_process.fork">child_process.fork(modulePath, arguments, options)</a></li><li><a href="#child.kill">child.kill([signal])</a></li></ul></li><li><a href="#assert">Assert</a><ul><li><a href="#assert.fail">assert.fail(actual, expected, message, operator)</a></li><li><a href="#assert_assert.ok">assert(value, message), assert.ok(value, [message])</a></li><li><a href="#assert.equal">assert.equal(actual, expected, [message])</a></li><li><a href="#assert.notEqual">assert.notEqual(actual, expected, [message])</a></li><li><a href="#assert.deepEqual">assert.deepEqual(actual, expected, [message])</a></li><li><a href="#assert.notDeepEqual">assert.notDeepEqual(actual, expected, [message])</a></li><li><a href="#assert.strictEqual">assert.strictEqual(actual, expected, [message])</a></li><li><a href="#assert.notStrictEqual">assert.notStrictEqual(actual, expected, [message])</a></li><li><a href="#assert.throws">assert.throws(block, [error], [message])</a></li><li><a href="#assert.doesNotThrow">assert.doesNotThrow(block, [error], [message])</a></li><li><a href="#assert.ifError">assert.ifError(value)</a></li></ul></li><li><a href="#tTY">TTY</a><ul><li><a href="#tty.isatty">tty.isatty(fd)</a></li><li><a href="#tty.setRawMode">tty.setRawMode(mode)</a></li><li><a href="#tty.setWindowSize">tty.setWindowSize(fd, row, col)</a></li><li><a href="#tty.getWindowSize">tty.getWindowSize(fd)</a></li></ul></li><li><a href="#zlib">Zlib</a><ul><li><a href="#examples">Examples</a></li><li><a href="#constants">Constants</a></li><li><a href="#zlib.createGzip">zlib.createGzip([options])</a></li><li><a href="#zlib.createGunzip">zlib.createGunzip([options])</a></li><li><a href="#zlib.createDeflate">zlib.createDeflate([options])</a></li><li><a href="#zlib.createInflate">zlib.createInflate([options])</a></li><li><a href="#zlib.createDeflateRaw">zlib.createDeflateRaw([options])</a></li><li><a href="#zlib.createInflateRaw">zlib.createInflateRaw([options])</a></li><li><a href="#zlib.createUnzip">zlib.createUnzip([options])</a></li><li><a href="#zlib.Gzip">zlib.Gzip</a></li><li><a href="#zlib.Gunzip">zlib.Gunzip</a></li><li><a href="#zlib.Deflate">zlib.Deflate</a></li><li><a href="#zlib.Inflate">zlib.Inflate</a></li><li><a href="#zlib.DeflateRaw">zlib.DeflateRaw</a></li><li><a href="#zlib.InflateRaw">zlib.InflateRaw</a></li><li><a href="#zlib.Unzip">zlib.Unzip</a></li></ul></li><li><a href="#convenience_Methods">Convenience Methods</a><ul><li><a href="#zlib.deflate">zlib.deflate(buf, callback)</a></li><li><a href="#zlib.deflateRaw">zlib.deflateRaw(buf, callback)</a></li><li><a href="#zlib.gzip">zlib.gzip(buf, callback)</a></li><li><a href="#zlib.gunzip">zlib.gunzip(buf, callback)</a></li><li><a href="#zlib.inflate">zlib.inflate(buf, callback)</a></li><li><a href="#zlib.inflateRaw">zlib.inflateRaw(buf, callback)</a></li><li><a href="#zlib.unzip">zlib.unzip(buf, callback)</a></li></ul></li><li><a href="#options">Options</a><ul><li><a href="#memory_Usage_Tuning">Memory Usage Tuning</a></li></ul></li><li><a href="#os_Module">os Module</a><ul><li><a href="#os.hostname">os.hostname()</a></li><li><a href="#os.type">os.type()</a></li><li><a href="#os.platform">os.platform()</a></li><li><a href="#os.arch">os.arch()</a></li><li><a href="#os.release">os.release()</a></li><li><a href="#os.uptime">os.uptime()</a></li><li><a href="#os.loadavg">os.loadavg()</a></li><li><a href="#os.totalmem">os.totalmem()</a></li><li><a href="#os.freemem">os.freemem()</a></li><li><a href="#os.cpus">os.cpus()</a></li><li><a href="#os.networkInterfaces">os.networkInterfaces()</a></li></ul></li><li><a href="#debugger">Debugger</a><ul><li><a href="#watchers">Watchers</a></li><li><a href="#commands_reference">Commands reference</a><ul><li><a href="#stepping">Stepping</a></li><li><a href="#breakpoints">Breakpoints</a></li><li><a href="#info">Info</a></li><li><a href="#execution_control">Execution control</a></li><li><a href="#various">Various</a></li></ul></li><li><a href="#advanced_Usage">Advanced Usage</a></li></ul></li><li><a href="#cluster">Cluster</a><ul><li><a href="#cluster.fork">cluster.fork()</a></li><li><a href="#cluster.isMaster">cluster.isMaster</a></li><li><a href="#cluster.isWorker">cluster.isWorker</a></li><li><a href="#event_death_">Event: 'death'</a></li></ul></li></ul></li><li><a href="#appendixes">Appendixes</a><ul><li><a href="#appendix_1_Third_Party_Modules">Appendix 1 - Third Party Modules</a></li></ul><hr /></div>
 <h2 id="synopsis">Synopsis</h2>
 
 <p>An example of a <a href="http.html">web server</a> written with Node which responds with 'Hello
@@ -657,7 +657,7 @@ the recently built module:</p>
 console.log(addon.hello()); // 'world'</code></pre>
 
 <p>For the moment, that is all the documentation on addons. Please see
-<a href="https://github.com/ry/node_postgres">https://github.com/ry/node_postgres</a> for a real example.</p>
+<a href="https://github.com/pietern/hiredis-node">https://github.com/pietern/hiredis-node</a> for a real example.</p>
 
 <h2 id="process">process</h2>
 
@@ -821,7 +821,7 @@ catch (err) {
 
 <p>An object containing the user environment. See environ(7).</p>
 
-<h3 id="process.exit">process.exit(code=0) <a href="#process.exit">#</a></h3>
+<h3 id="process.exit">process.exit([code]) <a href="#process.exit">#</a></h3>
 
 <p>Ends the process with the specified <code>code</code>.  If omitted, exit uses the
 'success' code <code>0</code>.</p>
@@ -902,7 +902,7 @@ catch (err) {
 
 <pre><code>console.log('Prefix: ' + process.installPrefix);</code></pre>
 
-<h3 id="process.kill">process.kill(pid, signal='SIGTERM') <a href="#process.kill">#</a></h3>
+<h3 id="process.kill">process.kill(pid, [signal]) <a href="#process.kill">#</a></h3>
 
 <p>Send a signal to a process. <code>pid</code> is the process id and <code>signal</code> is the
 string describing the signal to send.  Signal names are strings like
@@ -1036,18 +1036,21 @@ output <code>string</code> immediately to <code>stderr</code>.</p>
 
 <pre><code>require('util').log('Timestamped message.');</code></pre>
 
-<h3 id="util.inspect">util.inspect(object, showHidden=false, depth=2) <a href="#util.inspect">#</a></h3>
+<h3 id="util.inspect">util.inspect(object, [showHidden], [depth], [colors]) <a href="#util.inspect">#</a></h3>
 
 <p>Return a string representation of <code>object</code>, which is useful for debugging.</p>
 
 <p>If <code>showHidden</code> is <code>true</code>, then the object's non-enumerable properties will be
-shown too.</p>
+shown too. Defaults to <code>false</code>.</p>
 
 <p>If <code>depth</code> is provided, it tells <code>inspect</code> how many times to recurse while
 formatting the object. This is useful for inspecting large complicated objects.</p>
 
 <p>The default is to only recurse twice.  To make it recurse indefinitely, pass
 in <code>null</code> for <code>depth</code>.</p>
+
+<p>If <code>colors</code> is <code>true</code>, the output will be styled with ANSI color codes.
+Defaults to <code>false</code>.</p>
 
 <p>Example of inspecting all properties of the <code>util</code> object:</p>
 
@@ -1272,18 +1275,19 @@ will be removed in future versions of Node.</p></li><li><p><code>'hex'</code> - 
 
 <p>Allocates a new buffer using an <code>array</code> of octets.</p>
 
-<h3 id="new_Buffer">new Buffer(str, encoding='utf8') <a href="#new_Buffer">#</a></h3>
+<h3 id="new_Buffer">new Buffer(str, [encoding]) <a href="#new_Buffer">#</a></h3>
 
-<p>Allocates a new buffer containing the given <code>str</code>.</p>
+<p>Allocates a new buffer containing the given <code>str</code>.
+<code>encoding</code> defaults to <code>'utf8'</code>.</p>
 
-<h3 id="buffer.write">buffer.write(string, offset=0, length=buffer.length-offset, encoding='utf8') <a href="#buffer.write">#</a></h3>
+<h3 id="buffer.write">buffer.write(string, [offset], [length], [encoding]) <a href="#buffer.write">#</a></h3>
 
-<p>Writes <code>string</code> to the buffer at <code>offset</code> using the given encoding. <code>length</code> is
+<p>Writes <code>string</code> to the buffer at <code>offset</code> using the given encoding.
+<code>offset</code> defaults to <code>0</code>, <code>encoding</code> defaults to <code>'utf8'</code>. <code>length</code> is
 the number of bytes to write. Returns number of octets written. If <code>buffer</code> did
 not contain enough space to fit the entire string, it will write a partial
-amount of the string. The method will not write partial characters.</p>
-
-<p>Example: write a utf8 string into a buffer, then print it</p>
+amount of the string. <code>length</code> defaults to <code>buffer.length - offset</code>.
+The method will not write partial characters.</p>
 
 <pre><code>buf = new Buffer(256);
 len = buf.write('\u00bd + \u00bc = \u00be', 0);
@@ -1293,10 +1297,11 @@ console.log(len + " bytes: " + buf.toString('utf8', 0, len));</code></pre>
 bytes written) is set in <code>Buffer._charsWritten</code> and will be overwritten the
 next time <code>buf.write()</code> is called.</p>
 
-<h3 id="buffer.toString">buffer.toString(encoding, start=0, end=buffer.length) <a href="#buffer.toString">#</a></h3>
+<h3 id="buffer.toString">buffer.toString(encoding, [start], [end]) <a href="#buffer.toString">#</a></h3>
 
 <p>Decodes and returns a string from buffer data encoded with <code>encoding</code>
-beginning at <code>start</code> and ending at <code>end</code>.</p>
+(defaults to <code>'utf8'</code>) beginning at <code>start</code> (defaults to <code>0</code>) and ending at
+<code>end</code> (defaults to <code>buffer.length</code>).</p>
 
 <p>See <code>buffer.write()</code> example, above.</p>
 
@@ -1322,11 +1327,11 @@ console.log(buf);
 
 <p>Tests if <code>obj</code> is a <code>Buffer</code>.</p>
 
-<h3 id="buffer.byteLength">Buffer.byteLength(string, encoding='utf8') <a href="#buffer.byteLength">#</a></h3>
+<h3 id="buffer.byteLength">Buffer.byteLength(string, [encoding]) <a href="#buffer.byteLength">#</a></h3>
 
-<p>Gives the actual byte length of a string.  This is not the same as
-<code>String.prototype.length</code> since that returns the number of <em>characters</em> in a
-string.</p>
+<p>Gives the actual byte length of a string. <code>encoding</code> defaults to <code>'utf8'</code>.
+This is not the same as <code>String.prototype.length</code> since that returns the
+number of <em>characters</em> in a string.</p>
 
 <p>Example:</p>
 
@@ -1352,9 +1357,11 @@ console.log(buf.length);
 // 1234
 // 1234</code></pre>
 
-<h3 id="buffer.copy">buffer.copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length) <a href="#buffer.copy">#</a></h3>
+<h3 id="buffer.copy">buffer.copy(targetBuffer, [targetStart], [sourceStart], [sourceEnd]) <a href="#buffer.copy">#</a></h3>
 
-<p>Does copy between buffers. The source and target regions can be overlapped.</p>
+<p>Does copy between buffers. The source and target regions can be overlapped.
+<code>targetStart</code> and <code>sourceStart</code> default to <code>0</code>.
+<code>sourceEnd</code> defaults to <code>buffer.length</code>.</p>
 
 <p>Example: build two Buffers, then copy <code>buf1</code> from byte 16 through byte 19
 into <code>buf2</code>, starting at the 8th byte in <code>buf2</code>.</p>
@@ -1372,11 +1379,11 @@ console.log(buf2.toString('ascii', 0, 25));
 
 // !!!!!!!!qrst!!!!!!!!!!!!!</code></pre>
 
-<h3 id="buffer.slice">buffer.slice(start, end=buffer.length) <a href="#buffer.slice">#</a></h3>
+<h3 id="buffer.slice">buffer.slice([start], [end]) <a href="#buffer.slice">#</a></h3>
 
-<p>Returns a new buffer which references the
-same memory as the old, but offset and cropped by the <code>start</code> and <code>end</code>
-indexes.</p>
+<p>Returns a new buffer which references the same memory as the old, but offset
+and cropped by the <code>start</code> (defaults to <code>0</code>) and <code>end</code> (defaults to
+<code>buffer.length</code>) indexes.</p>
 
 <p><strong>Modifying the new buffer slice will modify memory in the original buffer!</strong></p>
 
@@ -1397,12 +1404,12 @@ console.log(buf2.toString('ascii', 0, buf2.length));
 // abc
 // !bc</code></pre>
 
-<h3 id="buffer.readUInt8">buffer.readUInt8(offset, noAssert=false) <a href="#buffer.readUInt8">#</a></h3>
+<h3 id="buffer.readUInt8">buffer.readUInt8(offset, [noAssert]) <a href="#buffer.readUInt8">#</a></h3>
 
 <p>Reads an unsigned 8 bit integer from the buffer at the specified offset.</p>
 
 <p>Set <code>noAssert</code> to true to skip validation of <code>offset</code>. This means that <code>offset</code>
-may be beyond the end of the buffer.</p>
+may be beyond the end of the buffer. Defaults to <code>false</code>.</p>
 
 <p>Example:</p>
 
@@ -1422,15 +1429,15 @@ for (ii = 0; ii &lt; buf.length; ii++) {
 // 0x23
 // 0x42</code></pre>
 
-<h3 id="buffer.readUInt16LE">buffer.readUInt16LE(offset, noAssert=false) <a href="#buffer.readUInt16LE">#</a></h3>
+<h3 id="buffer.readUInt16LE">buffer.readUInt16LE(offset, [noAssert]) <a href="#buffer.readUInt16LE">#</a></h3>
 
-<h3 id="buffer.readUInt16BE">buffer.readUInt16BE(offset, noAssert=false) <a href="#buffer.readUInt16BE">#</a></h3>
+<h3 id="buffer.readUInt16BE">buffer.readUInt16BE(offset, [noAssert]) <a href="#buffer.readUInt16BE">#</a></h3>
 
 <p>Reads an unsigned 16 bit integer from the buffer at the specified offset with
 specified endian format.</p>
 
 <p>Set <code>noAssert</code> to true to skip validation of <code>offset</code>. This means that <code>offset</code>
-may be beyond the end of the buffer.</p>
+may be beyond the end of the buffer. Defaults to <code>false</code>.</p>
 
 <p>Example:</p>
 
@@ -1455,15 +1462,15 @@ console.log(buf.readUInt16LE(2));
 // 0x2342
 // 0x4223</code></pre>
 
-<h3 id="buffer.readUInt32LE">buffer.readUInt32LE(offset, noAssert=false) <a href="#buffer.readUInt32LE">#</a></h3>
+<h3 id="buffer.readUInt32LE">buffer.readUInt32LE(offset, [noAssert]) <a href="#buffer.readUInt32LE">#</a></h3>
 
-<h3 id="buffer.readUInt32BE">buffer.readUInt32BE(offset, noAssert=false) <a href="#buffer.readUInt32BE">#</a></h3>
+<h3 id="buffer.readUInt32BE">buffer.readUInt32BE(offset, [noAssert]) <a href="#buffer.readUInt32BE">#</a></h3>
 
 <p>Reads an unsigned 32 bit integer from the buffer at the specified offset with
 specified endian format.</p>
 
 <p>Set <code>noAssert</code> to true to skip validation of <code>offset</code>. This means that <code>offset</code>
-may be beyond the end of the buffer.</p>
+may be beyond the end of the buffer. Defaults to <code>false</code>.</p>
 
 <p>Example:</p>
 
@@ -1480,51 +1487,51 @@ console.log(buf.readUInt32LE(0));
 // 0x03042342
 // 0x42230403</code></pre>
 
-<h3 id="buffer.readInt8">buffer.readInt8(offset, noAssert=false) <a href="#buffer.readInt8">#</a></h3>
+<h3 id="buffer.readInt8">buffer.readInt8(offset, [noAssert]) <a href="#buffer.readInt8">#</a></h3>
 
 <p>Reads a signed 8 bit integer from the buffer at the specified offset.</p>
 
 <p>Set <code>noAssert</code> to true to skip validation of <code>offset</code>. This means that <code>offset</code>
-may be beyond the end of the buffer.</p>
+may be beyond the end of the buffer. Defaults to <code>false</code>.</p>
 
 <p>Works as <code>buffer.readUInt8</code>, except buffer contents are treated as two's
 complement signed values.</p>
 
-<h3 id="buffer.readInt16LE">buffer.readInt16LE(offset, noAssert=false) <a href="#buffer.readInt16LE">#</a></h3>
+<h3 id="buffer.readInt16LE">buffer.readInt16LE(offset, [noAssert]) <a href="#buffer.readInt16LE">#</a></h3>
 
-<h3 id="buffer.readInt16BE">buffer.readInt16BE(offset, noAssert=false) <a href="#buffer.readInt16BE">#</a></h3>
+<h3 id="buffer.readInt16BE">buffer.readInt16BE(offset, [noAssert]) <a href="#buffer.readInt16BE">#</a></h3>
 
 <p>Reads a signed 16 bit integer from the buffer at the specified offset with
 specified endian format.</p>
 
 <p>Set <code>noAssert</code> to true to skip validation of <code>offset</code>. This means that <code>offset</code>
-may be beyond the end of the buffer.</p>
+may be beyond the end of the buffer. Defaults to <code>false</code>.</p>
 
 <p>Works as <code>buffer.readUInt16*</code>, except buffer contents are treated as two's
 complement signed values.</p>
 
-<h3 id="buffer.readInt32LE">buffer.readInt32LE(offset, noAssert=false) <a href="#buffer.readInt32LE">#</a></h3>
+<h3 id="buffer.readInt32LE">buffer.readInt32LE(offset, [noAssert]) <a href="#buffer.readInt32LE">#</a></h3>
 
-<h3 id="buffer.readInt32BE">buffer.readInt32BE(offset, noAssert=false) <a href="#buffer.readInt32BE">#</a></h3>
+<h3 id="buffer.readInt32BE">buffer.readInt32BE(offset, [noAssert]) <a href="#buffer.readInt32BE">#</a></h3>
 
 <p>Reads a signed 32 bit integer from the buffer at the specified offset with
 specified endian format.</p>
 
 <p>Set <code>noAssert</code> to true to skip validation of <code>offset</code>. This means that <code>offset</code>
-may be beyond the end of the buffer.</p>
+may be beyond the end of the buffer. Defaults to <code>false</code>.</p>
 
 <p>Works as <code>buffer.readUInt32*</code>, except buffer contents are treated as two's
 complement signed values.</p>
 
-<h3 id="buffer.readFloatLE">buffer.readFloatLE(offset, noAssert=false) <a href="#buffer.readFloatLE">#</a></h3>
+<h3 id="buffer.readFloatLE">buffer.readFloatLE(offset, [noAssert]) <a href="#buffer.readFloatLE">#</a></h3>
 
-<h3 id="buffer.readFloatBE">buffer.readFloatBE(offset, noAssert=false) <a href="#buffer.readFloatBE">#</a></h3>
+<h3 id="buffer.readFloatBE">buffer.readFloatBE(offset, [noAssert]) <a href="#buffer.readFloatBE">#</a></h3>
 
 <p>Reads a 32 bit float from the buffer at the specified offset with specified
 endian format.</p>
 
 <p>Set <code>noAssert</code> to true to skip validation of <code>offset</code>. This means that <code>offset</code>
-may be beyond the end of the buffer.</p>
+may be beyond the end of the buffer. Defaults to <code>false</code>.</p>
 
 <p>Example:</p>
 
@@ -1539,15 +1546,15 @@ console.log(buf.readFloatLE(0));
 
 // 0x01</code></pre>
 
-<h3 id="buffer.readDoubleLE">buffer.readDoubleLE(offset, noAssert=false) <a href="#buffer.readDoubleLE">#</a></h3>
+<h3 id="buffer.readDoubleLE">buffer.readDoubleLE(offset, [noAssert]) <a href="#buffer.readDoubleLE">#</a></h3>
 
-<h3 id="buffer.readDoubleBE">buffer.readDoubleBE(offset, noAssert=false) <a href="#buffer.readDoubleBE">#</a></h3>
+<h3 id="buffer.readDoubleBE">buffer.readDoubleBE(offset, [noAssert]) <a href="#buffer.readDoubleBE">#</a></h3>
 
 <p>Reads a 64 bit double from the buffer at the specified offset with specified
 endian format.</p>
 
 <p>Set <code>noAssert</code> to true to skip validation of <code>offset</code>. This means that <code>offset</code>
-may be beyond the end of the buffer.</p>
+may be beyond the end of the buffer. Defaults to <code>false</code>.</p>
 
 <p>Example:</p>
 
@@ -1566,7 +1573,7 @@ console.log(buf.readDoubleLE(0));
 
 // 0.3333333333333333</code></pre>
 
-<h3 id="buffer.writeUInt8">buffer.writeUInt8(value, offset, noAssert=false) <a href="#buffer.writeUInt8">#</a></h3>
+<h3 id="buffer.writeUInt8">buffer.writeUInt8(value, offset, [noAssert]) <a href="#buffer.writeUInt8">#</a></h3>
 
 <p>Writes <code>value</code> to the buffer at the specified offset. Note, <code>value</code> must be a
 valid unsigned 8 bit integer.</p>
@@ -1574,7 +1581,7 @@ valid unsigned 8 bit integer.</p>
 <p>Set <code>noAssert</code> to true to skip validation of <code>value</code> and <code>offset</code>. This means
 that <code>value</code> may be too large for the specific function and <code>offset</code> may be
 beyond the end of the buffer leading to the values being silently dropped. This
-should not be used unless you are certain of correctness.</p>
+should not be used unless you are certain of correctness. Defaults to <code>false</code>.</p>
 
 <p>Example:</p>
 
@@ -1588,9 +1595,9 @@ console.log(buf);
 
 // &lt;Buffer 03 04 23 42&gt;</code></pre>
 
-<h3 id="buffer.writeUInt16LE">buffer.writeUInt16LE(value, offset, noAssert=false) <a href="#buffer.writeUInt16LE">#</a></h3>
+<h3 id="buffer.writeUInt16LE">buffer.writeUInt16LE(value, offset, [noAssert]) <a href="#buffer.writeUInt16LE">#</a></h3>
 
-<h3 id="buffer.writeUInt16BE">buffer.writeUInt16BE(value, offset, noAssert=false) <a href="#buffer.writeUInt16BE">#</a></h3>
+<h3 id="buffer.writeUInt16BE">buffer.writeUInt16BE(value, offset, [noAssert]) <a href="#buffer.writeUInt16BE">#</a></h3>
 
 <p>Writes <code>value</code> to the buffer at the specified offset with specified endian
 format. Note, <code>value</code> must be a valid unsigned 16 bit integer.</p>
@@ -1598,7 +1605,7 @@ format. Note, <code>value</code> must be a valid unsigned 16 bit integer.</p>
 <p>Set <code>noAssert</code> to true to skip validation of <code>value</code> and <code>offset</code>. This means
 that <code>value</code> may be too large for the specific function and <code>offset</code> may be
 beyond the end of the buffer leading to the values being silently dropped. This
-should not be used unless you are certain of correctness.</p>
+should not be used unless you are certain of correctness. Defaults to <code>false</code>.</p>
 
 <p>Example:</p>
 
@@ -1616,9 +1623,9 @@ console.log(buf);
 // &lt;Buffer de ad be ef&gt;
 // &lt;Buffer ad de ef be&gt;</code></pre>
 
-<h3 id="buffer.writeUInt32LE">buffer.writeUInt32LE(value, offset, noAssert=false) <a href="#buffer.writeUInt32LE">#</a></h3>
+<h3 id="buffer.writeUInt32LE">buffer.writeUInt32LE(value, offset, [noAssert]) <a href="#buffer.writeUInt32LE">#</a></h3>
 
-<h3 id="buffer.writeUInt32BE">buffer.writeUInt32BE(value, offset, noAssert=false) <a href="#buffer.writeUInt32BE">#</a></h3>
+<h3 id="buffer.writeUInt32BE">buffer.writeUInt32BE(value, offset, [noAssert]) <a href="#buffer.writeUInt32BE">#</a></h3>
 
 <p>Writes <code>value</code> to the buffer at the specified offset with specified endian
 format. Note, <code>value</code> must be a valid unsigned 32 bit integer.</p>
@@ -1626,7 +1633,7 @@ format. Note, <code>value</code> must be a valid unsigned 32 bit integer.</p>
 <p>Set <code>noAssert</code> to true to skip validation of <code>value</code> and <code>offset</code>. This means
 that <code>value</code> may be too large for the specific function and <code>offset</code> may be
 beyond the end of the buffer leading to the values being silently dropped. This
-should not be used unless you are certain of correctness.</p>
+should not be used unless you are certain of correctness. Defaults to <code>false</code>.</p>
 
 <p>Example:</p>
 
@@ -1642,7 +1649,7 @@ console.log(buf);
 // &lt;Buffer fe ed fa ce&gt;
 // &lt;Buffer ce fa ed fe&gt;</code></pre>
 
-<h3 id="buffer.writeInt8">buffer.writeInt8(value, offset, noAssert=false) <a href="#buffer.writeInt8">#</a></h3>
+<h3 id="buffer.writeInt8">buffer.writeInt8(value, offset, [noAssert]) <a href="#buffer.writeInt8">#</a></h3>
 
 <p>Writes <code>value</code> to the buffer at the specified offset. Note, <code>value</code> must be a
 valid signed 8 bit integer.</p>
@@ -1650,14 +1657,14 @@ valid signed 8 bit integer.</p>
 <p>Set <code>noAssert</code> to true to skip validation of <code>value</code> and <code>offset</code>. This means
 that <code>value</code> may be too large for the specific function and <code>offset</code> may be
 beyond the end of the buffer leading to the values being silently dropped. This
-should not be used unless you are certain of correctness.</p>
+should not be used unless you are certain of correctness. Defaults to <code>false</code>.</p>
 
 <p>Works as <code>buffer.writeUInt8</code>, except value is written out as a two's complement
 signed integer into <code>buffer</code>.</p>
 
-<h3 id="buffer.writeInt16LE">buffer.writeInt16LE(value, offset, noAssert=false) <a href="#buffer.writeInt16LE">#</a></h3>
+<h3 id="buffer.writeInt16LE">buffer.writeInt16LE(value, offset, [noAssert]) <a href="#buffer.writeInt16LE">#</a></h3>
 
-<h3 id="buffer.writeInt16BE">buffer.writeInt16BE(value, offset, noAssert=false) <a href="#buffer.writeInt16BE">#</a></h3>
+<h3 id="buffer.writeInt16BE">buffer.writeInt16BE(value, offset, [noAssert]) <a href="#buffer.writeInt16BE">#</a></h3>
 
 <p>Writes <code>value</code> to the buffer at the specified offset with specified endian
 format. Note, <code>value</code> must be a valid signed 16 bit integer.</p>
@@ -1665,14 +1672,14 @@ format. Note, <code>value</code> must be a valid signed 16 bit integer.</p>
 <p>Set <code>noAssert</code> to true to skip validation of <code>value</code> and <code>offset</code>. This means
 that <code>value</code> may be too large for the specific function and <code>offset</code> may be
 beyond the end of the buffer leading to the values being silently dropped. This
-should not be used unless you are certain of correctness.</p>
+should not be used unless you are certain of correctness. Defaults to <code>false</code>.</p>
 
 <p>Works as <code>buffer.writeUInt16*</code>, except value is written out as a two's
 complement signed integer into <code>buffer</code>.</p>
 
-<h3 id="buffer.writeInt32LE">buffer.writeInt32LE(value, offset, noAssert=false) <a href="#buffer.writeInt32LE">#</a></h3>
+<h3 id="buffer.writeInt32LE">buffer.writeInt32LE(value, offset, [noAssert]) <a href="#buffer.writeInt32LE">#</a></h3>
 
-<h3 id="buffer.writeInt32BE">buffer.writeInt32BE(value, offset, noAssert=false) <a href="#buffer.writeInt32BE">#</a></h3>
+<h3 id="buffer.writeInt32BE">buffer.writeInt32BE(value, offset, [noAssert]) <a href="#buffer.writeInt32BE">#</a></h3>
 
 <p>Writes <code>value</code> to the buffer at the specified offset with specified endian
 format. Note, <code>value</code> must be a valid signed 32 bit integer.</p>
@@ -1680,14 +1687,14 @@ format. Note, <code>value</code> must be a valid signed 32 bit integer.</p>
 <p>Set <code>noAssert</code> to true to skip validation of <code>value</code> and <code>offset</code>. This means
 that <code>value</code> may be too large for the specific function and <code>offset</code> may be
 beyond the end of the buffer leading to the values being silently dropped. This
-should not be used unless you are certain of correctness.</p>
+should not be used unless you are certain of correctness. Defaults to <code>false</code>.</p>
 
 <p>Works as <code>buffer.writeUInt32*</code>, except value is written out as a two's
 complement signed integer into <code>buffer</code>.</p>
 
-<h3 id="buffer.writeFloatLE">buffer.writeFloatLE(value, offset, noAssert=false) <a href="#buffer.writeFloatLE">#</a></h3>
+<h3 id="buffer.writeFloatLE">buffer.writeFloatLE(value, offset, [noAssert]) <a href="#buffer.writeFloatLE">#</a></h3>
 
-<h3 id="buffer.writeFloatBE">buffer.writeFloatBE(value, offset, noAssert=false) <a href="#buffer.writeFloatBE">#</a></h3>
+<h3 id="buffer.writeFloatBE">buffer.writeFloatBE(value, offset, [noAssert]) <a href="#buffer.writeFloatBE">#</a></h3>
 
 <p>Writes <code>value</code> to the buffer at the specified offset with specified endian
 format. Note, <code>value</code> must be a valid 32 bit float.</p>
@@ -1695,7 +1702,7 @@ format. Note, <code>value</code> must be a valid 32 bit float.</p>
 <p>Set <code>noAssert</code> to true to skip validation of <code>value</code> and <code>offset</code>. This means
 that <code>value</code> may be too large for the specific function and <code>offset</code> may be
 beyond the end of the buffer leading to the values being silently dropped. This
-should not be used unless you are certain of correctness.</p>
+should not be used unless you are certain of correctness. Defaults to <code>false</code>.</p>
 
 <p>Example:</p>
 
@@ -1711,9 +1718,9 @@ console.log(buf);
 // &lt;Buffer 4f 4a fe bb&gt;
 // &lt;Buffer bb fe 4a 4f&gt;</code></pre>
 
-<h3 id="buffer.writeDoubleLE">buffer.writeDoubleLE(value, offset, noAssert=false) <a href="#buffer.writeDoubleLE">#</a></h3>
+<h3 id="buffer.writeDoubleLE">buffer.writeDoubleLE(value, offset, [noAssert]) <a href="#buffer.writeDoubleLE">#</a></h3>
 
-<h3 id="buffer.writeDoubleBE">buffer.writeDoubleBE(value, offset, noAssert=false) <a href="#buffer.writeDoubleBE">#</a></h3>
+<h3 id="buffer.writeDoubleBE">buffer.writeDoubleBE(value, offset, [noAssert]) <a href="#buffer.writeDoubleBE">#</a></h3>
 
 <p>Writes <code>value</code> to the buffer at the specified offset with specified endian
 format. Note, <code>value</code> must be a valid 64 bit double.</p>
@@ -1721,7 +1728,7 @@ format. Note, <code>value</code> must be a valid 64 bit double.</p>
 <p>Set <code>noAssert</code> to true to skip validation of <code>value</code> and <code>offset</code>. This means
 that <code>value</code> may be too large for the specific function and <code>offset</code> may be
 beyond the end of the buffer leading to the values being silently dropped. This
-should not be used unless you are certain of correctness.</p>
+should not be used unless you are certain of correctness. Defaults to <code>false</code>.</p>
 
 <p>Example:</p>
 
@@ -1737,10 +1744,11 @@ console.log(buf);
 // &lt;Buffer 43 eb d5 b7 dd f9 5f d7&gt;
 // &lt;Buffer d7 5f f9 dd b7 d5 eb 43&gt;</code></pre>
 
-<h3 id="buffer.fill">buffer.fill(value, offset=0, end=buffer.length) <a href="#buffer.fill">#</a></h3>
+<h3 id="buffer.fill">buffer.fill(value, [offset], [end]) <a href="#buffer.fill">#</a></h3>
 
-<p>Fills the buffer with the specified value. If the offset and end are not
-given it will fill the entire buffer.</p>
+<p>Fills the buffer with the specified value. If the <code>offset</code> (defaults to <code>0</code>)
+and <code>end</code> (defaults to <code>buffer.length</code>) are not given it will fill the entire
+buffer.</p>
 
 <pre><code>var b = new Buffer(50);
 b.fill("h");</code></pre>
@@ -1878,7 +1886,7 @@ indicate that it is safe to write again.</p>
 <p>A boolean that is <code>true</code> by default, but turns <code>false</code> after an <code>'error'</code>
 occurred or <code>end()</code> / <code>destroy()</code> was called.</p>
 
-<h3 id="stream.write">stream.write(string, encoding='utf8', [fd]) <a href="#stream.write">#</a></h3>
+<h3 id="stream.write">stream.write(string, [encoding], [fd]) <a href="#stream.write">#</a></h3>
 
 <p>Writes <code>string</code> with the given <code>encoding</code> to the stream.  Returns <code>true</code> if
 the string has been flushed to the kernel buffer.  Returns <code>false</code> to
@@ -1967,15 +1975,18 @@ s.on('end', function() {
   console.log(d + '  ' + filename);
 });</code></pre>
 
-<h3 id="hash.update">hash.update(data) <a href="#hash.update">#</a></h3>
+<h3 id="hash.update">hash.update(data, [input_encoding]) <a href="#hash.update">#</a></h3>
 
-<p>Updates the hash content with the given <code>data</code>.
+<p>Updates the hash content with the given <code>data</code>, the encoding of which is given
+in <code>input_encoding</code> and can be <code>'utf8'</code>, <code>'ascii'</code> or <code>'binary'</code>.
+Defaults to <code>'binary'</code>.
 This can be called many times with new data as it is streamed.</p>
 
-<h3 id="hash.digest">hash.digest(encoding='binary') <a href="#hash.digest">#</a></h3>
+<h3 id="hash.digest">hash.digest([encoding]) <a href="#hash.digest">#</a></h3>
 
 <p>Calculates the digest of all of the passed data to be hashed.
-The <code>encoding</code> can be <code>'hex'</code>, <code>'binary'</code> or <code>'base64'</code>.</p>
+The <code>encoding</code> can be <code>'hex'</code>, <code>'binary'</code> or <code>'base64'</code>.
+Defaults to <code>'binary'</code>.</p>
 
 <p>Note: <code>hash</code> object can not be used after <code>digest()</code> method been called.</p>
 
@@ -1991,10 +2002,11 @@ The <code>encoding</code> can be <code>'hex'</code>, <code>'binary'</code> or <c
 <p>Update the hmac content with the given <code>data</code>.
 This can be called many times with new data as it is streamed.</p>
 
-<h3 id="hmac.digest">hmac.digest(encoding='binary') <a href="#hmac.digest">#</a></h3>
+<h3 id="hmac.digest">hmac.digest([encoding]) <a href="#hmac.digest">#</a></h3>
 
 <p>Calculates the digest of all of the passed data to the hmac.
-The <code>encoding</code> can be <code>'hex'</code>, <code>'binary'</code> or <code>'base64'</code>.</p>
+The <code>encoding</code> can be <code>'hex'</code>, <code>'binary'</code> or <code>'base64'</code>.
+Defaults to <code>'binary'</code>.</p>
 
 <p>Note: <code>hmac</code> object can not be used after <code>digest()</code> method been called.</p>
 
@@ -2016,17 +2028,21 @@ string (See the <a href="buffers.html">Buffers</a> for more information).</p>
 algorithm. <code>iv</code> is an Initialization vector. <code>key</code> and <code>iv</code> must be <code>'binary'</code>
 encoded string (See the <a href="buffers.html">Buffers</a> for more information).</p>
 
-<h3 id="cipher.update">cipher.update(data, input_encoding='binary', output_encoding='binary') <a href="#cipher.update">#</a></h3>
+<h3 id="cipher.update">cipher.update(data, [input_encoding], [output_encoding]) <a href="#cipher.update">#</a></h3>
 
-<p>Updates the cipher with <code>data</code>, the encoding of which is given in <code>input_encoding</code>
-and can be <code>'utf8'</code>, <code>'ascii'</code> or <code>'binary'</code>. The <code>output_encoding</code> specifies
-the output format of the enciphered data, and can be <code>'binary'</code>, <code>'base64'</code> or <code>'hex'</code>.</p>
+<p>Updates the cipher with <code>data</code>, the encoding of which is given in
+<code>input_encoding</code> and can be <code>'utf8'</code>, <code>'ascii'</code> or <code>'binary'</code>.
+Defaults to <code>'binary'</code>.</p>
+
+<p>The <code>output_encoding</code> specifies the output format of the enciphered data,
+and can be <code>'binary'</code>, <code>'base64'</code> or <code>'hex'</code>. Defaults to <code>'binary'</code>.</p>
 
 <p>Returns the enciphered contents, and can be called many times with new data as it is streamed.</p>
 
-<h3 id="cipher.final">cipher.final(output_encoding='binary') <a href="#cipher.final">#</a></h3>
+<h3 id="cipher.final">cipher.final([output_encoding]) <a href="#cipher.final">#</a></h3>
 
-<p>Returns any remaining enciphered contents, with <code>output_encoding</code> being one of: <code>'binary'</code>, <code>'base64'</code> or <code>'hex'</code>.</p>
+<p>Returns any remaining enciphered contents, with <code>output_encoding</code> being one of:
+<code>'binary'</code>, <code>'base64'</code> or <code>'hex'</code>. Defaults to <code>'binary'</code>.</p>
 
 <p>Note: <code>cipher</code> object can not be used after <code>final()</code> method been called.</p>
 
@@ -2040,15 +2056,19 @@ This is the mirror of the <a href="#crypto.createCipher">createCipher()</a> abov
 <p>Creates and returns a decipher object, with the given algorithm, key and iv.
 This is the mirror of the <a href="#crypto.createCipheriv">createCipheriv()</a> above.</p>
 
-<h3 id="decipher.update">decipher.update(data, input_encoding='binary', output_encoding='binary') <a href="#decipher.update">#</a></h3>
+<h3 id="decipher.update">decipher.update(data, [input_encoding], [output_encoding]) <a href="#decipher.update">#</a></h3>
 
-<p>Updates the decipher with <code>data</code>, which is encoded in <code>'binary'</code>, <code>'base64'</code> or <code>'hex'</code>.
-The <code>output_decoding</code> specifies in what format to return the deciphered plaintext: <code>'binary'</code>, <code>'ascii'</code> or <code>'utf8'</code>.</p>
+<p>Updates the decipher with <code>data</code>, which is encoded in <code>'binary'</code>, <code>'base64'</code>
+or <code>'hex'</code>. Defaults to <code>'binary'</code>.</p>
 
-<h3 id="decipher.final">decipher.final(output_encoding='binary') <a href="#decipher.final">#</a></h3>
+<p>The <code>output_decoding</code> specifies in what format to return the deciphered
+plaintext: <code>'binary'</code>, <code>'ascii'</code> or <code>'utf8'</code>. Defaults to <code>'binary'</code>.</p>
+
+<h3 id="decipher.final">decipher.final([output_encoding]) <a href="#decipher.final">#</a></h3>
 
 <p>Returns any remaining plaintext which is deciphered,
-with <code>output_encoding</code> being one of: <code>'binary'</code>, <code>'ascii'</code> or <code>'utf8'</code>.</p>
+with <code>output_encoding</code> being one of: <code>'binary'</code>, <code>'ascii'</code> or <code>'utf8'</code>.
+Defaults to <code>'binary'</code>.</p>
 
 <p>Note: <code>decipher</code> object can not be used after <code>final()</code> method been called.</p>
 
@@ -2063,12 +2083,13 @@ the available signing algorithms. Examples are <code>'RSA-SHA256'</code>.</p>
 <p>Updates the signer object with data.
 This can be called many times with new data as it is streamed.</p>
 
-<h3 id="signer.sign">signer.sign(private_key, output_format='binary') <a href="#signer.sign">#</a></h3>
+<h3 id="signer.sign">signer.sign(private_key, [output_format]) <a href="#signer.sign">#</a></h3>
 
 <p>Calculates the signature on all the updated data passed through the signer.
 <code>private_key</code> is a string containing the PEM encoded private key for signing.</p>
 
-<p>Returns the signature in <code>output_format</code> which can be <code>'binary'</code>, <code>'hex'</code> or <code>'base64'</code>.</p>
+<p>Returns the signature in <code>output_format</code> which can be <code>'binary'</code>, <code>'hex'</code> or
+<code>'base64'</code>. Defaults to <code>'binary'</code>.</p>
 
 <p>Note: <code>signer</code> object can not be used after <code>sign()</code> method been called.</p>
 
@@ -2082,13 +2103,13 @@ This is the mirror of the signing object above.</p>
 <p>Updates the verifier object with data.
 This can be called many times with new data as it is streamed.</p>
 
-<h3 id="verifier.verify">verifier.verify(object, signature, signature_format='binary') <a href="#verifier.verify">#</a></h3>
+<h3 id="verifier.verify">verifier.verify(object, signature, [signature_format]) <a href="#verifier.verify">#</a></h3>
 
 <p>Verifies the signed data by using the <code>object</code> and <code>signature</code>. <code>object</code> is  a
 string containing a PEM encoded object, which can be one of RSA public key,
 DSA public key, or X.509 certificate. <code>signature</code> is the previously calculated
 signature for the data, in the <code>signature_format</code> which can be <code>'binary'</code>,
-<code>'hex'</code> or <code>'base64'</code>.</p>
+<code>'hex'</code> or <code>'base64'</code>. Defaults to <code>'binary'</code>.</p>
 
 <p>Returns true or false depending on the validity of the signature for the data and public key.</p>
 
@@ -2099,54 +2120,57 @@ signature for the data, in the <code>signature_format</code> which can be <code>
 <p>Creates a Diffie-Hellman key exchange object and generates a prime of the
 given bit length. The generator used is <code>2</code>.</p>
 
-<h3 id="crypto.createDiffieHellman">crypto.createDiffieHellman(prime, encoding='binary') <a href="#crypto.createDiffieHellman">#</a></h3>
+<h3 id="crypto.createDiffieHellman">crypto.createDiffieHellman(prime, [encoding]) <a href="#crypto.createDiffieHellman">#</a></h3>
 
 <p>Creates a Diffie-Hellman key exchange object using the supplied prime. The
-generator used is <code>2</code>. Encoding can be <code>'binary'</code>, <code>'hex'</code>, or <code>'base64'</code>.</p>
+generator used is <code>2</code>. Encoding can be <code>'binary'</code>, <code>'hex'</code>, or <code>'base64'</code>.
+Defaults to <code>'binary'</code>.</p>
 
-<h3 id="diffieHellman.generateKeys">diffieHellman.generateKeys(encoding='binary') <a href="#diffieHellman.generateKeys">#</a></h3>
+<h3 id="diffieHellman.generateKeys">diffieHellman.generateKeys([encoding]) <a href="#diffieHellman.generateKeys">#</a></h3>
 
 <p>Generates private and public Diffie-Hellman key values, and returns the
 public key in the specified encoding. This key should be transferred to the
-other party. Encoding can be <code>'binary'</code>, <code>'hex'</code>, or <code>'base64'</code>.</p>
+other party. Encoding can be <code>'binary'</code>, <code>'hex'</code>, or <code>'base64'</code>.
+Defaults to <code>'binary'</code>.</p>
 
-<h3 id="diffieHellman.computeSecret">diffieHellman.computeSecret(other_public_key, input_encoding='binary', output_encoding=input_encoding) <a href="#diffieHellman.computeSecret">#</a></h3>
+<h3 id="diffieHellman.computeSecret">diffieHellman.computeSecret(other_public_key, [input_encoding], [output_encoding]) <a href="#diffieHellman.computeSecret">#</a></h3>
 
 <p>Computes the shared secret using <code>other_public_key</code> as the other party's
 public key and returns the computed shared secret. Supplied key is
 interpreted using specified <code>input_encoding</code>, and secret is encoded using
 specified <code>output_encoding</code>. Encodings can be <code>'binary'</code>, <code>'hex'</code>, or
-<code>'base64'</code>. If no output encoding is given, the input encoding is used as
-output encoding.</p>
+<code>'base64'</code>. The input encoding defaults to <code>'binary'</code>.
+If no output encoding is given, the input encoding is used as output encoding.</p>
 
-<h3 id="diffieHellman.getPrime">diffieHellman.getPrime(encoding='binary') <a href="#diffieHellman.getPrime">#</a></h3>
-
-<p>Returns the Diffie-Hellman prime in the specified encoding, which can be
-<code>'binary'</code>, <code>'hex'</code>, or <code>'base64'</code>.</p>
-
-<h3 id="diffieHellman.getGenerator">diffieHellman.getGenerator(encoding='binary') <a href="#diffieHellman.getGenerator">#</a></h3>
+<h3 id="diffieHellman.getPrime">diffieHellman.getPrime([encoding]) <a href="#diffieHellman.getPrime">#</a></h3>
 
 <p>Returns the Diffie-Hellman prime in the specified encoding, which can be
-<code>'binary'</code>, <code>'hex'</code>, or <code>'base64'</code>.</p>
+<code>'binary'</code>, <code>'hex'</code>, or <code>'base64'</code>. Defaults to <code>'binary'</code>.</p>
 
-<h3 id="diffieHellman.getPublicKey">diffieHellman.getPublicKey(encoding='binary') <a href="#diffieHellman.getPublicKey">#</a></h3>
+<h3 id="diffieHellman.getGenerator">diffieHellman.getGenerator([encoding]) <a href="#diffieHellman.getGenerator">#</a></h3>
+
+<p>Returns the Diffie-Hellman prime in the specified encoding, which can be
+<code>'binary'</code>, <code>'hex'</code>, or <code>'base64'</code>. Defaults to <code>'binary'</code>.</p>
+
+<h3 id="diffieHellman.getPublicKey">diffieHellman.getPublicKey([encoding]) <a href="#diffieHellman.getPublicKey">#</a></h3>
 
 <p>Returns the Diffie-Hellman public key in the specified encoding, which can
-be <code>'binary'</code>, <code>'hex'</code>, or <code>'base64'</code>.</p>
+be <code>'binary'</code>, <code>'hex'</code>, or <code>'base64'</code>. Defaults to <code>'binary'</code>.</p>
 
-<h3 id="diffieHellman.getPrivateKey">diffieHellman.getPrivateKey(encoding='binary') <a href="#diffieHellman.getPrivateKey">#</a></h3>
+<h3 id="diffieHellman.getPrivateKey">diffieHellman.getPrivateKey([encoding]) <a href="#diffieHellman.getPrivateKey">#</a></h3>
 
 <p>Returns the Diffie-Hellman private key in the specified encoding, which can
-be <code>'binary'</code>, <code>'hex'</code>, or <code>'base64'</code>.</p>
+be <code>'binary'</code>, <code>'hex'</code>, or <code>'base64'</code>. Defaults to <code>'binary'</code>.</p>
 
-<h3 id="diffieHellman.setPublicKey">diffieHellman.setPublicKey(public_key, encoding='binary') <a href="#diffieHellman.setPublicKey">#</a></h3>
+<h3 id="diffieHellman.setPublicKey">diffieHellman.setPublicKey(public_key, [encoding]) <a href="#diffieHellman.setPublicKey">#</a></h3>
 
 <p>Sets the Diffie-Hellman public key. Key encoding can be <code>'binary'</code>, <code>'hex'</code>,
-or <code>'base64'</code>.</p>
+or <code>'base64'</code>. Defaults to <code>'binary'</code>.</p>
 
-<h3 id="diffieHellman.setPrivateKey">diffieHellman.setPrivateKey(public_key, encoding='binary') <a href="#diffieHellman.setPrivateKey">#</a></h3>
+<h3 id="diffieHellman.setPrivateKey">diffieHellman.setPrivateKey(public_key, [encoding]) <a href="#diffieHellman.setPrivateKey">#</a></h3>
 
-<p>Sets the Diffie-Hellman private key. Key encoding can be <code>'binary'</code>, <code>'hex'</code>, or <code>'base64'</code>.</p>
+<p>Sets the Diffie-Hellman private key. Key encoding can be <code>'binary'</code>, <code>'hex'</code>,
+or <code>'base64'</code>. Defaults to <code>'binary'</code>.</p>
 
 <h3 id="pbkdf2">pbkdf2(password, salt, iterations, keylen, callback) <a href="#pbkdf2">#</a></h3>
 
@@ -2371,6 +2395,13 @@ server, you unauthorized connections may be accepted.
 <code>cleartextStream.npnProtocol</code> is a string containing selected NPN protocol.
 <code>cleartextStream.servername</code> is a string containing servername requested with
 SNI.</p>
+
+<h3 id="event_clientError_">Event: 'clientError' <a href="#event_clientError_">#</a></h3>
+
+<p><code>function (exception) { }</code></p>
+
+<p>When a client connection emits an 'error' event before secure connection is
+established - it will be forwarded here.</p>
 
 <h4 id="server.listen">server.listen(port, [host], [callback]) <a href="#server.listen">#</a></h4>
 
@@ -2655,12 +2686,14 @@ the completion callback.</p>
 
 <p>Synchronous link(2).</p>
 
-<h3 id="fs.symlink">fs.symlink(linkdata, path, [callback]) <a href="#fs.symlink">#</a></h3>
+<h3 id="fs.symlink">fs.symlink(linkdata, path, [type], [callback]) <a href="#fs.symlink">#</a></h3>
 
 <p>Asynchronous symlink(2). No arguments other than a possible exception are given
-to the completion callback.</p>
+to the completion callback.
+<code>type</code> argument can be either <code>'dir'</code> or <code>'file'</code> (default is <code>'file'</code>).  It is only 
+used on Windows (ignored on other platforms).</p>
 
-<h3 id="fs.symlinkSync">fs.symlinkSync(linkdata, path) <a href="#fs.symlinkSync">#</a></h3>
+<h3 id="fs.symlinkSync">fs.symlinkSync(linkdata, path, [type]) <a href="#fs.symlinkSync">#</a></h3>
 
 <p>Synchronous symlink(2).</p>
 
@@ -2792,10 +2825,10 @@ without waiting for the callback. For this scenario,
 <p>Synchronous version of buffer-based <code>fs.write()</code>. Returns the number of bytes
 written.</p>
 
-<h3 id="fs.writeSync">fs.writeSync(fd, str, position, encoding='utf8') <a href="#fs.writeSync">#</a></h3>
+<h3 id="fs.writeSync">fs.writeSync(fd, str, position, [encoding]) <a href="#fs.writeSync">#</a></h3>
 
-<p>Synchronous version of string-based <code>fs.write()</code>. Returns the number of <em>bytes</em>
-written.</p>
+<p>Synchronous version of string-based <code>fs.write()</code>. <code>encoding</code> defaults to
+<code>'utf8'</code>. Returns the number of <em>bytes</em> written.</p>
 
 <h3 id="fs.read">fs.read(fd, buffer, offset, length, position, [callback]) <a href="#fs.read">#</a></h3>
 
@@ -2843,11 +2876,11 @@ contents of the file.</p>
 <p>If <code>encoding</code> is specified then this function returns a string. Otherwise it
 returns a buffer.</p>
 
-<h3 id="fs.writeFile">fs.writeFile(filename, data, encoding='utf8', [callback]) <a href="#fs.writeFile">#</a></h3>
+<h3 id="fs.writeFile">fs.writeFile(filename, data, [encoding], [callback]) <a href="#fs.writeFile">#</a></h3>
 
 <p>Asynchronously writes data to a file, replacing the file if it already exists.
 <code>data</code> can be a string or a buffer. The <code>encoding</code> argument is ignored if
-<code>data</code> is a buffer.</p>
+<code>data</code> is a buffer. It defaults to <code>'utf8'</code>.</p>
 
 <p>Example:</p>
 
@@ -2856,7 +2889,7 @@ returns a buffer.</p>
   console.log('It\'s saved!');
 });</code></pre>
 
-<h3 id="fs.writeFileSync">fs.writeFileSync(filename, data, encoding='utf8') <a href="#fs.writeFileSync">#</a></h3>
+<h3 id="fs.writeFileSync">fs.writeFileSync(filename, data, [encoding]) <a href="#fs.writeFileSync">#</a></h3>
 
 <p>The synchronous version of <code>fs.writeFile</code>.</p>
 
@@ -3449,10 +3482,10 @@ encoded, so the exact number of bytes is not known.)</p>
 <p>Users who experience large or growing <code>bufferSize</code> should attempt to
 "throttle" the data flows in their program with <code>pause()</code> and <code>resume()</code>.</p>
 
-<h4 id="socket.setEncoding">socket.setEncoding(encoding=null) <a href="#socket.setEncoding">#</a></h4>
+<h4 id="socket.setEncoding">socket.setEncoding([encoding]) <a href="#socket.setEncoding">#</a></h4>
 
 <p>Sets the encoding (either <code>'ascii'</code>, <code>'utf8'</code>, or <code>'base64'</code>) for data that is
-received.</p>
+received. Defaults to <code>null</code>.</p>
 
 <h4 id="socket.setSecure">socket.setSecure() <a href="#socket.setSecure">#</a></h4>
 
@@ -3512,20 +3545,23 @@ or <code>destroy()</code> the socket.</p>
 <p>The optional <code>callback</code> parameter will be added as a one time listener for the
 <code>'timeout'</code> event.</p>
 
-<h4 id="socket.setNoDelay">socket.setNoDelay(noDelay=true) <a href="#socket.setNoDelay">#</a></h4>
+<h4 id="socket.setNoDelay">socket.setNoDelay([noDelay]) <a href="#socket.setNoDelay">#</a></h4>
 
 <p>Disables the Nagle algorithm. By default TCP connections use the Nagle
-algorithm, they buffer data before sending it off. Setting <code>noDelay</code> will
-immediately fire off data each time <code>socket.write()</code> is called.</p>
+algorithm, they buffer data before sending it off. Setting <code>true</code> for
+<code>noDelay</code> will immediately fire off data each time <code>socket.write()</code> is called.
+<code>noDelay</code> defaults to <code>true</code>.</p>
 
-<h4 id="socket.setKeepAlive">socket.setKeepAlive(enable=false, [initialDelay]) <a href="#socket.setKeepAlive">#</a></h4>
+<h4 id="socket.setKeepAlive">socket.setKeepAlive([enable], [initialDelay]) <a href="#socket.setKeepAlive">#</a></h4>
 
 <p>Enable/disable keep-alive functionality, and optionally set the initial
 delay before the first keepalive probe is sent on an idle socket.
-Set <code>initialDelay</code> (in milliseconds) to set the delay between the last
+<code>enable</code> defaults to <code>false</code>.</p>
+
+<p>Set <code>initialDelay</code> (in milliseconds) to set the delay between the last
 data packet received and the first keepalive probe. Setting 0 for
 initialDelay will leave the value unchanged from the default
-(or previous) setting.</p>
+(or previous) setting. Defaults to <code>0</code>.</p>
 
 <h4 id="socket.address">socket.address() <a href="#socket.address">#</a></h4>
 
@@ -3833,23 +3869,25 @@ dns.resolve4('www.google.com', function (err, addresses) {
   });
 });</code></pre>
 
-<h3 id="dns.lookup">dns.lookup(domain, family=null, callback) <a href="#dns.lookup">#</a></h3>
+<h3 id="dns.lookup">dns.lookup(domain, [family], callback) <a href="#dns.lookup">#</a></h3>
 
 <p>Resolves a domain (e.g. <code>'google.com'</code>) into the first found A (IPv4) or
-AAAA (IPv6) record.</p>
+AAAA (IPv6) record.
+The <code>family</code> can be the integer <code>4</code> or <code>6</code>. Defaults to <code>null</code> that indicates
+both Ip v4 and v6 address family.</p>
 
 <p>The callback has arguments <code>(err, address, family)</code>.  The <code>address</code> argument
 is a string representation of a IP v4 or v6 address. The <code>family</code> argument
 is either the integer 4 or 6 and denotes the family of <code>address</code> (not
 necessarily the value initially passed to <code>lookup</code>).</p>
 
-<h3 id="dns.resolve">dns.resolve(domain, rrtype='A', callback) <a href="#dns.resolve">#</a></h3>
+<h3 id="dns.resolve">dns.resolve(domain, [rrtype], callback) <a href="#dns.resolve">#</a></h3>
 
 <p>Resolves a domain (e.g. <code>'google.com'</code>) into an array of the record types
-specified by rrtype. Valid rrtypes are <code>A</code> (IPV4 addresses), <code>AAAA</code> (IPV6
-addresses), <code>MX</code> (mail exchange records), <code>TXT</code> (text records), <code>SRV</code> (SRV
-records), <code>PTR</code> (used for reverse IP lookups), <code>NS</code> (name server records)
-and <code>CNAME</code> (canonical name records).</p>
+specified by rrtype. Valid rrtypes are <code>'A'</code> (IPV4 addresses, default),
+<code>'AAAA'</code> (IPV6 addresses), <code>'MX'</code> (mail exchange records), <code>'TXT'</code> (text
+records), <code>'SRV'</code> (SRV records), <code>'PTR'</code> (used for reverse IP lookups),
+<code>'NS'</code> (name server records) and <code>'CNAME'</code> (canonical name records).</p>
 
 <p>The callback has arguments <code>(err, addresses)</code>.  The type of each item
 in <code>addresses</code> is determined by the record type, and described in the
@@ -4016,19 +4054,22 @@ IPv4 address (<code>INADDR_ANY</code>).</p>
 
 <p>To listen to a unix socket, supply a filename instead of port and hostname.</p>
 
-<p>This function is asynchronous. The last parameter <code>callback</code> will be called
-when the server has been bound to the port.</p>
+<p>This function is asynchronous. The last parameter <code>callback</code> will be added as
+a listener for the <a href="net.html#event_listening_">'listening'</a> event.
+See also <a href="net.html#server.listen">net.Server.listen()</a>.</p>
 
 <h3 id="server.listen">server.listen(path, [callback]) <a href="#server.listen">#</a></h3>
 
 <p>Start a UNIX socket server listening for connections on the given <code>path</code>.</p>
 
-<p>This function is asynchronous. The last parameter <code>callback</code> will be called
-when the server has been bound.</p>
+<p>This function is asynchronous. The last parameter <code>callback</code> will be added as
+a listener for the <a href="net.html#event_listening_">'listening'</a> event.
+See also <a href="net.html#server.listen">net.Server.listen()</a>.</p>
 
 <h3 id="server.close">server.close() <a href="#server.close">#</a></h3>
 
-<p>Stops the server from accepting new connections.</p>
+<p>Stops the server from accepting new connections.
+See <a href="net.html#server.close">net.Server.close()</a>.</p>
 
 <h2 id="http.ServerRequest">http.ServerRequest</h2>
 
@@ -4119,7 +4160,7 @@ you can use the <code>require('querystring').parse</code> function, or pass
 Also <code>request.httpVersionMajor</code> is the first integer and
 <code>request.httpVersionMinor</code> is the second.</p>
 
-<h3 id="request.setEncoding">request.setEncoding(encoding=null) <a href="#request.setEncoding">#</a></h3>
+<h3 id="request.setEncoding">request.setEncoding([encoding]) <a href="#request.setEncoding">#</a></h3>
 
 <p>Set the encoding for the request body. Either <code>'utf8'</code> or <code>'binary'</code>. Defaults
 to <code>null</code>, which means that the <code>'data'</code> event will emit a <code>Buffer</code> object..</p>
@@ -4144,6 +4185,13 @@ authentication details.</p>
 
 <p>This object is created internally by a HTTP server--not by the user. It is
 passed as the second parameter to the <code>'request'</code> event. It is a <code>Writable Stream</code>.</p>
+
+<h3 id="event_close_">Event: 'close' <a href="#event_close_">#</a></h3>
+
+<p><code>function () { }</code></p>
+
+<p>Indicates that the underlaying connection was terminated before
+<code>response.end()</code> was called or able to flush.</p>
 
 <h3 id="response.writeContinue">response.writeContinue() <a href="#response.writeContinue">#</a></h3>
 
@@ -4223,7 +4271,7 @@ implicitly flushed.</p>
 
 <pre><code>response.removeHeader("Content-Encoding");</code></pre>
 
-<h3 id="response.write">response.write(chunk, encoding='utf8') <a href="#response.write">#</a></h3>
+<h3 id="response.write">response.write(chunk, [encoding]) <a href="#response.write">#</a></h3>
 
 <p>If this method is called and <code>response.writeHead()</code> has not been called, it will
 switch to implicit header mode and flush the implicit headers.</p>
@@ -4519,13 +4567,13 @@ srv.listen(1337, '127.0.0.1', function() {
 
 <h3 id="event_continue_">Event: 'continue' <a href="#event_continue_">#</a></h3>
 
-<p><code>function ()</code></p>
+<p><code>function () { }</code></p>
 
 <p>Emitted when the server sends a '100 Continue' HTTP response, usually because
 the request contained 'Expect: 100-continue'. This is an instruction that
 the client should send the request body.</p>
 
-<h3 id="request.write">request.write(chunk, encoding='utf8') <a href="#request.write">#</a></h3>
+<h3 id="request.write">request.write(chunk, [encoding]) <a href="#request.write">#</a></h3>
 
 <p>Sends a chunk of the body.  By calling this method
 many times, the user can stream a request body to a
@@ -4536,8 +4584,8 @@ creating the request.</p>
 <p>The <code>chunk</code> argument should be an array of integers
 or a string.</p>
 
-<p>The <code>encoding</code> argument is optional and only
-applies when <code>chunk</code> is a string.</p>
+<p>The <code>encoding</code> argument is optional and only applies when <code>chunk</code> is a string.
+Defaults to <code>'utf8'</code>.</p>
 
 <h3 id="request.end">request.end([data], [encoding]) <a href="#request.end">#</a></h3>
 
@@ -4545,8 +4593,8 @@ applies when <code>chunk</code> is a string.</p>
 unsent, it will flush them to the stream. If the request is
 chunked, this will send the terminating <code>'0\r\n\r\n'</code>.</p>
 
-<p>If <code>data</code> is specified, it is equivalent to calling <code>request.write(data, encoding)</code>
-followed by <code>request.end()</code>.</p>
+<p>If <code>data</code> is specified, it is equivalent to calling
+<code>request.write(data, encoding)</code> followed by <code>request.end()</code>.</p>
 
 <h3 id="request.abort">request.abort() <a href="#request.abort">#</a></h3>
 
@@ -4558,13 +4606,13 @@ followed by <code>request.end()</code>.</p>
 <a href="net.html#socket.setTimeout">socket.setTimeout(timeout, [callback])</a>
 will be called.</p>
 
-<h3 id="request.setNoDelay">request.setNoDelay(noDelay=true) <a href="#request.setNoDelay">#</a></h3>
+<h3 id="request.setNoDelay">request.setNoDelay([noDelay]) <a href="#request.setNoDelay">#</a></h3>
 
 <p>Once a socket is assigned to this request and is connected 
 <a href="net.html#socket.setNoDelay">socket.setNoDelay(noDelay)</a>
 will be called.</p>
 
-<h3 id="request.setSocketKeepAlive">request.setSocketKeepAlive(enable=false, [initialDelay]) <a href="#request.setSocketKeepAlive">#</a></h3>
+<h3 id="request.setSocketKeepAlive">request.setSocketKeepAlive([enable], [initialDelay]) <a href="#request.setSocketKeepAlive">#</a></h3>
 
 <p>Once a socket is assigned to this request and is connected 
 <a href="net.html#socket.setKeepAlive">socket.setKeepAlive(enable, [initialDelay])</a>
@@ -4618,10 +4666,11 @@ Also <code>response.httpVersionMajor</code> is the first integer and
 
 <p>The response trailers object. Only populated after the 'end' event.</p>
 
-<h3 id="response.setEncoding">response.setEncoding(encoding=null) <a href="#response.setEncoding">#</a></h3>
+<h3 id="response.setEncoding">response.setEncoding([encoding]) <a href="#response.setEncoding">#</a></h3>
 
-<p>Set the encoding for the response body. Either <code>'utf8'</code>, <code>'ascii'</code>, or <code>'base64'</code>.
-Defaults to <code>null</code>, which means that the <code>'data'</code> event will emit a <code>Buffer</code> object..</p>
+<p>Set the encoding for the response body. Either <code>'utf8'</code>, <code>'ascii'</code>, or
+<code>'base64'</code>. Defaults to <code>null</code>, which means that the <code>'data'</code> event will emit
+a <code>Buffer</code> object..</p>
 
 <h3 id="response.pause">response.pause() <a href="#response.pause">#</a></h3>
 
@@ -4790,16 +4839,17 @@ string will not be in the parsed object. Examples are shown for the URL</p>
 
 <p>The following methods are provided by the URL module:</p>
 
-<h3 id="url.parse">url.parse(urlStr, parseQueryString=false, slashesDenoteHost=false) <a href="#url.parse">#</a></h3>
+<h3 id="url.parse">url.parse(urlStr, [parseQueryString], [slashesDenoteHost]) <a href="#url.parse">#</a></h3>
 
 <p>Take a URL string, and return an object.</p>
 
 <p>Pass <code>true</code> as the second argument to also parse
-the query string using the <code>querystring</code> module.</p>
+the query string using the <code>querystring</code> module.
+Defaults to <code>false</code>.</p>
 
 <p>Pass <code>true</code> as the third argument to treat <code>//foo/bar</code> as
 <code>{ host: 'foo', pathname: '/bar' }</code> rather than
-<code>{ pathname: '//foo/bar' }</code>.</p>
+<code>{ pathname: '//foo/bar' }</code>. Defaults to <code>false</code>.</p>
 
 <h3 id="url.format">url.format(urlObj) <a href="#url.format">#</a></h3>
 
@@ -4816,10 +4866,11 @@ the query string using the <code>querystring</code> module.</p>
 <p>This module provides utilities for dealing with query strings.
 It provides the following methods:</p>
 
-<h3 id="querystring.stringify">querystring.stringify(obj, sep='&amp;', eq='=') <a href="#querystring.stringify">#</a></h3>
+<h3 id="querystring.stringify">querystring.stringify(obj, [sep], [eq]) <a href="#querystring.stringify">#</a></h3>
 
 <p>Serialize an object to a query string.
-Optionally override the default separator and assignment characters.</p>
+Optionally override the default separator (<code>'&amp;'</code>) and assignment (<code>'='</code>)
+characters.</p>
 
 <p>Example:</p>
 
@@ -4831,10 +4882,11 @@ querystring.stringify({foo: 'bar', baz: 'qux'}, ';', ':')
 // returns
 'foo:bar;baz:qux'</code></pre>
 
-<h3 id="querystring.parse">querystring.parse(str, sep='&amp;', eq='=') <a href="#querystring.parse">#</a></h3>
+<h3 id="querystring.parse">querystring.parse(str, [sep], [eq]) <a href="#querystring.parse">#</a></h3>
 
 <p>Deserialize a query string to an object.
-Optionally override the default separator and assignment characters.</p>
+Optionally override the default separator (<code>'&amp;'</code>) and assignment (<code>'='</code>)
+characters.</p>
 
 <p>Example:</p>
 
@@ -5019,17 +5071,18 @@ This will start the REPL in canonical terminal settings which will allow you to 
 
 <pre><code>alias node="env NODE_NO_READLINE=1 rlwrap node"</code></pre>
 
-<h3 id="repl.start">repl.start(prompt='&gt; ', stream=process.stdin, eval=eval, useGlobal=false, ignoreUndefined=false) <a href="#repl.start">#</a></h3>
+<h3 id="repl.start">repl.start([prompt], [stream], [eval], [useGlobal], [ignoreUndefined]) <a href="#repl.start">#</a></h3>
 
 <p>Starts a REPL with <code>prompt</code> as the prompt and <code>stream</code> for all I/O.  <code>prompt</code>
 is optional and defaults to <code>&gt; </code>.  <code>stream</code> is optional and defaults to
-<code>process.stdin</code>. <code>eval</code> is optional too and defaults to async wrapper for <code>eval</code>.</p>
+<code>process.stdin</code>. <code>eval</code> is optional too and defaults to async wrapper for
+<code>eval()</code>.</p>
 
 <p>If <code>useGlobal</code> is set to true, then the repl will use the global object,
-instead of running scripts in a separate context.</p>
+instead of running scripts in a separate context. Defaults to <code>false</code>.</p>
 
 <p>If <code>ignoreUndefined</code> is set to true, then the repl will not output return value
-of command if it's <code>undefined</code>.</p>
+of command if it's <code>undefined</code>. Defaults to <code>false</code>.</p>
 
 <p>You can use your own <code>eval</code> function if it has following signature:</p>
 
@@ -5330,7 +5383,7 @@ Closing this stream via <code>end()</code> often causes the child process to ter
 console.log('Spawned child pid: ' + grep.pid);
 grep.stdin.end();</code></pre>
 
-<h3 id="child_process.spawn">child_process.spawn(command, args=[], [options]) <a href="#child_process.spawn">#</a></h3>
+<h3 id="child_process.spawn">child_process.spawn(command, [args], [options]) <a href="#child_process.spawn">#</a></h3>
 
 <p>Launches a new process with the given <code>command</code>, with  command line arguments in <code>args</code>.
 If omitted, <code>args</code> defaults to an empty Array.</p>
@@ -5533,7 +5586,7 @@ processes:</p>
   }
 });</code></pre>
 
-<h3 id="child.kill">child.kill(signal='SIGTERM') <a href="#child.kill">#</a></h3>
+<h3 id="child.kill">child.kill([signal]) <a href="#child.kill">#</a></h3>
 
 <p>Send a signal to the child process. If no argument is given, the process will
 be sent <code>'SIGTERM'</code>. See <code>signal(7)</code> for a list of available signals.</p>
@@ -6291,5 +6344,15 @@ tool.</p></li><li><p><a href="https://github.com/mranney/node_pcap">pcap binding
   <script src="assets/sh_main.js"></script>
   <script src="assets/sh_javascript.min.js"></script>
   <script>highlight(undefined, undefined, 'pre');</script>
+  <script>
+    var gaJsHost = (("https:" == document.location.protocol) ?
+    "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+  <script>
+    try {
+      var pageTracker = _gat._getTracker("UA-10874194-2");
+      pageTracker._trackPageview();
+      } catch(err) {}</script>
 </body>
 </html>

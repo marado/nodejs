@@ -1,22 +1,22 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>http - Node.js v0.6.5 Manual &amp; Documentation</title>
-  <link rel="stylesheet" href="assets/style.css" />
-  <link rel="stylesheet" href="assets/sh.css" />
-  <link rel="canonical" href="http://nodejs.org/docs/latest/api/http.html"/>
+  <meta charset="utf-8">
+  <title>http - Node.js v0.6.7 Manual &amp; Documentation</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="http://nodejs.org/docs/latest/api/http.html">
 </head>
 <body>
   <div id="container">
     <header>
-      <h1>Node.js v0.6.5 Manual &amp; Documentation</h1>
+      <h1>Node.js v0.6.7 Manual &amp; Documentation</h1>
       <div id="gtoc">
         <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
       </div>
-      <hr />
+      <hr>
     </header>
-    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#hTTP">HTTP</a></li><li><a href="#http.Server">http.Server</a><ul><li><a href="#event_request_">Event: 'request'</a></li><li><a href="#event_connection_">Event: 'connection'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#event_checkContinue_">Event: 'checkContinue'</a></li><li><a href="#event_upgrade_">Event: 'upgrade'</a></li><li><a href="#event_clientError_">Event: 'clientError'</a></li><li><a href="#http.createServer">http.createServer([requestListener])</a></li><li><a href="#server.listen">server.listen(port, [hostname], [callback])</a></li><li><a href="#server.listen">server.listen(path, [callback])</a></li><li><a href="#server.close">server.close()</a></li></ul></li><li><a href="#http.ServerRequest">http.ServerRequest</a><ul><li><a href="#event_data_">Event: 'data'</a></li><li><a href="#event_end_">Event: 'end'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#request.method">request.method</a></li><li><a href="#request.url">request.url</a></li><li><a href="#request.headers">request.headers</a></li><li><a href="#request.trailers">request.trailers</a></li><li><a href="#request.httpVersion">request.httpVersion</a></li><li><a href="#request.setEncoding">request.setEncoding(encoding=null)</a></li><li><a href="#request.pause">request.pause()</a></li><li><a href="#request.resume">request.resume()</a></li><li><a href="#request.connection">request.connection</a></li></ul></li><li><a href="#http.ServerResponse">http.ServerResponse</a><ul><li><a href="#response.writeContinue">response.writeContinue()</a></li><li><a href="#response.writeHead">response.writeHead(statusCode, [reasonPhrase], [headers])</a></li><li><a href="#response.statusCode">response.statusCode</a></li><li><a href="#response.setHeader">response.setHeader(name, value)</a></li><li><a href="#response.getHeader">response.getHeader(name)</a></li><li><a href="#response.removeHeader">response.removeHeader(name)</a></li><li><a href="#response.write">response.write(chunk, encoding='utf8')</a></li><li><a href="#response.addTrailers">response.addTrailers(headers)</a></li><li><a href="#response.end">response.end([data], [encoding])</a></li></ul></li><li><a href="#http.request">http.request(options, callback)</a></li><li><a href="#http.get">http.get(options, callback)</a></li><li><a href="#http.Agent">http.Agent</a></li><li><a href="#http.globalAgent">http.globalAgent</a><ul><li><a href="#agent.maxSockets">agent.maxSockets</a></li><li><a href="#agent.sockets">agent.sockets</a></li><li><a href="#agent.requests">agent.requests</a></li></ul></li><li><a href="#http.ClientRequest">http.ClientRequest</a><ul><li><a href="#event_response_">Event 'response'</a></li><li><a href="#event_socket_">Event: 'socket'</a></li><li><a href="#event_upgrade_">Event: 'upgrade'</a></li><li><a href="#event_continue_">Event: 'continue'</a></li><li><a href="#request.write">request.write(chunk, encoding='utf8')</a></li><li><a href="#request.end">request.end([data], [encoding])</a></li><li><a href="#request.abort">request.abort()</a></li><li><a href="#request.setTimeout">request.setTimeout(timeout, [callback])</a></li><li><a href="#request.setNoDelay">request.setNoDelay(noDelay=true)</a></li><li><a href="#request.setSocketKeepAlive">request.setSocketKeepAlive(enable=false, [initialDelay])</a></li></ul></li><li><a href="#http.ClientResponse">http.ClientResponse</a><ul><li><a href="#event_data_">Event: 'data'</a></li><li><a href="#event_end_">Event: 'end'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#response.statusCode">response.statusCode</a></li><li><a href="#response.httpVersion">response.httpVersion</a></li><li><a href="#response.headers">response.headers</a></li><li><a href="#response.trailers">response.trailers</a></li><li><a href="#response.setEncoding">response.setEncoding(encoding=null)</a></li><li><a href="#response.pause">response.pause()</a></li><li><a href="#response.resume">response.resume()</a></li></ul></li></ul><hr /></div>
+    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#hTTP">HTTP</a></li><li><a href="#http.Server">http.Server</a><ul><li><a href="#event_request_">Event: 'request'</a></li><li><a href="#event_connection_">Event: 'connection'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#event_checkContinue_">Event: 'checkContinue'</a></li><li><a href="#event_upgrade_">Event: 'upgrade'</a></li><li><a href="#event_clientError_">Event: 'clientError'</a></li><li><a href="#http.createServer">http.createServer([requestListener])</a></li><li><a href="#server.listen">server.listen(port, [hostname], [callback])</a></li><li><a href="#server.listen">server.listen(path, [callback])</a></li><li><a href="#server.close">server.close()</a></li></ul></li><li><a href="#http.ServerRequest">http.ServerRequest</a><ul><li><a href="#event_data_">Event: 'data'</a></li><li><a href="#event_end_">Event: 'end'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#request.method">request.method</a></li><li><a href="#request.url">request.url</a></li><li><a href="#request.headers">request.headers</a></li><li><a href="#request.trailers">request.trailers</a></li><li><a href="#request.httpVersion">request.httpVersion</a></li><li><a href="#request.setEncoding">request.setEncoding([encoding])</a></li><li><a href="#request.pause">request.pause()</a></li><li><a href="#request.resume">request.resume()</a></li><li><a href="#request.connection">request.connection</a></li></ul></li><li><a href="#http.ServerResponse">http.ServerResponse</a><ul><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#response.writeContinue">response.writeContinue()</a></li><li><a href="#response.writeHead">response.writeHead(statusCode, [reasonPhrase], [headers])</a></li><li><a href="#response.statusCode">response.statusCode</a></li><li><a href="#response.setHeader">response.setHeader(name, value)</a></li><li><a href="#response.getHeader">response.getHeader(name)</a></li><li><a href="#response.removeHeader">response.removeHeader(name)</a></li><li><a href="#response.write">response.write(chunk, [encoding])</a></li><li><a href="#response.addTrailers">response.addTrailers(headers)</a></li><li><a href="#response.end">response.end([data], [encoding])</a></li></ul></li><li><a href="#http.request">http.request(options, callback)</a></li><li><a href="#http.get">http.get(options, callback)</a></li><li><a href="#http.Agent">http.Agent</a></li><li><a href="#http.globalAgent">http.globalAgent</a><ul><li><a href="#agent.maxSockets">agent.maxSockets</a></li><li><a href="#agent.sockets">agent.sockets</a></li><li><a href="#agent.requests">agent.requests</a></li></ul></li><li><a href="#http.ClientRequest">http.ClientRequest</a><ul><li><a href="#event_response_">Event 'response'</a></li><li><a href="#event_socket_">Event: 'socket'</a></li><li><a href="#event_upgrade_">Event: 'upgrade'</a></li><li><a href="#event_continue_">Event: 'continue'</a></li><li><a href="#request.write">request.write(chunk, [encoding])</a></li><li><a href="#request.end">request.end([data], [encoding])</a></li><li><a href="#request.abort">request.abort()</a></li><li><a href="#request.setTimeout">request.setTimeout(timeout, [callback])</a></li><li><a href="#request.setNoDelay">request.setNoDelay([noDelay])</a></li><li><a href="#request.setSocketKeepAlive">request.setSocketKeepAlive([enable], [initialDelay])</a></li></ul></li><li><a href="#http.ClientResponse">http.ClientResponse</a><ul><li><a href="#event_data_">Event: 'data'</a></li><li><a href="#event_end_">Event: 'end'</a></li><li><a href="#event_close_">Event: 'close'</a></li><li><a href="#response.statusCode">response.statusCode</a></li><li><a href="#response.httpVersion">response.httpVersion</a></li><li><a href="#response.headers">response.headers</a></li><li><a href="#response.trailers">response.trailers</a></li><li><a href="#response.setEncoding">response.setEncoding([encoding])</a></li><li><a href="#response.pause">response.pause()</a></li><li><a href="#response.resume">response.resume()</a></li></ul></li></ul><hr /></div>
 <h2 id="hTTP">HTTP</h2>
 
 <p>To use the HTTP server and client one must <code>require('http')</code>.</p>
@@ -119,19 +119,22 @@ IPv4 address (<code>INADDR_ANY</code>).</p>
 
 <p>To listen to a unix socket, supply a filename instead of port and hostname.</p>
 
-<p>This function is asynchronous. The last parameter <code>callback</code> will be called
-when the server has been bound to the port.</p>
+<p>This function is asynchronous. The last parameter <code>callback</code> will be added as
+a listener for the <a href="net.html#event_listening_">'listening'</a> event.
+See also <a href="net.html#server.listen">net.Server.listen()</a>.</p>
 
 <h3 id="server.listen">server.listen(path, [callback]) <a href="#server.listen">#</a></h3>
 
 <p>Start a UNIX socket server listening for connections on the given <code>path</code>.</p>
 
-<p>This function is asynchronous. The last parameter <code>callback</code> will be called
-when the server has been bound.</p>
+<p>This function is asynchronous. The last parameter <code>callback</code> will be added as
+a listener for the <a href="net.html#event_listening_">'listening'</a> event.
+See also <a href="net.html#server.listen">net.Server.listen()</a>.</p>
 
 <h3 id="server.close">server.close() <a href="#server.close">#</a></h3>
 
-<p>Stops the server from accepting new connections.</p>
+<p>Stops the server from accepting new connections.
+See <a href="net.html#server.close">net.Server.close()</a>.</p>
 
 <h2 id="http.ServerRequest">http.ServerRequest</h2>
 
@@ -222,7 +225,7 @@ you can use the <code>require('querystring').parse</code> function, or pass
 Also <code>request.httpVersionMajor</code> is the first integer and
 <code>request.httpVersionMinor</code> is the second.</p>
 
-<h3 id="request.setEncoding">request.setEncoding(encoding=null) <a href="#request.setEncoding">#</a></h3>
+<h3 id="request.setEncoding">request.setEncoding([encoding]) <a href="#request.setEncoding">#</a></h3>
 
 <p>Set the encoding for the request body. Either <code>'utf8'</code> or <code>'binary'</code>. Defaults
 to <code>null</code>, which means that the <code>'data'</code> event will emit a <code>Buffer</code> object..</p>
@@ -247,6 +250,13 @@ authentication details.</p>
 
 <p>This object is created internally by a HTTP server--not by the user. It is
 passed as the second parameter to the <code>'request'</code> event. It is a <code>Writable Stream</code>.</p>
+
+<h3 id="event_close_">Event: 'close' <a href="#event_close_">#</a></h3>
+
+<p><code>function () { }</code></p>
+
+<p>Indicates that the underlaying connection was terminated before
+<code>response.end()</code> was called or able to flush.</p>
 
 <h3 id="response.writeContinue">response.writeContinue() <a href="#response.writeContinue">#</a></h3>
 
@@ -326,7 +336,7 @@ implicitly flushed.</p>
 
 <pre><code>response.removeHeader("Content-Encoding");</code></pre>
 
-<h3 id="response.write">response.write(chunk, encoding='utf8') <a href="#response.write">#</a></h3>
+<h3 id="response.write">response.write(chunk, [encoding]) <a href="#response.write">#</a></h3>
 
 <p>If this method is called and <code>response.writeHead()</code> has not been called, it will
 switch to implicit header mode and flush the implicit headers.</p>
@@ -622,13 +632,13 @@ srv.listen(1337, '127.0.0.1', function() {
 
 <h3 id="event_continue_">Event: 'continue' <a href="#event_continue_">#</a></h3>
 
-<p><code>function ()</code></p>
+<p><code>function () { }</code></p>
 
 <p>Emitted when the server sends a '100 Continue' HTTP response, usually because
 the request contained 'Expect: 100-continue'. This is an instruction that
 the client should send the request body.</p>
 
-<h3 id="request.write">request.write(chunk, encoding='utf8') <a href="#request.write">#</a></h3>
+<h3 id="request.write">request.write(chunk, [encoding]) <a href="#request.write">#</a></h3>
 
 <p>Sends a chunk of the body.  By calling this method
 many times, the user can stream a request body to a
@@ -639,8 +649,8 @@ creating the request.</p>
 <p>The <code>chunk</code> argument should be an array of integers
 or a string.</p>
 
-<p>The <code>encoding</code> argument is optional and only
-applies when <code>chunk</code> is a string.</p>
+<p>The <code>encoding</code> argument is optional and only applies when <code>chunk</code> is a string.
+Defaults to <code>'utf8'</code>.</p>
 
 <h3 id="request.end">request.end([data], [encoding]) <a href="#request.end">#</a></h3>
 
@@ -648,8 +658,8 @@ applies when <code>chunk</code> is a string.</p>
 unsent, it will flush them to the stream. If the request is
 chunked, this will send the terminating <code>'0\r\n\r\n'</code>.</p>
 
-<p>If <code>data</code> is specified, it is equivalent to calling <code>request.write(data, encoding)</code>
-followed by <code>request.end()</code>.</p>
+<p>If <code>data</code> is specified, it is equivalent to calling
+<code>request.write(data, encoding)</code> followed by <code>request.end()</code>.</p>
 
 <h3 id="request.abort">request.abort() <a href="#request.abort">#</a></h3>
 
@@ -661,13 +671,13 @@ followed by <code>request.end()</code>.</p>
 <a href="net.html#socket.setTimeout">socket.setTimeout(timeout, [callback])</a>
 will be called.</p>
 
-<h3 id="request.setNoDelay">request.setNoDelay(noDelay=true) <a href="#request.setNoDelay">#</a></h3>
+<h3 id="request.setNoDelay">request.setNoDelay([noDelay]) <a href="#request.setNoDelay">#</a></h3>
 
 <p>Once a socket is assigned to this request and is connected 
 <a href="net.html#socket.setNoDelay">socket.setNoDelay(noDelay)</a>
 will be called.</p>
 
-<h3 id="request.setSocketKeepAlive">request.setSocketKeepAlive(enable=false, [initialDelay]) <a href="#request.setSocketKeepAlive">#</a></h3>
+<h3 id="request.setSocketKeepAlive">request.setSocketKeepAlive([enable], [initialDelay]) <a href="#request.setSocketKeepAlive">#</a></h3>
 
 <p>Once a socket is assigned to this request and is connected 
 <a href="net.html#socket.setKeepAlive">socket.setKeepAlive(enable, [initialDelay])</a>
@@ -721,10 +731,11 @@ Also <code>response.httpVersionMajor</code> is the first integer and
 
 <p>The response trailers object. Only populated after the 'end' event.</p>
 
-<h3 id="response.setEncoding">response.setEncoding(encoding=null) <a href="#response.setEncoding">#</a></h3>
+<h3 id="response.setEncoding">response.setEncoding([encoding]) <a href="#response.setEncoding">#</a></h3>
 
-<p>Set the encoding for the response body. Either <code>'utf8'</code>, <code>'ascii'</code>, or <code>'base64'</code>.
-Defaults to <code>null</code>, which means that the <code>'data'</code> event will emit a <code>Buffer</code> object..</p>
+<p>Set the encoding for the response body. Either <code>'utf8'</code>, <code>'ascii'</code>, or
+<code>'base64'</code>. Defaults to <code>null</code>, which means that the <code>'data'</code> event will emit
+a <code>Buffer</code> object..</p>
 
 <h3 id="response.pause">response.pause() <a href="#response.pause">#</a></h3>
 
@@ -737,5 +748,15 @@ Defaults to <code>null</code>, which means that the <code>'data'</code> event wi
   <script src="assets/sh_main.js"></script>
   <script src="assets/sh_javascript.min.js"></script>
   <script>highlight(undefined, undefined, 'pre');</script>
+  <script>
+    var gaJsHost = (("https:" == document.location.protocol) ?
+    "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+  <script>
+    try {
+      var pageTracker = _gat._getTracker("UA-10874194-2");
+      pageTracker._trackPageview();
+      } catch(err) {}</script>
 </body>
 </html>

@@ -292,7 +292,7 @@ def configure(conf):
     conf.env.append_value("CCFLAGS", "-rdynamic")
     conf.env.append_value("LINKFLAGS_DL", "-rdynamic")
 
-  if sys.platform.startswith("freebsd") or sys.platform.startswith("openbsd"):
+  if 'bsd' in sys.platform:
     conf.check(lib='kvm', uselib_store='KVM')
 
   #if Options.options.debug:
@@ -309,7 +309,7 @@ def configure(conf):
   if Options.options.efence:
     conf.check(lib='efence', libpath=['/usr/lib', '/usr/local/lib'], uselib_store='EFENCE')
 
-  if sys.platform.startswith("freebsd"):
+  if 'bsd' in sys.platform:
      if not conf.check(lib="execinfo",
                        includes=['/usr/include', '/usr/local/include'],
                        libpath=['/usr/lib', '/usr/local/lib'],
@@ -792,8 +792,8 @@ def build(bld):
   native_cc.rule = javascript_in_c_debug
 
   if bld.env["USE_DTRACE"]:
-    dtrace = bld.new_task_gen(
-      name   = "dtrace",
+    dtrace_usdt = bld.new_task_gen(
+      name   = "dtrace_usdt",
       source = "src/node_provider.d",
       target = "src/node_provider.h",
       rule   = "%s -x nolibs -h -o ${TGT} -s ${SRC}" % (bld.env.DTRACE),
@@ -801,7 +801,7 @@ def build(bld):
     )
 
     if bld.env["USE_DEBUG"]:
-      dtrace_g = dtrace.clone("Debug")
+      dtrace_usdt_g = dtrace_usdt.clone("Debug")
 
     bld.install_files('${LIBDIR}/dtrace', 'src/node.d')
 
@@ -828,8 +828,29 @@ def build(bld):
                                                   ' '.join(objs))
         Utils.exec_command(cmd)
 
+      #
+      # ustack helpers do not currently work on MacOS.  We currently only
+      # support 32-bit x86.
+      #
+      def dtrace_do_ustack(task):
+        abspath = bld.srcnode.abspath(bld.env_of_name(task.env.variant()))
+        source = task.inputs[0].srcpath(task.env)
+        target = task.outputs[0].srcpath(task.env)
+        cmd = '%s -32 -I../src -C -G -s %s -o %s' % (task.env.DTRACE, source, target)
+        Utils.exec_command(cmd)
+
+      dtrace_ustack = bld.new_task_gen(
+	name = "dtrace_ustack-postprocess",
+	source = "src/v8ustack.d",
+	target = "v8ustack.o",
+	always = True,
+	before = "cxx_link",
+	after = "cxx",
+	rule = dtrace_do_ustack
+      )
+
       dtracepost = bld.new_task_gen(
-        name   = "dtrace-postprocess",
+        name   = "dtrace_usdt-postprocess",
         source = "src/node_provider.d",
         target = "node_provider.o",
         always = True,
@@ -839,6 +860,9 @@ def build(bld):
       )
 
       t = join(bld.srcnode.abspath(bld.env_of_name("Release")), dtracepost.target)
+      bld.env_of_name('Release').append_value('LINKFLAGS', t)
+
+      t = join(bld.srcnode.abspath(bld.env_of_name("Release")), dtrace_ustack.target)
       bld.env_of_name('Release').append_value('LINKFLAGS', t)
 
       #
@@ -980,7 +1004,7 @@ def install_npm(bld):
   start_dir = bld.path.find_dir('deps/npm')
   # The chmod=-1 is a Node hack. We changed WAF so that when chmod was set to
   # -1 that the same permission in this tree are used. Necessary to get
-  # npm-cli.js to be executable without having to list every file in NPM.
+  # npm-cli.js to be executable without having to list every file in npm.
   bld.install_files('${LIBDIR}/node_modules/npm',
                     start_dir.ant_glob('**/*'),
                     cwd=start_dir,
