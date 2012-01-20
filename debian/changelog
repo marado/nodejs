@@ -9,6 +9,7 @@ nodejs (0.6.8-1) UNRELEASED; urgency=low
   * nodejs.pc file for pkgconfig is no more available.
   * Tighten dependency on libv8-dev, it usually requires a patch to
     support greater minor revisions.
+  * Depend on procps package, a test is using /bin/ps.
 
   [ TODO ]
   * Update debian/copyright
