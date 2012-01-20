@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>tls - Node.js v0.6.7 Manual &amp; Documentation</title>
+  <title>tls - Node.js v0.6.8 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/docs/latest/api/tls.html">
@@ -10,13 +10,13 @@
 <body>
   <div id="container">
     <header>
-      <h1>Node.js v0.6.7 Manual &amp; Documentation</h1>
+      <h1>Node.js v0.6.8 Manual &amp; Documentation</h1>
       <div id="gtoc">
         <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
       </div>
       <hr>
     </header>
-    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#tLS_">TLS (SSL)</a><ul><li><a href="#tls.createServer">tls.createServer(options, [secureConnectionListener])</a></li><li><a href="#tls.connect">tls.connect(port, [host], [options], [secureConnectListener])</a></li></ul></li><li><a href="#sTARTTLS">STARTTLS</a></li><li><a href="#nPN_and_SNI">NPN and SNI</a></li><li><a href="#pair_tls.createSecurePair">pair = tls.createSecurePair([credentials], [isServer], [requestCert], [rejectUnauthorized])</a><ul><li><a href="#event_secure_">Event: 'secure'</a></li></ul></li><li><a href="#tls.Server">tls.Server</a><ul><li><a href="#event_secureConnection_">Event: 'secureConnection'</a></li></ul></li><li><a href="#event_clientError_">Event: 'clientError'</a><ul><li><a href="#server.listen">server.listen(port, [host], [callback])</a></li><li><a href="#server.close">server.close()</a></li><li><a href="#server.address">server.address()</a></li><li><a href="#server.addContext">server.addContext(hostname, credentials)</a></li><li><a href="#server.maxConnections">server.maxConnections</a></li><li><a href="#server.connections">server.connections</a></li></ul></li><li><a href="#tls.CleartextStream">tls.CleartextStream</a><ul><li><a href="#event_secureConnect_">Event: 'secureConnect'</a></li><li><a href="#cleartextStream.authorized">cleartextStream.authorized</a></li><li><a href="#cleartextStream.authorizationError">cleartextStream.authorizationError</a></li><li><a href="#cleartextStream.getPeerCertificate">cleartextStream.getPeerCertificate()</a></li><li><a href="#cleartextStream.address">cleartextStream.address()</a></li><li><a href="#cleartextStream.remoteAddress">cleartextStream.remoteAddress</a></li><li><a href="#cleartextStream.remotePort">cleartextStream.remotePort</a></li></ul></li></ul></li></ul><hr /></div>
+    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#tLS_">TLS (SSL)</a><ul><li><a href="#tls.createServer">tls.createServer(options, [secureConnectionListener])</a></li><li><a href="#tls.connect">tls.connect(port, [host], [options], [secureConnectListener])</a></li></ul></li><li><a href="#sTARTTLS">STARTTLS</a></li><li><a href="#nPN_and_SNI">NPN and SNI</a></li><li><a href="#pair_tls.createSecurePair">pair = tls.createSecurePair([credentials], [isServer], [requestCert], [rejectUnauthorized])</a><ul><li><a href="#event_secure_">Event: 'secure'</a></li></ul></li><li><a href="#tls.Server">tls.Server</a><ul><li><a href="#event_secureConnection_">Event: 'secureConnection'</a></li><li><a href="#event_clientError_">Event: 'clientError'</a></li><li><a href="#server.listen">server.listen(port, [host], [callback])</a></li><li><a href="#server.close">server.close()</a></li><li><a href="#server.address">server.address()</a></li><li><a href="#server.addContext">server.addContext(hostname, credentials)</a></li><li><a href="#server.maxConnections">server.maxConnections</a></li><li><a href="#server.connections">server.connections</a></li></ul></li><li><a href="#tls.CleartextStream">tls.CleartextStream</a><ul><li><a href="#event_secureConnect_">Event: 'secureConnect'</a></li><li><a href="#cleartextStream.authorized">cleartextStream.authorized</a></li><li><a href="#cleartextStream.authorizationError">cleartextStream.authorizationError</a></li><li><a href="#cleartextStream.getPeerCertificate">cleartextStream.getPeerCertificate()</a></li><li><a href="#cleartextStream.address">cleartextStream.address()</a></li><li><a href="#cleartextStream.remoteAddress">cleartextStream.remoteAddress</a></li><li><a href="#cleartextStream.remotePort">cleartextStream.remotePort</a></li></ul></li></ul></li></ul><hr /></div>
 <h2 id="tLS_">TLS (SSL)</h2>
 
 <p>Use <code>require('tls')</code> to access this module.</p>
@@ -217,7 +217,7 @@ server, you unauthorized connections may be accepted.
 <code>cleartextStream.servername</code> is a string containing servername requested with
 SNI.</p>
 
-<h3 id="event_clientError_">Event: 'clientError' <a href="#event_clientError_">#</a></h3>
+<h4 id="event_clientError_">Event: 'clientError' <a href="#event_clientError_">#</a></h4>
 
 <p><code>function (exception) { }</code></p>
 
