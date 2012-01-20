@@ -16,6 +16,7 @@ Build-Depends: @cdbs@,
  pkg-config,
  bash-completion,
  curl,
+ procps,
  zlib1g-dev
 Standards-Version: 3.9.2
 Homepage: http://nodejs.org/
