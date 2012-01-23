@@ -1,10 +1,11 @@
 nodejs (0.6.8-1) UNRELEASED; urgency=low
 
   * New upstream release
-  * Use bundled cares and ev libraries because upstream need modified
+  * Use bundled ev libraries because upstream need modified
     versions of them.
   * Drop unneeded build-dependency on scons.
   * New dependency on zlib1g.
+  * Patch uv to make it use system libc-ares.
   * Fix DEB_UPSTREAM_URL in debian/rules, and debian/watch.
   * nodejs.pc file for pkgconfig is no more available.
   * Tighten dependency on libv8-dev, it usually requires a patch to
