@@ -35,6 +35,3 @@ clean::
 install/nodejs-dev::
 	dh_bash-completion
 
-# rename and install binary in nodejs-dbg
-install/nodejs-dbg::
-	mv $(CURDIR)/debian/tmp/usr/bin/node_g $(CURDIR)/debian/nodejs-dbg/usr/lib/debug/usr/bin/node
