@@ -10,9 +10,8 @@ nodejs (0.6.8-1) UNRELEASED; urgency=low
 
   [ TODO ]
   * Update debian/copyright: openssl, zlib, cares, ev, npm are bundled !
-  * build nodejs-dbg : node_g is actually smaller than node, find out why.
 
- -- Jérémy Lal <kapouer@melix.org>  Sat, 10 Sep 2011 19:20:30 +0200
+ -- Jérémy Lal <kapouer@melix.org>  Mon, 23 Jan 2012 23:32:07 +0100
 
 nodejs (0.4.12-2) unstable; urgency=low
 
