@@ -3,9 +3,9 @@ Author: Jérémy Lal <kapouer@melix.org>
 Forwarded: not-needed
 Last-Update: 2012-01-23
 
---- nodejs-0.6.8.orig/deps/uv/Makefile
-+++ nodejs-0.6.8/deps/uv/Makefile
-@@ -26,51 +26,6 @@ endif
+--- a/deps/uv/Makefile
++++ b/deps/uv/Makefile
+@@ -26,51 +26,6 @@
  
  CPPFLAGS += -Iinclude -Iinclude/uv-private
  
@@ -57,7 +57,7 @@ Last-Update: 2012-01-23
  ifneq (,$(findstring MINGW,$(uname_S)))
  include config-mingw.mk
  else
-@@ -82,9 +37,6 @@ BENCHMARKS=test/blackhole-server.c test/
+@@ -82,9 +37,6 @@
  
  all: uv.a
  
@@ -67,9 +67,9 @@ Last-Update: 2012-01-23
  test/run-tests$(E): test/*.h test/run-tests.c $(RUNNER_SRC) test/runner-unix.c $(TESTS) uv.a
  	$(CC) $(CPPFLAGS) $(RUNNER_CFLAGS) -o test/run-tests test/run-tests.c \
  		test/runner.c $(RUNNER_SRC) $(TESTS) uv.a $(RUNNER_LIBS) $(RUNNER_LINKFLAGS)
---- nodejs-0.6.8.orig/deps/uv/config-unix.mk
-+++ nodejs-0.6.8/deps/uv/config-unix.mk
-@@ -60,8 +60,8 @@ ifeq (Linux,$(uname_S))
+--- a/deps/uv/config-unix.mk
++++ b/deps/uv/config-unix.mk
+@@ -60,8 +60,8 @@
  EV_CONFIG=config_linux.h
  EIO_CONFIG=config_linux.h
  CSTDFLAG += -D_GNU_SOURCE
@@ -80,7 +80,7 @@ Last-Update: 2012-01-23
  OBJS += src/unix/linux.o
  endif
  
-@@ -124,8 +124,8 @@ endif
+@@ -124,8 +124,8 @@
  RUNNER_LIBS=
  RUNNER_SRC=test/runner-unix.c
  
@@ -91,7 +91,7 @@ Last-Update: 2012-01-23
  
  src/unix/%.o: src/unix/%.c include/uv.h include/uv-private/uv-unix.h src/unix/internal.h
  	$(CC) $(CSTDFLAG) $(CPPFLAGS) -Isrc  $(CFLAGS) -c $< -o $@
-@@ -150,14 +150,12 @@ src/unix/uv-eio.o: src/unix/uv-eio.c
+@@ -150,14 +150,12 @@
  
  
  clean-platform:
@@ -106,11 +106,11 @@ Last-Update: 2012-01-23
  	-rm -f src/unix/ev/*.o
  	-rm -f src/unix/*.o
  	-rm -f src/unix/eio/*.o
---- nodejs-0.6.8.orig/wscript
-+++ nodejs-0.6.8/wscript
-@@ -284,6 +284,18 @@ def configure(conf):
-   conf.env["USE_GDBJIT"] = o.use_gdbjit
-   conf.env['USE_NPM'] = not o.without_npm
+--- a/wscript
++++ b/wscript
+@@ -429,6 +429,18 @@
+   if conf.env["USE_SHARED_ZLIB"] and not sys.platform.startswith("win32"):
+     conf.env.append_value("LINKFLAGS", "-lz")
  
 +  if conf.env['USE_SHARED_CARES']:
 +    cares_includes = [];
@@ -123,11 +123,11 @@ Last-Update: 2012-01-23
 +                          includes=cares_includes,
 +                          libpath=cares_libpath):
 +      conf.fatal("Cannot find c-ares")
-+  
-   if conf.env["USE_SHARED_ZLIB"] and not sys.platform.startswith("win32"):
-     conf.env.append_value("LINKFLAGS", "-lz")
++
+   conf.define("HAVE_CONFIG_H", 1)
  
-@@ -676,10 +688,6 @@ def build_uv(bld):
+   if sys.platform.startswith("sunos"):
+@@ -676,10 +688,6 @@
    bld.install_files('${PREFIX}/include/node/', 'deps/uv/include/*.h')
    bld.install_files('${PREFIX}/include/node/uv-private', 'deps/uv/include/uv-private/*.h')
    bld.install_files('${PREFIX}/include/node/ev', 'deps/uv/src/ev/*.h')
@@ -138,7 +138,7 @@ Last-Update: 2012-01-23
  
  
  def build(bld):
-@@ -936,7 +944,6 @@ def build(bld):
+@@ -936,7 +944,6 @@
      deps/http_parser
      deps/uv/include
      deps/uv/src/ev
@@ -146,8 +146,8 @@ Last-Update: 2012-01-23
    """
  
    if not bld.env["USE_SHARED_V8"]: node.includes += ' deps/v8/include '
---- nodejs-0.6.8.orig/deps/uv/src/uv-common.c
-+++ nodejs-0.6.8/deps/uv/src/uv-common.c
+--- a/deps/uv/src/uv-common.c
++++ b/deps/uv/src/uv-common.c
 @@ -27,9 +27,8 @@
  #include <string.h> /* memset */
  
@@ -160,7 +160,7 @@ Last-Update: 2012-01-23
  
  
  static uv_counters_t counters;
-@@ -131,20 +130,20 @@ struct sockaddr_in6 uv_ip6_addr(const ch
+@@ -131,20 +130,20 @@
  
    addr.sin6_family = AF_INET6;
    addr.sin6_port = htons(port);
