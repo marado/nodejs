@@ -1,22 +1,16 @@
 nodejs (0.6.8-1) UNRELEASED; urgency=low
 
   * New upstream release
-  * Use bundled ev libraries because upstream need modified
-    versions of them.
   * Drop unneeded build-dependency on scons.
   * New dependency on zlib1g.
-  * Patch uv to make it use system libc-ares.
+  * Patch uv to make it use system libc-ares and system libev.
   * Fix DEB_UPSTREAM_URL in debian/rules, and debian/watch.
   * nodejs.pc file for pkgconfig is no more available.
-  * Tighten dependency on libv8-dev, it usually requires a patch to
-    support greater minor revisions.
   * Depend on procps package, a test is using /bin/ps.
 
   [ TODO ]
-  * Update debian/copyright
-    deps/openssl, deps/zlib are now included :( but not needed.
-    cares, ev files has moved somewhere in deps/uv, and npm is bundled !
-  * build nodejs-dbg
+  * Update debian/copyright: openssl, zlib, cares, ev, npm are bundled !
+  * build nodejs-dbg : node_g is actually smaller than node, find out why.
 
  -- Jérémy Lal <kapouer@melix.org>  Sat, 10 Sep 2011 19:20:30 +0200
 
