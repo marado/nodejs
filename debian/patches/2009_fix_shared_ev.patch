@@ -116,7 +116,25 @@ Last-Update: 2012-01-23
  #include <sys/types.h>
 --- a/deps/uv/config-unix.mk
 +++ b/deps/uv/config-unix.mk
-@@ -124,8 +124,8 @@
+@@ -21,7 +21,6 @@
+ E=
+ CSTDFLAG=--std=c89 -pedantic -Wall -Wextra -Wno-unused-parameter
+ CFLAGS += -g
+-CPPFLAGS += -Isrc/unix/ev
+ LINKFLAGS=-lm
+ 
+ CPPFLAGS += -D_LARGEFILE_SOURCE
+@@ -60,8 +59,7 @@
+ EV_CONFIG=config_linux.h
+ EIO_CONFIG=config_linux.h
+ CSTDFLAG += -D_GNU_SOURCE
+-CPPFLAGS += -I/usr/include
+-LINKFLAGS+=-lrt -lc-ares
++LINKFLAGS+=-lrt -lc-ares -lev
+ OBJS += src/unix/linux.o
+ endif
+ 
+@@ -124,8 +122,8 @@
  RUNNER_LIBS=
  RUNNER_SRC=test/runner-unix.c
  
@@ -127,7 +145,7 @@ Last-Update: 2012-01-23
  
  src/unix/%.o: src/unix/%.c include/uv.h include/uv-private/uv-unix.h src/unix/internal.h
  	$(CC) $(CSTDFLAG) $(CPPFLAGS) -Isrc  $(CFLAGS) -c $< -o $@
-@@ -133,9 +133,6 @@
+@@ -133,9 +131,6 @@
  src/uv-common.o: src/uv-common.c include/uv.h include/uv-private/uv-unix.h
  	$(CC) $(CSTDFLAG) $(CPPFLAGS) $(CFLAGS) -c src/uv-common.c -o src/uv-common.o
  
