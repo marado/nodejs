@@ -13,7 +13,7 @@ nodejs (0.6.8~dfsg1-1) experimental; urgency=low
   * Refreshed debian/patches/2005_expected_failing_tests.patch,
     only for tests that need networking.
 
- -- Jérémy Lal <kapouer@melix.org>  Tue, 24 Jan 2012 12:30:43 +0100
+ -- Jérémy Lal <kapouer@melix.org>  Tue, 24 Jan 2012 13:37:01 +0100
 
 nodejs (0.4.12-3) unstable; urgency=low
 
