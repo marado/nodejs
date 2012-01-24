@@ -1,7 +1,7 @@
 nodejs (0.6.8~dfsg1-1) experimental; urgency=low
 
   * New upstream release. Closes:bug#650661
-  * Repackage to Remove non-dfsg font files ./deps/npm/html/*/*.ttf
+  * Repackage to remove non-dfsg font files ./deps/npm/html/*/*.ttf
   * Remove unneeded bundled dependencies: lighter tarball,
     debian/copyright is easier to maintain.
   * Drop unneeded build-dependency on scons.
@@ -13,7 +13,7 @@ nodejs (0.6.8~dfsg1-1) experimental; urgency=low
   * Refreshed debian/patches/2005_expected_failing_tests.patch,
     only for tests that need networking.
 
- -- Jérémy Lal <kapouer@melix.org>  Tue, 24 Jan 2012 12:12:51 +0100
+ -- Jérémy Lal <kapouer@melix.org>  Tue, 24 Jan 2012 12:30:43 +0100
 
 nodejs (0.4.12-2) unstable; urgency=low
 
