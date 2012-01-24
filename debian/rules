@@ -12,18 +12,18 @@ DEB_UPSTREAM_WGET_OPTS += --no-check-certificate
 # ./deps/npm contains some non-DFSG files, repackaging is needed.
 # Conveniently, remove unused software to ease debian/copyright maintenance.
 DEB_UPSTREAM_REPACKAGE_EXCLUDES += \
-./deps/npm \
-./deps/openssl \
-./deps/v8 \
-./deps/zlib \
-./deps/uv/src/ares \
-./deps/uv/src/unix/ev \
+./deps/npm/ \
+./deps/openssl/ \
+./deps/v8/ \
+./deps/zlib/ \
+./deps/uv/src/ares/ \
+./deps/uv/src/unix/ev/ \
 ./deps/uv/include/ares*.h \
 ./deps/uv/include/uv-private/ev.h \
 ./deps/uv/include/uv-private/tree.h \
-./tools/scons \
-./tools/gyp \
-./tools/closure_linter
+./tools/scons/ \
+./tools/gyp/ \
+./tools/closure_linter/
 
 DEB_UPSTREAM_REPACKAGE_TAG = dfsg1
 
