@@ -6,9 +6,7 @@ Author: Jérémy Lal <kapouer@melix.org>
 Last-Update: 2011-04-19
 --- a/test/simple/simple.status
 +++ b/test/simple/simple.status
-@@ -1 +1,5 @@
+@@ -1 +1,3 @@
  prefix simple
 +
-+test-net-server-on-fd-0: PASS || FAIL
 +test-http-dns-fail: PASS || FAIL
-+test-dgram-multicast: PASS || TIMEOUT
