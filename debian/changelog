@@ -9,6 +9,7 @@ nodejs (0.6.8~dfsg1-1) experimental; urgency=low
   * Fix DEB_UPSTREAM_URL in debian/rules, and debian/watch.
   * nodejs.pc file for pkgconfig is no more available.
   * Build-depend on procps package, a test is using /bin/ps.
+  * Refreshed and updated patches.
 
  -- Jérémy Lal <kapouer@melix.org>  Tue, 24 Jan 2012 11:30:24 +0100
 
