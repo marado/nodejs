@@ -15,6 +15,14 @@ nodejs (0.6.8~dfsg1-1) experimental; urgency=low
 
  -- Jérémy Lal <kapouer@melix.org>  Tue, 24 Jan 2012 12:30:43 +0100
 
+nodejs (0.4.12-3) unstable; urgency=low
+
+  * Depend on libv8 3.6 (>= 3.6.6.14-2), because it fixes CVE-2011-5037.
+    This breaks test/simple/test-sys.js, fixed by an upstream patch.
+
+ -- Jérémy Lal <kapouer@melix.org>  Sun, 08 Jan 2012 12:00:02 +0100
+
+
 nodejs (0.4.12-2) unstable; urgency=low
 
   * Port to libv8 3.5 branch and depend on it.
