@@ -116,9 +116,12 @@ Last-Update: 2012-01-23
  #include <sys/types.h>
 --- a/deps/uv/config-unix.mk
 +++ b/deps/uv/config-unix.mk
-@@ -21,7 +21,6 @@
+@@ -19,9 +19,8 @@
+ # IN THE SOFTWARE.
+ 
  E=
- CSTDFLAG=--std=c89 -pedantic -Wall -Wextra -Wno-unused-parameter
+-CSTDFLAG=--std=c89 -pedantic -Wall -Wextra -Wno-unused-parameter
++CSTDFLAG=-pedantic -Wall -Wextra -Wno-unused-parameter
  CFLAGS += -g
 -CPPFLAGS += -Isrc/unix/ev
  LINKFLAGS=-lm
