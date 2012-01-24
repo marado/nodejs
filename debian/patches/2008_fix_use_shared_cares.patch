@@ -155,7 +155,7 @@ Last-Update: 2012-01-23
 -#include "ares_config.h"
 -#include "ares/inet_net_pton.h"
 -#include "ares/inet_ntop.h"
-+#include "ares.h"
++#include <ares.h>
 +#include <arpa/inet.h>
  
  
@@ -184,3 +184,14 @@ Last-Update: 2012-01-23
    return d != dst;
  }
  
+--- a/deps/uv/include/uv.h
++++ b/deps/uv/include/uv.h
+@@ -54,7 +54,7 @@
+ #include <stdint.h> /* int64_t */
+ #include <sys/types.h> /* size_t */
+ 
+-#include "ares.h"
++#include <ares.h>
+ 
+ #ifndef _SSIZE_T_
+ typedef intptr_t ssize_t;
