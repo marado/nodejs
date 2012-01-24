@@ -14,7 +14,6 @@ DEB_UPSTREAM_WGET_OPTS += --no-check-certificate
 DEB_UPSTREAM_REPACKAGE_EXCLUDES += \
 ./deps/npm/ \
 ./deps/openssl/ \
-./deps/v8/ \
 ./deps/zlib/ \
 ./deps/uv/src/ares/ \
 ./deps/uv/src/unix/ev/ \
