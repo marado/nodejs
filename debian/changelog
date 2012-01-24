@@ -8,7 +8,7 @@ nodejs (0.6.8~dfsg1-1) UNRELEASED; urgency=low
   * Patch uv to make it use system libc-ares and system libev.
   * Fix DEB_UPSTREAM_URL in debian/rules, and debian/watch.
   * nodejs.pc file for pkgconfig is no more available.
-  * Depend on procps package, a test is using /bin/ps.
+  * Build-depend on procps package, a test is using /bin/ps.
 
  -- Jérémy Lal <kapouer@melix.org>  Mon, 23 Jan 2012 23:32:07 +0100
 
