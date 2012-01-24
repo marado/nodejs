@@ -1,15 +1,14 @@
-nodejs (0.6.8-1) UNRELEASED; urgency=low
+nodejs (0.6.8~dfsg1-1) UNRELEASED; urgency=low
 
   * New upstream release
+  * Remove non-dfsg font files ./deps/npm/html/*/*.ttf
+  * Since repackaging is done, remove unneeded bundled dependencies.
   * Drop unneeded build-dependency on scons.
   * New dependency on zlib1g.
   * Patch uv to make it use system libc-ares and system libev.
   * Fix DEB_UPSTREAM_URL in debian/rules, and debian/watch.
   * nodejs.pc file for pkgconfig is no more available.
   * Depend on procps package, a test is using /bin/ps.
-
-  [ TODO ]
-  * Update debian/copyright: openssl, zlib, cares, ev, npm are bundled !
 
  -- Jérémy Lal <kapouer@melix.org>  Mon, 23 Jan 2012 23:32:07 +0100
 
