@@ -11,7 +11,7 @@ Build-Depends: @cdbs@,
  libv8-dev (<< 3.7),
  binutils,
  libssl-dev (>= 0.9.8),
- libev-dev (>= 4.04),
+ libev-dev (>= 4.11),
  libc-ares-dev (>= 1.7.5),
  openssl (>= 0.9.8),
  pkg-config,
@@ -33,7 +33,7 @@ Depends: nodejs (= ${binary:Version}),
  libv8-dev (>= 3.6.6),
  libv8-dev (<< 3.7),
  libssl-dev (>= 0.9.8),
- libev-dev (>= 4.04),
+ libev-dev (>= 4.11),
  libc-ares-dev (>= 1.7.5)
 Description: Development files for Node.js
  Node.js provides an event-based server-side javascript engine.
