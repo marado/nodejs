@@ -1,0 +1,24 @@
+Description: debugger: fix --debug-brk
+ Commit 840229a forgot to update the debugger special case in lib/module.js
+ Fixes #2710.
+Origin: upstream, https://github.com/joyent/node/commit/09c296b4
+---
+ lib/module.js |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/module.js b/lib/module.js
+index bbb1556..bf90c96 100644
+--- a/lib/module.js
++++ b/lib/module.js
+@@ -429,7 +429,7 @@ Module.prototype._compile = function(content, filename) {
+   var compiledWrapper = runInThisContext(wrapper, filename, true);
+   if (global.v8debug) {
+     if (!resolvedArgv) {
+-      resolvedArgv = Module._resolveFilename(process.argv[1], null)[1];
++      resolvedArgv = Module._resolveFilename(process.argv[1], null);
+     }
+ 
+     // Set breakpoint on module start
+-- 
+1.7.5.4
+
