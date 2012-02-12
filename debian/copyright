@@ -1,7 +1,7 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: Node
 Source: http://nodejs.org/
-Upstream-Contact: Ryan Lienhart Dahl <ry@tinyclouds.org>
+Upstream-Contact: Isaac Schlueter <i@izs.me>
 
 Files: *
 Copyright: Joyent, Inc. and other Node contributors.
