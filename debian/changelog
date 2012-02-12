@@ -2,6 +2,8 @@ nodejs (0.6.10~dfsg1-1) UNRELEASED; urgency=low
 
   * New upstream release.
   * Depend on libev-dev 4.11, see bug#657080.
+  * Remove useless uv_loop_refcount from libuv,
+    refreshed 2009_fix_shared_ev.patch.
 
  -- Jérémy Lal <kapouer@melix.org>  Sat, 11 Feb 2012 02:36:00 +0100
 
