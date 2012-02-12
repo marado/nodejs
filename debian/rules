@@ -32,8 +32,7 @@ DEB_UPSTREAM_REPACKAGE_EXCLUDES += \
 ./doc/yahoo-logo.png \
 ./doc/community/not-invented-here.png
 
-DFSG_VERSION = $(shell echo $(DEB_UPSTREAM_VERSION) | egrep -o "dfsg[0-9]+")
-DEB_UPSTREAM_REPACKAGE_TAG = dfsg$(DFSG_VERSION)
+DEB_UPSTREAM_REPACKAGE_TAG = $(shell echo $(DEB_UPSTREAM_VERSION) | egrep -o "dfsg[0-9]+")
 
 # suppress checking binary files, to not upset dpkg-source
 DEB_COPYRIGHT_CHECK_IGNORE_REGEX = ^(doc/trademark-policy\.pdf|doc/joyent-logo_orange_nodeorg-01\.png|doc/logos/.*\.png|debian/(changelog|copyright(|_hints|_newhints)))$
