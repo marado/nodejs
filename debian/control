@@ -3,20 +3,18 @@ Section: web
 Priority: extra
 Maintainer: Debian Javascript Maintainers <pkg-javascript-devel@lists.alioth.debian.org>
 Uploaders: Jérémy Lal <kapouer@melix.org>,
- Dave Beckett <dajobe@debian.org>,
  Jonas Smedegaard <dr@jones.dk>
 DM-Upload-Allowed: yes
 Build-Depends: cdbs (>= 0.4.70~),
- autotools-dev,
  devscripts,
  debhelper,
  dh-buildinfo,
  python,
- libv8-dev (>= 3.6.6),
- libv8-dev (<< 3.7),
+ libv8-dev (>= 3.7),
+ libv8-dev (<< 3.8),
  binutils,
  libssl-dev (>= 0.9.8),
- libev-dev (>= 4.04),
+ libev-dev (>= 4.11),
  libc-ares-dev (>= 1.7.5),
  openssl (>= 0.9.8),
  pkg-config,
@@ -35,10 +33,10 @@ Architecture: any
 Depends: nodejs (= ${binary:Version}),
  ${misc:Depends},
  python,
- libv8-dev (>= 3.6.6),
- libv8-dev (<< 3.7),
+ libv8-dev (>= 3.7),
+ libv8-dev (<< 3.8),
  libssl-dev (>= 0.9.8),
- libev-dev (>= 4.04),
+ libev-dev (>= 4.11),
  libc-ares-dev (>= 1.7.5)
 Description: Development files for Node.js
  Node.js provides an event-based server-side javascript engine.
