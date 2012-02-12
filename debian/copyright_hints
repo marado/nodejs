@@ -139,6 +139,7 @@ Files: benchmark/next-tick-2.js
  test/fixtures/b/c.js
  test/fixtures/b/d.js
  test/fixtures/b/package/index.js
+ test/fixtures/catch-stdout-error.js
  test/fixtures/child_process_should_emit_error.js
  test/fixtures/create-file.js
  test/fixtures/cycles/folder/foo.js
@@ -218,6 +219,7 @@ Files: benchmark/next-tick-2.js
  test/pummel/test-watch-file.js
  test/simple/path.js
  test/simple/test-assert.js
+ test/simple/test-buffer-regress-GH-2659.js
  test/simple/test-buffer.js
  test/simple/test-c-ares.js
  test/simple/test-chdir.js
@@ -249,6 +251,9 @@ Files: benchmark/next-tick-2.js
  test/simple/test-debugger-repl-utf8.js
  test/simple/test-debugger-repl.js
  test/simple/test-delayed-require.js
+ test/simple/test-dgram-broadcast-multi-process.js
+ test/simple/test-dgram-multicast-multi-process.js
+ test/simple/test-dgram-multicast-setTTL.js
  test/simple/test-dgram-pingpong.js
  test/simple/test-dgram-send-error.js
  test/simple/test-dgram-udp4.js
@@ -341,6 +346,7 @@ Files: benchmark/next-tick-2.js
  test/simple/test-http-many-keep-alive-connections.js
  test/simple/test-http-multi-line-headers.js
  test/simple/test-http-mutable-headers.js
+ test/simple/test-http-parser-free.js
  test/simple/test-http-parser.js
  test/simple/test-http-patch.js
  test/simple/test-http-pipe-fs.js
@@ -356,6 +362,7 @@ Files: benchmark/next-tick-2.js
  test/simple/test-http-set-cookies.js
  test/simple/test-http-set-timeout.js
  test/simple/test-http-set-trailers.js
+ test/simple/test-http-should-keep-alive.js
  test/simple/test-http-status-code.js
  test/simple/test-http-unix-socket.js
  test/simple/test-http-upgrade-agent.js
@@ -472,6 +479,7 @@ Files: benchmark/next-tick-2.js
  test/simple/test-stdin-child-proc.js
  test/simple/test-stdin-from-file.js
  test/simple/test-stdin-pause-resume.js
+ test/simple/test-stdout-close-catch.js
  test/simple/test-stdout-to-file.js
  test/simple/test-stream-pipe-cleanup.js
  test/simple/test-stream-pipe-error-handling.js
@@ -484,6 +492,7 @@ Files: benchmark/next-tick-2.js
  test/simple/test-tcp-wrap-listen.js
  test/simple/test-tcp-wrap.js
  test/simple/test-timers-linked-list.js
+ test/simple/test-timers-uncaught-exception.js
  test/simple/test-timers-zero-timeout.js
  test/simple/test-tls-client-abort.js
  test/simple/test-tls-client-abort2.js
@@ -525,6 +534,7 @@ Files: benchmark/next-tick-2.js
  test/simple/test-zerolengthbufferbug.js
  test/simple/test-zlib-from-gzip.js
  test/simple/test-zlib-from-string.js
+ test/simple/test-zlib-invalid-input.js
  test/simple/test-zlib-random-byte-pipes.js
  wscript
 Copyright: HOLDERS BE LIABLE FOR ANY CLAIM
@@ -1074,6 +1084,7 @@ Files: AUTHORS
  common.gypi
  configure
  configure-gyp
+ debian/NEWS
  debian/README.Debian
  debian/README.source
  debian/TODO
@@ -1155,48 +1166,17 @@ Files: AUTHORS
  deps/v8/tools/oom_dump/README
  deps/v8/tools/visual_studio/README.txt
  deps/v8/tools/windows-tick-processor.bat
+ doc/anchor.png
  doc/api/_toc.markdown
  doc/api/addons.markdown
  doc/api/all.markdown
- doc/api/api/_toc.html
- doc/api/api/addons.html
- doc/api/api/appendix_1.html
- doc/api/api/appendix_2.html
- doc/api/api/assert.html
+ doc/api/api/assets/anchor.png
+ doc/api/api/assets/icons-interior.png
+ doc/api/api/assets/logo-light.png
+ doc/api/api/assets/platform-icons.png
  doc/api/api/assets/sh.css
  doc/api/api/assets/sh_javascript.min.js
  doc/api/api/assets/style.css
- doc/api/api/buffers.html
- doc/api/api/child_processes.html
- doc/api/api/cluster.html
- doc/api/api/crypto.html
- doc/api/api/debugger.html
- doc/api/api/dgram.html
- doc/api/api/dns.html
- doc/api/api/events.html
- doc/api/api/fs.html
- doc/api/api/globals.html
- doc/api/api/http.html
- doc/api/api/https.html
- doc/api/api/index.html
- doc/api/api/modules.html
- doc/api/api/os.html
- doc/api/api/path.html
- doc/api/api/process.html
- doc/api/api/querystring.html
- doc/api/api/readline.html
- doc/api/api/repl.html
- doc/api/api/stdio.html
- doc/api/api/streams.html
- doc/api/api/string_decoder.html
- doc/api/api/synopsis.html
- doc/api/api/timers.html
- doc/api/api/tls.html
- doc/api/api/tty.html
- doc/api/api/url.html
- doc/api/api/util.html
- doc/api/api/vm.html
- doc/api/api/zlib.html
  doc/api/appendix_1.markdown
  doc/api/assert.markdown
  doc/api/buffers.markdown
@@ -1229,29 +1209,34 @@ Files: AUTHORS
  doc/api/util.markdown
  doc/api/vm.markdown
  doc/api/zlib.markdown
+ doc/api_assets/anchor.png
+ doc/api_assets/icons-interior.png
+ doc/api_assets/logo-light.png
+ doc/api_assets/platform-icons.png
  doc/api_assets/sh.css
  doc/api_assets/sh_javascript.min.js
  doc/api_assets/style.css
  doc/cla.html
  doc/close-downloads.png
+ doc/community-icons.png
  doc/download-logo.png
- doc/ebay-logo.png
  doc/favicon.ico
  doc/footer-logo.png
  doc/full-white-stripe.jpg
+ doc/home-icons.png
+ doc/icons-interior.png
  doc/icons.png
- doc/linkedin-logo.png
+ doc/logo-light.png
  doc/logo.png
  doc/node.1
  doc/pipe.css
  doc/platform-icons.png
+ doc/sh.css
  doc/sh_javascript.min.js
  doc/sh_vim-dark.css
  doc/sponsored.png
- doc/template.html
  doc/thin-white-stripe.jpg
  doc/v0.4_announcement.html
- doc/yahoo-logo.png
  node.gyp
  src/macros.py
  src/v8constants.h
@@ -1367,7 +1352,6 @@ Files: AUTHORS
  test/pummel/pummel.status
  test/simple/simple.status
  test/simple/test-http-parser-bad-ref.js
- tools/doctool/doctool.js
  tools/getnodeversion.py
  tools/gyp_node
  tools/msvs/msi/nodemsi.sln
@@ -1561,10 +1545,55 @@ Files: deps/http_parser/LICENSE-MIT
  deps/uv/test/test-udp-dgram-too-big.c
  deps/uv/test/test-udp-ipv6.c
  deps/uv/test/test-udp-multicast-join.c
+ deps/uv/test/test-udp-options.c
  deps/uv/test/test-udp-send-and-recv.c
 Copyright: HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  Joyent, Inc. and other Node contributors.
 License: MIT/X11 (BSD like)
+ FIXME
+
+Files: doc/about/index.html
+ doc/api/api/_toc.html
+ doc/api/api/addons.html
+ doc/api/api/appendix_1.html
+ doc/api/api/appendix_2.html
+ doc/api/api/assert.html
+ doc/api/api/buffers.html
+ doc/api/api/child_processes.html
+ doc/api/api/cluster.html
+ doc/api/api/crypto.html
+ doc/api/api/debugger.html
+ doc/api/api/dgram.html
+ doc/api/api/dns.html
+ doc/api/api/events.html
+ doc/api/api/fs.html
+ doc/api/api/globals.html
+ doc/api/api/http.html
+ doc/api/api/https.html
+ doc/api/api/index.html
+ doc/api/api/modules.html
+ doc/api/api/os.html
+ doc/api/api/path.html
+ doc/api/api/process.html
+ doc/api/api/querystring.html
+ doc/api/api/readline.html
+ doc/api/api/repl.html
+ doc/api/api/stdio.html
+ doc/api/api/streams.html
+ doc/api/api/string_decoder.html
+ doc/api/api/synopsis.html
+ doc/api/api/timers.html
+ doc/api/api/tls.html
+ doc/api/api/tty.html
+ doc/api/api/url.html
+ doc/api/api/util.html
+ doc/api/api/vm.html
+ doc/api/api/zlib.html
+ doc/community/index.html
+ doc/index.html
+ doc/template.html
+Copyright: 2010, <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.10/LICENSE">license</a>.</p>
+License: UNKNOWN
  FIXME
 
 Files: deps/v8/src/assembler.cc
@@ -1595,10 +1624,10 @@ Copyright: 1994-2006, Sun Microsystems Inc
 License: BSD (2 clause)
  FIXME
 
-Files: doc/about/index.html
- doc/community/index.html
- doc/index.html
-Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js
+Files: doc/api/api/assets/footer-logo-alt.png
+ doc/api_assets/footer-logo-alt.png
+ doc/footer-logo-alt.png
+Copyright: 'x÷EyËõ£ü€¿ğH¯jf^¢C$e;àªî¶BôR™n¸­÷Å"|ÒsÄFW»_¹®Ë•ùš¯‚GÒU1ª7 ôo)\Ğµ?€®K	f
 License: UNKNOWN
  FIXME
 
@@ -1606,13 +1635,6 @@ Files: doc/api/api/assets/sh_main.js
  doc/api_assets/sh_main.js
  doc/sh_main.js
 Copyright: 2007-2008, gnombat@users.sourceforge.net
-License: UNKNOWN
- FIXME
-
-Files: doc/api/api/all.html
- doc/api/api/net.html
- doc/api/net.markdown
-Copyright: { //'connection' listener
 License: UNKNOWN
  FIXME
 
@@ -1642,6 +1664,13 @@ License: MIT/X11 (BSD like)
 Files: test/fixtures/fork2.js
  test/fixtures/sample.png
 Copyright: 
+License: UNKNOWN
+ FIXME
+
+Files: doc/api/api/all.html
+ doc/api/api/net.html
+Copyright: 2010, <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.10/LICENSE">license</a>.</p>
+ { //'connection' listener
 License: UNKNOWN
  FIXME
 
@@ -1918,6 +1947,11 @@ Copyright: (this->buf[this->off++
 License: UNKNOWN
  FIXME
 
+Files: tools/doctool/doctool.js
+Copyright: + '">#</a></span>';
+License: UNKNOWN
+ FIXME
+
 Files: doc/mac_osx_nodejs_installer_logo.png
 Copyright: =ÏFÎy›²—*é,n°aæ,¿ÜÑf¸à9\9rµ"¢¤GjŒ&Ã³íú’5—AÆo.l)BRÆZi«½$±OùÖ·|Ük§ÿ9™o‘ê)ÚÚ·õ°­LØ“´ó¾Ê2ó—	~í“N¤Eş‰~|õÌ
 License: UNKNOWN
@@ -1926,13 +1960,6 @@ License: UNKNOWN
 Files: tools/doctool/markdown.js
 Copyright: 2009-2010, Ash Berlin
  2009-2010, Dominic Baggott
-License: UNKNOWN
- FIXME
-
-Files: doc/community/not-invented-here.png
-Copyright: C”3pÜqM³tO[ÏOı'ØÛg2q•ö"/¢b¶›Ø¹…˜ãÚA§IâæÕ••yn<¼{ó.8Åª+VÃJlJâ¼ÃÊ·aÁä?™NeEDŠ&'Š>Ùpn¾°–M–ÎPB>‘4?šXÈ	92 ·Íèµ;B‰dF2²äxS £×u„_ÙÖ ğk¯¿â“ŸùXn^ÎñÍœnjaHzz)šşøo›·d)?"Kl¼®Aã*FhœèĞâû?½ûó_şÊ£÷ÿõñ‡øÅO~u`ßÁ/}õ‹v‡=“ÉL×ã¥iêµWŞÃKgç3ô‡Ìæ`PQ†¸Ó<®™¦ûƒ-ÁÚ«
- Çñór“É\¢¢Â –ew>˜¯‰{b¡9ç‰·­ÏÉÊå¡«÷÷ ¨A´:‚³£ƒË3ÇÔÄ4/‰>GoĞ¬¶Î®€1³~ÓÓëÖ€N¼ËLDÜüyùù/}ÿÖËÇÓ„ºÑìíşà ÜVZV.%!îöş?·ÅFF:Ú<ÚºÛÌâ¡ò÷¦Í½}}¯9î:t¤«³4.X¿ï½½‘èŠÇ¶Øæ/H3W®Nşåéê
- ·¡zb<—UC5Z
 License: UNKNOWN
  FIXME
 
@@ -1978,8 +2005,8 @@ Copyright: uz3@‡VnyÊÀIå'Dÿ â:‚óÌ[eºÇh£¶ÿ àğÄÔitI&JH,¥ØîË÷¾XàŠyZÜ D ˜Ü
 License: UNKNOWN
  FIXME
 
-Files: doc/microsoft-logo.png
-Copyright: 9¿öEeµ G‹”»Ÿãœ|Í
+Files: doc/api/net.markdown
+Copyright: { //'connection' listener
 License: UNKNOWN
  FIXME
 
