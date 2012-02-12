@@ -489,70 +489,61 @@ void fs__readdir(uv_fs_t* req, const wchar_t* path, int flags) {
 }
 
 
-void fs__stat(uv_fs_t* req, const wchar_t* path) {
-  HANDLE file;
-  WIN32_FIND_DATAW ent;
+static void fs__stat(uv_fs_t* req, const wchar_t* path) {
+  HANDLE handle;
   int result;
+  BY_HANDLE_FILE_INFORMATION info;
 
   req->ptr = NULL;
 
-  file = FindFirstFileExW(path, FindExInfoStandard, &ent,
-    FindExSearchNameMatch, NULL, 0);
-
-  if (file == INVALID_HANDLE_VALUE) {
+  handle = CreateFileW(path,
+                       FILE_READ_ATTRIBUTES,
+                       FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+                       NULL,
+                       OPEN_EXISTING,
+                       FILE_FLAG_BACKUP_SEMANTICS,
+                       NULL);
+  if (handle == INVALID_HANDLE_VALUE) {
     SET_REQ_RESULT_WIN32_ERROR(req, GetLastError());
     return;
   }
 
-  FindClose(file);
-
-  if (ent.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT &&
-      ent.dwReserved0 == IO_REPARSE_TAG_SYMLINK) {
-    fs__open(req, path, _O_RDONLY, 0);
-    if (req->result != -1) {
-      result = _fstati64(req->result, &req->stat);
-      _close(req->result);
-
-      if (result != -1) {
-        req->ptr = &req->stat;
-      }
-    
-      SET_REQ_RESULT(req, result);
-    }
-
+  if (!GetFileInformationByHandle(handle, &info)) {
+    SET_REQ_RESULT_WIN32_ERROR(req, GetLastError());
+    CloseHandle(handle);
     return;
   }
 
-  req->stat.st_ino = 0;
-  req->stat.st_uid = 0;
-  req->stat.st_gid = 0;
-  req->stat.st_mode = 0;
-  req->stat.st_rdev = 0;
-  req->stat.st_dev = 0;
-  req->stat.st_nlink = 1;
+  memset(&req->stat, 0, sizeof req->stat);
 
-  if (ent.dwFileAttributes & FILE_ATTRIBUTE_READONLY ) {
+  /* TODO: set st_dev and st_ino? */
+
+  if (info.dwFileAttributes & FILE_ATTRIBUTE_READONLY) {
     req->stat.st_mode |= (_S_IREAD + (_S_IREAD >> 3) + (_S_IREAD >> 6));
   } else {
     req->stat.st_mode |= ((_S_IREAD|_S_IWRITE) + ((_S_IREAD|_S_IWRITE) >> 3) +
       ((_S_IREAD|_S_IWRITE) >> 6));
   }
 
-  if (ent.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+  if (info.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
     req->stat.st_mode |= _S_IFDIR;
   } else {
     req->stat.st_mode |= _S_IFREG;
   }
 
-  uv_filetime_to_time_t(&ent.ftLastWriteTime, &(req->stat.st_mtime));
-  uv_filetime_to_time_t(&ent.ftLastAccessTime, &(req->stat.st_atime));
-  uv_filetime_to_time_t(&ent.ftCreationTime, &(req->stat.st_ctime));
+  uv_filetime_to_time_t(&info.ftLastWriteTime, &(req->stat.st_mtime));
+  uv_filetime_to_time_t(&info.ftLastAccessTime, &(req->stat.st_atime));
+  uv_filetime_to_time_t(&info.ftCreationTime, &(req->stat.st_ctime));
 
-  req->stat.st_size = ((int64_t)ent.nFileSizeHigh << 32) +
-    (int64_t)ent.nFileSizeLow;
+  req->stat.st_size = ((int64_t) info.nFileSizeHigh << 32) +
+                      (int64_t) info.nFileSizeLow;
+
+  req->stat.st_nlink = info.nNumberOfLinks;
 
   req->ptr = &req->stat;
   req->result = 0;
+
+  CloseHandle(handle);
 }
 
 

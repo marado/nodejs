@@ -2,22 +2,43 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>dns - Node.js v0.6.8 Manual &amp; Documentation</title>
+  <title>dns - Node.js v0.6.10 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/docs/latest/api/dns.html">
 </head>
-<body>
-  <div id="container">
-    <header>
-      <h1>Node.js v0.6.8 Manual &amp; Documentation</h1>
-      <div id="gtoc">
-        <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
-      </div>
-      <hr>
-    </header>
-    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#dNS">DNS</a><ul><li><a href="#dns.lookup">dns.lookup(domain, [family], callback)</a></li><li><a href="#dns.resolve">dns.resolve(domain, [rrtype], callback)</a></li><li><a href="#dns.resolve4">dns.resolve4(domain, callback)</a></li><li><a href="#dns.resolve6">dns.resolve6(domain, callback)</a></li><li><a href="#dns.resolveMx">dns.resolveMx(domain, callback)</a></li><li><a href="#dns.resolveTxt">dns.resolveTxt(domain, callback)</a></li><li><a href="#dns.resolveSrv">dns.resolveSrv(domain, callback)</a></li><li><a href="#dns.reverse">dns.reverse(ip, callback)</a></li><li><a href="#dns.resolveNs">dns.resolveNs(domain, callback)</a></li><li><a href="#dns.resolveCname">dns.resolveCname(domain, callback)</a></li></ul></li></ul><hr /></div>
-<h2 id="dNS">DNS</h2>
+<body class="alt apidoc">
+    <div id="intro" class="interior">
+        <a href="/" title="Go back to the home page">
+            <img id="logo" src="assets/logo-light.png" alt="node.js">
+        </a>
+    </div>
+    <div id="content" class="clearfix">
+        <div id="column2" class="interior">
+            <ul>
+                <li><a href="/" class="home">Home</a></li>
+                <li><a href="/#download" class="download">Download</a></li>
+                <li><a href="/about/" class="about">About</a></li>
+                <li><a href="http://search.npmjs.org/" class="npm">npm Registry</a></li>
+                <li><a href="http://nodejs.org/docs/latest/api/index.html" class="docs current">Docs</a></li>
+                <li><a href="http://blog.nodejs.org" class="blog">Blog</a></li>
+                <li><a href="/community/" class="community">Community</a></li>
+                <li><a href="/logos/" class="logos">Logos</a></li>
+                <li><a href="http://jobs.nodejs.org/" class="jobs">Jobs</a></li>
+            </ul>
+            <p class="twitter"><a href="http://twitter.com/nodejs">@nodejs</a></p>
+        </div>
+
+        <div id="column1" class="interior">
+        <header>
+          <h1>Node.js v0.6.10 Manual &amp; Documentation</h1>
+          <div id="gtoc">
+            <p><a href="index.html" name="toc">Index</a> | <a href="all.html">View on single page</a></p>
+          </div>
+          <hr>
+        </header>
+        <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#dNS">DNS</a><ul><li><a href="#dns.lookup">dns.lookup(domain, [family], callback)</a></li><li><a href="#dns.resolve">dns.resolve(domain, [rrtype], callback)</a></li><li><a href="#dns.resolve4">dns.resolve4(domain, callback)</a></li><li><a href="#dns.resolve6">dns.resolve6(domain, callback)</a></li><li><a href="#dns.resolveMx">dns.resolveMx(domain, callback)</a></li><li><a href="#dns.resolveTxt">dns.resolveTxt(domain, callback)</a></li><li><a href="#dns.resolveSrv">dns.resolveSrv(domain, callback)</a></li><li><a href="#dns.reverse">dns.reverse(ip, callback)</a></li><li><a href="#dns.resolveNs">dns.resolveNs(domain, callback)</a></li><li><a href="#dns.resolveCname">dns.resolveCname(domain, callback)</a></li></ul></li></ul><hr></div>
+<h2 id="dNS">DNS <span><a class="top" href="#">↑</a><a class="mark" href="#dNS">#</a></span></h2>
 
 <p>Use <code>require('dns')</code> to access this module. All methods in the dns module
 use C-Ares except for <code>dns.lookup</code> which uses <code>getaddrinfo(3)</code> in a thread
@@ -50,7 +71,7 @@ dns.resolve4('www.google.com', function (err, addresses) {
   });
 });</code></pre>
 
-<h3 id="dns.lookup">dns.lookup(domain, [family], callback) <a href="#dns.lookup">#</a></h3>
+<h3 id="dns.lookup">dns.lookup(domain, [family], callback) <span><a class="top" href="#">↑</a><a class="mark" href="#dns.lookup">#</a></span></h3>
 
 <p>Resolves a domain (e.g. <code>'google.com'</code>) into the first found A (IPv4) or
 AAAA (IPv6) record.
@@ -62,7 +83,7 @@ is a string representation of a IP v4 or v6 address. The <code>family</code> arg
 is either the integer 4 or 6 and denotes the family of <code>address</code> (not
 necessarily the value initially passed to <code>lookup</code>).</p>
 
-<h3 id="dns.resolve">dns.resolve(domain, [rrtype], callback) <a href="#dns.resolve">#</a></h3>
+<h3 id="dns.resolve">dns.resolve(domain, [rrtype], callback) <span><a class="top" href="#">↑</a><a class="mark" href="#dns.resolve">#</a></span></h3>
 
 <p>Resolves a domain (e.g. <code>'google.com'</code>) into an array of the record types
 specified by rrtype. Valid rrtypes are <code>'A'</code> (IPV4 addresses, default),
@@ -78,49 +99,49 @@ documentation for the corresponding lookup methods below.</p>
 one of the error codes listed below and <code>err.message</code> is a string describing
 the error in English.</p>
 
-<h3 id="dns.resolve4">dns.resolve4(domain, callback) <a href="#dns.resolve4">#</a></h3>
+<h3 id="dns.resolve4">dns.resolve4(domain, callback) <span><a class="top" href="#">↑</a><a class="mark" href="#dns.resolve4">#</a></span></h3>
 
 <p>The same as <code>dns.resolve()</code>, but only for IPv4 queries (<code>A</code> records).
 <code>addresses</code> is an array of IPv4 addresses (e.g.
 <code>['74.125.79.104', '74.125.79.105', '74.125.79.106']</code>).</p>
 
-<h3 id="dns.resolve6">dns.resolve6(domain, callback) <a href="#dns.resolve6">#</a></h3>
+<h3 id="dns.resolve6">dns.resolve6(domain, callback) <span><a class="top" href="#">↑</a><a class="mark" href="#dns.resolve6">#</a></span></h3>
 
 <p>The same as <code>dns.resolve4()</code> except for IPv6 queries (an <code>AAAA</code> query).</p>
 
-<h3 id="dns.resolveMx">dns.resolveMx(domain, callback) <a href="#dns.resolveMx">#</a></h3>
+<h3 id="dns.resolveMx">dns.resolveMx(domain, callback) <span><a class="top" href="#">↑</a><a class="mark" href="#dns.resolveMx">#</a></span></h3>
 
 <p>The same as <code>dns.resolve()</code>, but only for mail exchange queries (<code>MX</code> records).</p>
 
 <p><code>addresses</code> is an array of MX records, each with a priority and an exchange
 attribute (e.g. <code>[{'priority': 10, 'exchange': 'mx.example.com'},...]</code>).</p>
 
-<h3 id="dns.resolveTxt">dns.resolveTxt(domain, callback) <a href="#dns.resolveTxt">#</a></h3>
+<h3 id="dns.resolveTxt">dns.resolveTxt(domain, callback) <span><a class="top" href="#">↑</a><a class="mark" href="#dns.resolveTxt">#</a></span></h3>
 
 <p>The same as <code>dns.resolve()</code>, but only for text queries (<code>TXT</code> records).
 <code>addresses</code> is an array of the text records available for <code>domain</code> (e.g.,
 <code>['v=spf1 ip4:0.0.0.0 ~all']</code>).</p>
 
-<h3 id="dns.resolveSrv">dns.resolveSrv(domain, callback) <a href="#dns.resolveSrv">#</a></h3>
+<h3 id="dns.resolveSrv">dns.resolveSrv(domain, callback) <span><a class="top" href="#">↑</a><a class="mark" href="#dns.resolveSrv">#</a></span></h3>
 
 <p>The same as <code>dns.resolve()</code>, but only for service records (<code>SRV</code> records).
 <code>addresses</code> is an array of the SRV records available for <code>domain</code>. Properties
 of SRV records are priority, weight, port, and name (e.g.,
 <code>[{'priority': 10, {'weight': 5, 'port': 21223, 'name': 'service.example.com'}, ...]</code>).</p>
 
-<h3 id="dns.reverse">dns.reverse(ip, callback) <a href="#dns.reverse">#</a></h3>
+<h3 id="dns.reverse">dns.reverse(ip, callback) <span><a class="top" href="#">↑</a><a class="mark" href="#dns.reverse">#</a></span></h3>
 
 <p>Reverse resolves an ip address to an array of domain names.</p>
 
 <p>The callback has arguments <code>(err, domains)</code>.</p>
 
-<h3 id="dns.resolveNs">dns.resolveNs(domain, callback) <a href="#dns.resolveNs">#</a></h3>
+<h3 id="dns.resolveNs">dns.resolveNs(domain, callback) <span><a class="top" href="#">↑</a><a class="mark" href="#dns.resolveNs">#</a></span></h3>
 
 <p>The same as <code>dns.resolve()</code>, but only for name server records (<code>NS</code> records).
 <code>addresses</code> is an array of the name server records available for <code>domain</code>
 (e.g., <code>['ns1.example.com', 'ns2.example.com']</code>).</p>
 
-<h3 id="dns.resolveCname">dns.resolveCname(domain, callback) <a href="#dns.resolveCname">#</a></h3>
+<h3 id="dns.resolveCname">dns.resolveCname(domain, callback) <span><a class="top" href="#">↑</a><a class="mark" href="#dns.resolveCname">#</a></span></h3>
 
 <p>The same as <code>dns.resolve()</code>, but only for canonical name records (<code>CNAME</code>
 records). <code>addresses</code> is an array of the canonical name records available for
@@ -132,7 +153,25 @@ object.</p>
 <p>Each DNS query can return an error code.</p>
 
 <ul><li><code>dns.TEMPFAIL</code>: timeout, SERVFAIL or similar.</li><li><code>dns.PROTOCOL</code>: got garbled reply.</li><li><code>dns.NXDOMAIN</code>: domain does not exists.</li><li><code>dns.NODATA</code>: domain exists but no data of reqd type.</li><li><code>dns.NOMEM</code>: out of memory while processing.</li><li><code>dns.BADQUERY</code>: the query is malformed.</li></ul>
-  </div>
+        </div>
+    </div>
+    <div id="footer">
+        <ul class="clearfix">
+            <li><a href="/">Node.js</a></li>
+            <li><a href="/#download">Download</a></li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="http://search.npmjs.org/">npm Registry</a></li>
+            <li><a href="http://nodejs.org/docs/latest/api/index.html">Docs</a></li>
+            <li><a href="http://blog.nodejs.org">Blog</a></li>
+            <li><a href="/community/">Community</a></li>
+            <li><a href="/logos/">Logos</a></li>
+            <li><a href="http://jobs.nodejs.org/">Jobs</a></li>
+            <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
+        </ul>
+
+        <p>Copyright 2010 <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.10/LICENSE">license</a>.</p>
+    </div>
+    
   <script src="assets/sh_main.js"></script>
   <script src="assets/sh_javascript.min.js"></script>
   <script>highlight(undefined, undefined, 'pre');</script>

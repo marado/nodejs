@@ -2,22 +2,43 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>modules - Node.js v0.6.8 Manual &amp; Documentation</title>
+  <title>modules - Node.js v0.6.10 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/docs/latest/api/modules.html">
 </head>
-<body>
-  <div id="container">
-    <header>
-      <h1>Node.js v0.6.8 Manual &amp; Documentation</h1>
-      <div id="gtoc">
-        <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
-      </div>
-      <hr>
-    </header>
-    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#modules">Modules</a><ul><li><a href="#cycles">Cycles</a></li><li><a href="#core_Modules">Core Modules</a></li><li><a href="#file_Modules">File Modules</a></li><li><a href="#loading_from_node_modules_Folders">Loading from `node_modules` Folders</a></li><li><a href="#folders_as_Modules">Folders as Modules</a></li><li><a href="#caching">Caching</a><ul><li><a href="#module_Caching_Caveats">Module Caching Caveats</a></li></ul></li><li><a href="#module.exports">module.exports</a></li><li><a href="#module.require">module.require</a></li><li><a href="#all_Together...">All Together...</a></li><li><a href="#loading_from_the_global_folders">Loading from the global folders</a></li><li><a href="#accessing_the_main_module">Accessing the main module</a></li></ul></li><li><a href="#addenda_Package_Manager_Tips">Addenda: Package Manager Tips</a></li></ul><hr /></div>
-<h2 id="modules">Modules</h2>
+<body class="alt apidoc">
+    <div id="intro" class="interior">
+        <a href="/" title="Go back to the home page">
+            <img id="logo" src="assets/logo-light.png" alt="node.js">
+        </a>
+    </div>
+    <div id="content" class="clearfix">
+        <div id="column2" class="interior">
+            <ul>
+                <li><a href="/" class="home">Home</a></li>
+                <li><a href="/#download" class="download">Download</a></li>
+                <li><a href="/about/" class="about">About</a></li>
+                <li><a href="http://search.npmjs.org/" class="npm">npm Registry</a></li>
+                <li><a href="http://nodejs.org/docs/latest/api/index.html" class="docs current">Docs</a></li>
+                <li><a href="http://blog.nodejs.org" class="blog">Blog</a></li>
+                <li><a href="/community/" class="community">Community</a></li>
+                <li><a href="/logos/" class="logos">Logos</a></li>
+                <li><a href="http://jobs.nodejs.org/" class="jobs">Jobs</a></li>
+            </ul>
+            <p class="twitter"><a href="http://twitter.com/nodejs">@nodejs</a></p>
+        </div>
+
+        <div id="column1" class="interior">
+        <header>
+          <h1>Node.js v0.6.10 Manual &amp; Documentation</h1>
+          <div id="gtoc">
+            <p><a href="index.html" name="toc">Index</a> | <a href="all.html">View on single page</a></p>
+          </div>
+          <hr>
+        </header>
+        <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#modules">Modules</a><ul><li><a href="#cycles">Cycles</a></li><li><a href="#core_Modules">Core Modules</a></li><li><a href="#file_Modules">File Modules</a></li><li><a href="#loading_from_node_modules_Folders">Loading from `node_modules` Folders</a></li><li><a href="#folders_as_Modules">Folders as Modules</a></li><li><a href="#caching">Caching</a><ul><li><a href="#module_Caching_Caveats">Module Caching Caveats</a></li></ul></li><li><a href="#module.exports">module.exports</a></li><li><a href="#module.require">module.require</a></li><li><a href="#all_Together...">All Together...</a></li><li><a href="#loading_from_the_global_folders">Loading from the global folders</a></li><li><a href="#accessing_the_main_module">Accessing the main module</a></li></ul></li><li><a href="#addenda_Package_Manager_Tips">Addenda: Package Manager Tips</a></li></ul><hr></div>
+<h2 id="modules">Modules <span><a class="top" href="#">↑</a><a class="mark" href="#modules">#</a></span></h2>
 
 <p>Node has a simple module loading system.  In Node, files and modules are in
 one-to-one correspondence.  As an example, <code>foo.js</code> loads the module
@@ -49,7 +70,7 @@ object.</p>
 local to the module will be private. In this example the variable <code>PI</code> is
 private to <code>circle.js</code>.</p>
 
-<h3 id="cycles">Cycles <a href="#cycles">#</a></h3>
+<h3 id="cycles">Cycles <span><a class="top" href="#">↑</a><a class="mark" href="#cycles">#</a></span></h3>
 
 <p>When there are circular <code>require()</code> calls, a module might not be
 done being executed when it is returned.</p>
@@ -103,7 +124,7 @@ in main, a.done=true, b.done=true</code></pre>
 <p>If you have cyclic module dependencies in your program, make sure to
 plan accordingly.</p>
 
-<h3 id="core_Modules">Core Modules <a href="#core_Modules">#</a></h3>
+<h3 id="core_Modules">Core Modules <span><a class="top" href="#">↑</a><a class="mark" href="#core_Modules">#</a></span></h3>
 
 <p>Node has several modules compiled into the binary.  These modules are
 described in greater detail elsewhere in this documentation.</p>
@@ -114,7 +135,7 @@ described in greater detail elsewhere in this documentation.</p>
 passed to <code>require()</code>.  For instance, <code>require('http')</code> will always
 return the built in HTTP module, even if there is a file by that name.</p>
 
-<h3 id="file_Modules">File Modules <a href="#file_Modules">#</a></h3>
+<h3 id="file_Modules">File Modules <span><a class="top" href="#">↑</a><a class="mark" href="#file_Modules">#</a></span></h3>
 
 <p>If the exact filename is not found, then node will attempt to load the
 required filename with the added extension of <code>.js</code>, <code>.json</code>, and then <code>.node</code>.</p>
@@ -134,7 +155,7 @@ That is, <code>circle.js</code> must be in the same directory as <code>foo.js</c
 <p>Without a leading '/' or './' to indicate a file, the module is either a
 "core module" or is loaded from a <code>node_modules</code> folder.</p>
 
-<h3 id="loading_from_node_modules_Folders">Loading from `node_modules` Folders <a href="#loading_from_node_modules_Folders">#</a></h3>
+<h3 id="loading_from_node_modules_Folders">Loading from `node_modules` Folders <span><a class="top" href="#">↑</a><a class="mark" href="#loading_from_node_modules_Folders">#</a></span></h3>
 
 <p>If the module identifier passed to <code>require()</code> is not a native module,
 and does not begin with <code>'/'</code>, <code>'../'</code>, or <code>'./'</code>, then node starts at the
@@ -153,7 +174,7 @@ this order:</p>
 <p>This allows programs to localize their dependencies, so that they do not
 clash.</p>
 
-<h3 id="folders_as_Modules">Folders as Modules <a href="#folders_as_Modules">#</a></h3>
+<h3 id="folders_as_Modules">Folders as Modules <span><a class="top" href="#">↑</a><a class="mark" href="#folders_as_Modules">#</a></span></h3>
 
 <p>It is convenient to organize programs and libraries into self-contained
 directories, and then provide a single entry point to that library.
@@ -180,7 +201,7 @@ example, then <code>require('./some-library')</code> would attempt to load:</p>
 
 <ul><li><code>./some-library/index.js</code></li><li><code>./some-library/index.node</code></li></ul>
 
-<h3 id="caching">Caching <a href="#caching">#</a></h3>
+<h3 id="caching">Caching <span><a class="top" href="#">↑</a><a class="mark" href="#caching">#</a></span></h3>
 
 <p>Modules are cached after the first time they are loaded.  This means
 (among other things) that every call to <code>require('foo')</code> will get
@@ -194,7 +215,7 @@ dependencies to be loaded even when they would cause cycles.</p>
 <p>If you want to have a module execute code multiple times, then export a
 function, and call that function.</p>
 
-<h4 id="module_Caching_Caveats">Module Caching Caveats <a href="#module_Caching_Caveats">#</a></h4>
+<h4 id="module_Caching_Caveats">Module Caching Caveats <span><a class="top" href="#">↑</a><a class="mark" href="#module_Caching_Caveats">#</a></span></h4>
 
 <p>Modules are cached based on their resolved filename.  Since modules may
 resolve to a different filename based on the location of the calling
@@ -202,7 +223,7 @@ module (loading from <code>node_modules</code> folders), it is not a <em>guarant
 that <code>require('foo')</code> will always return the exact same object, if it
 would resolve to different files.</p>
 
-<h3 id="module.exports">module.exports <a href="#module.exports">#</a></h3>
+<h3 id="module.exports">module.exports <span><a class="top" href="#">↑</a><a class="mark" href="#module.exports">#</a></span></h3>
 
 <p>The <code>exports</code> object is created by the Module system. Sometimes this is not
 acceptable, many want their module to be an instance of some class. To do this
@@ -240,7 +261,7 @@ done in any callbacks.  This does not work:</p>
 <pre><code>var x = require('./x');
 console.log(x.a);</code></pre>
 
-<h3 id="module.require">module.require <a href="#module.require">#</a></h3>
+<h3 id="module.require">module.require <span><a class="top" href="#">↑</a><a class="mark" href="#module.require">#</a></span></h3>
 
 <p>The <code>module.require</code> method provides a way to load a module as if
 <code>require()</code> was called from the original module.</p>
@@ -250,7 +271,7 @@ object.  Since <code>require()</code> returns the <code>exports</code>, and the 
 typically <em>only</em> available within a specific module's code, it must be
 explicitly exported in order to be used.</p>
 
-<h3 id="all_Together...">All Together... <a href="#all_Together...">#</a></h3>
+<h3 id="all_Together...">All Together... <span><a class="top" href="#">↑</a><a class="mark" href="#all_Together...">#</a></span></h3>
 
 <p>To get the exact filename that will be loaded when <code>require()</code> is called, use
 the <code>require.resolve()</code> function.</p>
@@ -299,7 +320,7 @@ NODE_MODULES_PATHS(START)
    c. let I = I - 1
 6. return DIRS</code></pre>
 
-<h3 id="loading_from_the_global_folders">Loading from the global folders <a href="#loading_from_the_global_folders">#</a></h3>
+<h3 id="loading_from_the_global_folders">Loading from the global folders <span><a class="top" href="#">↑</a><a class="mark" href="#loading_from_the_global_folders">#</a></span></h3>
 
 <p>If the <code>NODE_PATH</code> environment variable is set to a colon-delimited list
 of absolute paths, then node will search those paths for modules if they
@@ -317,7 +338,7 @@ configured <code>installPrefix</code>.</p>
 place your dependencies locally in <code>node_modules</code> folders.  They will be
 loaded faster, and more reliably.</p>
 
-<h3 id="accessing_the_main_module">Accessing the main module <a href="#accessing_the_main_module">#</a></h3>
+<h3 id="accessing_the_main_module">Accessing the main module <span><a class="top" href="#">↑</a><a class="mark" href="#accessing_the_main_module">#</a></span></h3>
 
 <p>When a file is run directly from Node, <code>require.main</code> is set to its
 <code>module</code>. That means that you can determine whether a file has been run
@@ -332,7 +353,7 @@ directly by testing</p>
 <code>__filename</code>), the entry point of the current application can be obtained
 by checking <code>require.main.filename</code>.</p>
 
-<h2 id="addenda_Package_Manager_Tips">Addenda: Package Manager Tips</h2>
+<h2 id="addenda_Package_Manager_Tips">Addenda: Package Manager Tips <span><a class="top" href="#">↑</a><a class="mark" href="#addenda_Package_Manager_Tips">#</a></span></h2>
 
 <p>The semantics of Node's <code>require()</code> function were designed to be general
 enough to support a number of sane directory structures. Package manager
@@ -380,7 +401,25 @@ also add the <code>/usr/lib/node_modules</code> folder to the <code>$NODE_PATH</
 variable.  Since the module lookups using <code>node_modules</code> folders are all
 relative, and based on the real path of the files making the calls to
 <code>require()</code>, the packages themselves can be anywhere.</p>
-  </div>
+        </div>
+    </div>
+    <div id="footer">
+        <ul class="clearfix">
+            <li><a href="/">Node.js</a></li>
+            <li><a href="/#download">Download</a></li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="http://search.npmjs.org/">npm Registry</a></li>
+            <li><a href="http://nodejs.org/docs/latest/api/index.html">Docs</a></li>
+            <li><a href="http://blog.nodejs.org">Blog</a></li>
+            <li><a href="/community/">Community</a></li>
+            <li><a href="/logos/">Logos</a></li>
+            <li><a href="http://jobs.nodejs.org/">Jobs</a></li>
+            <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
+        </ul>
+
+        <p>Copyright 2010 <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.10/LICENSE">license</a>.</p>
+    </div>
+    
   <script src="assets/sh_main.js"></script>
   <script src="assets/sh_javascript.min.js"></script>
   <script>highlight(undefined, undefined, 'pre');</script>

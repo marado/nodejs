@@ -2,22 +2,43 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>tls - Node.js v0.6.8 Manual &amp; Documentation</title>
+  <title>tls - Node.js v0.6.10 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/docs/latest/api/tls.html">
 </head>
-<body>
-  <div id="container">
-    <header>
-      <h1>Node.js v0.6.8 Manual &amp; Documentation</h1>
-      <div id="gtoc">
-        <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
-      </div>
-      <hr>
-    </header>
-    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#tLS_">TLS (SSL)</a><ul><li><a href="#tls.createServer">tls.createServer(options, [secureConnectionListener])</a></li><li><a href="#tls.connect">tls.connect(port, [host], [options], [secureConnectListener])</a></li></ul></li><li><a href="#sTARTTLS">STARTTLS</a></li><li><a href="#nPN_and_SNI">NPN and SNI</a></li><li><a href="#pair_tls.createSecurePair">pair = tls.createSecurePair([credentials], [isServer], [requestCert], [rejectUnauthorized])</a><ul><li><a href="#event_secure_">Event: 'secure'</a></li></ul></li><li><a href="#tls.Server">tls.Server</a><ul><li><a href="#event_secureConnection_">Event: 'secureConnection'</a></li><li><a href="#event_clientError_">Event: 'clientError'</a></li><li><a href="#server.listen">server.listen(port, [host], [callback])</a></li><li><a href="#server.close">server.close()</a></li><li><a href="#server.address">server.address()</a></li><li><a href="#server.addContext">server.addContext(hostname, credentials)</a></li><li><a href="#server.maxConnections">server.maxConnections</a></li><li><a href="#server.connections">server.connections</a></li></ul></li><li><a href="#tls.CleartextStream">tls.CleartextStream</a><ul><li><a href="#event_secureConnect_">Event: 'secureConnect'</a></li><li><a href="#cleartextStream.authorized">cleartextStream.authorized</a></li><li><a href="#cleartextStream.authorizationError">cleartextStream.authorizationError</a></li><li><a href="#cleartextStream.getPeerCertificate">cleartextStream.getPeerCertificate()</a></li><li><a href="#cleartextStream.address">cleartextStream.address()</a></li><li><a href="#cleartextStream.remoteAddress">cleartextStream.remoteAddress</a></li><li><a href="#cleartextStream.remotePort">cleartextStream.remotePort</a></li></ul></li></ul></li></ul><hr /></div>
-<h2 id="tLS_">TLS (SSL)</h2>
+<body class="alt apidoc">
+    <div id="intro" class="interior">
+        <a href="/" title="Go back to the home page">
+            <img id="logo" src="assets/logo-light.png" alt="node.js">
+        </a>
+    </div>
+    <div id="content" class="clearfix">
+        <div id="column2" class="interior">
+            <ul>
+                <li><a href="/" class="home">Home</a></li>
+                <li><a href="/#download" class="download">Download</a></li>
+                <li><a href="/about/" class="about">About</a></li>
+                <li><a href="http://search.npmjs.org/" class="npm">npm Registry</a></li>
+                <li><a href="http://nodejs.org/docs/latest/api/index.html" class="docs current">Docs</a></li>
+                <li><a href="http://blog.nodejs.org" class="blog">Blog</a></li>
+                <li><a href="/community/" class="community">Community</a></li>
+                <li><a href="/logos/" class="logos">Logos</a></li>
+                <li><a href="http://jobs.nodejs.org/" class="jobs">Jobs</a></li>
+            </ul>
+            <p class="twitter"><a href="http://twitter.com/nodejs">@nodejs</a></p>
+        </div>
+
+        <div id="column1" class="interior">
+        <header>
+          <h1>Node.js v0.6.10 Manual &amp; Documentation</h1>
+          <div id="gtoc">
+            <p><a href="index.html" name="toc">Index</a> | <a href="all.html">View on single page</a></p>
+          </div>
+          <hr>
+        </header>
+        <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#tLS_">TLS (SSL)</a><ul><li><a href="#tls.createServer">tls.createServer(options, [secureConnectionListener])</a></li><li><a href="#tls.connect">tls.connect(port, [host], [options], [secureConnectListener])</a></li></ul></li><li><a href="#sTARTTLS">STARTTLS</a></li><li><a href="#nPN_and_SNI">NPN and SNI</a></li><li><a href="#pair_tls.createSecurePair">pair = tls.createSecurePair([credentials], [isServer], [requestCert], [rejectUnauthorized])</a><ul><li><a href="#event_secure_">Event: 'secure'</a></li></ul></li><li><a href="#tls.Server">tls.Server</a><ul><li><a href="#event_secureConnection_">Event: 'secureConnection'</a></li><li><a href="#event_clientError_">Event: 'clientError'</a></li><li><a href="#server.listen">server.listen(port, [host], [callback])</a></li><li><a href="#server.close">server.close()</a></li><li><a href="#server.address">server.address()</a></li><li><a href="#server.addContext">server.addContext(hostname, credentials)</a></li><li><a href="#server.maxConnections">server.maxConnections</a></li><li><a href="#server.connections">server.connections</a></li></ul></li><li><a href="#tls.CleartextStream">tls.CleartextStream</a><ul><li><a href="#event_secureConnect_">Event: 'secureConnect'</a></li><li><a href="#cleartextStream.authorized">cleartextStream.authorized</a></li><li><a href="#cleartextStream.authorizationError">cleartextStream.authorizationError</a></li><li><a href="#cleartextStream.getPeerCertificate">cleartextStream.getPeerCertificate()</a></li><li><a href="#cleartextStream.address">cleartextStream.address()</a></li><li><a href="#cleartextStream.remoteAddress">cleartextStream.remoteAddress</a></li><li><a href="#cleartextStream.remotePort">cleartextStream.remotePort</a></li></ul></li></ul></li></ul><hr></div>
+<h2 id="tLS_">TLS (SSL) <span><a class="top" href="#">↑</a><a class="mark" href="#tLS_">#</a></span></h2>
 
 <p>Use <code>require('tls')</code> to access this module.</p>
 
@@ -45,7 +66,7 @@ file. This is done with:</p>
 <p>(TODO: docs on creating a CA, for now interested users should just look at
 <code>test/fixtures/keys/Makefile</code> in the Node source code)</p>
 
-<h4 id="tls.createServer">tls.createServer(options, [secureConnectionListener]) <a href="#tls.createServer">#</a></h4>
+<h4 id="tls.createServer">tls.createServer(options, [secureConnectionListener]) <span><a class="top" href="#">↑</a><a class="mark" href="#tls.createServer">#</a></span></h4>
 
 <p>Creates a new <a href="#tls.Server">tls.Server</a>.
 The <code>connectionListener</code> argument is automatically set as a listener for the
@@ -101,7 +122,7 @@ server.listen(8000, function() {
 
 <pre><code>openssl s_client -connect 127.0.0.1:8000</code></pre>
 
-<h4 id="tls.connect">tls.connect(port, [host], [options], [secureConnectListener]) <a href="#tls.connect">#</a></h4>
+<h4 id="tls.connect">tls.connect(port, [host], [options], [secureConnectListener]) <span><a class="top" href="#">↑</a><a class="mark" href="#tls.connect">#</a></span></h4>
 
 <p>Creates a new client connection to the given <code>port</code> and <code>host</code>. (If <code>host</code>
 defaults to <code>localhost</code>.) <code>options</code> should be an object which specifies</p>
@@ -148,7 +169,7 @@ cleartextStream.on('end', function() {
   server.close();
 });</code></pre>
 
-<h3 id="sTARTTLS">STARTTLS <a href="#sTARTTLS">#</a></h3>
+<h3 id="sTARTTLS">STARTTLS <span><a class="top" href="#">↑</a><a class="mark" href="#sTARTTLS">#</a></span></h3>
 
 <p>In the v0.4 branch no function exists for starting a TLS session on an
 already existing TCP connection.  This is possible it just requires a bit of
@@ -159,7 +180,7 @@ thereafter.</p>
 
 <p><a href="http://gist.github.com/848444">Here is some code that does it.</a></p>
 
-<h3 id="nPN_and_SNI">NPN and SNI <a href="#nPN_and_SNI">#</a></h3>
+<h3 id="nPN_and_SNI">NPN and SNI <span><a class="top" href="#">↑</a><a class="mark" href="#nPN_and_SNI">#</a></span></h3>
 
 <p>NPN (Next Protocol Negotiation) and SNI (Server Name Indication) are TLS
 handshake extensions allowing you:</p>
@@ -167,7 +188,7 @@ handshake extensions allowing you:</p>
 <ul><li>NPN - to use one TLS server for multiple protocols (HTTP, SPDY)</li><li>SNI - to use one TLS server for multiple hostnames with different SSL
 certificates.</li></ul>
 
-<h3 id="pair_tls.createSecurePair">pair = tls.createSecurePair([credentials], [isServer], [requestCert], [rejectUnauthorized]) <a href="#pair_tls.createSecurePair">#</a></h3>
+<h3 id="pair_tls.createSecurePair">pair = tls.createSecurePair([credentials], [isServer], [requestCert], [rejectUnauthorized]) <span><a class="top" href="#">↑</a><a class="mark" href="#pair_tls.createSecurePair">#</a></span></h3>
 
 <p>Creates a new secure pair object with two streams, one of which reads/writes
 encrypted data, and one reads/writes cleartext data.
@@ -183,7 +204,7 @@ servers with <code>requestCert</code> enabled.</p></li></ul>
 <p><code>tls.createSecurePair()</code> returns a SecurePair object with
 <a href="#tls.CleartextStream">cleartext</a> and <code>encrypted</code> stream properties.</p>
 
-<h4 id="event_secure_">Event: 'secure' <a href="#event_secure_">#</a></h4>
+<h4 id="event_secure_">Event: 'secure' <span><a class="top" href="#">↑</a><a class="mark" href="#event_secure_">#</a></span></h4>
 
 <p>The event is emitted from the SecurePair once the pair has successfully
 established a secure connection.</p>
@@ -192,13 +213,13 @@ established a secure connection.</p>
 pair.cleartext.authorized should be checked to confirm whether the certificate
 used properly authorized.</p>
 
-<h3 id="tls.Server">tls.Server <a href="#tls.Server">#</a></h3>
+<h3 id="tls.Server">tls.Server <span><a class="top" href="#">↑</a><a class="mark" href="#tls.Server">#</a></span></h3>
 
 <p>This class is a subclass of <code>net.Server</code> and has the same methods on it.
 Instead of accepting just raw TCP connections, this accepts encrypted
 connections using TLS or SSL.</p>
 
-<h4 id="event_secureConnection_">Event: 'secureConnection' <a href="#event_secureConnection_">#</a></h4>
+<h4 id="event_secureConnection_">Event: 'secureConnection' <span><a class="top" href="#">↑</a><a class="mark" href="#event_secureConnection_">#</a></span></h4>
 
 <p><code>function (cleartextStream) {}</code></p>
 
@@ -217,14 +238,14 @@ server, you unauthorized connections may be accepted.
 <code>cleartextStream.servername</code> is a string containing servername requested with
 SNI.</p>
 
-<h4 id="event_clientError_">Event: 'clientError' <a href="#event_clientError_">#</a></h4>
+<h4 id="event_clientError_">Event: 'clientError' <span><a class="top" href="#">↑</a><a class="mark" href="#event_clientError_">#</a></span></h4>
 
 <p><code>function (exception) { }</code></p>
 
 <p>When a client connection emits an 'error' event before secure connection is
 established - it will be forwarded here.</p>
 
-<h4 id="server.listen">server.listen(port, [host], [callback]) <a href="#server.listen">#</a></h4>
+<h4 id="server.listen">server.listen(port, [host], [callback]) <span><a class="top" href="#">↑</a><a class="mark" href="#server.listen">#</a></span></h4>
 
 <p>Begin accepting connections on the specified <code>port</code> and <code>host</code>.  If the
 <code>host</code> is omitted, the server will accept connections directed to any
@@ -235,34 +256,34 @@ when the server has been bound.</p>
 
 <p>See <code>net.Server</code> for more information.</p>
 
-<h4 id="server.close">server.close() <a href="#server.close">#</a></h4>
+<h4 id="server.close">server.close() <span><a class="top" href="#">↑</a><a class="mark" href="#server.close">#</a></span></h4>
 
 <p>Stops the server from accepting new connections. This function is
 asynchronous, the server is finally closed when the server emits a <code>'close'</code>
 event.</p>
 
-<h4 id="server.address">server.address() <a href="#server.address">#</a></h4>
+<h4 id="server.address">server.address() <span><a class="top" href="#">↑</a><a class="mark" href="#server.address">#</a></span></h4>
 
 <p>Returns the bound address and port of the server as reported by the operating
 system.
 See <a href="net.html#server.address">net.Server.address()</a> for more information.</p>
 
-<h4 id="server.addContext">server.addContext(hostname, credentials) <a href="#server.addContext">#</a></h4>
+<h4 id="server.addContext">server.addContext(hostname, credentials) <span><a class="top" href="#">↑</a><a class="mark" href="#server.addContext">#</a></span></h4>
 
 <p>Add secure context that will be used if client request's SNI hostname is
 matching passed <code>hostname</code> (wildcards can be used). <code>credentials</code> can contain
 <code>key</code>, <code>cert</code> and <code>ca</code>.</p>
 
-<h4 id="server.maxConnections">server.maxConnections <a href="#server.maxConnections">#</a></h4>
+<h4 id="server.maxConnections">server.maxConnections <span><a class="top" href="#">↑</a><a class="mark" href="#server.maxConnections">#</a></span></h4>
 
 <p>Set this property to reject connections when the server's connection count
 gets high.</p>
 
-<h4 id="server.connections">server.connections <a href="#server.connections">#</a></h4>
+<h4 id="server.connections">server.connections <span><a class="top" href="#">↑</a><a class="mark" href="#server.connections">#</a></span></h4>
 
 <p>The number of concurrent connections on the server.</p>
 
-<h3 id="tls.CleartextStream">tls.CleartextStream <a href="#tls.CleartextStream">#</a></h3>
+<h3 id="tls.CleartextStream">tls.CleartextStream <span><a class="top" href="#">↑</a><a class="mark" href="#tls.CleartextStream">#</a></span></h3>
 
 <p>This is a stream on top of the <em>Encrypted</em> stream that makes it possible to
 read/write an encrypted data as a cleartext data.</p>
@@ -270,7 +291,7 @@ read/write an encrypted data as a cleartext data.</p>
 <p>This instance implements a duplex <a href="streams.html#streams">Stream</a> interfaces.
 It has all the common stream methods and events.</p>
 
-<h4 id="event_secureConnect_">Event: 'secureConnect' <a href="#event_secureConnect_">#</a></h4>
+<h4 id="event_secureConnect_">Event: 'secureConnect' <span><a class="top" href="#">↑</a><a class="mark" href="#event_secureConnect_">#</a></span></h4>
 
 <p><code>function () {}</code></p>
 
@@ -282,17 +303,17 @@ If <code>cleartextStream.authorized === false</code> then the error can be found
 <code>cleartextStream.authorizationError</code>. Also if NPN was used - you can check
 <code>cleartextStream.npnProtocol</code> for negotiated protocol.</p>
 
-<h4 id="cleartextStream.authorized">cleartextStream.authorized <a href="#cleartextStream.authorized">#</a></h4>
+<h4 id="cleartextStream.authorized">cleartextStream.authorized <span><a class="top" href="#">↑</a><a class="mark" href="#cleartextStream.authorized">#</a></span></h4>
 
 <p>A boolean that is <code>true</code> if the peer certificate was signed by one of the
 specified CAs, otherwise <code>false</code></p>
 
-<h4 id="cleartextStream.authorizationError">cleartextStream.authorizationError <a href="#cleartextStream.authorizationError">#</a></h4>
+<h4 id="cleartextStream.authorizationError">cleartextStream.authorizationError <span><a class="top" href="#">↑</a><a class="mark" href="#cleartextStream.authorizationError">#</a></span></h4>
 
 <p>The reason why the peer's certificate has not been verified. This property
 becomes available only when <code>cleartextStream.authorized === false</code>.</p>
 
-<h4 id="cleartextStream.getPeerCertificate">cleartextStream.getPeerCertificate() <a href="#cleartextStream.getPeerCertificate">#</a></h4>
+<h4 id="cleartextStream.getPeerCertificate">cleartextStream.getPeerCertificate() <span><a class="top" href="#">↑</a><a class="mark" href="#cleartextStream.getPeerCertificate">#</a></span></h4>
 
 <p>Returns an object representing the peer's certificate. The returned object has
 some properties corresponding to the field of the certificate.</p>
@@ -320,21 +341,39 @@ some properties corresponding to the field of the certificate.</p>
 <p>If the peer does not provide a certificate, it returns <code>null</code> or an empty
 object.</p>
 
-<h4 id="cleartextStream.address">cleartextStream.address() <a href="#cleartextStream.address">#</a></h4>
+<h4 id="cleartextStream.address">cleartextStream.address() <span><a class="top" href="#">↑</a><a class="mark" href="#cleartextStream.address">#</a></span></h4>
 
 <p>Returns the bound address and port of the underlying socket as reported by the
 operating system. Returns an object with two properties, e.g.
 <code>{"address":"192.168.57.1", "port":62053}</code></p>
 
-<h4 id="cleartextStream.remoteAddress">cleartextStream.remoteAddress <a href="#cleartextStream.remoteAddress">#</a></h4>
+<h4 id="cleartextStream.remoteAddress">cleartextStream.remoteAddress <span><a class="top" href="#">↑</a><a class="mark" href="#cleartextStream.remoteAddress">#</a></span></h4>
 
 <p>The string representation of the remote IP address. For example,
 <code>'74.125.127.100'</code> or <code>'2001:4860:a005::68'</code>.</p>
 
-<h4 id="cleartextStream.remotePort">cleartextStream.remotePort <a href="#cleartextStream.remotePort">#</a></h4>
+<h4 id="cleartextStream.remotePort">cleartextStream.remotePort <span><a class="top" href="#">↑</a><a class="mark" href="#cleartextStream.remotePort">#</a></span></h4>
 
 <p>The numeric representation of the remote port. For example, <code>443</code>.</p>
-  </div>
+        </div>
+    </div>
+    <div id="footer">
+        <ul class="clearfix">
+            <li><a href="/">Node.js</a></li>
+            <li><a href="/#download">Download</a></li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="http://search.npmjs.org/">npm Registry</a></li>
+            <li><a href="http://nodejs.org/docs/latest/api/index.html">Docs</a></li>
+            <li><a href="http://blog.nodejs.org">Blog</a></li>
+            <li><a href="/community/">Community</a></li>
+            <li><a href="/logos/">Logos</a></li>
+            <li><a href="http://jobs.nodejs.org/">Jobs</a></li>
+            <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
+        </ul>
+
+        <p>Copyright 2010 <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.10/LICENSE">license</a>.</p>
+    </div>
+    
   <script src="assets/sh_main.js"></script>
   <script src="assets/sh_javascript.min.js"></script>
   <script>highlight(undefined, undefined, 'pre');</script>
