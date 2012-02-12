@@ -69,7 +69,7 @@ uv_err_code uv_translate_sys_error(int sys_errno) {
     case ERROR_SUCCESS:                     return UV_OK;
     case ERROR_FILE_NOT_FOUND:              return UV_ENOENT;
     case ERROR_PATH_NOT_FOUND:              return UV_ENOENT;
-    case ERROR_ACCESS_DENIED:               return UV_EACCES;
+    case ERROR_ACCESS_DENIED:               return UV_EPERM;
     case ERROR_NOACCESS:                    return UV_EACCES;
     case WSAEACCES:                         return UV_EACCES;
     case ERROR_ADDRESS_ALREADY_ASSOCIATED:  return UV_EADDRINUSE;
@@ -94,6 +94,7 @@ uv_err_code uv_translate_sys_error(int sys_errno) {
     case WSAEMSGSIZE:                       return UV_EMSGSIZE;
     case ERROR_NETWORK_UNREACHABLE:         return UV_ENETUNREACH;
     case WSAENETUNREACH:                    return UV_ENETUNREACH;
+    case WSAENOBUFS:                        return UV_ENOBUFS;
     case ERROR_OUTOFMEMORY:                 return UV_ENOMEM;
     case ERROR_NOT_CONNECTED:               return UV_ENOTCONN;
     case WSAENOTCONN:                       return UV_ENOTCONN;
