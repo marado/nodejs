@@ -1,7 +1,7 @@
 Description: Use system libev
 Author: Jérémy Lal <kapouer@melix.org>
 Forwarded: not-needed
-Last-Update: 2012-01-23
+Last-Update: 2012-02-12
 
 --- a/wscript
 +++ b/wscript
@@ -158,3 +158,28 @@ Last-Update: 2012-01-23
  
  EIO_CPPFLAGS += $(CPPFLAGS)
  EIO_CPPFLAGS += -DEIO_CONFIG_H=\"$(EIO_CONFIG)\"
+--- a/deps/uv/include/uv.h
++++ b/deps/uv/include/uv.h
+@@ -202,9 +202,6 @@
+ UV_EXTERN uv_loop_t* uv_loop_new(void);
+ UV_EXTERN void uv_loop_delete(uv_loop_t*);
+ 
+-/* This is a debugging tool. It's NOT part of the official API. */
+-UV_EXTERN int uv_loop_refcount(const uv_loop_t*);
+-
+ 
+ /*
+  * Returns the default loop.
+--- a/deps/uv/src/unix/core.c
++++ b/deps/uv/src/unix/core.c
+@@ -175,10 +175,6 @@
+ }
+ 
+ 
+-int uv_loop_refcount(const uv_loop_t* loop) {
+-  return ev_loop_refcount(loop->ev);
+-}
+-
+ 
+ uv_loop_t* uv_default_loop(void) {
+   if (!default_loop_ptr) {
