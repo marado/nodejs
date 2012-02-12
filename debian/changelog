@@ -1,4 +1,4 @@
-nodejs (0.6.10~dfsg1-1) UNRELEASED; urgency=low
+nodejs (0.6.10~dfsg2-1) UNRELEASED; urgency=low
 
   * New upstream release.
   * Depend on libev-dev 4.11, see bug#657080.
