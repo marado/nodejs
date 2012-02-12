@@ -22,7 +22,15 @@ DEB_UPSTREAM_REPACKAGE_EXCLUDES += \
 ./deps/uv/include/uv-private/tree.h \
 ./tools/scons/ \
 ./tools/gyp/ \
-./tools/closure_linter/
+./tools/closure_linter/ \
+./doc/twitter-bird.png \
+./doc/api_assets/twitter-bird.png \
+./doc/api/api/assets/twitter-bird.png \
+./doc/ebay-logo.png \
+./doc/linkedin-logo.png \
+./doc/microsoft-logo.png \
+./doc/yahoo-logo.png \
+./doc/community/not-invented-here.png
 
 DEB_UPSTREAM_REPACKAGE_TAG = dfsg1
 
