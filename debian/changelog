@@ -1,3 +1,10 @@
+nodejs (0.6.10~dfsg1-1) UNRELEASED; urgency=low
+
+  * New upstream release.
+  * Depend on libev-dev 4.11, see bug#657080.
+
+ -- Jérémy Lal <kapouer@melix.org>  Sat, 11 Feb 2012 02:36:00 +0100
+
 nodejs (0.6.8~dfsg1-1) experimental; urgency=low
 
   * New upstream release. Closes:bug#650661
