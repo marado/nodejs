@@ -1,13 +1,14 @@
-nodejs (0.6.10~dfsg2-1) UNRELEASED; urgency=low
+nodejs (0.6.10~dfsg2-1) unstable; urgency=low
 
   * New upstream release.
   * Depend on libev-dev 4.11, see bug#657080.
+  * Bump dependency on openssl to 1.0.0g.
   * Remove useless uv_loop_refcount from libuv,
     refreshed 2009_fix_shared_ev.patch.
-  * Fix debugger repl, upstream patch landed after 0.6.10 release,
-    fix http client, upstream patch landed after 0.6.10 release.
+  * Apply to upstream patches landed after 0.6.10 release,
+    to fix debugger repl and http client.
 
- -- Jérémy Lal <kapouer@melix.org>  Sat, 11 Feb 2012 02:36:00 +0100
+ -- Jérémy Lal <kapouer@melix.org>  Thu, 16 Feb 2012 23:52:16 +0100
 
 nodejs (0.6.8~dfsg1-1) experimental; urgency=low
 
