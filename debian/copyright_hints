@@ -1107,6 +1107,8 @@ Files: AUTHORS
  debian/nodejs.manpages
  debian/nodejs.postinst
  debian/nodejs.prerm
+ debian/patches/1001_fix_debug_break.patch
+ debian/patches/1002_destroy_socket_fix_clients.patch
  debian/patches/2001_FHS_paths_for_nodejs.patch
  debian/patches/2002_build_without_libv8_debug.patch
  debian/patches/2005_expected_failing_tests.patch
