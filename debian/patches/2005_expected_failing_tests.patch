@@ -3,12 +3,14 @@ Description: Expected failing tests
  run them without failing.
 Forwarded: not-needed
 Author: Jérémy Lal <kapouer@melix.org>
-Last-Update: 2011-04-19
+Last-Update: 2012-02-17
 --- a/test/simple/simple.status
 +++ b/test/simple/simple.status
-@@ -1 +1,5 @@
+@@ -1 +1,8 @@
  prefix simple
 +
 +test-http-dns-fail: PASS || FAIL
 +test-net-connect-timeout: PASS || FAIL
++test-dgram-multicast-multi-process: PASS || FAIL
++test-dgram-broadcast-multi-process: PASS || FAIL
 +
