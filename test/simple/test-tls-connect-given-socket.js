@@ -21,48 +21,39 @@
 
 var common = require('../common');
 var assert = require('assert');
+var tls = require('tls');
+var net = require('net');
+var fs = require('fs');
+var path = require('path');
 
-var http = require('http');
-var https = require('https');
+var serverConnected = false;
+var clientConnected = false;
 
-var expected_bad_requests = 0;
-var actual_bad_requests = 0;
+var options = {
+  key: fs.readFileSync(path.join(common.fixturesDir, 'test_key.pem')),
+  cert: fs.readFileSync(path.join(common.fixturesDir, 'test_cert.pem'))
+};
 
-var host = '********';
-host += host;
-host += host;
-host += host;
-host += host;
-host += host;
-
-function do_not_call() {
-  throw new Error('This function should not have been called.');
-}
-
-function test(mod) {
-  expected_bad_requests += 2;
-
-  // Bad host name should not throw an uncatchable exception.
-  // Ensure that there is time to attach an error listener.
-  var req = mod.get({host: host, port: 42}, do_not_call);
-  req.on('error', function(err) {
-    assert.equal(err.code, 'ENOTFOUND');
-    actual_bad_requests++;
+var server = tls.createServer(options, function(socket) {
+  serverConnected = true;
+  socket.end('Hello');
+}).listen(common.PORT, function() {
+  var socket = net.connect(common.PORT, function() {
+    var client = tls.connect(0, {socket: socket}, function() {
+      clientConnected = true;
+      var data = '';
+      client.on('data', function(chunk) {
+        data += chunk.toString();
+      });
+      client.on('end', function() {
+        assert.equal(data, 'Hello');
+        server.close();
+      });
+    });
   });
-  // http.get() called req.end() for us
-
-  var req = mod.request({method: 'GET', host: host, port: 42}, do_not_call);
-  req.on('error', function(err) {
-    assert.equal(err.code, 'ENOTFOUND');
-    actual_bad_requests++;
-  });
-  req.end();
-}
-
-test(https);
-test(http);
-
-process.on('exit', function() {
-  assert.equal(actual_bad_requests, expected_bad_requests);
 });
 
+process.on('exit', function() {
+  assert(serverConnected);
+  assert(clientConnected);
+});

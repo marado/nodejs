@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>net - Node.js v0.6.10 Manual &amp; Documentation</title>
+  <title>net - Node.js v0.6.11 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/docs/latest/api/net.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
         <header>
-          <h1>Node.js v0.6.10 Manual &amp; Documentation</h1>
+          <h1>Node.js v0.6.11 Manual &amp; Documentation</h1>
           <div id="gtoc">
             <p><a href="index.html" name="toc">Index</a> | <a href="all.html">View on single page</a></p>
           </div>
@@ -197,6 +197,8 @@ server.listen(function() {
   address = server.address();
   console.log("opened server on %j", address);
 });</code></pre>
+
+<p>Don't call <code>server.address()</code> until the <code>'listening'</code> event has been emitted.</p>
 
 <h4 id="server.maxConnections">server.maxConnections <span><a class="top" href="#">↑</a><a class="mark" href="#server.maxConnections">#</a></span></h4>
 
@@ -421,6 +423,9 @@ See <code>connect()</code>.</p>
 (See the <a href="streams.html#readable_Stream">Readable Stream</a> section for more
 information.)</p>
 
+<p>Note that the <strong>data will be lost</strong> if there is no listener when a <code>Socket</code>
+emits a <code>'data'</code> event.</p>
+
 <h4 id="event_end_">Event: 'end' <span><a class="top" href="#">↑</a><a class="mark" href="#event_end_">#</a></span></h4>
 
 <p><code>function () { }</code></p>
@@ -496,7 +501,7 @@ returns 4 for IP version 4 addresses, and returns 6 for IP version 6 addresses.<
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright 2010 <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.10/LICENSE">license</a>.</p>
+        <p>Copyright 2010 <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.11/LICENSE">license</a>.</p>
     </div>
     
   <script src="assets/sh_main.js"></script>

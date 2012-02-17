@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>crypto - Node.js v0.6.10 Manual &amp; Documentation</title>
+  <title>crypto - Node.js v0.6.11 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/docs/latest/api/crypto.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
         <header>
-          <h1>Node.js v0.6.10 Manual &amp; Documentation</h1>
+          <h1>Node.js v0.6.11 Manual &amp; Documentation</h1>
           <div id="gtoc">
             <p><a href="index.html" name="toc">Index</a> | <a href="all.html">View on single page</a></p>
           </div>
@@ -52,7 +52,9 @@ of a secure HTTPS net or http connection.</p>
 
 <p>Creates a credentials object, with the optional details being a dictionary with keys:</p>
 
-<ul><li><code>key</code> : a string holding the PEM encoded private key</li><li><code>cert</code> : a string holding the PEM encoded certificate</li><li><code>ca</code> : either a string or list of strings of PEM encoded CA certificates to trust.</li></ul>
+<ul><li><code>key</code> : a string holding the PEM encoded private key</li><li><code>cert</code> : a string holding the PEM encoded certificate</li><li><code>ca</code> : either a string or list of strings of PEM encoded CA certificates to trust.</li><li><code>ciphers</code>: a string describing the ciphers to use or exclude. Consult
+<a href="http://www.openssl.org/docs/apps/ciphers.html#CIPHER_LIST_FORMAT">http://www.openssl.org/docs/apps/ciphers.html#CIPHER_LIST_FORMAT</a> for details
+on the format.</li></ul>
 
 <p>If no 'ca' details are given, then node.js will use the default publicly trusted list of CAs as given in
 <a href="http://mxr.mozilla.org/mozilla/source/security/nss/lib/ckfw/builtins/certdata.txt">http://mxr.mozilla.org/mozilla/source/security/nss/lib/ckfw/builtins/certdata.txt</a>.</p>
@@ -320,7 +322,7 @@ try {
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright 2010 <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.10/LICENSE">license</a>.</p>
+        <p>Copyright 2010 <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.11/LICENSE">license</a>.</p>
     </div>
     
   <script src="assets/sh_main.js"></script>

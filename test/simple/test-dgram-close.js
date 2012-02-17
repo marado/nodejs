@@ -19,50 +19,17 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-var common = require('../common');
-var assert = require('assert');
+// Ensure that if a dgram socket is closed before the DNS lookup completes, it
+// won't crash.
 
-var http = require('http');
-var https = require('https');
+var assert = require('assert'),
+    common = require('../common'),
+    dgram = require('dgram');
 
-var expected_bad_requests = 0;
-var actual_bad_requests = 0;
+var buf = new Buffer(1024);
+buf.fill(42);
 
-var host = '********';
-host += host;
-host += host;
-host += host;
-host += host;
-host += host;
+var socket = dgram.createSocket('udp4');
 
-function do_not_call() {
-  throw new Error('This function should not have been called.');
-}
-
-function test(mod) {
-  expected_bad_requests += 2;
-
-  // Bad host name should not throw an uncatchable exception.
-  // Ensure that there is time to attach an error listener.
-  var req = mod.get({host: host, port: 42}, do_not_call);
-  req.on('error', function(err) {
-    assert.equal(err.code, 'ENOTFOUND');
-    actual_bad_requests++;
-  });
-  // http.get() called req.end() for us
-
-  var req = mod.request({method: 'GET', host: host, port: 42}, do_not_call);
-  req.on('error', function(err) {
-    assert.equal(err.code, 'ENOTFOUND');
-    actual_bad_requests++;
-  });
-  req.end();
-}
-
-test(https);
-test(http);
-
-process.on('exit', function() {
-  assert.equal(actual_bad_requests, expected_bad_requests);
-});
-
+socket.send(buf, 0, buf.length, common.port, 'localhost');
+socket.close();
