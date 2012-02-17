@@ -1,7 +1,7 @@
 Description: Use system libev
 Author: Jérémy Lal <kapouer@melix.org>
 Forwarded: not-needed
-Last-Update: 2012-02-12
+Last-Update: 2012-02-17
 
 --- a/wscript
 +++ b/wscript
@@ -160,7 +160,7 @@ Last-Update: 2012-02-12
  EIO_CPPFLAGS += -DEIO_CONFIG_H=\"$(EIO_CONFIG)\"
 --- a/deps/uv/include/uv.h
 +++ b/deps/uv/include/uv.h
-@@ -202,9 +202,6 @@
+@@ -204,9 +204,6 @@
  UV_EXTERN uv_loop_t* uv_loop_new(void);
  UV_EXTERN void uv_loop_delete(uv_loop_t*);
  
