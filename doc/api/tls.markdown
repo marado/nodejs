@@ -26,6 +26,27 @@ Alternatively you can send the CSR to a Certificate Authority for signing.
 (TODO: docs on creating a CA, for now interested users should just look at
 `test/fixtures/keys/Makefile` in the Node source code)
 
+### Client-initiated renegotiation attack mitigation
+
+The TLS protocol lets the client renegotiate certain aspects of the TLS session.
+Unfortunately, session renegotiation requires a disproportional amount of
+server-side resources, which makes it a potential vector for denial-of-service
+attacks.
+
+To mitigate this, renegotiations are limited to three times every 10 minutes. An
+error is emitted on the [CleartextStream](#tls.CleartextStream) instance when
+the threshold is exceeded. The limits are configurable:
+
+  - `tls.CLIENT_RENEG_LIMIT`: renegotiation limit, default is 3.
+
+  - `tls.CLIENT_RENEG_WINDOW`: renegotiation window in seconds, default is
+                               10 minutes.
+
+Don't change the defaults unless you know what you are doing.
+
+To test your server, connect to it with `openssl s_client -connect address:port`
+and tap `R<CR>` (that's the letter `R` followed by a carriage return) a few
+times.
 
 #### tls.createServer(options, [secureConnectionListener])
 
@@ -45,6 +66,10 @@ The `options` object has these possibilities:
   - `ca`: An array of strings or `Buffer`s of trusted certificates. If this is
     omitted several well known "root" CAs will be used, like VeriSign.
     These are used to authorize connections.
+
+  - `ciphers`: A string describing the ciphers to use or exclude. Consult
+    <http://www.openssl.org/docs/apps/ciphers.html#CIPHER_LIST_FORMAT> for
+    details on the format.
 
   - `requestCert`: If `true` the server will request a certificate from
     clients that connect and attempt to verify that certificate. Default:
@@ -126,6 +151,11 @@ defaults to `localhost`.) `options` should be an object which specifies
 
   - `servername`: Servername for SNI (Server Name Indication) TLS extension.
 
+  - `socket`: Establish secure connection on a given socket rather than
+    creating a new socket. If this option is specified, `host` and `port`
+    are ignored.  This is intended FOR INTERNAL USE ONLY.  As with all
+    undocumented APIs in Node, they should not be used.
+
 The `secureConnectListener` parameter will be added as a listener for the
 ['secureConnect'](#event_secureConnect_) event.
 
@@ -159,17 +189,6 @@ Here is an example of a client of echo server as described previously:
       server.close();
     });
 
-
-### STARTTLS
-
-In the v0.4 branch no function exists for starting a TLS session on an
-already existing TCP connection.  This is possible it just requires a bit of
-work. The technique is to use `tls.createSecurePair()` which returns two
-streams: an encrypted stream and a cleartext stream. The encrypted stream is
-then piped to the socket, the cleartext stream is what the user interacts with
-thereafter.
-
-[Here is some code that does it.](http://gist.github.com/848444)
 
 ### NPN and SNI
 
