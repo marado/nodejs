@@ -6,11 +6,12 @@ Author: Jérémy Lal <kapouer@melix.org>
 Last-Update: 2012-02-17
 --- a/test/simple/simple.status
 +++ b/test/simple/simple.status
-@@ -1 +1,7 @@
+@@ -1 +1,8 @@
  prefix simple
 +
 +test-http-dns-fail: PASS || FAIL
 +test-net-connect-timeout: PASS || FAIL
++test-dgram-pingpong: PASS || FAIL
 +test-dgram-multicast-multi-process: PASS || FAIL
 +test-dgram-broadcast-multi-process: PASS || FAIL
 +
