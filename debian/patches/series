@@ -4,5 +4,3 @@
 2007_fix_use_shared_zlib.patch
 2008_fix_use_shared_cares.patch
 2009_fix_shared_ev.patch
-1001_fix_debug_break.patch
-1002_destroy_socket_fix_clients.patch
