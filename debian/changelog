@@ -1,9 +1,13 @@
-nodejs (0.6.10~dfsg2-2) UNRELEASED; urgency=low
+nodejs (0.6.10~dfsg2-2) unstable; urgency=low
 
+  [ Jérémy Lal ]
   * Expect tests dgram-multicast and broadcast to fail.
     debian/patches/2005_expected_failing_tests.patch
 
- -- Jérémy Lal <kapouer@melix.org>  Fri, 17 Feb 2012 01:07:11 +0100
+  [ Jonas Smedegaard ]
+  * Drop dpkg-source local-options: Defaults since dpkg-source 1.16.1.
+
+ -- Jonas Smedegaard <dr@jones.dk>  Fri, 17 Feb 2012 04:18:27 +0100
 
 nodejs (0.6.10~dfsg2-1) unstable; urgency=low
 
