@@ -6,12 +6,18 @@ Author: Jérémy Lal <kapouer@melix.org>
 Last-Update: 2012-02-17
 --- a/test/simple/simple.status
 +++ b/test/simple/simple.status
-@@ -1 +1,8 @@
+@@ -1 +1,14 @@
  prefix simple
 +
++# only fail when some network resources are not available
 +test-http-dns-fail: PASS || FAIL
 +test-net-connect-timeout: PASS || FAIL
-+test-dgram-pingpong: PASS || FAIL
 +test-dgram-multicast-multi-process: PASS || FAIL
 +test-dgram-broadcast-multi-process: PASS || FAIL
++
++# fail because of a race condition, seen on busy computers
++test-dgram-pingpong: PASS || FAIL
++
++# should use [ $arch == arm ] but $arch could be wrong
++test-buffer: PASS || FAIL
 +
