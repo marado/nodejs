@@ -192,6 +192,7 @@ Files: benchmark/next-tick-2.js
  test/message/throw_non_error.js
  test/message/undefined_reference_in_new_context.js
  test/pummel/test-child-process-spawn-loop.js
+ test/pummel/test-debugger-debug-brk.js
  test/pummel/test-exec.js
  test/pummel/test-fs-watch-file.js
  test/pummel/test-http-client-reconnect-bug.js
@@ -214,6 +215,7 @@ Files: benchmark/next-tick-2.js
  test/pummel/test-timer-wrap.js
  test/pummel/test-timer-wrap2.js
  test/pummel/test-timers.js
+ test/pummel/test-tls-ci-reneg-attack.js
  test/pummel/test-tls-throttle.js
  test/pummel/test-vm-memleak.js
  test/pummel/test-watch-file.js
@@ -252,6 +254,7 @@ Files: benchmark/next-tick-2.js
  test/simple/test-debugger-repl.js
  test/simple/test-delayed-require.js
  test/simple/test-dgram-broadcast-multi-process.js
+ test/simple/test-dgram-close.js
  test/simple/test-dgram-multicast-multi-process.js
  test/simple/test-dgram-multicast-setTTL.js
  test/simple/test-dgram-pingpong.js
@@ -288,6 +291,7 @@ Files: benchmark/next-tick-2.js
  test/simple/test-fs-read-buffer.js
  test/simple/test-fs-read-file-sync-hostname.js
  test/simple/test-fs-read-file-sync.js
+ test/simple/test-fs-read-stream-fd.js
  test/simple/test-fs-read-stream.js
  test/simple/test-fs-read.js
  test/simple/test-fs-readfile-empty.js
@@ -402,6 +406,7 @@ Files: benchmark/next-tick-2.js
  test/simple/test-net-connect-handle-econnrefused.js
  test/simple/test-net-connect-timeout.js
  test/simple/test-net-create-connection.js
+ test/simple/test-net-dns-error.js
  test/simple/test-net-eaddrinuse.js
  test/simple/test-net-isip.js
  test/simple/test-net-keepalive.js
@@ -421,6 +426,7 @@ Files: benchmark/next-tick-2.js
  test/simple/test-net-socket-timeout.js
  test/simple/test-net-stream.js
  test/simple/test-net-write-after-close.js
+ test/simple/test-net-write-slow.js
  test/simple/test-next-tick-doesnt-hang.js
  test/simple/test-next-tick-errors.js
  test/simple/test-next-tick-ordering.js
@@ -498,12 +504,14 @@ Files: benchmark/next-tick-2.js
  test/simple/test-tls-client-abort2.js
  test/simple/test-tls-client-resume.js
  test/simple/test-tls-client-verify.js
+ test/simple/test-tls-connect-given-socket.js
  test/simple/test-tls-connect-simple.js
  test/simple/test-tls-connect.js
  test/simple/test-tls-ext-key-usage.js
  test/simple/test-tls-invalid-key.js
  test/simple/test-tls-junk-closes-server.js
  test/simple/test-tls-npn-server-client.js
+ test/simple/test-tls-over-http-tunnel.js
  test/simple/test-tls-passphrase.js
  test/simple/test-tls-pause-close.js
  test/simple/test-tls-pause.js
@@ -1107,8 +1115,6 @@ Files: AUTHORS
  debian/nodejs.manpages
  debian/nodejs.postinst
  debian/nodejs.prerm
- debian/patches/1001_fix_debug_break.patch
- debian/patches/1002_destroy_socket_fix_clients.patch
  debian/patches/2001_FHS_paths_for_nodejs.patch
  debian/patches/2002_build_without_libv8_debug.patch
  debian/patches/2005_expected_failing_tests.patch
@@ -1546,6 +1552,7 @@ Files: deps/http_parser/LICENSE-MIT
  deps/uv/test/test-udp-dgram-too-big.c
  deps/uv/test/test-udp-ipv6.c
  deps/uv/test/test-udp-multicast-join.c
+ deps/uv/test/test-udp-multicast-ttl.c
  deps/uv/test/test-udp-options.c
  deps/uv/test/test-udp-send-and-recv.c
 Copyright: HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -1593,7 +1600,7 @@ Files: doc/about/index.html
  doc/community/index.html
  doc/index.html
  doc/template.html
-Copyright: 2010, <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.10/LICENSE">license</a>.</p>
+Copyright: 2010, <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.11/LICENSE">license</a>.</p>
 License: UNKNOWN
  FIXME
 
@@ -1670,7 +1677,7 @@ License: UNKNOWN
 
 Files: doc/api/api/all.html
  doc/api/api/net.html
-Copyright: 2010, <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.10/LICENSE">license</a>.</p>
+Copyright: 2010, <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.11/LICENSE">license</a>.</p>
  { //'connection' listener
 License: UNKNOWN
  FIXME
