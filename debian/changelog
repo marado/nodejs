@@ -1,3 +1,9 @@
+nodejs (0.6.11~dfsg1-2) unstable; urgency=low
+
+  * test-stream-pipe-multi expected to timeout sometimes on busy builds. 
+
+ -- Jérémy Lal <kapouer@melix.org>  Mon, 20 Feb 2012 08:43:24 +0100
+
 nodejs (0.6.11~dfsg1-1) unstable; urgency=low
 
   * New upstream release.
