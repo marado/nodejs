@@ -1,3 +1,12 @@
+nodejs (0.6.11~dfsg1-3) unstable; urgency=low
+
+  * Patch wscript to enable mipsel build, since libv8 is available now.
+  * test-cluster-kill-workers is expected to fail on armhf, see bug#660802.
+  * test-buffer is expected to fail on armel, see bug#660800.
+  * Add epoch to dependency on libev >= 1:4.11. Closes: bug#658441.
+
+ -- Jérémy Lal <kapouer@melix.org>  Tue, 21 Feb 2012 23:39:28 +0100
+
 nodejs (0.6.11~dfsg1-2) unstable; urgency=low
 
   * test-stream-pipe-multi expected to timeout sometimes on busy builds. 
