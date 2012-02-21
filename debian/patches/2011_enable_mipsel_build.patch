@@ -1,0 +1,25 @@
+Description: Enable mipsel build
+ libv8 builds on mipsel, why not nodejs ? 
+Forwarded: not-needed
+Author: Jérémy Lal <kapouer@melix.org>
+Last-Update: 2012-02-21
+--- a/wscript
++++ b/wscript
+@@ -43,7 +43,7 @@
+ 
+ srcdir = '.'
+ blddir = 'out'
+-supported_archs = ('arm', 'ia32', 'x64') # 'mips' supported by v8, but not node
++supported_archs = ('arm', 'ia32', 'x64', 'mips') # 'mips' supported by v8, but not node
+ 
+ jobs=1
+ if os.environ.has_key('JOBS'):
+@@ -53,7 +53,7 @@
+   return path.replace("\\", "/")
+ 
+ def canonical_cpu_type(arch):
+-  m = {'x86': 'ia32', 'i386':'ia32', 'x86_64':'x64', 'amd64':'x64'}
++  m = {'x86': 'ia32', 'i386':'ia32', 'x86_64':'x64', 'amd64':'x64', 'mipsel':'mips'}
+   if arch in m: arch = m[arch]
+   if not arch in supported_archs:
+     raise Exception("supported architectures are "+', '.join(supported_archs)+\
