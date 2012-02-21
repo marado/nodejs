@@ -8,7 +8,7 @@ Author: Jérémy Lal <kapouer@melix.org>
 Last-Update: 2012-02-19
 --- a/test/simple/simple.status
 +++ b/test/simple/simple.status
-@@ -1 +1,15 @@
+@@ -1 +1,17 @@
  prefix simple
 +
 +# only fail when some network resources are not available
@@ -21,6 +21,8 @@ Last-Update: 2012-02-19
 +test-dgram-pingpong: PASS || TIMEOUT
 +test-stream-pipe-multi: PASS || TIMEOUT
 +
-+# should use [ $arch == arm ] but $arch could be wrong
++[ $arch == arm ]
++# http://bugs.debian.org/660800
 +test-buffer: PASS || FAIL
-+
++# http://bugs.debian.org/660802
++test-cluster-kill-workers: PASS || FAIL
