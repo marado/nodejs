@@ -22,20 +22,12 @@ DEB_UPSTREAM_REPACKAGE_EXCLUDES += \
 ./deps/uv/include/uv-private/tree.h \
 ./tools/scons/ \
 ./tools/gyp/ \
-./tools/closure_linter/ \
-./doc/twitter-bird.png \
-./doc/api_assets/twitter-bird.png \
-./doc/api/api/assets/twitter-bird.png \
-./doc/ebay-logo.png \
-./doc/linkedin-logo.png \
-./doc/microsoft-logo.png \
-./doc/yahoo-logo.png \
-./doc/community/not-invented-here.png
+./tools/closure_linter/
 
 DEB_UPSTREAM_REPACKAGE_TAG = $(shell echo $(DEB_UPSTREAM_VERSION) | egrep -o "dfsg[0-9]+")
 
 # suppress checking binary files, to not upset dpkg-source
-DEB_COPYRIGHT_CHECK_IGNORE_REGEX = ^(doc/trademark-policy\.pdf|doc/joyent-logo_orange_nodeorg-01\.png|doc/logos/.*\.png|debian/(changelog|copyright(|_hints|_newhints)))$
+DEB_COPYRIGHT_CHECK_IGNORE_REGEX = ^(doc/trademark-policy\.pdf|doc/mac_osx_nodejs_installer_logo\.png|doc/.*-white-stripe\.jpg|favicon\.ico|debian/(changelog|copyright(|_hints|_newhints)))$
 
 DEB_CONFIGURE_NORMAL_ARGS = ""
 DEB_CONFIGURE_EXTRA_FLAGS = --debug --without-npm --shared-v8 --shared-cares --shared-libev --shared-zlib --no-ssl2
