@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>readline - Node.js v0.6.11 Manual &amp; Documentation</title>
+  <title>Readline Node.js v0.6.12 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
-  <link rel="canonical" href="http://nodejs.org/docs/latest/api/readline.html">
+  <link rel="canonical" href="http://nodejs.org/api/readline.html">
 </head>
-<body class="alt apidoc">
+<body class="alt apidoc" id="api-section-readline">
     <div id="intro" class="interior">
         <a href="/" title="Go back to the home page">
-            <img id="logo" src="assets/logo-light.png" alt="node.js">
+            <img id="logo" src="http://nodejs.org/images/logo-light.png" alt="node.js">
         </a>
     </div>
     <div id="content" class="clearfix">
@@ -30,152 +30,186 @@
         </div>
 
         <div id="column1" class="interior">
-        <header>
-          <h1>Node.js v0.6.11 Manual &amp; Documentation</h1>
-          <div id="gtoc">
-            <p><a href="index.html" name="toc">Index</a> | <a href="all.html">View on single page</a></p>
+          <header>
+            <h1>Node.js v0.6.12 Manual &amp; Documentation</h1>
+            <div id="gtoc">
+              <p><a href="index.html" name="toc">Index</a> | <a href="all.html">View on single page</a></p>
+            </div>
+            <hr>
+          </header>
+
+          <div id="toc">
+            <h2>Table of Contents</h2>
+            <ul>
+<li><a href="#readline_readline">Readline</a><ul>
+<li><a href="#readline_rl_createinterface_input_output_completer">rl.createInterface(input, output, completer)</a></li>
+<li><a href="#readline_class_interface">Class: Interface</a><ul>
+<li><a href="#readline_rl_setprompt_prompt_length">rl.setPrompt(prompt, length)</a></li>
+<li><a href="#readline_rl_prompt">rl.prompt()</a></li>
+<li><a href="#readline_rl_question_query_callback">rl.question(query, callback)</a></li>
+<li><a href="#readline_rl_close">rl.close()</a></li>
+<li><a href="#readline_rl_pause">rl.pause()</a></li>
+<li><a href="#readline_rl_resume">rl.resume()</a></li>
+<li><a href="#readline_rl_write">rl.write()</a></li>
+<li><a href="#readline_event_line">Event: &apos;line&apos;</a></li>
+<li><a href="#readline_event_close">Event: &apos;close&apos;</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
           </div>
-          <hr>
-        </header>
-        <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#readline">Readline</a><ul><li><a href="#rl.createInterface">rl.createInterface(input, output, completer)</a></li><li><a href="#rl.setPrompt">rl.setPrompt(prompt, length)</a></li><li><a href="#rl.prompt">rl.prompt()</a></li><li><a href="#rl.question">rl.question(query, callback)</a></li><li><a href="#rl.close">rl.close()</a></li><li><a href="#rl.pause">rl.pause()</a></li><li><a href="#rl.resume">rl.resume()</a></li><li><a href="#rl.write">rl.write()</a></li><li><a href="#event_line_">Event: 'line'</a></li><li><a href="#event_close_">Event: 'close'</a></li></ul></li></ul><hr></div>
-<h2 id="readline">Readline <span><a class="top" href="#">↑</a><a class="mark" href="#readline">#</a></span></h2>
 
-<p>To use this module, do <code>require('readline')</code>. Readline allows reading of a
-stream (such as STDIN) on a line-by-line basis.</p>
+          <div id="apicontent">
+            <h1>Readline<span><a class="mark" href="#readline_readline" id="readline_readline">#</a></span></h1>
+<p>To use this module, do <code>require(&apos;readline&apos;)</code>. Readline allows reading of a
+stream (such as STDIN) on a line-by-line basis.
 
-<p>Note that once you've invoked this module, your node program will not
-terminate until you've closed the interface, and the STDIN stream. Here's how
-to allow your program to gracefully terminate:</p>
+</p>
+<p>Note that once you&apos;ve invoked this module, your node program will not
+terminate until you&apos;ve closed the interface, and the STDIN stream. Here&apos;s how
+to allow your program to gracefully terminate:
 
-<pre><code>var rl = require('readline');
+</p>
+<pre><code>var rl = require(&apos;readline&apos;);
 
 var i = rl.createInterface(process.stdin, process.stdout, null);
-i.question("What do you think of node.js?", function(answer) {
+i.question(&quot;What do you think of node.js?&quot;, function(answer) {
   // TODO: Log the answer in a database
-  console.log("Thank you for your valuable feedback.");
+  console.log(&quot;Thank you for your valuable feedback.&quot;);
 
   // These two lines together allow the program to terminate. Without
   // them, it would run forever.
   i.close();
   process.stdin.destroy();
 });</code></pre>
-
-<h3 id="rl.createInterface">rl.createInterface(input, output, completer) <span><a class="top" href="#">↑</a><a class="mark" href="#rl.createInterface">#</a></span></h3>
-
+<h2>rl.createInterface(input, output, completer)<span><a class="mark" href="#readline_rl_createinterface_input_output_completer" id="readline_rl_createinterface_input_output_completer">#</a></span></h2>
 <p>Takes two streams and creates a readline interface. The <code>completer</code> function
 is used for autocompletion. When given a substring, it returns <code>[[substr1,
-substr2, ...], originalsubstring]</code>.</p>
+substr2, ...], originalsubstring]</code>.
 
-<p>Also <code>completer</code> can be run in async mode if it accepts two arguments:</p>
+</p>
+<p>Also <code>completer</code> can be run in async mode if it accepts two arguments:
 
+</p>
 <p>  function completer(linePartial, callback) {
-    callback(null, [['123'], linePartial]);
-  }</p>
+    callback(null, [[&apos;123&apos;], linePartial]);
+  }
 
+</p>
 <p><code>createInterface</code> is commonly used with <code>process.stdin</code> and
-<code>process.stdout</code> in order to accept user input:</p>
+<code>process.stdout</code> in order to accept user input:
 
-<pre><code>var readline = require('readline'),
+</p>
+<pre><code>var readline = require(&apos;readline&apos;),
   rl = readline.createInterface(process.stdin, process.stdout);</code></pre>
+<h2>Class: Interface<span><a class="mark" href="#readline_class_interface" id="readline_class_interface">#</a></span></h2>
+<p>The class that represents a readline interface with a stdin and stdout
+stream.
 
-<h3 id="rl.setPrompt">rl.setPrompt(prompt, length) <span><a class="top" href="#">↑</a><a class="mark" href="#rl.setPrompt">#</a></span></h3>
-
+</p>
+<h3>rl.setPrompt(prompt, length)<span><a class="mark" href="#readline_rl_setprompt_prompt_length" id="readline_rl_setprompt_prompt_length">#</a></span></h3>
 <p>Sets the prompt, for example when you run <code>node</code> on the command line, you see
-<code>&gt; </code>, which is node's prompt.</p>
+<code>&gt; </code>, which is node&apos;s prompt.
 
-<h3 id="rl.prompt">rl.prompt() <span><a class="top" href="#">↑</a><a class="mark" href="#rl.prompt">#</a></span></h3>
-
+</p>
+<h3>rl.prompt()<span><a class="mark" href="#readline_rl_prompt" id="readline_rl_prompt">#</a></span></h3>
 <p>Readies readline for input from the user, putting the current <code>setPrompt</code>
-options on a new line, giving the user a new spot to write.</p>
+options on a new line, giving the user a new spot to write.
 
-<p>&lt;!-- ### rl.getColumns() Not available? --&gt;</p>
-
-<h3 id="rl.question">rl.question(query, callback) <span><a class="top" href="#">↑</a><a class="mark" href="#rl.question">#</a></span></h3>
-
-<p>Prepends the prompt with <code>query</code> and invokes <code>callback</code> with the user's
+</p>
+<h3>rl.question(query, callback)<span><a class="mark" href="#readline_rl_question_query_callback" id="readline_rl_question_query_callback">#</a></span></h3>
+<p>Prepends the prompt with <code>query</code> and invokes <code>callback</code> with the user&apos;s
 response. Displays the query to the user, and then invokes <code>callback</code> with the
-user's response after it has been typed.</p>
+user&apos;s response after it has been typed.
 
-<p>Example usage:</p>
+</p>
+<p>Example usage:
 
-<pre><code>interface.question('What is your favorite food?', function(answer) {
-  console.log('Oh, so your favorite food is ' + answer);
+</p>
+<pre><code>interface.question(&apos;What is your favorite food?&apos;, function(answer) {
+  console.log(&apos;Oh, so your favorite food is &apos; + answer);
 });</code></pre>
+<h3>rl.close()<span><a class="mark" href="#readline_rl_close" id="readline_rl_close">#</a></span></h3>
+<p>  Closes tty.
 
-<h3 id="rl.close">rl.close() <span><a class="top" href="#">↑</a><a class="mark" href="#rl.close">#</a></span></h3>
+</p>
+<h3>rl.pause()<span><a class="mark" href="#readline_rl_pause" id="readline_rl_pause">#</a></span></h3>
+<p>  Pauses tty.
 
-<p>  Closes tty.</p>
+</p>
+<h3>rl.resume()<span><a class="mark" href="#readline_rl_resume" id="readline_rl_resume">#</a></span></h3>
+<p>  Resumes tty.
 
-<h3 id="rl.pause">rl.pause() <span><a class="top" href="#">↑</a><a class="mark" href="#rl.pause">#</a></span></h3>
+</p>
+<h3>rl.write()<span><a class="mark" href="#readline_rl_write" id="readline_rl_write">#</a></span></h3>
+<p>  Writes to tty.
 
-<p>  Pauses tty.</p>
+</p>
+<h3>Event: &apos;line&apos;<span><a class="mark" href="#readline_event_line" id="readline_event_line">#</a></span></h3>
+<p><code>function (line) {}</code>
 
-<h3 id="rl.resume">rl.resume() <span><a class="top" href="#">↑</a><a class="mark" href="#rl.resume">#</a></span></h3>
-
-<p>  Resumes tty.</p>
-
-<h3 id="rl.write">rl.write() <span><a class="top" href="#">↑</a><a class="mark" href="#rl.write">#</a></span></h3>
-
-<p>  Writes to tty.</p>
-
-<h3 id="event_line_">Event: 'line' <span><a class="top" href="#">↑</a><a class="mark" href="#event_line_">#</a></span></h3>
-
-<p><code>function (line) {}</code></p>
-
+</p>
 <p>Emitted whenever the <code>in</code> stream receives a <code>\n</code>, usually received when the
-user hits enter, or return. This is a good hook to listen for user input.</p>
+user hits enter, or return. This is a good hook to listen for user input.
 
-<p>Example of listening for <code>line</code>:</p>
+</p>
+<p>Example of listening for <code>line</code>:
 
-<pre><code>rl.on('line', function (cmd) {
-  console.log('You just typed: '+cmd);
+</p>
+<pre><code>rl.on(&apos;line&apos;, function (cmd) {
+  console.log(&apos;You just typed: &apos;+cmd);
 });</code></pre>
+<h3>Event: &apos;close&apos;<span><a class="mark" href="#readline_event_close" id="readline_event_close">#</a></span></h3>
+<p><code>function () {}</code>
 
-<h3 id="event_close_">Event: 'close' <span><a class="top" href="#">↑</a><a class="mark" href="#event_close_">#</a></span></h3>
-
-<p><code>function () {}</code></p>
-
+</p>
 <p>Emitted whenever the <code>in</code> stream receives a <code>^C</code> or <code>^D</code>, respectively known
 as <code>SIGINT</code> and <code>EOT</code>. This is a good way to know the user is finished using
-your program.</p>
+your program.
 
-<p>Example of listening for <code>close</code>, and exiting the program afterward:</p>
+</p>
+<p>Example of listening for <code>close</code>, and exiting the program afterward:
 
-<pre><code>rl.on('close', function() {
-  console.log('goodbye!');
+</p>
+<pre><code>rl.on(&apos;close&apos;, function() {
+  console.log(&apos;goodbye!&apos;);
   process.exit(0);
 });</code></pre>
+<p>Here&apos;s an example of how to use all these together to craft a tiny command
+line interface:
 
-<p>Here's an example of how to use all these together to craft a tiny command
-line interface:</p>
-
-<pre><code>var readline = require('readline'),
+</p>
+<pre><code>var readline = require(&apos;readline&apos;),
   rl = readline.createInterface(process.stdin, process.stdout),
-  prefix = 'OHAI&gt; ';
+  prefix = &apos;OHAI&gt; &apos;;
 
-rl.on('line', function(line) {
+rl.on(&apos;line&apos;, function(line) {
   switch(line.trim()) {
-    case 'hello':
-      console.log('world!');
-      break;
+    case &apos;hello&apos;:
+      console.log(&apos;world!&apos;);
+  break;
     default:
-      console.log('Say what? I might have heard `' + line.trim() + '`');
+      console.log(&apos;Say what? I might have heard `&apos; + line.trim() + &apos;`&apos;);
       break;
   }
   rl.setPrompt(prefix, prefix.length);
   rl.prompt();
-}).on('close', function() {
-  console.log('Have a great day!');
+}).on(&apos;close&apos;, function() {
+  console.log(&apos;Have a great day!&apos;);
   process.exit(0);
 });
-console.log(prefix + 'Good to see you. Try typing stuff.');
+console.log(prefix + &apos;Good to see you. Try typing stuff.&apos;);
 rl.setPrompt(prefix, prefix.length);
 rl.prompt();</code></pre>
-
 <p>Take a look at this slightly more complicated
 <a href="https://gist.github.com/901104">example</a>, and
 <a href="https://github.com/cloudhead/http-console">http-console</a> for a real-life use
-case.</p>
+case.
+</p>
+
+          </div>
         </div>
     </div>
     <div id="footer">
@@ -192,9 +226,9 @@ case.</p>
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright 2010 <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.11/LICENSE">license</a>.</p>
+        <p>Copyright 2010 <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.12/LICENSE">license</a>.</p>
     </div>
-    
+
   <script src="assets/sh_main.js"></script>
   <script src="assets/sh_javascript.min.js"></script>
   <script>highlight(undefined, undefined, 'pre');</script>
@@ -210,3 +244,4 @@ case.</p>
       } catch(err) {}</script>
 </body>
 </html>
+

@@ -1,4 +1,4 @@
-## TLS (SSL)
+# TLS (SSL)
 
 Use `require('tls')` to access this module.
 
@@ -26,7 +26,9 @@ Alternatively you can send the CSR to a Certificate Authority for signing.
 (TODO: docs on creating a CA, for now interested users should just look at
 `test/fixtures/keys/Makefile` in the Node source code)
 
-### Client-initiated renegotiation attack mitigation
+## Client-initiated renegotiation attack mitigation
+
+<!-- type=misc -->
 
 The TLS protocol lets the client renegotiate certain aspects of the TLS session.
 Unfortunately, session renegotiation requires a disproportional amount of
@@ -48,7 +50,20 @@ To test your server, connect to it with `openssl s_client -connect address:port`
 and tap `R<CR>` (that's the letter `R` followed by a carriage return) a few
 times.
 
-#### tls.createServer(options, [secureConnectionListener])
+
+## NPN and SNI
+
+<!-- type=misc -->
+
+NPN (Next Protocol Negotiation) and SNI (Server Name Indication) are TLS
+handshake extensions allowing you:
+
+  * NPN - to use one TLS server for multiple protocols (HTTP, SPDY)
+  * SNI - to use one TLS server for multiple hostnames with different SSL
+    certificates.
+
+
+## tls.createServer(options, [secureConnectionListener])
 
 Creates a new [tls.Server](#tls.Server).
 The `connectionListener` argument is automatically set as a listener for the
@@ -127,7 +142,7 @@ You can test this server by connecting to it with `openssl s_client`:
     openssl s_client -connect 127.0.0.1:8000
 
 
-#### tls.connect(port, [host], [options], [secureConnectListener])
+## tls.connect(port, [host], [options], [secureConnectListener])
 
 Creates a new client connection to the given `port` and `host`. (If `host`
 defaults to `localhost`.) `options` should be an object which specifies
@@ -190,16 +205,7 @@ Here is an example of a client of echo server as described previously:
     });
 
 
-### NPN and SNI
-
-NPN (Next Protocol Negotiation) and SNI (Server Name Indication) are TLS
-handshake extensions allowing you:
-
-  * NPN - to use one TLS server for multiple protocols (HTTP, SPDY)
-  * SNI - to use one TLS server for multiple hostnames with different SSL
-    certificates.
-
-### pair = tls.createSecurePair([credentials], [isServer], [requestCert], [rejectUnauthorized])
+## tls.createSecurePair([credentials], [isServer], [requestCert], [rejectUnauthorized])
 
 Creates a new secure pair object with two streams, one of which reads/writes
 encrypted data, and one reads/writes cleartext data.
@@ -221,7 +227,11 @@ and the cleartext one is used as a replacement for the initial encrypted stream.
 `tls.createSecurePair()` returns a SecurePair object with
 [cleartext](#tls.CleartextStream) and `encrypted` stream properties.
 
-#### Event: 'secure'
+## Class: SecurePair
+
+Returned by tls.createSecurePair.
+
+### Event: 'secure'
 
 The event is emitted from the SecurePair once the pair has successfully
 established a secure connection.
@@ -230,13 +240,13 @@ Similarly to the checking for the server 'secureConnection' event,
 pair.cleartext.authorized should be checked to confirm whether the certificate
 used properly authorized.
 
-### tls.Server
+## Class: tls.Server
 
 This class is a subclass of `net.Server` and has the same methods on it.
 Instead of accepting just raw TCP connections, this accepts encrypted
 connections using TLS or SSL.
 
-#### Event: 'secureConnection'
+### Event: 'secureConnection'
 
 `function (cleartextStream) {}`
 
@@ -256,7 +266,7 @@ server, you unauthorized connections may be accepted.
 SNI.
 
 
-#### Event: 'clientError'
+### Event: 'clientError'
 
 `function (exception) { }`
 
@@ -264,7 +274,7 @@ When a client connection emits an 'error' event before secure connection is
 established - it will be forwarded here.
 
 
-#### server.listen(port, [host], [callback])
+### server.listen(port, [host], [callback])
 
 Begin accepting connections on the specified `port` and `host`.  If the
 `host` is omitted, the server will accept connections directed to any
@@ -276,45 +286,45 @@ when the server has been bound.
 See `net.Server` for more information.
 
 
-#### server.close()
+### server.close()
 
 Stops the server from accepting new connections. This function is
 asynchronous, the server is finally closed when the server emits a `'close'`
 event.
 
-#### server.address()
+### server.address()
 
 Returns the bound address and port of the server as reported by the operating
 system.
 See [net.Server.address()](net.html#server.address) for more information.
 
-#### server.addContext(hostname, credentials)
+### server.addContext(hostname, credentials)
 
 Add secure context that will be used if client request's SNI hostname is
 matching passed `hostname` (wildcards can be used). `credentials` can contain
 `key`, `cert` and `ca`.
 
-#### server.maxConnections
+### server.maxConnections
 
 Set this property to reject connections when the server's connection count
 gets high.
 
-#### server.connections
+### server.connections
 
 The number of concurrent connections on the server.
 
 
-### tls.CleartextStream
+## Class: tls.CleartextStream
 
 This is a stream on top of the *Encrypted* stream that makes it possible to
 read/write an encrypted data as a cleartext data.
 
-This instance implements a duplex [Stream](streams.html#streams) interfaces.
+This instance implements a duplex [Stream](stream.html) interfaces.
 It has all the common stream methods and events.
 
-#### Event: 'secureConnect'
+A ClearTextStream is the `clear` member of a SecurePair object.
 
-`function () {}`
+### Event: 'secureConnect'
 
 This event is emitted after a new connection has been successfully handshaked. 
 The listener will be called no matter if the server's certificate was
@@ -324,17 +334,17 @@ If `cleartextStream.authorized === false` then the error can be found in
 `cleartextStream.authorizationError`. Also if NPN was used - you can check
 `cleartextStream.npnProtocol` for negotiated protocol.
 
-#### cleartextStream.authorized
+### cleartextStream.authorized
 
 A boolean that is `true` if the peer certificate was signed by one of the
 specified CAs, otherwise `false`
 
-#### cleartextStream.authorizationError
+### cleartextStream.authorizationError
 
 The reason why the peer's certificate has not been verified. This property
 becomes available only when `cleartextStream.authorized === false`.
 
-#### cleartextStream.getPeerCertificate()
+### cleartextStream.getPeerCertificate()
 
 Returns an object representing the peer's certificate. The returned object has
 some properties corresponding to the field of the certificate.
@@ -362,17 +372,17 @@ Example:
 If the peer does not provide a certificate, it returns `null` or an empty
 object.
 
-#### cleartextStream.address()
+### cleartextStream.address()
 
 Returns the bound address and port of the underlying socket as reported by the
 operating system. Returns an object with two properties, e.g.
 `{"address":"192.168.57.1", "port":62053}`
 
-#### cleartextStream.remoteAddress
+### cleartextStream.remoteAddress
 
 The string representation of the remote IP address. For example,
 `'74.125.127.100'` or `'2001:4860:a005::68'`.
 
-#### cleartextStream.remotePort
+### cleartextStream.remotePort
 
 The numeric representation of the remote port. For example, `443`.

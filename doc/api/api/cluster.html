@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>cluster - Node.js v0.6.11 Manual &amp; Documentation</title>
+  <title>Cluster Node.js v0.6.12 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
-  <link rel="canonical" href="http://nodejs.org/docs/latest/api/cluster.html">
+  <link rel="canonical" href="http://nodejs.org/api/cluster.html">
 </head>
-<body class="alt apidoc">
+<body class="alt apidoc" id="api-section-cluster">
     <div id="intro" class="interior">
         <a href="/" title="Go back to the home page">
-            <img id="logo" src="assets/logo-light.png" alt="node.js">
+            <img id="logo" src="http://nodejs.org/images/logo-light.png" alt="node.js">
         </a>
     </div>
     <div id="content" class="clearfix">
@@ -30,26 +30,42 @@
         </div>
 
         <div id="column1" class="interior">
-        <header>
-          <h1>Node.js v0.6.11 Manual &amp; Documentation</h1>
-          <div id="gtoc">
-            <p><a href="index.html" name="toc">Index</a> | <a href="all.html">View on single page</a></p>
-          </div>
-          <hr>
-        </header>
-        <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#cluster">Cluster</a><ul><li><a href="#cluster.fork">cluster.fork()</a></li><li><a href="#cluster.isMaster">cluster.isMaster</a></li><li><a href="#cluster.isWorker">cluster.isWorker</a></li><li><a href="#event_death_">Event: 'death'</a></li></ul></li></ul><hr></div>
-<h2 id="cluster">Cluster <span><a class="top" href="#">↑</a><a class="mark" href="#cluster">#</a></span></h2>
+          <header>
+            <h1>Node.js v0.6.12 Manual &amp; Documentation</h1>
+            <div id="gtoc">
+              <p><a href="index.html" name="toc">Index</a> | <a href="all.html">View on single page</a></p>
+            </div>
+            <hr>
+          </header>
 
+          <div id="toc">
+            <h2>Table of Contents</h2>
+            <ul>
+<li><a href="#cluster_cluster">Cluster</a><ul>
+<li><a href="#cluster_cluster_fork">cluster.fork()</a></li>
+<li><a href="#cluster_cluster_ismaster">cluster.isMaster</a></li>
+<li><a href="#cluster_cluster_isworker">cluster.isWorker</a></li>
+<li><a href="#cluster_event_death">Event: &apos;death&apos;</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+
+          <div id="apicontent">
+            <h1>Cluster<span><a class="mark" href="#cluster_cluster" id="cluster_cluster">#</a></span></h1>
 <p>A single instance of Node runs in a single thread. To take advantage of
 multi-core systems the user will sometimes want to launch a cluster of Node
-processes to handle the load.</p>
+processes to handle the load.
 
+</p>
 <p>The cluster module allows you to easily create a network of processes that
-all share server ports.</p>
+all share server ports.
 
-<pre><code>var cluster = require('cluster');
-var http = require('http');
-var numCPUs = require('os').cpus().length;
+</p>
+<pre><code>var cluster = require(&apos;cluster&apos;);
+var http = require(&apos;http&apos;);
+var numCPUs = require(&apos;os&apos;).cpus().length;
 
 if (cluster.isMaster) {
   // Fork workers.
@@ -57,32 +73,32 @@ if (cluster.isMaster) {
     cluster.fork();
   }
 
-  cluster.on('death', function(worker) {
-    console.log('worker ' + worker.pid + ' died');
+  cluster.on(&apos;death&apos;, function(worker) {
+    console.log(&apos;worker &apos; + worker.pid + &apos; died&apos;);
   });
 } else {
   // Worker processes have a http server.
   http.Server(function(req, res) {
     res.writeHead(200);
-    res.end("hello world\n");
+    res.end(&quot;hello world\n&quot;);
   }).listen(8000);
 }</code></pre>
+<p>Running node will now share port 8000 between the workers:
 
-<p>Running node will now share port 8000 between the workers:</p>
-
+</p>
 <pre><code>% node server.js
 Worker 2438 online
 Worker 2437 online</code></pre>
-
 <p>The difference between <code>cluster.fork()</code> and <code>child_process.fork()</code> is simply
 that cluster allows TCP servers to be shared between workers. <code>cluster.fork</code>
 is implemented on top of <code>child_process.fork</code>. The message passing API that
 is available with <code>child_process.fork</code> is available with <code>cluster</code> as well.
 As an example, here is a cluster which keeps count of the number of requests
-in the master process via message passing:</p>
+in the master process via message passing:
 
-<pre><code>var cluster = require('cluster');
-var http = require('http');
+</p>
+<pre><code>var cluster = require(&apos;cluster&apos;);
+var http = require(&apos;http&apos;);
 var numReqs = 0;
 
 if (cluster.isMaster) {
@@ -90,50 +106,50 @@ if (cluster.isMaster) {
   for (var i = 0; i &lt; 2; i++) {
     var worker = cluster.fork();
 
-    worker.on('message', function(msg) {
-      if (msg.cmd &amp;&amp; msg.cmd == 'notifyRequest') {
+    worker.on(&apos;message&apos;, function(msg) {
+      if (msg.cmd &amp;&amp; msg.cmd == &apos;notifyRequest&apos;) {
         numReqs++;
       }
     });
   }
 
   setInterval(function() {
-    console.log("numReqs =", numReqs);
+    console.log(&quot;numReqs =&quot;, numReqs);
   }, 1000);
 } else {
   // Worker processes have a http server.
   http.Server(function(req, res) {
     res.writeHead(200);
-    res.end("hello world\n");
+    res.end(&quot;hello world\n&quot;);
     // Send message to master process
-    process.send({ cmd: 'notifyRequest' });
+    process.send({ cmd: &apos;notifyRequest&apos; });
   }).listen(8000);
 }</code></pre>
+<h2>cluster.fork()<span><a class="mark" href="#cluster_cluster_fork" id="cluster_cluster_fork">#</a></span></h2>
+<p>Spawn a new worker process. This can only be called from the master process.
 
-<h3 id="cluster.fork">cluster.fork() <span><a class="top" href="#">↑</a><a class="mark" href="#cluster.fork">#</a></span></h3>
-
-<p>Spawn a new worker process. This can only be called from the master process.</p>
-
-<h3 id="cluster.isMaster">cluster.isMaster <span><a class="top" href="#">↑</a><a class="mark" href="#cluster.isMaster">#</a></span></h3>
-
-<h3 id="cluster.isWorker">cluster.isWorker <span><a class="top" href="#">↑</a><a class="mark" href="#cluster.isWorker">#</a></span></h3>
-
+</p>
+<h2>cluster.isMaster<span><a class="mark" href="#cluster_cluster_ismaster" id="cluster_cluster_ismaster">#</a></span></h2>
+<h2>cluster.isWorker<span><a class="mark" href="#cluster_cluster_isworker" id="cluster_cluster_isworker">#</a></span></h2>
 <p>Boolean flags to determine if the current process is a master or a worker
 process in a cluster. A process <code>isMaster</code> if <code>process.env.NODE_WORKER_ID</code>
-is undefined.</p>
+is undefined.
 
-<h3 id="event_death_">Event: 'death' <span><a class="top" href="#">↑</a><a class="mark" href="#event_death_">#</a></span></h3>
+</p>
+<h2>Event: &apos;death&apos;<span><a class="mark" href="#cluster_event_death" id="cluster_event_death">#</a></span></h2>
+<p>When any of the workers die the cluster module will emit the &apos;death&apos; event.
+This can be used to restart the worker by calling <code>fork()</code> again.
 
-<p>When any of the workers die the cluster module will emit the 'death' event.
-This can be used to restart the worker by calling <code>fork()</code> again.</p>
-
-<pre><code>cluster.on('death', function(worker) {
-  console.log('worker ' + worker.pid + ' died. restart...');
+</p>
+<pre><code>cluster.on(&apos;death&apos;, function(worker) {
+  console.log(&apos;worker &apos; + worker.pid + &apos; died. restart...&apos;);
   cluster.fork();
 });</code></pre>
-
 <p>Different techniques can be used to restart the worker depending on the
-application.</p>
+application.
+</p>
+
+          </div>
         </div>
     </div>
     <div id="footer">
@@ -150,9 +166,9 @@ application.</p>
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright 2010 <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.11/LICENSE">license</a>.</p>
+        <p>Copyright 2010 <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.12/LICENSE">license</a>.</p>
     </div>
-    
+
   <script src="assets/sh_main.js"></script>
   <script src="assets/sh_javascript.min.js"></script>
   <script>highlight(undefined, undefined, 'pre');</script>
@@ -168,3 +184,4 @@ application.</p>
       } catch(err) {}</script>
 </body>
 </html>
+
