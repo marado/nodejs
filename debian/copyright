@@ -61,6 +61,10 @@ Files: deps/v8/src/third-party/valgrind/valgrind.h
 Copyright: 2000-2007, Julian Seward
 License: BSD-4-clause~author
 
+Files: doc/sh*
+Copyright: 2007, 2008 gnombat@users.sourceforge.net
+License: GPL-3
+
 File: lib/assert.js
 Copyright: 2009 Thomas Robinson <280north.com>
 License: Expat
@@ -71,10 +75,6 @@ License: BSD-3-clause~FairOaksLabs
 
 File: lib/punycode.js
 Copyright: 2011 Mathias Bynens <http://mathiasbynens.be/>
-License: Expat
-
-Files: tools/doctool/markdown.js
-Copyright: 2009-2010 Dominic Baggott, 2009-2010 Ash Berlin
 License: Expat
 
 Files: tools/waf-light
@@ -337,12 +337,20 @@ License: OpenBSD~Lucent
  PURPOSE.
 
 License: GPL-2+
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2, or (at your option)
-    any later version.
-    On Debian GNU/Linux systems, the complete text of the GNU General
-    Public License can be found in `/usr/share/common-licenses/GPL-2'
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2, or (at your option)
+ any later version.
+ On Debian GNU/Linux systems, the complete text of the GNU General
+ Public License can be found in `/usr/share/common-licenses/GPL-2'
+
+License: GPL-3
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ On Debian GNU/Linux systems, the complete text of the GNU General
+ Public License can be found in `/usr/share/common-licenses/GPL-3'
 
 License: Python-CNRI
  Licensed to PSF under a Contributor Agreement and distributed under the
