@@ -4,6 +4,8 @@ nodejs (0.6.12~dfsg1-1) UNRELEASED; urgency=low
   * test-cluster-kill-workers is expected to fail on armhf, see bug#660802.
   * test-buffer is expected to fail on armel, see bug#660800.
   * Add epoch to dependency on libev >= 1:4.11. Closes: bug#658441.
+  * Remove tools/doc because node-doc-generator is unlicensed.
+  * Add copyright for doc/sh* files (shjs).
 
  -- Jérémy Lal <kapouer@melix.org>  Tue, 21 Feb 2012 23:39:28 +0100
 
