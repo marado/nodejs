@@ -1,2 +1,3 @@
+# not applicable because node-waf, waf-light, wafadmin/* do not contain compressed code.
 nodejs source: source-contains-waf-binary tools/node-waf
 
