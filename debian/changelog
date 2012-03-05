@@ -6,6 +6,8 @@ nodejs (0.6.12~dfsg1-1) UNRELEASED; urgency=low
   * Add epoch to dependency on libev >= 1:4.11. Closes: bug#658441.
   * Remove tools/doc because node-doc-generator is unlicensed.
   * Add copyright for doc/sh* files (shjs).
+  * source.lintian-overrides : source-contains-waf-binary tools/node-waf
+    it is simply not the case here.
 
  -- Jérémy Lal <kapouer@melix.org>  Tue, 21 Feb 2012 23:39:28 +0100
 
