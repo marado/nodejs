@@ -61,7 +61,10 @@ Files: deps/v8/src/third-party/valgrind/valgrind.h
 Copyright: 2000-2007, Julian Seward
 License: BSD-4-clause~author
 
-Files: doc/sh*
+Files: doc/sh_main.js
+ doc/sh_javascript.min.js
+ doc/sh.css
+ doc/sh_vim-dark.css
 Copyright: 2007, 2008 gnombat@users.sourceforge.net
 License: GPL-3
 
