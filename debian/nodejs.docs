@@ -1,1 +1,2 @@
-doc/api/api
+doc/api/api/*.html
+doc/api/api/assets/
