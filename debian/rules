@@ -51,6 +51,10 @@ clean::
 	find . -name "*.pyc" -delete
 	rm -rf out
 
+# remove *.json files from documentation
+binary-install/nodejs::
+	find debian/nodejs/usr/share/doc/nodejs -name *.json -delete
+
 # we have completion for nodejs-waf
 install/nodejs-dev::
 	dh_bash-completion
