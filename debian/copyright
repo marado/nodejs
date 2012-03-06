@@ -68,15 +68,15 @@ Files: doc/sh_main.js
 Copyright: 2007, 2008 gnombat@users.sourceforge.net
 License: GPL-3
 
-File: lib/assert.js
+Files: lib/assert.js
 Copyright: 2009 Thomas Robinson <280north.com>
 License: Expat
 
-File: lib/buffer_ieee754.js
+Files: lib/buffer_ieee754.js
 Copyright: 2008 Fair Oaks Labs, Inc.
 License: BSD-3-clause~FairOaksLabs
 
-File: lib/punycode.js
+Files: lib/punycode.js
 Copyright: 2011 Mathias Bynens <http://mathiasbynens.be/>
 License: Expat
 
