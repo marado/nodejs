@@ -51,9 +51,11 @@ clean::
 	find . -name "*.pyc" -delete
 	rm -rf out
 
-# remove *.json files from documentation
+# remove *.json files from documentation, remove google-analytics calls
+# TODO: when doc will be generated from markdown, remove it from doc/template.html
 binary-install/nodejs::
 	find debian/nodejs/usr/share/doc/nodejs -name *.json -delete
+	sed -i -e '/document\.write/d' -e '/pageTracker/d' debian/nodejs/usr/share/doc/nodejs/api/*.html
 
 # we have completion for nodejs-waf
 install/nodejs-dev::
