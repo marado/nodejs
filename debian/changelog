@@ -1,6 +1,7 @@
-nodejs (0.6.12~dfsg1-1) UNRELEASED; urgency=low
+nodejs (0.6.12~dfsg1-1) unstable; urgency=low
 
   * Patch wscript to enable mipsel build, since libv8 is available now.
+    Note that upstream does not support mipsel builds, failure expected.
   * test-cluster-kill-workers is expected to fail on armhf, see bug#660802.
   * test-buffer is expected to fail on armel, see bug#660800.
   * Add epoch to dependency on libev >= 1:4.11. Closes: bug#658441.
@@ -9,7 +10,7 @@ nodejs (0.6.12~dfsg1-1) UNRELEASED; urgency=low
   * source.lintian-overrides : source-contains-waf-binary tools/node-waf
     it is simply not the case here.
 
- -- Jérémy Lal <kapouer@melix.org>  Tue, 21 Feb 2012 23:39:28 +0100
+ -- Jérémy Lal <kapouer@melix.org>  Fri, 09 Mar 2012 11:37:15 +0100
 
 nodejs (0.6.11~dfsg1-2) unstable; urgency=low
 
