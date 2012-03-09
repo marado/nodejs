@@ -11,6 +11,7 @@ DEB_UPSTREAM_TARBALL_BASENAME = node-v$(DEB_UPSTREAM_TARBALL_VERSION)
 DEB_UPSTREAM_WGET_OPTS += --no-check-certificate
 # ./deps/npm contains some non-DFSG files, repackaging is needed.
 # ./tools/doc/ is unlicensed, https://github.com/joyent/node/issues/2872
+# and will be fixed in 0.6.13, https://github.com/joyent/node/commit/33f9074a.
 # Conveniently, remove unused software to ease debian/copyright maintenance.
 DEB_UPSTREAM_REPACKAGE_EXCLUDES += \
 ./deps/npm/ \
