@@ -1,4 +1,4 @@
-Format: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?rev=174
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: FIXME
 Upstream-Contact: FIXME
 Source: FIXME
@@ -426,6 +426,7 @@ Files: benchmark/next-tick-2.js
  test/simple/test-net-socket-timeout.js
  test/simple/test-net-stream.js
  test/simple/test-net-write-after-close.js
+ test/simple/test-net-write-connect-write.js
  test/simple/test-net-write-slow.js
  test/simple/test-next-tick-doesnt-hang.js
  test/simple/test-next-tick-errors.js
@@ -484,6 +485,7 @@ Files: benchmark/next-tick-2.js
  test/simple/test-signal-unregister.js
  test/simple/test-stdin-child-proc.js
  test/simple/test-stdin-from-file.js
+ test/simple/test-stdin-hang.js
  test/simple/test-stdin-pause-resume.js
  test/simple/test-stdout-close-catch.js
  test/simple/test-stdout-to-file.js
@@ -546,7 +548,7 @@ Files: benchmark/next-tick-2.js
  test/simple/test-zlib-random-byte-pipes.js
  wscript
 Copyright: HOLDERS BE LIABLE FOR ANY CLAIM
- Joyent, Inc. and other Node contributors
+  Joyent, Inc. and other Node contributors
 License: MIT/X11 (BSD like)
  FIXME
 
@@ -1036,19 +1038,19 @@ Files: deps/v8/LICENSE
  tools/js2c.py
  tools/run-valgrind.py
 Copyright: 2006-2008, the V8 project authors.
- 2006-2009, the V8 project authors.
- 2006-2010, the V8 project authors.
- 2006-2011, the V8 project authors.
- 2007-2008, the V8 project authors.
- 2007-2010, the V8 project authors.
- 2008, the V8 project authors.
- 2008-2009, the V8 project authors.
- 2009, the V8 project authors.
- 2009-2010, the V8 project authors.
- 2010, the V8 project authors.
- 2011, the V8 project authors.
- 2012, the V8 project authors.
- HOLDERS AND CONTRIBUTORS
+  2006-2009, the V8 project authors.
+  2006-2010, the V8 project authors.
+  2006-2011, the V8 project authors.
+  2007-2008, the V8 project authors.
+  2007-2010, the V8 project authors.
+  2008, the V8 project authors.
+  2008-2009, the V8 project authors.
+  2009, the V8 project authors.
+  2009-2010, the V8 project authors.
+  2010, the V8 project authors.
+  2011, the V8 project authors.
+  2012, the V8 project authors.
+  HOLDERS AND CONTRIBUTORS
 License: BSD (3 clause)
  FIXME
 
@@ -1124,6 +1126,7 @@ Files: AUTHORS
  debian/patches/2009_fix_shared_ev.patch
  debian/patches/2011_enable_mipsel_build.patch
  debian/patches/series
+ debian/source.lintian-overrides
  debian/source/format
  debian/watch
  deps/http_parser/.gitignore
@@ -1174,26 +1177,57 @@ Files: AUTHORS
  deps/v8/tools/oom_dump/README
  deps/v8/tools/visual_studio/README.txt
  deps/v8/tools/windows-tick-processor.bat
- doc/anchor.png
  doc/api/_toc.markdown
  doc/api/addons.markdown
  doc/api/all.markdown
- doc/api/api/assets/anchor.png
- doc/api/api/assets/icons-interior.png
- doc/api/api/assets/logo-light.png
- doc/api/api/assets/platform-icons.png
+ doc/api/api/_toc.json
+ doc/api/api/addons.json
+ doc/api/api/appendix_1.json
+ doc/api/api/assert.json
  doc/api/api/assets/sh.css
- doc/api/api/assets/sh_javascript.min.js
  doc/api/api/assets/style.css
+ doc/api/api/buffer.json
+ doc/api/api/child_process.json
+ doc/api/api/cluster.json
+ doc/api/api/crypto.json
+ doc/api/api/debugger.json
+ doc/api/api/dgram.json
+ doc/api/api/dns.json
+ doc/api/api/documentation.json
+ doc/api/api/events.json
+ doc/api/api/fs.json
+ doc/api/api/globals.json
+ doc/api/api/http.json
+ doc/api/api/https.json
+ doc/api/api/index.json
+ doc/api/api/modules.json
+ doc/api/api/os.json
+ doc/api/api/path.json
+ doc/api/api/process.json
+ doc/api/api/querystring.json
+ doc/api/api/readline.json
+ doc/api/api/repl.json
+ doc/api/api/stdio.json
+ doc/api/api/stream.json
+ doc/api/api/string_decoder.json
+ doc/api/api/synopsis.json
+ doc/api/api/timers.json
+ doc/api/api/tls.json
+ doc/api/api/tty.json
+ doc/api/api/url.json
+ doc/api/api/util.json
+ doc/api/api/vm.json
+ doc/api/api/zlib.json
  doc/api/appendix_1.markdown
  doc/api/assert.markdown
- doc/api/buffers.markdown
- doc/api/child_processes.markdown
+ doc/api/buffer.markdown
+ doc/api/child_process.markdown
  doc/api/cluster.markdown
  doc/api/crypto.markdown
  doc/api/debugger.markdown
  doc/api/dgram.markdown
  doc/api/dns.markdown
+ doc/api/documentation.markdown
  doc/api/events.markdown
  doc/api/fs.markdown
  doc/api/globals.markdown
@@ -1208,7 +1242,7 @@ Files: AUTHORS
  doc/api/readline.markdown
  doc/api/repl.markdown
  doc/api/stdio.markdown
- doc/api/streams.markdown
+ doc/api/stream.markdown
  doc/api/synopsis.markdown
  doc/api/timers.markdown
  doc/api/tls.markdown
@@ -1217,34 +1251,17 @@ Files: AUTHORS
  doc/api/util.markdown
  doc/api/vm.markdown
  doc/api/zlib.markdown
- doc/api_assets/anchor.png
- doc/api_assets/icons-interior.png
- doc/api_assets/logo-light.png
- doc/api_assets/platform-icons.png
  doc/api_assets/sh.css
- doc/api_assets/sh_javascript.min.js
  doc/api_assets/style.css
  doc/cla.html
- doc/close-downloads.png
- doc/community-icons.png
- doc/download-logo.png
  doc/favicon.ico
- doc/footer-logo.png
- doc/full-white-stripe.jpg
- doc/home-icons.png
- doc/icons-interior.png
- doc/icons.png
- doc/logo-light.png
- doc/logo.png
  doc/node.1
  doc/pipe.css
- doc/platform-icons.png
  doc/sh.css
  doc/sh_javascript.min.js
  doc/sh_vim-dark.css
- doc/sponsored.png
- doc/thin-white-stripe.jpg
  doc/v0.4_announcement.html
+ lib/punycode.js
  node.gyp
  src/macros.py
  src/v8constants.h
@@ -1359,6 +1376,7 @@ Files: AUTHORS
  test/message/undefined_reference_in_new_context.out
  test/pummel/pummel.status
  test/simple/simple.status
+ test/simple/test-fs-non-number-arguments-throw.js
  test/simple/test-http-parser-bad-ref.js
  tools/getnodeversion.py
  tools/gyp_node
@@ -1557,7 +1575,7 @@ Files: deps/http_parser/LICENSE-MIT
  deps/uv/test/test-udp-options.c
  deps/uv/test/test-udp-send-and-recv.c
 Copyright: HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- Joyent, Inc. and other Node contributors.
+  Joyent, Inc. and other Node contributors.
 License: MIT/X11 (BSD like)
  FIXME
 
@@ -1565,15 +1583,15 @@ Files: doc/about/index.html
  doc/api/api/_toc.html
  doc/api/api/addons.html
  doc/api/api/appendix_1.html
- doc/api/api/appendix_2.html
  doc/api/api/assert.html
- doc/api/api/buffers.html
- doc/api/api/child_processes.html
+ doc/api/api/buffer.html
+ doc/api/api/child_process.html
  doc/api/api/cluster.html
  doc/api/api/crypto.html
  doc/api/api/debugger.html
  doc/api/api/dgram.html
  doc/api/api/dns.html
+ doc/api/api/documentation.html
  doc/api/api/events.html
  doc/api/api/fs.html
  doc/api/api/globals.html
@@ -1588,7 +1606,7 @@ Files: doc/about/index.html
  doc/api/api/readline.html
  doc/api/api/repl.html
  doc/api/api/stdio.html
- doc/api/api/streams.html
+ doc/api/api/stream.html
  doc/api/api/string_decoder.html
  doc/api/api/synopsis.html
  doc/api/api/timers.html
@@ -1600,8 +1618,7 @@ Files: doc/about/index.html
  doc/api/api/zlib.html
  doc/community/index.html
  doc/index.html
- doc/template.html
-Copyright: 2010, <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.11/LICENSE">license</a>.</p>
+Copyright: 2010, <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.12/LICENSE">license</a>.</p>
 License: UNKNOWN
  FIXME
 
@@ -1614,10 +1631,10 @@ Files: deps/v8/src/assembler.cc
  deps/v8/src/mips/assembler-mips.h
  deps/v8/src/x64/assembler-x64.h
 Copyright: 1994-2006, Sun Microsystems Inc
- 2011, Sun Microsystems Inc
- 2011, the V8 project authors.
- HOLDERS AND CONTRIBUTORS "AS
- OWNER OR
+  2011, Sun Microsystems Inc
+  2011, the V8 project authors.
+  HOLDERS AND CONTRIBUTORS "AS
+  OWNER OR
 License: BSD (2 clause)
  FIXME
 
@@ -1626,47 +1643,33 @@ Files: deps/v8/src/arm/assembler-arm-inl.h
  deps/v8/src/arm/assembler-arm.h
  deps/v8/src/ia32/assembler-ia32.cc
 Copyright: 1994-2006, Sun Microsystems Inc
- 2011, the V8 project authors.
- 2012, the V8 project authors.
- HOLDERS AND CONTRIBUTORS
- OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT
+  2011, the V8 project authors.
+  2012, the V8 project authors.
+  HOLDERS AND CONTRIBUTORS
+  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT
 License: BSD (2 clause)
- FIXME
-
-Files: doc/api/api/assets/footer-logo-alt.png
- doc/api_assets/footer-logo-alt.png
- doc/footer-logo-alt.png
-Copyright: 'xû˜EyÀı£¸ÄøHûØjf^¢C$e;‡™Ó∂BÙRôn∏≠˜≈"|“sèƒFWª_πÆÀï˘öØÇG“U1ê™ê7 Ùo)\–µ?ÄÆK	fù
-License: UNKNOWN
- FIXME
-
-Files: doc/api/api/assets/sh_main.js
- doc/api_assets/sh_main.js
- doc/sh_main.js
-Copyright: 2007-2008, gnombat@users.sourceforge.net
-License: UNKNOWN
  FIXME
 
 Files: deps/v8/src/extensions/experimental/i18n-js2c.py
  deps/v8/tools/js2c.py
 Copyright: 2006-2008, the V8 project authors.
- 2011, Google Inc.
- 2011, the V8 project authors.
- HOLDERS AND CONTRIBUTORS
+  2011, Google Inc.
+  2011, the V8 project authors.
+  HOLDERS AND CONTRIBUTORS
 License: BSD (3 clause)
  FIXME
 
 Files: deps/v8/LICENSE.valgrind
  deps/v8/src/third_party/valgrind/valgrind.h
 Copyright: 2000-2007, Julian Seward.
- 2000-2010, Julian Seward.
+  2000-2010, Julian Seward.
 License: BSD (3 clause)
  FIXME
 
 Files: src/v8_typed_array.cc
  src/v8_typed_array.h
 Copyright: Dean McNamee <dean@gmail.com>, 2011,
- HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 License: MIT/X11 (BSD like)
  FIXME
 
@@ -1678,8 +1681,8 @@ License: UNKNOWN
 
 Files: doc/api/api/all.html
  doc/api/api/net.html
-Copyright: 2010, <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.11/LICENSE">license</a>.</p>
- { //'connection' listener
+Copyright: 2010, <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.12/LICENSE">license</a>.</p>
+  { //&apos;connection&apos; listener
 License: UNKNOWN
  FIXME
 
@@ -1692,7 +1695,7 @@ License: UNKNOWN
 Files: deps/v8/tools/gcmole/gccause.lua
  deps/v8/tools/gcmole/gcmole.lua
 Copyright: 2011, the V8 project authors.
- HOLDERS AND CONTRIBUTORS
+  HOLDERS AND CONTRIBUTORS
 License: UNKNOWN
  FIXME
 
@@ -1702,16 +1705,22 @@ Copyright: 2007-2011, Marc Alexander Lehmann <libeio@schmorp.de>
 License: UNKNOWN
  FIXME
 
+Files: doc/api/api/all.json
+ doc/api/api/net.json
+Copyright: { //&apos;connection&apos; listener\n console.log(&apos;server connected&apos;);\n c.on(&apos;end&apos;, function() {\n console.log(&apos;server disconnected&apos;);\n });\n c.write(&apos;hello\\r\\n&apos;);\n c.pipe;\n});\nserver.listen(8124, function() { //&apos;listening&apos; listener\n console.log(&apos;server bound&apos;);\n});</code></pre>\n<p>Test this by using <code>telnet</code>:\n\n</p>\n<pre><code>telnet localhost 8124</code></pre>\n<p>To listen on the socket <code>/tmp/echo.sock</code> the third line from the last would\njust be changed to\n\n</p>\n<pre><code>server.listen(&apos;/tmp/echo.sock&apos;, function() { //&apos;listening&apos; listener</code></pre>\n<p>Use <code>nc</code> to connect to a UNIX domain socket server:\n\n</p>\n<pre><code>nc -U /tmp/echo.sock</code></pre>\n"
+License: UNKNOWN
+ FIXME
+
 Files: deps/uv/src/unix/eio/LICENSE
 Copyright: 2007-2008, Marc Alexander Lehmann
- HOLDERS AND CONTRIBUTORS
+  HOLDERS AND CONTRIBUTORS
 License: BSD (2 clause)
  FIXME
 
 Files: deps/v8/LICENSE.strongtalk
 Copyright: 1994-2006, Sun Microsystems Inc
- HOLDERS AND CONTRIBUTORS "AS
- OWNER OR
+  HOLDERS AND CONTRIBUTORS "AS
+  OWNER OR
 License: BSD (2 clause)
  FIXME
 
@@ -1722,18 +1731,18 @@ License: BSD (3 clause)
 
 Files: deps/v8/src/scanner.cc
 Copyright: && IsCarriageReturn(c0_)) Advance();
- && IsLineFeed(c0_)) Advance();
- 2011, the V8 project authors.
- HOLDERS AND CONTRIBUTORS
+  && IsLineFeed(c0_)) Advance();
+  2011, the V8 project authors.
+  HOLDERS AND CONTRIBUTORS
 License: BSD (3 clause)
  FIXME
 
 Files: deps/v8/src/runtime.cc
 Copyright: * kJsonQuotesCharactersPerEntry;
- 2011, the V8 project authors.
- >= kQuoteTableLength) {
- HOLDERS AND CONTRIBUTORS
- || c == 0x200b;
+  2011, the V8 project authors.
+  >= kQuoteTableLength) {
+  HOLDERS AND CONTRIBUTORS
+  || c == 0x200b;
 License: BSD (3 clause)
  FIXME
 
@@ -1744,172 +1753,172 @@ License: BSD (3 clause)
 
 Files: deps/v8/src/scanner.h
 Copyright: 2011, the V8 project authors.
- <= 5) return c + 10;
- <= 9) return c;
- HOLDERS AND CONTRIBUTORS
+  <= 5) return c + 10;
+  <= 9) return c;
+  HOLDERS AND CONTRIBUTORS
 License: BSD (3 clause)
  FIXME
 
 Files: lib/buffer_ieee754.js
 Copyright: 2008, Fair Oaks Labs, Inc
- HOLDERS AND CONTRIBUTORS "AS IS"
- OWNER OR CONTRIBUTORS BE
+  HOLDERS AND CONTRIBUTORS "AS IS"
+  OWNER OR CONTRIBUTORS BE
 License: BSD (3 clause)
  FIXME
 
 Files: src/platform_darwin_proctitle.cc
 Copyright: 2010, Google Inc
- HOLDERS AND CONTRIBUTORS
+  HOLDERS AND CONTRIBUTORS
 License: BSD (3 clause)
  FIXME
 
 Files: tools/cpplint.py
 Copyright: 2009, Google Inc.
- HOLDERS AND CONTRIBUTORS
- [year
- message found. '
+  HOLDERS AND CONTRIBUTORS
+  [year
+  message found. '
 License: BSD (3 clause)
  FIXME
 
 Files: deps/v8/src/hydrogen.cc
 Copyright: 2011, the V8 project authors.
- HOLDERS AND CONTRIBUTORS
- Reachable only normally
+  HOLDERS AND CONTRIBUTORS
+  Reachable only normally
 License: BSD (3 clause)
  FIXME
 
 Files: deps/v8/src/char-predicates-inl.h
 Copyright: 2006-2008, the V8 project authors.
- HOLDERS AND CONTRIBUTORS
- || IsInRange(AsciiAlphaToLower, 'a', 'f');
+  HOLDERS AND CONTRIBUTORS
+  || IsInRange(AsciiAlphaToLower, 'a', 'f');
 License: BSD (3 clause)
  FIXME
 
 Files: tools/test.py
 Copyright: 2008, the V8 project authors. /
- HOLDERS AND CONTRIBUTORS
+  HOLDERS AND CONTRIBUTORS
 License: BSD (3 clause)
  FIXME
 
 Files: deps/uv/src/unix/eio/aclocal.m4
 Copyright: 1996, 1998, 2000-2005, 2008
- 1996-1997, 2000-2001, 2003, 2005, 2008
- 1996-2001, 2003-2005
- 1996-2004,
- 1997, 1999-2001, 2003-2005, 2008
- 1997, 2000-2001, 2003-2006, 2008
- 1999-2005, 2008
- 1999-2006, 2009
- 2001, 2003, 2005, 2008 Free Software Foundation, Inc
- 2001, 2003, 2005, Free Software Foundation, Inc
- 2001-2003, 2005, 2008, Free Software Foundation, Inc
- 2001-2003, 2005, 2009, Free Software Foundation, Inc
- 2002-2003, 2005-2008, Free Software Foundation, Inc
- 2003, 2005 Free Software Foundation, Inc
- 2003-2006, Free Software Foundation, Inc
- 2004, Free Software Foundation, Inc
- 2004-2005, 2007 Free Software Foundation, Inc
- 2004-2005, 2007-2008, Free Software Foundation, Inc
- 2004-2005, Free Software Foundation, Inc
- 2006, 2008 Free Software Foundation, Inc
- 2008, Free Software Foundation, Inc
+  1996-1997, 2000-2001, 2003, 2005, 2008
+  1996-2001, 2003-2005
+  1996-2004,
+  1997, 1999-2001, 2003-2005, 2008
+  1997, 2000-2001, 2003-2006, 2008
+  1999-2005, 2008
+  1999-2006, 2009
+  2001, 2003, 2005, 2008 Free Software Foundation, Inc
+  2001, 2003, 2005, Free Software Foundation, Inc
+  2001-2003, 2005, 2008, Free Software Foundation, Inc
+  2001-2003, 2005, 2009, Free Software Foundation, Inc
+  2002-2003, 2005-2008, Free Software Foundation, Inc
+  2003, 2005 Free Software Foundation, Inc
+  2003-2006, Free Software Foundation, Inc
+  2004, Free Software Foundation, Inc
+  2004-2005, 2007 Free Software Foundation, Inc
+  2004-2005, 2007-2008, Free Software Foundation, Inc
+  2004-2005, Free Software Foundation, Inc
+  2006, 2008 Free Software Foundation, Inc
+  2008, Free Software Foundation, Inc
 License: GPL-2+
  FIXME
 
 Files: deps/v8/benchmarks/deltablue.js
 Copyright: 1996, John Maloney and Mario Wolczko
- 2008, the V8 project authors.
+  2008, the V8 project authors.
 License: GPL-2+
  FIXME
 
 Files: LICENSE
 Copyright: 1995-2010, Jean-loup Gailly and Mark Adler
- 2008, Fair Oaks Labs, Inc. and released
- 2009, Google Inc and
- 2009-2010, Dominic Baggott and Ash
- 2009-2011,
- 2011, Mathias Bynens <http://mathiasbynens.be/>
- Google Inc. and released under a
- Google Inc. and released under a BSD license
- Google, Inc, and released
- HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- Joyent, Inc. and other Node contributors.
- Marc Alexander Lehmann, and dual-licensed
- Ryan Lienhart Dahl and released under the MIT license
- The Closure Linter Authors and
- Thomas Nagy
- the Massachusetts Institute of Technology, authored by
+  2008, Fair Oaks Labs, Inc. and released
+  2009, Google Inc and
+  2009-2010, Dominic Baggott and Ash
+  2009-2011,
+  2011, Mathias Bynens <http://mathiasbynens.be/>
+  Google Inc. and released under a
+  Google Inc. and released under a BSD license
+  Google, Inc, and released
+  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  Joyent, Inc. and other Node contributors.
+  Marc Alexander Lehmann, and dual-licensed
+  Ryan Lienhart Dahl and released under the MIT license
+  The Closure Linter Authors and
+  Thomas Nagy
+  the Massachusetts Institute of Technology, authored by
 License: MIT/X11 (BSD like)
  FIXME
 
 Files: deps/http_parser/http_parser.c
 Copyright: & 0x80))
- (IS_ALPHANUM || == '.' || == '-')
- (normal_url_char[(unsigned char)
- (unsigned char)(c | 0x20)
- Joyent, Inc. and other Node contributors.
+  (IS_ALPHANUM || == '.' || == '-')
+  (normal_url_char[(unsigned char)
+  (unsigned char)(c | 0x20)
+  Joyent, Inc. and other Node contributors.
 License: MIT/X11 (BSD like)
  FIXME
 
 Files: src/node_crypto.cc
 Copyright: ( <= '9' ? ( - '0') : <= 'Z' ? ( - 'A' + 10) \
- - 'a' + 10))
- HOLDERS BE LIABLE FOR ANY CLAIM
- Joyent, Inc. and other Node contributors
+  - 'a' + 10))
+  HOLDERS BE LIABLE FOR ANY CLAIM
+  Joyent, Inc. and other Node contributors
 License: MIT/X11 (BSD like)
  FIXME
 
 Files: test/simple/test-punycode.js
 Copyright: 2011, Ben Noordhuis <info@bnoordhuis.nl>
- Chinese (traditional)
- HOLDERS BE LIABLE FOR ANY CLAIM
- HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- Joyent, Inc. and other Node contributors
+  Chinese (traditional)
+  HOLDERS BE LIABLE FOR ANY CLAIM
+  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  Joyent, Inc. and other Node contributors
 License: MIT/X11 (BSD like)
  FIXME
 
 Files: deps/uv/LICENSE
 Copyright: Daniel Stenberg and others. MIT licensed
- HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- Igor Sysoev. Two clause BSD license
- Joyent, Inc. and other Node contributors.
- Marc Alexander Lehmann, and
- Niels Provos. Two clause BSD license
+  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  Igor Sysoev. Two clause BSD license
+  Joyent, Inc. and other Node contributors.
+  Marc Alexander Lehmann, and
+  Niels Provos. Two clause BSD license
 License: MIT/X11 (BSD like)
  FIXME
 
 Files: tools/msvs/res/node.rc
 Copyright: HOLDERS BE LIABLE FOR ANY CLAIM
- Joyent, Inc. and other Node contributors
- Joyent, Inc. and other Node contributors. MIT license."
+  Joyent, Inc. and other Node contributors
+  Joyent, Inc. and other Node contributors. MIT license."
 License: MIT/X11 (BSD like)
  FIXME
 
 Files: test/simple/test-url.js
 Copyright: 2002-2008, Kris Kowal <http://cixar.com/~kris.kowal>
- HOLDERS BE LIABLE FOR ANY CLAIM
- Joyent, Inc. and other Node contributors
+  HOLDERS BE LIABLE FOR ANY CLAIM
+  Joyent, Inc. and other Node contributors
 License: MIT/X11 (BSD like)
  FIXME
 
 Files: test/simple/test-zlib.js
 Copyright: HOLDERS BE LIABLE FOR ANY CLAIM
- Joyent, Inc. and other Node contributors
- this.write;
+  Joyent, Inc. and other Node contributors
+  this.write;
 License: MIT/X11 (BSD like)
  FIXME
 
 Files: test/disabled/test-child-process-uid-gid.js
 Copyright: HOLDERS BE LIABLE FOR ANY CLAIM
- Joyent, Inc. and other Node contributors
- { this.buf += c; }
+  Joyent, Inc. and other Node contributors
+  { this.buf += c; }
 License: MIT/X11 (BSD like)
  FIXME
 
 Files: test/simple/test-http-chunked.js
 Copyright: HOLDERS BE LIABLE FOR ANY CLAIM
- Joyent, Inc. and other Node contributors
- {data += c});
+  Joyent, Inc. and other Node contributors
+  {data += c});
 License: MIT/X11 (BSD like)
  FIXME
 
@@ -1920,34 +1929,28 @@ License: MIT/X11 (BSD like)
 
 Files: deps/v8/benchmarks/crypto.js
 Copyright: 2003-2005, Tom Wu
- 2005, Tom Wu
+  2005, Tom Wu
 License: MIT/X11 (BSD like)
  FIXME
 
 Files: deps/v8/benchmarks/v8-logo.png
 Copyright: Ì$9áΩ 1®uÓç∫∫∂ïàÏú⁄Ëí≥‘a◊˛<m€“∏€—8ÓÑ¢⁄∫ˆÿPéH}m@[ºs~8D<lRv¥ÚÆÂ8yvCO[»wåë&rı∏Ôá7rbˇDÕ
- Ê–_«Ò-8C≈XÁy¶û«-Gô¸‚ÏB≥ﬂ†Áˆﬁ°qÃ^;(å∞¬‘∆0“n…åí™Œ6∆P‚\◊‰ö5ù{ì;BGÚg9ç1d¯πˆ{Ÿ+GD+a»ÆÌ~-
-License: UNKNOWN
- FIXME
-
-Files: doc/ryan-speaker.jpg
-Copyright: ‹( xTê<Ä~˙*…,¯,—Hƒ˛’õ¥jÙ5§d“*’BÓm`ˇ ´˘çSä-¿Õ=˜πNã€£˚yq˛Ïnk}ø≠ô›Ù£˛è˘üE<,oŒìÔûÇ@PI Xõ 8íM jæÓ°”3{ÍEgÕÀÖ`€:~+˚TÏX>Hä>ˇ Xˆ
- ÎT÷ @®Ó7«√VEE$S$äÄ⁄»∆˛B÷_”ZGUäåÿctà)øà"QŸ¬◊#Ã/VV€ƒÆ¥äΩ¨πÌûÊÚ6D–([ÚT6k•4ëF€ã<Î˝Û?Üú0	7ÁI˜èœA"ãã)P¬÷<∏‘T(
+  Ê–_«Ò-8C≈XÁy¶û«-Gô¸‚ÏB≥ﬂ†Áˆﬁ°qÃ^;(å∞¬‘∆0“n…åí™Œ6∆P‚\◊‰ö5ù{ì;BGÚg9ç1d¯πˆ{Ÿ+GD+a»ÆÌ~-
 License: UNKNOWN
  FIXME
 
 Files: deps/v8/benchmarks/earley-boyer.js
 Copyright: != -1 || // ID-char
- { return c.val; }
- { return sc_SYMBOL_PREFIX + c.val; }
- || c === SC_EOF_OBJECT;
- || needing == "")
+  { return c.val; }
+  { return sc_SYMBOL_PREFIX + c.val; }
+  || c === SC_EOF_OBJECT;
+  || needing == "")
 License: UNKNOWN
  FIXME
 
 Files: deps/uv/src/unix/eio/ecb.h
 Copyright: () 2009-2011, Marc Alexander Lehmann <libecb@schmorp.de>
- () 2011, Emanuele Giaquinta
+  () 2011, Emanuele Giaquinta
 License: UNKNOWN
  FIXME
 
@@ -1956,36 +1959,25 @@ Copyright: (this->buf[this->off++
 License: UNKNOWN
  FIXME
 
-Files: tools/doctool/doctool.js
-Copyright: + '">#</a></span>';
+Files: doc/template.html
+Copyright: 2010, <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/__VERSION__/LICENSE">license</a>.</p>
 License: UNKNOWN
  FIXME
 
-Files: doc/mac_osx_nodejs_installer_logo.png
-Copyright: =œFŒyõ≤ó*È,n∞aÊ,ø‹é—f∏‡9\9rµ"¢§Gjå&√≥Ì˙í5óA∆o.l)BR∆Zi´Ω$±O˘÷∑|‹kßˇ9ôoëÍ)⁄⁄∑ı∞≠Lÿì¥Ûæ 2Ûó	~ÌìN§E˛â~|ıÃ
-License: UNKNOWN
- FIXME
-
-Files: tools/doctool/markdown.js
-Copyright: 2009-2010, Ash Berlin
- 2009-2010, Dominic Baggott
+Files: doc/logos/index.html
+Copyright: <a href="http://joyent.com">Joyent, Inc</a>., Node.js is a <a href="/trademark-policy.pdf">trademark of Joyent, Inc</a>., <a href="https://raw.github.com/joyent/node/v0.6.12/LICENSE">View License</a></p>
 License: UNKNOWN
  FIXME
 
 Files: deps/v8/tools/generate-ten-powers.scm
 Copyright: 2010, the V8 project authors.
- 2010, the V8 project authors.")
- HOLDERS AND CONTRIBUTORS
+  2010, the V8 project authors.")
+  HOLDERS AND CONTRIBUTORS
 License: UNKNOWN
  FIXME
 
 Files: deps/uv/include/uv-private/ngx-queue.h
 Copyright: Igor Sysoev
-License: UNKNOWN
- FIXME
-
-Files: lib/punycode.js
-Copyright: 2011, Mathias Bynens <http://mathiasbynens.be/>
 License: UNKNOWN
  FIXME
 
@@ -1996,6 +1988,11 @@ License: UNKNOWN
 
 Files: deps/v8/benchmarks/raytrace.js
 Copyright: 2005-2007, Sam Stephenson
+License: UNKNOWN
+ FIXME
+
+Files: doc/sh_main.js
+Copyright: 2007-2008, gnombat@users.sourceforge.net
 License: UNKNOWN
  FIXME
 
