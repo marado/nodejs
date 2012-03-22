@@ -1,14 +1,17 @@
 Description: Expected failing tests
- Some tests can FAIL on machines without network access,
- or TIMEOUT in some cases.
- Some rare tests fail because there is a long standing bug that prevents
- building the package.
+ There are three categories of failing tests:
+ * because of build server without external network access
+ * the test itself is buggy (race condition under heavy load,
+   problem with the external command that is called)
+ * the test is legitimately failing, but no one knows why and
+   that prevents the package from being updated.
+ 
 Forwarded: not-needed
 Author: Jérémy Lal <kapouer@melix.org>
-Last-Update: 2012-02-19
+Last-Update: 2012-03-22
 --- a/test/simple/simple.status
 +++ b/test/simple/simple.status
-@@ -1 +1,17 @@
+@@ -1 +1,18 @@
  prefix simple
 +
 +# only fail when some network resources are not available
@@ -21,8 +24,9 @@ Last-Update: 2012-02-19
 +test-dgram-pingpong: PASS || TIMEOUT
 +test-stream-pipe-multi: PASS || TIMEOUT
 +
++# http://bugs.debian.org/660802
++test-cluster-kill-workers: PASS || FAIL
++
 +[ $arch == arm ]
 +# http://bugs.debian.org/660800
 +test-buffer: PASS || FAIL
-+# http://bugs.debian.org/660802
-+test-cluster-kill-workers: PASS || FAIL
