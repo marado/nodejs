@@ -172,7 +172,7 @@ Last-Update: 2012-02-17
   * Returns the default loop.
 --- a/deps/uv/src/unix/core.c
 +++ b/deps/uv/src/unix/core.c
-@@ -175,10 +175,6 @@
+@@ -170,10 +170,6 @@
  }
  
  

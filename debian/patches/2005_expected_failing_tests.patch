@@ -5,13 +5,14 @@ Description: Expected failing tests
    problem with the external command that is called)
  * the test is legitimately failing, but no one knows why and
    that prevents the package from being updated.
+ That last type was #660802 and has been fixed.
  
 Forwarded: not-needed
 Author: Jérémy Lal <kapouer@melix.org>
-Last-Update: 2012-03-22
+Last-Update: 2012-03-29
 --- a/test/simple/simple.status
 +++ b/test/simple/simple.status
-@@ -1 +1,18 @@
+@@ -1 +1,14 @@
  prefix simple
 +
 +# only fail when some network resources are not available
@@ -26,7 +27,3 @@ Last-Update: 2012-03-22
 +
 +# http://bugs.debian.org/660802
 +test-cluster-kill-workers: PASS || FAIL
-+
-+[ $arch == arm ]
-+# http://bugs.debian.org/660800
-+test-buffer: PASS || FAIL
