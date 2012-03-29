@@ -1,6 +1,8 @@
 nodejs (0.6.12~dfsg1-2) UNRELEASED; urgency=low
 
   * test-cluster-kill-workers can fail on any arch because it is racey.
+  * Enable test-buffer.js because it is fixed by that upstream patch :
+    1001_align_fast_buffers_8byte_boundary.patch. Closes: bug#660802.
 
  -- Jérémy Lal <kapouer@melix.org>  Thu, 22 Mar 2012 17:59:13 +0100
 
