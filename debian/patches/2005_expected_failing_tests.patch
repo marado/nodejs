@@ -1,18 +1,18 @@
 Description: Expected failing tests
  There are three categories of failing tests:
- * because of build server without external network access
- * the test itself is buggy (race condition under heavy load,
-   problem with the external command that is called)
- * the test is legitimately failing, but no one knows why and
-   that prevents the package from being updated.
+ 1 - because of build server without external network access
+ 2 - the test itself is buggy (race condition under heavy load,
+     problem with the external command that is called)
+ 3 - the test is legitimately failing, but no one knows why and
+     that prevents the package from being updated.
  That last type was #660802 and has been fixed.
  
 Forwarded: not-needed
 Author: Jérémy Lal <kapouer@melix.org>
-Last-Update: 2012-03-29
+Last-Update: 2012-04-01
 --- a/test/simple/simple.status
 +++ b/test/simple/simple.status
-@@ -1 +1,14 @@
+@@ -1 +1,19 @@
  prefix simple
 +
 +# only fail when some network resources are not available
@@ -27,3 +27,8 @@ Last-Update: 2012-03-29
 +
 +# http://bugs.debian.org/660802
 +test-cluster-kill-workers: PASS || FAIL
++
++# 512 bits keys fail with openssl 1.0.1 - node tests will use 1024 bits
++# keys : https://github.com/joyent/node/commit/ef046bf4
++# Meanwhile, allow this test to fail
++test-tls-server-verify: PASS || FAIL
