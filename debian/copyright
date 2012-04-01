@@ -1,7 +1,7 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: Node
 Source: http://nodejs.org/
-Upstream-Contact: Isaac Schlueter <i@izs.me>
+Upstream-Contact: https://github.com/joyent/node/issues
 
 Files: *
 Copyright: Joyent, Inc. and other Node contributors.
@@ -78,6 +78,11 @@ License: BSD-3-clause~FairOaksLabs
 
 Files: lib/punycode.js
 Copyright: 2011 Mathias Bynens <http://mathiasbynens.be/>
+License: Expat
+
+Files: tools/doc/node_modules/marked
+ tools/doc/node_modules/.bin/marked
+Copyright: 2011-2012, Christopher Jeffrey (https://github.com/chjj/)
 License: Expat
 
 Files: tools/waf-light
