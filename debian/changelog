@@ -1,9 +1,14 @@
-nodejs (0.6.14~dfsg1-1) UNRELEASED; urgency=low
+nodejs (0.6.14~dfsg1-1) unstable; urgency=low
 
-  * test-cluster-kill-workers can fail on any arch, not only armel,
-    because it is racey.
-  * Enable test-buffer.js because it is fixed by that upstream patch :
-    1001_align_fast_buffers_8byte_boundary.patch. Closes: bug#660800.
+  * debian/patches/2005_expected_failing_tests.patch:
+    + test-cluster-kill-workers can fail on any arch, not only armel,
+      because it is racey.
+    + test-buffer is not failing.
+    + test-tls-server-verify can fail with openssl 1.0.1
+  * debian/patches/1001_align_fast_buffers_8byte_boundary.patch fixes
+    test-buffer.js failure on armel. Closes: bug#660800.
+  * debian/patches/2011_enable_mipsel_build.patch: options.arch is
+    useless and buggy. Closes: bug#664627.
   * Include tools/doc, now properly licensed.
   * Include tools/doc/node_modules/marked : there are several other
     markdown parsers in debian, but porting tools/doc/generate.js to one
@@ -11,8 +16,10 @@ nodejs (0.6.14~dfsg1-1) UNRELEASED; urgency=low
   * Update copyright file:
     + tools/doc is already covered by default
     + Add Files paragraph covering tools/doc/node_modules/marked.
+  * Remove libv8-dev << 3.8.
+    It is not necessary to conflict with next libv8 branch.
 
- -- Jérémy Lal <kapouer@melix.org>  Thu, 22 Mar 2012 17:59:13 +0100
+ -- Jérémy Lal <kapouer@melix.org>  Sun, 01 Apr 2012 10:45:16 +0200
 
 nodejs (0.6.12~dfsg1-1) unstable; urgency=low
 
