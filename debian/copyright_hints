@@ -350,6 +350,7 @@ Files: benchmark/next-tick-2.js
  test/simple/test-http-many-keep-alive-connections.js
  test/simple/test-http-multi-line-headers.js
  test/simple/test-http-mutable-headers.js
+ test/simple/test-http-no-content-length.js
  test/simple/test-http-parser-free.js
  test/simple/test-http-parser.js
  test/simple/test-http-patch.js
@@ -393,6 +394,7 @@ Files: benchmark/next-tick-2.js
  test/simple/test-https-invalid-key.js
  test/simple/test-https-simple.js
  test/simple/test-init.js
+ test/simple/test-memory-usage-emfile.js
  test/simple/test-memory-usage.js
  test/simple/test-mkdir-rmdir.js
  test/simple/test-module-load-list.js
@@ -1117,6 +1119,7 @@ Files: AUTHORS
  debian/nodejs.manpages
  debian/nodejs.postinst
  debian/nodejs.prerm
+ debian/patches/1001_align_fast_buffers_8byte_boundary.patch
  debian/patches/2001_FHS_paths_for_nodejs.patch
  debian/patches/2002_build_without_libv8_debug.patch
  debian/patches/2005_expected_failing_tests.patch
@@ -1552,6 +1555,7 @@ Files: deps/http_parser/LICENSE-MIT
  deps/uv/test/test-pipe-bind-error.c
  deps/uv/test/test-pipe-connect-error.c
  deps/uv/test/test-ref.c
+ deps/uv/test/test-shutdown-close.c
  deps/uv/test/test-shutdown-eof.c
  deps/uv/test/test-spawn.c
  deps/uv/test/test-stdio-over-pipes.c
@@ -1579,8 +1583,7 @@ Copyright: HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 License: MIT/X11 (BSD like)
  FIXME
 
-Files: doc/about/index.html
- doc/api/api/_toc.html
+Files: doc/api/api/_toc.html
  doc/api/api/addons.html
  doc/api/api/appendix_1.html
  doc/api/api/assert.html
@@ -1616,9 +1619,7 @@ Files: doc/about/index.html
  doc/api/api/util.html
  doc/api/api/vm.html
  doc/api/api/zlib.html
- doc/community/index.html
- doc/index.html
-Copyright: 2010, <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.12/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.14/LICENSE">license</a>.</p>
 License: UNKNOWN
  FIXME
 
@@ -1648,6 +1649,14 @@ Copyright: 1994-2006, Sun Microsystems Inc
   HOLDERS AND CONTRIBUTORS
   OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT
 License: BSD (2 clause)
+ FIXME
+
+Files: doc/about/index.html
+ doc/community/index.html
+ doc/index.html
+ doc/template.html
+Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/__VERSION__/LICENSE">license</a>.</p>
+License: UNKNOWN
  FIXME
 
 Files: deps/v8/src/extensions/experimental/i18n-js2c.py
@@ -1681,7 +1690,7 @@ License: UNKNOWN
 
 Files: doc/api/api/all.html
  doc/api/api/net.html
-Copyright: 2010, <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.12/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.14/LICENSE">license</a>.</p>
   { //&apos;connection&apos; listener
 License: UNKNOWN
  FIXME
@@ -1834,10 +1843,11 @@ License: GPL-2+
 Files: LICENSE
 Copyright: 1995-2010, Jean-loup Gailly and Mark Adler
   2008, Fair Oaks Labs, Inc. and released
+  2009, - 2012,
   2009, Google Inc and
   2009-2010, Dominic Baggott and Ash
-  2009-2011,
   2011, Mathias Bynens <http://mathiasbynens.be/>
+  2011-2012, Christopher Jeffrey (https://github.com/chjj/). Marked
   Google Inc. and released under a
   Google Inc. and released under a BSD license
   Google, Inc, and released
@@ -1959,13 +1969,8 @@ Copyright: (this->buf[this->off++
 License: UNKNOWN
  FIXME
 
-Files: doc/template.html
-Copyright: 2010, <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/__VERSION__/LICENSE">license</a>.</p>
-License: UNKNOWN
- FIXME
-
 Files: doc/logos/index.html
-Copyright: <a href="http://joyent.com">Joyent, Inc</a>., Node.js is a <a href="/trademark-policy.pdf">trademark of Joyent, Inc</a>., <a href="https://raw.github.com/joyent/node/v0.6.12/LICENSE">View License</a></p>
+Copyright: <a href="http://joyent.com">Joyent, Inc</a>., Node.js is a <a href="/trademark-policy.pdf">trademark of Joyent, Inc</a>., <a href="https://raw.github.com/joyent/node/__VERSION__/LICENSE">View License</a></p>
 License: UNKNOWN
  FIXME
 
