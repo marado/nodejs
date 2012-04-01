@@ -160,7 +160,7 @@ Last-Update: 2012-02-17
  EIO_CPPFLAGS += -DEIO_CONFIG_H=\"$(EIO_CONFIG)\"
 --- a/deps/uv/include/uv.h
 +++ b/deps/uv/include/uv.h
-@@ -204,9 +204,6 @@
+@@ -206,9 +206,6 @@
  UV_EXTERN uv_loop_t* uv_loop_new(void);
  UV_EXTERN void uv_loop_delete(uv_loop_t*);
  
