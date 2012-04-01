@@ -1,5 +1,9 @@
 # File System
 
+    Stability: 3 - Stable
+
+<!--name=fs-->
+
 File I/O is provided by simple wrappers around standard POSIX functions.  To
 use this module do `require('fs')`. All the methods have asynchronous and
 synchronous forms.
@@ -133,7 +137,7 @@ Synchronous lchmod(2).
 ## fs.stat(path, [callback])
 
 Asynchronous stat(2). The callback gets two arguments `(err, stats)` where
-`stats` is a [fs.Stats](#fs.Stats) object.  See the [fs.Stats](#fs.Stats)
+`stats` is a [fs.Stats](#fs_class_fs_stats) object.  See the [fs.Stats](#fs_class_fs_stats)
 section below for more information.
 
 ## fs.lstat(path, [callback])
@@ -389,6 +393,8 @@ The synchronous version of `fs.writeFile`.
 
 ## fs.watchFile(filename, [options], listener)
 
+    Stability: 2 - Unstable.  Use fs.watch instead, if available.
+
 Watch for changes on `filename`. The callback `listener` will be called each
 time the file is accessed.
 
@@ -415,12 +421,16 @@ you need to compare `curr.mtime` and `prev.mtime`.
 
 ## fs.unwatchFile(filename)
 
+    Stability: 2 - Unstable.  Use fs.watch instead, if available.
+
 Stop watching for changes on `filename`.
 
 ## fs.watch(filename, [options], listener)
 
+    Stability: 2 - Unstable.  Not available on all platforms.
+
 Watch for changes on `filename`, where `filename` is either a file or a
-directory.  The returned object is [fs.FSWatcher](#fs.FSWatcher).
+directory.  The returned object is a [fs.FSWatcher](#fs_class_fs_fswatcher).
 
 The second argument is optional. The `options` if provided should be an object
 containing a boolean member `persistent`, which indicates whether the process
@@ -431,7 +441,34 @@ The listener callback gets two arguments `(event, filename)`.  `event` is either
 'rename' or 'change', and `filename` is the name of the file which triggered
 the event.
 
-***Warning:***
+### Caveats
+
+<!--type=misc-->
+
+The `fs.watch` API is not 100% consistent across platforms, and is
+unavailable in some situations.
+
+#### Availability
+
+<!--type=misc-->
+
+This feature depends on the underlying operating system providing a way
+to be notified of filesystem changes.
+
+* On Linux systems, this uses `inotify`.
+* On BSD systems (including OS X), this uses `kqueue`.
+* On SunOS systems (including Solaris and SmartOS), this uses `event ports`.
+* On Windows systems, this feature depends on `ReadDirectoryChangesW`.
+
+If the underlying functionality is not available for some reason, then
+`fs.watch` will not be able to function.  You can still use
+`fs.watchFile`, which uses stat polling, but it is slower and less
+reliable.
+
+#### Filename Argument
+
+<!--type=misc-->
+
 Providing `filename` argument in the callback is not supported
 on every platform (currently it's only supported on Linux and Windows).  Even
 on supported platforms `filename` is not always guaranteed to be provided.
@@ -440,11 +477,11 @@ callback, and have some fallback logic if it is null.
 
     fs.watch('somedir', function (event, filename) {
       console.log('event is: ' + event);
-	  if (filename) {
+      if (filename) {
         console.log('filename provided: ' + filename);
-	  } else {
-	    console.log('filename not provided');
-	  }
+      } else {
+        console.log('filename not provided');
+      }
     });
 
 ## Class: fs.Stats
@@ -515,13 +552,13 @@ An example to read the last 10 bytes of a file which is 100 bytes long:
 
 ## Class: fs.ReadStream
 
-`ReadStream` is a [Readable Stream](stream.html#readable_stream).
+`ReadStream` is a [Readable Stream](stream.html#stream_readable_stream).
 
 ### Event: 'open'
 
-`function (fd) { }`
+* `fd` {Integer} file descriptor used by the ReadStream.
 
- `fd` is the file descriptor used by the ReadStream.
+Emitted when the ReadStream's file is opened.
 
 
 ## fs.createWriteStream(path, [options])
@@ -541,13 +578,13 @@ default mode `w`.
 
 ## fs.WriteStream
 
-`WriteStream` is a [Writable Stream](stream.html#writable_stream).
+`WriteStream` is a [Writable Stream](stream.html#stream_writable_stream).
 
 ### Event: 'open'
 
-`function (fd) { }`
+* `fd` {Integer} file descriptor used by the ReadStream.
 
- `fd` is the file descriptor used by the WriteStream.
+Emitted when the WriteStream's file is opened.
 
 ### file.bytesWritten
 
@@ -568,10 +605,10 @@ Stop watching for changes on the given `fs.FSWatcher`.
 * `filename` {String} The filename that changed (if relevant/available)
 
 Emitted when something changes in a watched directory or file.
-See more details in [fs.watch](#fs.watch).
+See more details in [fs.watch](#fs_fs_watch_filename_options_listener).
 
 ### Event: 'error'
 
-`function (exception) {}`
+* `error` {Error object}
 
 Emitted when an error occurs.

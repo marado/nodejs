@@ -4,6 +4,8 @@
     {
       "textRaw": "Executing JavaScript",
       "name": "vm",
+      "stability": 3,
+      "stabilityText": "Stable",
       "desc": "<p>You can access this module with:\n\n</p>\n<pre><code>var vm = require(&apos;vm&apos;);</code></pre>\n<p>JavaScript code can be compiled and run immediately or compiled, saved, and run later.\n\n\n</p>\n",
       "methods": [
         {

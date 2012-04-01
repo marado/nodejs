@@ -4,6 +4,8 @@
     {
       "textRaw": "TLS (SSL)",
       "name": "tls_(ssl)",
+      "stability": 3,
+      "stabilityText": "Stable",
       "desc": "<p>Use <code>require(&apos;tls&apos;)</code> to access this module.\n\n</p>\n<p>The <code>tls</code> module uses OpenSSL to provide Transport Layer Security and/or\nSecure Socket Layer: encrypted stream communication.\n\n</p>\n<p>TLS/SSL is a public/private key infrastructure. Each client and each\nserver must have a private key. A private key is created like this\n\n</p>\n<pre><code>openssl genrsa -out ryans-key.pem 1024</code></pre>\n<p>All severs and some clients need to have a certificate. Certificates are public\nkeys signed by a Certificate Authority or self-signed. The first step to\ngetting a certificate is to create a &quot;Certificate Signing Request&quot; (CSR)\nfile. This is done with:\n\n</p>\n<pre><code>openssl req -new -key ryans-key.pem -out ryans-csr.pem</code></pre>\n<p>To create a self-signed certificate with the CSR, do this:\n\n</p>\n<pre><code>openssl x509 -req -in ryans-csr.pem -signkey ryans-key.pem -out ryans-cert.pem</code></pre>\n<p>Alternatively you can send the CSR to a Certificate Authority for signing.\n\n</p>\n<p>(TODO: docs on creating a CA, for now interested users should just look at\n<code>test/fixtures/keys/Makefile</code> in the Node source code)\n\n</p>\n",
       "miscs": [
         {

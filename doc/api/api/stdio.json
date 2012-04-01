@@ -4,6 +4,8 @@
     {
       "textRaw": "console",
       "name": "console",
+      "stability": 4,
+      "stabilityText": "API Frozen",
       "type": "global",
       "desc": "<p>For printing to stdout and stderr.  Similar to the console object functions\nprovided by most web browsers, here the output is sent to stdout or stderr.\n\n\n</p>\n",
       "methods": [

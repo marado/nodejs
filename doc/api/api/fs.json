@@ -3,7 +3,9 @@
   "modules": [
     {
       "textRaw": "File System",
-      "name": "file_system",
+      "name": "fs",
+      "stability": 3,
+      "stabilityText": "Stable",
       "desc": "<p>File I/O is provided by simple wrappers around standard POSIX functions.  To\nuse this module do <code>require(&apos;fs&apos;)</code>. All the methods have asynchronous and\nsynchronous forms.\n\n</p>\n<p>The asynchronous form always take a completion callback as its last argument.\nThe arguments passed to the completion callback depend on the method, but the\nfirst argument is always reserved for an exception. If the operation was\ncompleted successfully, then the first argument will be <code>null</code> or <code>undefined</code>.\n\n</p>\n<p>When using the synchronous form any exceptions are immediately thrown.\nYou can use try/catch to handle exceptions or allow them to bubble up.\n\n</p>\n<p>Here is an example of the asynchronous version:\n\n</p>\n<pre><code>var fs = require(&apos;fs&apos;);\n\nfs.unlink(&apos;/tmp/hello&apos;, function (err) {\n  if (err) throw err;\n  console.log(&apos;successfully deleted /tmp/hello&apos;);\n});</code></pre>\n<p>Here is the synchronous version:\n\n</p>\n<pre><code>var fs = require(&apos;fs&apos;);\n\nfs.unlinkSync(&apos;/tmp/hello&apos;)\nconsole.log(&apos;successfully deleted /tmp/hello&apos;);</code></pre>\n<p>With the asynchronous methods there is no guaranteed ordering. So the\nfollowing is prone to error:\n\n</p>\n<pre><code>fs.rename(&apos;/tmp/hello&apos;, &apos;/tmp/world&apos;, function (err) {\n  if (err) throw err;\n  console.log(&apos;renamed complete&apos;);\n});\nfs.stat(&apos;/tmp/world&apos;, function (err, stats) {\n  if (err) throw err;\n  console.log(&apos;stats: &apos; + JSON.stringify(stats));\n});</code></pre>\n<p>It could be that <code>fs.stat</code> is executed before <code>fs.rename</code>.\nThe correct way to do this is to chain the callbacks.\n\n</p>\n<pre><code>fs.rename(&apos;/tmp/hello&apos;, &apos;/tmp/world&apos;, function (err) {\n  if (err) throw err;\n  fs.stat(&apos;/tmp/world&apos;, function (err, stats) {\n    if (err) throw err;\n    console.log(&apos;stats: &apos; + JSON.stringify(stats));\n  });\n});</code></pre>\n<p>In busy processes, the programmer is <em>strongly encouraged</em> to use the\nasynchronous versions of these calls. The synchronous versions will block\nthe entire process until they complete--halting all connections.\n\n</p>\n<p>Relative path to filename can be used, remember however that this path will be relative\nto <code>process.cwd()</code>.\n\n</p>\n",
       "methods": [
         {
@@ -348,7 +350,7 @@
           "textRaw": "fs.stat(path, [callback])",
           "type": "method",
           "name": "stat",
-          "desc": "<p>Asynchronous stat(2). The callback gets two arguments <code>(err, stats)</code> where\n<code>stats</code> is a <a href=\"#fs.Stats\">fs.Stats</a> object.  See the <a href=\"#fs.Stats\">fs.Stats</a>\nsection below for more information.\n\n</p>\n",
+          "desc": "<p>Asynchronous stat(2). The callback gets two arguments <code>(err, stats)</code> where\n<code>stats</code> is a <a href=\"#fs_class_fs_stats\">fs.Stats</a> object.  See the <a href=\"#fs_class_fs_stats\">fs.Stats</a>\nsection below for more information.\n\n</p>\n",
           "signatures": [
             {
               "params": [
@@ -1239,6 +1241,8 @@
           "textRaw": "fs.watchFile(filename, [options], listener)",
           "type": "method",
           "name": "watchFile",
+          "stability": 2,
+          "stabilityText": "Unstable.  Use fs.watch instead, if available.",
           "desc": "<p>Watch for changes on <code>filename</code>. The callback <code>listener</code> will be called each\ntime the file is accessed.\n\n</p>\n<p>The second argument is optional. The <code>options</code> if provided should be an object\ncontaining two members a boolean, <code>persistent</code>, and <code>interval</code>. <code>persistent</code>\nindicates whether the process should continue to run as long as files are\nbeing watched. <code>interval</code> indicates how often the target should be polled,\nin milliseconds. (On Linux systems with inotify, <code>interval</code> is ignored.) The\ndefault is <code>{ persistent: true, interval: 0 }</code>.\n\n</p>\n<p>The <code>listener</code> gets two arguments the current stat object and the previous\nstat object:\n\n</p>\n<pre><code>fs.watchFile(&apos;message.text&apos;, function (curr, prev) {\n  console.log(&apos;the current mtime is: &apos; + curr.mtime);\n  console.log(&apos;the previous mtime was: &apos; + prev.mtime);\n});</code></pre>\n<p>These stat objects are instances of <code>fs.Stat</code>.\n\n</p>\n<p>If you want to be notified when the file was modified, not just accessed\nyou need to compare <code>curr.mtime</code> and <code>prev.mtime</code>.\n\n\n</p>\n",
           "signatures": [
             {
@@ -1261,6 +1265,8 @@
           "textRaw": "fs.unwatchFile(filename)",
           "type": "method",
           "name": "unwatchFile",
+          "stability": 2,
+          "stabilityText": "Unstable.  Use fs.watch instead, if available.",
           "desc": "<p>Stop watching for changes on <code>filename</code>.\n\n</p>\n",
           "signatures": [
             {
@@ -1276,7 +1282,31 @@
           "textRaw": "fs.watch(filename, [options], listener)",
           "type": "method",
           "name": "watch",
-          "desc": "<p>Watch for changes on <code>filename</code>, where <code>filename</code> is either a file or a\ndirectory.  The returned object is <a href=\"#fs.FSWatcher\">fs.FSWatcher</a>.\n\n</p>\n<p>The second argument is optional. The <code>options</code> if provided should be an object\ncontaining a boolean member <code>persistent</code>, which indicates whether the process\nshould continue to run as long as files are being watched. The default is\n<code>{ persistent: true }</code>.\n\n</p>\n<p>The listener callback gets two arguments <code>(event, filename)</code>.  <code>event</code> is either\n&apos;rename&apos; or &apos;change&apos;, and <code>filename</code> is the name of the file which triggered\nthe event.\n\n</p>\n<p><strong><em>Warning:</em></strong>\nProviding <code>filename</code> argument in the callback is not supported\non every platform (currently it&apos;s only supported on Linux and Windows).  Even\non supported platforms <code>filename</code> is not always guaranteed to be provided.\nTherefore, don&apos;t assume that <code>filename</code> argument is always provided in the\ncallback, and have some fallback logic if it is null.\n\n</p>\n<pre><code>fs.watch(&apos;somedir&apos;, function (event, filename) {\n  console.log(&apos;event is: &apos; + event);\n  if (filename) {\n    console.log(&apos;filename provided: &apos; + filename);\n  } else {\n    console.log(&apos;filename not provided&apos;);\n  }\n});</code></pre>\n",
+          "stability": 2,
+          "stabilityText": "Unstable.  Not available on all platforms.",
+          "desc": "<p>Watch for changes on <code>filename</code>, where <code>filename</code> is either a file or a\ndirectory.  The returned object is a <a href=\"#fs_class_fs_fswatcher\">fs.FSWatcher</a>.\n\n</p>\n<p>The second argument is optional. The <code>options</code> if provided should be an object\ncontaining a boolean member <code>persistent</code>, which indicates whether the process\nshould continue to run as long as files are being watched. The default is\n<code>{ persistent: true }</code>.\n\n</p>\n<p>The listener callback gets two arguments <code>(event, filename)</code>.  <code>event</code> is either\n&apos;rename&apos; or &apos;change&apos;, and <code>filename</code> is the name of the file which triggered\nthe event.\n\n</p>\n",
+          "miscs": [
+            {
+              "textRaw": "Caveats",
+              "name": "Caveats",
+              "type": "misc",
+              "desc": "<p>The <code>fs.watch</code> API is not 100% consistent across platforms, and is\nunavailable in some situations.\n\n</p>\n",
+              "miscs": [
+                {
+                  "textRaw": "Availability",
+                  "name": "Availability",
+                  "type": "misc",
+                  "desc": "<p>This feature depends on the underlying operating system providing a way\nto be notified of filesystem changes.\n\n</p>\n<ul>\n<li>On Linux systems, this uses <code>inotify</code>.</li>\n<li>On BSD systems (including OS X), this uses <code>kqueue</code>.</li>\n<li>On SunOS systems (including Solaris and SmartOS), this uses <code>event ports</code>.</li>\n<li>On Windows systems, this feature depends on <code>ReadDirectoryChangesW</code>.</li>\n</ul>\n<p>If the underlying functionality is not available for some reason, then\n<code>fs.watch</code> will not be able to function.  You can still use\n<code>fs.watchFile</code>, which uses stat polling, but it is slower and less\nreliable.\n\n</p>\n"
+                },
+                {
+                  "textRaw": "Filename Argument",
+                  "name": "Filename Argument",
+                  "type": "misc",
+                  "desc": "<p>Providing <code>filename</code> argument in the callback is not supported\non every platform (currently it&apos;s only supported on Linux and Windows).  Even\non supported platforms <code>filename</code> is not always guaranteed to be provided.\nTherefore, don&apos;t assume that <code>filename</code> argument is always provided in the\ncallback, and have some fallback logic if it is null.\n\n</p>\n<pre><code>fs.watch(&apos;somedir&apos;, function (event, filename) {\n  console.log(&apos;event is: &apos; + event);\n  if (filename) {\n    console.log(&apos;filename provided: &apos; + filename);\n  } else {\n    console.log(&apos;filename not provided&apos;);\n  }\n});</code></pre>\n"
+                }
+              ]
+            }
+          ],
           "signatures": [
             {
               "params": [
@@ -1344,14 +1374,14 @@
           "textRaw": "Class: fs.ReadStream",
           "type": "class",
           "name": "fs.ReadStream",
-          "desc": "<p><code>ReadStream</code> is a <a href=\"stream.html#readable_stream\">Readable Stream</a>.\n\n</p>\n",
+          "desc": "<p><code>ReadStream</code> is a <a href=\"stream.html#stream_readable_stream\">Readable Stream</a>.\n\n</p>\n",
           "events": [
             {
               "textRaw": "Event: 'open'",
               "type": "event",
               "name": "open",
-              "desc": "<p><code>function (fd) { }</code>\n\n</p>\n<p> <code>fd</code> is the file descriptor used by the ReadStream.\n\n\n</p>\n",
-              "params": []
+              "params": [],
+              "desc": "<p>Emitted when the ReadStream&apos;s file is opened.\n\n\n</p>\n"
             }
           ]
         },
@@ -1379,14 +1409,14 @@
               "type": "event",
               "name": "change",
               "params": [],
-              "desc": "<p>Emitted when something changes in a watched directory or file.\nSee more details in <a href=\"#fs.watch\">fs.watch</a>.\n\n</p>\n"
+              "desc": "<p>Emitted when something changes in a watched directory or file.\nSee more details in <a href=\"#fs_fs_watch_filename_options_listener\">fs.watch</a>.\n\n</p>\n"
             },
             {
               "textRaw": "Event: 'error'",
               "type": "event",
               "name": "error",
-              "desc": "<p><code>function (exception) {}</code>\n\n</p>\n<p>Emitted when an error occurs.\n</p>\n",
-              "params": []
+              "params": [],
+              "desc": "<p>Emitted when an error occurs.\n</p>\n"
             }
           ]
         }
@@ -1395,14 +1425,14 @@
         {
           "textRaw": "fs.WriteStream",
           "name": "WriteStream",
-          "desc": "<p><code>WriteStream</code> is a <a href=\"stream.html#writable_stream\">Writable Stream</a>.\n\n</p>\n",
+          "desc": "<p><code>WriteStream</code> is a <a href=\"stream.html#stream_writable_stream\">Writable Stream</a>.\n\n</p>\n",
           "events": [
             {
               "textRaw": "Event: 'open'",
               "type": "event",
               "name": "open",
-              "desc": "<p><code>function (fd) { }</code>\n\n</p>\n<p> <code>fd</code> is the file descriptor used by the WriteStream.\n\n</p>\n",
-              "params": []
+              "params": [],
+              "desc": "<p>Emitted when the WriteStream&apos;s file is opened.\n\n</p>\n"
             }
           ],
           "properties": [
@@ -1415,7 +1445,7 @@
         }
       ],
       "type": "module",
-      "displayName": "File System"
+      "displayName": "fs"
     }
   ]
 }

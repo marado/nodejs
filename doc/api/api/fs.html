@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>File System Node.js v0.6.12 Manual &amp; Documentation</title>
+  <title>File System Node.js v0.6.14 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/fs.html">
@@ -20,7 +20,7 @@
                 <li><a href="/#download" class="download">Download</a></li>
                 <li><a href="/about/" class="about">About</a></li>
                 <li><a href="http://search.npmjs.org/" class="npm">npm Registry</a></li>
-                <li><a href="http://nodejs.org/docs/latest/api/index.html" class="docs current">Docs</a></li>
+                <li><a href="http://nodejs.org/api/" class="docs current">Docs</a></li>
                 <li><a href="http://blog.nodejs.org" class="blog">Blog</a></li>
                 <li><a href="/community/" class="community">Community</a></li>
                 <li><a href="/logos/" class="logos">Logos</a></li>
@@ -31,9 +31,13 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.6.12 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.6.14 Manual &amp; Documentation</h1>
             <div id="gtoc">
-              <p><a href="index.html" name="toc">Index</a> | <a href="all.html">View on single page</a></p>
+              <p>
+                <a href="index.html" name="toc">Index</a> |
+                <a href="all.html">View on single page</a> |
+                <a href="fs.json">View as JSON</a>
+              </p>
             </div>
             <hr>
           </header>
@@ -102,7 +106,14 @@
 <li><a href="#fs_fs_writefilesync_filename_data_encoding">fs.writeFileSync(filename, data, [encoding])</a></li>
 <li><a href="#fs_fs_watchfile_filename_options_listener">fs.watchFile(filename, [options], listener)</a></li>
 <li><a href="#fs_fs_unwatchfile_filename">fs.unwatchFile(filename)</a></li>
-<li><a href="#fs_fs_watch_filename_options_listener">fs.watch(filename, [options], listener)</a></li>
+<li><a href="#fs_fs_watch_filename_options_listener">fs.watch(filename, [options], listener)</a><ul>
+<li><a href="#fs_caveats">Caveats</a><ul>
+<li><a href="#fs_availability">Availability</a></li>
+<li><a href="#fs_filename_argument">Filename Argument</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a href="#fs_class_fs_stats">Class: fs.Stats</a></li>
 <li><a href="#fs_fs_createreadstream_path_options">fs.createReadStream(path, [options])</a></li>
 <li><a href="#fs_class_fs_readstream">Class: fs.ReadStream</a><ul>
@@ -129,6 +140,9 @@
 
           <div id="apicontent">
             <h1>File System<span><a class="mark" href="#fs_file_system" id="fs_file_system">#</a></span></h1>
+<pre><code>Stability: 3 - Stable</code></pre>
+<!--name=fs-->
+
 <p>File I/O is provided by simple wrappers around standard POSIX functions.  To
 use this module do <code>require(&apos;fs&apos;)</code>. All the methods have asynchronous and
 synchronous forms.
@@ -266,7 +280,7 @@ are given to the completion callback.
 </p>
 <h2>fs.stat(path, [callback])<span><a class="mark" href="#fs_fs_stat_path_callback" id="fs_fs_stat_path_callback">#</a></span></h2>
 <p>Asynchronous stat(2). The callback gets two arguments <code>(err, stats)</code> where
-<code>stats</code> is a <a href="#fs.Stats">fs.Stats</a> object.  See the <a href="#fs.Stats">fs.Stats</a>
+<code>stats</code> is a <a href="#fs_class_fs_stats">fs.Stats</a> object.  See the <a href="#fs_class_fs_stats">fs.Stats</a>
 section below for more information.
 
 </p>
@@ -536,6 +550,7 @@ returns a buffer.
 
 </p>
 <h2>fs.watchFile(filename, [options], listener)<span><a class="mark" href="#fs_fs_watchfile_filename_options_listener" id="fs_fs_watchfile_filename_options_listener">#</a></span></h2>
+<pre><code>Stability: 2 - Unstable.  Use fs.watch instead, if available.</code></pre>
 <p>Watch for changes on <code>filename</code>. The callback <code>listener</code> will be called each
 time the file is accessed.
 
@@ -565,12 +580,14 @@ you need to compare <code>curr.mtime</code> and <code>prev.mtime</code>.
 
 </p>
 <h2>fs.unwatchFile(filename)<span><a class="mark" href="#fs_fs_unwatchfile_filename" id="fs_fs_unwatchfile_filename">#</a></span></h2>
+<pre><code>Stability: 2 - Unstable.  Use fs.watch instead, if available.</code></pre>
 <p>Stop watching for changes on <code>filename</code>.
 
 </p>
 <h2>fs.watch(filename, [options], listener)<span><a class="mark" href="#fs_fs_watch_filename_options_listener" id="fs_fs_watch_filename_options_listener">#</a></span></h2>
+<pre><code>Stability: 2 - Unstable.  Not available on all platforms.</code></pre>
 <p>Watch for changes on <code>filename</code>, where <code>filename</code> is either a file or a
-directory.  The returned object is <a href="#fs.FSWatcher">fs.FSWatcher</a>.
+directory.  The returned object is a <a href="#fs_class_fs_fswatcher">fs.FSWatcher</a>.
 
 </p>
 <p>The second argument is optional. The <code>options</code> if provided should be an object
@@ -584,8 +601,36 @@ should continue to run as long as files are being watched. The default is
 the event.
 
 </p>
-<p><strong><em>Warning:</em></strong>
-Providing <code>filename</code> argument in the callback is not supported
+<h3>Caveats<span><a class="mark" href="#fs_caveats" id="fs_caveats">#</a></span></h3>
+<!--type=misc-->
+
+<p>The <code>fs.watch</code> API is not 100% consistent across platforms, and is
+unavailable in some situations.
+
+</p>
+<h4>Availability<span><a class="mark" href="#fs_availability" id="fs_availability">#</a></span></h4>
+<!--type=misc-->
+
+<p>This feature depends on the underlying operating system providing a way
+to be notified of filesystem changes.
+
+</p>
+<ul>
+<li>On Linux systems, this uses <code>inotify</code>.</li>
+<li>On BSD systems (including OS X), this uses <code>kqueue</code>.</li>
+<li>On SunOS systems (including Solaris and SmartOS), this uses <code>event ports</code>.</li>
+<li>On Windows systems, this feature depends on <code>ReadDirectoryChangesW</code>.</li>
+</ul>
+<p>If the underlying functionality is not available for some reason, then
+<code>fs.watch</code> will not be able to function.  You can still use
+<code>fs.watchFile</code>, which uses stat polling, but it is slower and less
+reliable.
+
+</p>
+<h4>Filename Argument<span><a class="mark" href="#fs_filename_argument" id="fs_filename_argument">#</a></span></h4>
+<!--type=misc-->
+
+<p>Providing <code>filename</code> argument in the callback is not supported
 on every platform (currently it&apos;s only supported on Linux and Windows).  Even
 on supported platforms <code>filename</code> is not always guaranteed to be provided.
 Therefore, don&apos;t assume that <code>filename</code> argument is always provided in the
@@ -665,14 +710,14 @@ start at 0.
 </p>
 <pre><code>fs.createReadStream(&apos;sample.txt&apos;, {start: 90, end: 99});</code></pre>
 <h2>Class: fs.ReadStream<span><a class="mark" href="#fs_class_fs_readstream" id="fs_class_fs_readstream">#</a></span></h2>
-<p><code>ReadStream</code> is a <a href="stream.html#readable_stream">Readable Stream</a>.
+<p><code>ReadStream</code> is a <a href="stream.html#stream_readable_stream">Readable Stream</a>.
 
 </p>
 <h3>Event: &apos;open&apos;<span><a class="mark" href="#fs_event_open" id="fs_event_open">#</a></span></h3>
-<p><code>function (fd) { }</code>
-
-</p>
-<p> <code>fd</code> is the file descriptor used by the ReadStream.
+<div class="signature"><ul>
+<li><code>fd</code> <span class="type">Integer</span> file descriptor used by the ReadStream.</li>
+</div></ul>
+<p>Emitted when the ReadStream&apos;s file is opened.
 
 
 </p>
@@ -693,14 +738,14 @@ default mode <code>w</code>.
 
 </p>
 <h2>fs.WriteStream<span><a class="mark" href="#fs_fs_writestream" id="fs_fs_writestream">#</a></span></h2>
-<p><code>WriteStream</code> is a <a href="stream.html#writable_stream">Writable Stream</a>.
+<p><code>WriteStream</code> is a <a href="stream.html#stream_writable_stream">Writable Stream</a>.
 
 </p>
 <h3>Event: &apos;open&apos;<span><a class="mark" href="#fs_event_open_1" id="fs_event_open_1">#</a></span></h3>
-<p><code>function (fd) { }</code>
-
-</p>
-<p> <code>fd</code> is the file descriptor used by the WriteStream.
+<div class="signature"><ul>
+<li><code>fd</code> <span class="type">Integer</span> file descriptor used by the ReadStream.</li>
+</div></ul>
+<p>Emitted when the WriteStream&apos;s file is opened.
 
 </p>
 <h3>file.bytesWritten<span><a class="mark" href="#fs_file_byteswritten" id="fs_file_byteswritten">#</a></span></h3>
@@ -722,13 +767,13 @@ for writing.
 <li><code>filename</code> <span class="type">String</span> The filename that changed (if relevant/available)</li>
 </div></ul>
 <p>Emitted when something changes in a watched directory or file.
-See more details in <a href="#fs.watch">fs.watch</a>.
+See more details in <a href="#fs_fs_watch_filename_options_listener">fs.watch</a>.
 
 </p>
 <h3>Event: &apos;error&apos;<span><a class="mark" href="#fs_event_error" id="fs_event_error">#</a></span></h3>
-<p><code>function (exception) {}</code>
-
-</p>
+<div class="signature"><ul>
+<li><code>error</code> <span class="type">Error object</span></li>
+</div></ul>
 <p>Emitted when an error occurs.
 </p>
 
@@ -741,7 +786,7 @@ See more details in <a href="#fs.watch">fs.watch</a>.
             <li><a href="/#download">Download</a></li>
             <li><a href="/about/">About</a></li>
             <li><a href="http://search.npmjs.org/">npm Registry</a></li>
-            <li><a href="http://nodejs.org/docs/latest/api/index.html">Docs</a></li>
+            <li><a href="http://nodejs.org/api/">Docs</a></li>
             <li><a href="http://blog.nodejs.org">Blog</a></li>
             <li><a href="/community/">Community</a></li>
             <li><a href="/logos/">Logos</a></li>
@@ -749,11 +794,11 @@ See more details in <a href="#fs.watch">fs.watch</a>.
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright 2010 <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.12/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.14/LICENSE">license</a>.</p>
     </div>
 
-  <script src="assets/sh_main.js"></script>
-  <script src="assets/sh_javascript.min.js"></script>
+  <script src="../sh_main.js"></script>
+  <script src="../sh_javascript.min.js"></script>
   <script>highlight(undefined, undefined, 'pre');</script>
   <script>
     var gaJsHost = (("https:" == document.location.protocol) ?

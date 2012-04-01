@@ -4,6 +4,8 @@
     {
       "textRaw": "Stream",
       "name": "stream",
+      "stability": 2,
+      "stabilityText": "Unstable",
       "desc": "<p>A stream is an abstract interface implemented by various objects in Node.\nFor example a request to an HTTP server is a stream, as is stdout. Streams\nare readable, writable, or both. All streams are instances of <code>EventEmitter</code>.\n\n</p>\n<p>You can load up the Stream base class by doing <code>require(&apos;stream&apos;)</code>.\n\n</p>\n",
       "classes": [
         {

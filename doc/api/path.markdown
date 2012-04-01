@@ -1,5 +1,7 @@
 # Path
 
+    Stability: 3 - Stable
+
 This module contains utilities for handling and transforming file
 paths.  Almost all these methods perform only string transformations.
 The file system is not consulted to check whether paths are valid.
@@ -140,7 +142,7 @@ an empty string.  Examples:
     // returns
     ''
 
-### path.exists(p, [callback])
+## path.exists(p, [callback])
 
 Test whether or not the given path exists by checking with the file system.
 Then call the `callback` argument with either true or false.  Example:
@@ -150,6 +152,6 @@ Then call the `callback` argument with either true or false.  Example:
     });
 
 
-### path.existsSync(p)
+## path.existsSync(p)
 
 Synchronous version of `path.exists`.

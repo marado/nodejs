@@ -12,6 +12,15 @@
           "name": "Stability Index",
           "type": "misc",
           "desc": "<p>Throughout the documentation, you will see indications of a section&apos;s\nstability.  The Node.js API is still somewhat changing, and as it\nmatures, certain parts are more reliable than others.  Some are so\nproven, and so relied upon, that they are unlikely to ever change at\nall.  Others are brand new and experimental, or known to be hazardous\nand in the process of being redesigned.\n\n</p>\n<p>The notices look like this:\n\n</p>\n<pre><code>Stability: 1 Experimental</code></pre>\n<p>The stability indices are as follows:\n\n</p>\n<ul>\n<li><strong>0 - Deprecated</strong>  This feature is known to be problematic, and changes are\nplanned.  Do not rely on it.  Use of the feature may cause warnings.  Backwards\ncompatibility should not be expected.</li>\n</ul>\n<ul>\n<li><strong>1 - Experimental</strong>  This feature was introduced recently, and may change\nor be removed in future versions.  Please try it out and provide feedback.\nIf it addresses a use-case that is important to you, tell the node core team.</li>\n</ul>\n<ul>\n<li><strong>2 - Unstable</strong>  The API is in the process of settling, but has not yet had\nsufficient real-world testing to be considered stable. Backwards-compatibility\nwill be maintained if reasonable.</li>\n</ul>\n<ul>\n<li><strong>3 - Stable</strong>  The API has proven satisfactory, but cleanup in the underlying\ncode may cause minor changes.  Backwards-compatibility is guaranteed.</li>\n</ul>\n<ul>\n<li><strong>4 - API Frozen</strong>  This API has been tested extensively in production and is\nunlikely to ever have to change.</li>\n</ul>\n<ul>\n<li><strong>5 - Locked</strong>  Unless serious bugs are found, this code will not ever\nchange.  Please do not suggest changes in this area; they will be refused.</li>\n</ul>\n"
+        },
+        {
+          "textRaw": "JSON Output",
+          "name": "json_output",
+          "stability": 1,
+          "stabilityText": "Experimental",
+          "desc": "<p>Every HTML file in the markdown has a corresponding JSON file with the\nsame data.\n\n</p>\n<p>This feature is new as of node v0.6.12.  It is experimental.\n\n</p>\n",
+          "type": "misc",
+          "displayName": "JSON Output"
         }
       ]
     },
@@ -60,6 +69,8 @@
         {
           "textRaw": "console",
           "name": "console",
+          "stability": 4,
+          "stabilityText": "API Frozen",
           "type": "global",
           "desc": "<p>For printing to stdout and stderr.  Similar to the console object functions\nprovided by most web browsers, here the output is sent to stdout or stderr.\n\n\n</p>\n",
           "methods": [
@@ -520,6 +531,8 @@
     {
       "textRaw": "Debugger",
       "name": "Debugger",
+      "stability": 3,
+      "stabilityText": "Stable",
       "type": "misc",
       "desc": "<p>V8 comes with an extensive debugger which is accessible out-of-process via a\nsimple <a href=\"http://code.google.com/p/v8/wiki/DebuggerProtocol\">TCP protocol</a>.\nNode has a built-in client for this debugger. To use this, start Node with the\n<code>debug</code> argument; a prompt will appear:\n\n</p>\n<pre><code>% node debug myscript.js\n&lt; debugger listening on port 5858\nconnecting... ok\nbreak in /home/indutny/Code/git/indutny/myscript.js:1\n  1 x = 5;\n  2 setTimeout(function () {\n  3   debugger;\ndebug&gt;</code></pre>\n<p>Node&apos;s debugger client doesn&apos;t support the full range of commands, but\nsimple step and inspection is possible. By putting the statement <code>debugger;</code>\ninto the source code of your script, you will enable a breakpoint.\n\n</p>\n<p>For example, suppose <code>myscript.js</code> looked like this:\n\n</p>\n<pre><code>// myscript.js\nx = 5;\nsetTimeout(function () {\n  debugger;\n  console.log(&quot;world&quot;);\n}, 1000);\nconsole.log(&quot;hello&quot;);</code></pre>\n<p>Then once the debugger is run, it will break on line 4.\n\n</p>\n<pre><code>% node debug myscript.js\n&lt; debugger listening on port 5858\nconnecting... ok\nbreak in /home/indutny/Code/git/indutny/myscript.js:1\n  1 x = 5;\n  2 setTimeout(function () {\n  3   debugger;\ndebug&gt; cont\n&lt; hello\nbreak in /home/indutny/Code/git/indutny/myscript.js:3\n  1 x = 5;\n  2 setTimeout(function () {\n  3   debugger;\n  4   console.log(&quot;world&quot;);\n  5 }, 1000);\ndebug&gt; next\nbreak in /home/indutny/Code/git/indutny/myscript.js:4\n  2 setTimeout(function () {\n  3   debugger;\n  4   console.log(&quot;world&quot;);\n  5 }, 1000);\n  6 console.log(&quot;hello&quot;);\ndebug&gt; repl\nPress Ctrl + C to leave debug repl\n&gt; x\n5\n&gt; 2+2\n4\ndebug&gt; next\n&lt; world\nbreak in /home/indutny/Code/git/indutny/myscript.js:5\n  3   debugger;\n  4   console.log(&quot;world&quot;);\n  5 }, 1000);\n  6 console.log(&quot;hello&quot;);\n  7\ndebug&gt; quit\n%</code></pre>\n<p>The <code>repl</code> command allows you to evaluate code remotely. The <code>next</code> command\nsteps over to the next line. There are a few other commands available and more\nto come. Type <code>help</code> to see others.\n\n</p>\n",
       "miscs": [
@@ -594,6 +607,8 @@
     {
       "textRaw": "console",
       "name": "console",
+      "stability": 4,
+      "stabilityText": "API Frozen",
       "type": "global",
       "desc": "<p>For printing to stdout and stderr.  Similar to the console object functions\nprovided by most web browsers, here the output is sent to stdout or stderr.\n\n\n</p>\n",
       "methods": [
@@ -1054,6 +1069,8 @@
     {
       "textRaw": "Timers",
       "name": "timers",
+      "stability": 5,
+      "stabilityText": "Locked",
       "desc": "<p>All of the timer functions are globals.  You do not need to <code>require()</code>\nthis module in order to use them.\n\n</p>\n",
       "methods": [
         {
@@ -1145,6 +1162,8 @@
     {
       "textRaw": "Modules",
       "name": "module",
+      "stability": 5,
+      "stabilityText": "Locked",
       "desc": "<p>Node has a simple module loading system.  In Node, files and modules are in\none-to-one correspondence.  As an example, <code>foo.js</code> loads the module\n<code>circle.js</code> in the same directory.\n\n</p>\n<p>The contents of <code>foo.js</code>:\n\n</p>\n<pre><code>var circle = require(&apos;./circle.js&apos;);\nconsole.log( &apos;The area of a circle of radius 4 is &apos;\n           + circle.area(4));</code></pre>\n<p>The contents of <code>circle.js</code>:\n\n</p>\n<pre><code>var PI = Math.PI;\n\nexports.area = function (r) {\n  return PI * r * r;\n};\n\nexports.circumference = function (r) {\n  return 2 * PI * r;\n};</code></pre>\n<p>The module <code>circle.js</code> has exported the functions <code>area()</code> and\n<code>circumference()</code>.  To export an object, add to the special <code>exports</code>\nobject.\n\n</p>\n<p>Variables\nlocal to the module will be private. In this example the variable <code>PI</code> is\nprivate to <code>circle.js</code>.\n\n</p>\n<p>The module system is implemented in the <code>require(&quot;module&quot;)</code> module.\n\n</p>\n",
       "miscs": [
         {
@@ -1368,6 +1387,8 @@
     {
       "textRaw": "util",
       "name": "util",
+      "stability": 5,
+      "stabilityText": "Locked",
       "desc": "<p>These functions are in the module <code>&apos;util&apos;</code>. Use <code>require(&apos;util&apos;)</code> to access\nthem.\n\n\n</p>\n",
       "methods": [
         {
@@ -1545,6 +1566,8 @@
     {
       "textRaw": "Events",
       "name": "Events",
+      "stability": 4,
+      "stabilityText": "API Frozen",
       "type": "module",
       "desc": "<p>Many objects in Node emit events: a <code>net.Server</code> emits an event each time\na peer connects to it, a <code>fs.readStream</code> emits an event when the file is\nopened. All objects which emit events are instances of <code>events.EventEmitter</code>.\nYou can access this module by doing: <code>require(&quot;events&quot;);</code>\n\n</p>\n<p>Typically, event names are represented by a camel-cased string, however,\nthere aren&apos;t any strict restrictions on that, as any string will be accepted.\n\n</p>\n<p>Functions can then be attached to objects, to be executed when an event\nis emitted. These functions are called <em>listeners</em>.\n\n\n</p>\n",
       "classes": [
@@ -3424,6 +3447,8 @@
     {
       "textRaw": "Stream",
       "name": "stream",
+      "stability": 2,
+      "stabilityText": "Unstable",
       "desc": "<p>A stream is an abstract interface implemented by various objects in Node.\nFor example a request to an HTTP server is a stream, as is stdout. Streams\nare readable, writable, or both. All streams are instances of <code>EventEmitter</code>.\n\n</p>\n<p>You can load up the Stream base class by doing <code>require(&apos;stream&apos;)</code>.\n\n</p>\n",
       "classes": [
         {
@@ -3705,6 +3730,8 @@
     {
       "textRaw": "Crypto",
       "name": "crypto",
+      "stability": 3,
+      "stabilityText": "Stable",
       "desc": "<p>Use <code>require(&apos;crypto&apos;)</code> to access this module.\n\n</p>\n<p>The crypto module requires OpenSSL to be available on the underlying platform.\nIt offers a way of encapsulating secure credentials to be used as part\nof a secure HTTPS net or http connection.\n\n</p>\n<p>It also offers a set of wrappers for OpenSSL&apos;s hash, hmac, cipher, decipher, sign and verify methods.\n\n</p>\n",
       "methods": [
         {
@@ -4364,6 +4391,8 @@
     {
       "textRaw": "TLS (SSL)",
       "name": "tls_(ssl)",
+      "stability": 3,
+      "stabilityText": "Stable",
       "desc": "<p>Use <code>require(&apos;tls&apos;)</code> to access this module.\n\n</p>\n<p>The <code>tls</code> module uses OpenSSL to provide Transport Layer Security and/or\nSecure Socket Layer: encrypted stream communication.\n\n</p>\n<p>TLS/SSL is a public/private key infrastructure. Each client and each\nserver must have a private key. A private key is created like this\n\n</p>\n<pre><code>openssl genrsa -out ryans-key.pem 1024</code></pre>\n<p>All severs and some clients need to have a certificate. Certificates are public\nkeys signed by a Certificate Authority or self-signed. The first step to\ngetting a certificate is to create a &quot;Certificate Signing Request&quot; (CSR)\nfile. This is done with:\n\n</p>\n<pre><code>openssl req -new -key ryans-key.pem -out ryans-csr.pem</code></pre>\n<p>To create a self-signed certificate with the CSR, do this:\n\n</p>\n<pre><code>openssl x509 -req -in ryans-csr.pem -signkey ryans-key.pem -out ryans-cert.pem</code></pre>\n<p>Alternatively you can send the CSR to a Certificate Authority for signing.\n\n</p>\n<p>(TODO: docs on creating a CA, for now interested users should just look at\n<code>test/fixtures/keys/Makefile</code> in the Node source code)\n\n</p>\n",
       "miscs": [
         {
@@ -4637,7 +4666,9 @@
     },
     {
       "textRaw": "File System",
-      "name": "file_system",
+      "name": "fs",
+      "stability": 3,
+      "stabilityText": "Stable",
       "desc": "<p>File I/O is provided by simple wrappers around standard POSIX functions.  To\nuse this module do <code>require(&apos;fs&apos;)</code>. All the methods have asynchronous and\nsynchronous forms.\n\n</p>\n<p>The asynchronous form always take a completion callback as its last argument.\nThe arguments passed to the completion callback depend on the method, but the\nfirst argument is always reserved for an exception. If the operation was\ncompleted successfully, then the first argument will be <code>null</code> or <code>undefined</code>.\n\n</p>\n<p>When using the synchronous form any exceptions are immediately thrown.\nYou can use try/catch to handle exceptions or allow them to bubble up.\n\n</p>\n<p>Here is an example of the asynchronous version:\n\n</p>\n<pre><code>var fs = require(&apos;fs&apos;);\n\nfs.unlink(&apos;/tmp/hello&apos;, function (err) {\n  if (err) throw err;\n  console.log(&apos;successfully deleted /tmp/hello&apos;);\n});</code></pre>\n<p>Here is the synchronous version:\n\n</p>\n<pre><code>var fs = require(&apos;fs&apos;);\n\nfs.unlinkSync(&apos;/tmp/hello&apos;)\nconsole.log(&apos;successfully deleted /tmp/hello&apos;);</code></pre>\n<p>With the asynchronous methods there is no guaranteed ordering. So the\nfollowing is prone to error:\n\n</p>\n<pre><code>fs.rename(&apos;/tmp/hello&apos;, &apos;/tmp/world&apos;, function (err) {\n  if (err) throw err;\n  console.log(&apos;renamed complete&apos;);\n});\nfs.stat(&apos;/tmp/world&apos;, function (err, stats) {\n  if (err) throw err;\n  console.log(&apos;stats: &apos; + JSON.stringify(stats));\n});</code></pre>\n<p>It could be that <code>fs.stat</code> is executed before <code>fs.rename</code>.\nThe correct way to do this is to chain the callbacks.\n\n</p>\n<pre><code>fs.rename(&apos;/tmp/hello&apos;, &apos;/tmp/world&apos;, function (err) {\n  if (err) throw err;\n  fs.stat(&apos;/tmp/world&apos;, function (err, stats) {\n    if (err) throw err;\n    console.log(&apos;stats: &apos; + JSON.stringify(stats));\n  });\n});</code></pre>\n<p>In busy processes, the programmer is <em>strongly encouraged</em> to use the\nasynchronous versions of these calls. The synchronous versions will block\nthe entire process until they complete--halting all connections.\n\n</p>\n<p>Relative path to filename can be used, remember however that this path will be relative\nto <code>process.cwd()</code>.\n\n</p>\n",
       "methods": [
         {
@@ -4982,7 +5013,7 @@
           "textRaw": "fs.stat(path, [callback])",
           "type": "method",
           "name": "stat",
-          "desc": "<p>Asynchronous stat(2). The callback gets two arguments <code>(err, stats)</code> where\n<code>stats</code> is a <a href=\"#fs.Stats\">fs.Stats</a> object.  See the <a href=\"#fs.Stats\">fs.Stats</a>\nsection below for more information.\n\n</p>\n",
+          "desc": "<p>Asynchronous stat(2). The callback gets two arguments <code>(err, stats)</code> where\n<code>stats</code> is a <a href=\"#fs_class_fs_stats\">fs.Stats</a> object.  See the <a href=\"#fs_class_fs_stats\">fs.Stats</a>\nsection below for more information.\n\n</p>\n",
           "signatures": [
             {
               "params": [
@@ -5873,6 +5904,8 @@
           "textRaw": "fs.watchFile(filename, [options], listener)",
           "type": "method",
           "name": "watchFile",
+          "stability": 2,
+          "stabilityText": "Unstable.  Use fs.watch instead, if available.",
           "desc": "<p>Watch for changes on <code>filename</code>. The callback <code>listener</code> will be called each\ntime the file is accessed.\n\n</p>\n<p>The second argument is optional. The <code>options</code> if provided should be an object\ncontaining two members a boolean, <code>persistent</code>, and <code>interval</code>. <code>persistent</code>\nindicates whether the process should continue to run as long as files are\nbeing watched. <code>interval</code> indicates how often the target should be polled,\nin milliseconds. (On Linux systems with inotify, <code>interval</code> is ignored.) The\ndefault is <code>{ persistent: true, interval: 0 }</code>.\n\n</p>\n<p>The <code>listener</code> gets two arguments the current stat object and the previous\nstat object:\n\n</p>\n<pre><code>fs.watchFile(&apos;message.text&apos;, function (curr, prev) {\n  console.log(&apos;the current mtime is: &apos; + curr.mtime);\n  console.log(&apos;the previous mtime was: &apos; + prev.mtime);\n});</code></pre>\n<p>These stat objects are instances of <code>fs.Stat</code>.\n\n</p>\n<p>If you want to be notified when the file was modified, not just accessed\nyou need to compare <code>curr.mtime</code> and <code>prev.mtime</code>.\n\n\n</p>\n",
           "signatures": [
             {
@@ -5895,6 +5928,8 @@
           "textRaw": "fs.unwatchFile(filename)",
           "type": "method",
           "name": "unwatchFile",
+          "stability": 2,
+          "stabilityText": "Unstable.  Use fs.watch instead, if available.",
           "desc": "<p>Stop watching for changes on <code>filename</code>.\n\n</p>\n",
           "signatures": [
             {
@@ -5910,7 +5945,31 @@
           "textRaw": "fs.watch(filename, [options], listener)",
           "type": "method",
           "name": "watch",
-          "desc": "<p>Watch for changes on <code>filename</code>, where <code>filename</code> is either a file or a\ndirectory.  The returned object is <a href=\"#fs.FSWatcher\">fs.FSWatcher</a>.\n\n</p>\n<p>The second argument is optional. The <code>options</code> if provided should be an object\ncontaining a boolean member <code>persistent</code>, which indicates whether the process\nshould continue to run as long as files are being watched. The default is\n<code>{ persistent: true }</code>.\n\n</p>\n<p>The listener callback gets two arguments <code>(event, filename)</code>.  <code>event</code> is either\n&apos;rename&apos; or &apos;change&apos;, and <code>filename</code> is the name of the file which triggered\nthe event.\n\n</p>\n<p><strong><em>Warning:</em></strong>\nProviding <code>filename</code> argument in the callback is not supported\non every platform (currently it&apos;s only supported on Linux and Windows).  Even\non supported platforms <code>filename</code> is not always guaranteed to be provided.\nTherefore, don&apos;t assume that <code>filename</code> argument is always provided in the\ncallback, and have some fallback logic if it is null.\n\n</p>\n<pre><code>fs.watch(&apos;somedir&apos;, function (event, filename) {\n  console.log(&apos;event is: &apos; + event);\n  if (filename) {\n    console.log(&apos;filename provided: &apos; + filename);\n  } else {\n    console.log(&apos;filename not provided&apos;);\n  }\n});</code></pre>\n",
+          "stability": 2,
+          "stabilityText": "Unstable.  Not available on all platforms.",
+          "desc": "<p>Watch for changes on <code>filename</code>, where <code>filename</code> is either a file or a\ndirectory.  The returned object is a <a href=\"#fs_class_fs_fswatcher\">fs.FSWatcher</a>.\n\n</p>\n<p>The second argument is optional. The <code>options</code> if provided should be an object\ncontaining a boolean member <code>persistent</code>, which indicates whether the process\nshould continue to run as long as files are being watched. The default is\n<code>{ persistent: true }</code>.\n\n</p>\n<p>The listener callback gets two arguments <code>(event, filename)</code>.  <code>event</code> is either\n&apos;rename&apos; or &apos;change&apos;, and <code>filename</code> is the name of the file which triggered\nthe event.\n\n</p>\n",
+          "miscs": [
+            {
+              "textRaw": "Caveats",
+              "name": "Caveats",
+              "type": "misc",
+              "desc": "<p>The <code>fs.watch</code> API is not 100% consistent across platforms, and is\nunavailable in some situations.\n\n</p>\n",
+              "miscs": [
+                {
+                  "textRaw": "Availability",
+                  "name": "Availability",
+                  "type": "misc",
+                  "desc": "<p>This feature depends on the underlying operating system providing a way\nto be notified of filesystem changes.\n\n</p>\n<ul>\n<li>On Linux systems, this uses <code>inotify</code>.</li>\n<li>On BSD systems (including OS X), this uses <code>kqueue</code>.</li>\n<li>On SunOS systems (including Solaris and SmartOS), this uses <code>event ports</code>.</li>\n<li>On Windows systems, this feature depends on <code>ReadDirectoryChangesW</code>.</li>\n</ul>\n<p>If the underlying functionality is not available for some reason, then\n<code>fs.watch</code> will not be able to function.  You can still use\n<code>fs.watchFile</code>, which uses stat polling, but it is slower and less\nreliable.\n\n</p>\n"
+                },
+                {
+                  "textRaw": "Filename Argument",
+                  "name": "Filename Argument",
+                  "type": "misc",
+                  "desc": "<p>Providing <code>filename</code> argument in the callback is not supported\non every platform (currently it&apos;s only supported on Linux and Windows).  Even\non supported platforms <code>filename</code> is not always guaranteed to be provided.\nTherefore, don&apos;t assume that <code>filename</code> argument is always provided in the\ncallback, and have some fallback logic if it is null.\n\n</p>\n<pre><code>fs.watch(&apos;somedir&apos;, function (event, filename) {\n  console.log(&apos;event is: &apos; + event);\n  if (filename) {\n    console.log(&apos;filename provided: &apos; + filename);\n  } else {\n    console.log(&apos;filename not provided&apos;);\n  }\n});</code></pre>\n"
+                }
+              ]
+            }
+          ],
           "signatures": [
             {
               "params": [
@@ -5978,14 +6037,14 @@
           "textRaw": "Class: fs.ReadStream",
           "type": "class",
           "name": "fs.ReadStream",
-          "desc": "<p><code>ReadStream</code> is a <a href=\"stream.html#readable_stream\">Readable Stream</a>.\n\n</p>\n",
+          "desc": "<p><code>ReadStream</code> is a <a href=\"stream.html#stream_readable_stream\">Readable Stream</a>.\n\n</p>\n",
           "events": [
             {
               "textRaw": "Event: 'open'",
               "type": "event",
               "name": "open",
-              "desc": "<p><code>function (fd) { }</code>\n\n</p>\n<p> <code>fd</code> is the file descriptor used by the ReadStream.\n\n\n</p>\n",
-              "params": []
+              "params": [],
+              "desc": "<p>Emitted when the ReadStream&apos;s file is opened.\n\n\n</p>\n"
             }
           ]
         },
@@ -6013,14 +6072,14 @@
               "type": "event",
               "name": "change",
               "params": [],
-              "desc": "<p>Emitted when something changes in a watched directory or file.\nSee more details in <a href=\"#fs.watch\">fs.watch</a>.\n\n</p>\n"
+              "desc": "<p>Emitted when something changes in a watched directory or file.\nSee more details in <a href=\"#fs_fs_watch_filename_options_listener\">fs.watch</a>.\n\n</p>\n"
             },
             {
               "textRaw": "Event: 'error'",
               "type": "event",
               "name": "error",
-              "desc": "<p><code>function (exception) {}</code>\n\n</p>\n<p>Emitted when an error occurs.\n\n</p>\n",
-              "params": []
+              "params": [],
+              "desc": "<p>Emitted when an error occurs.\n\n</p>\n"
             }
           ]
         }
@@ -6029,14 +6088,14 @@
         {
           "textRaw": "fs.WriteStream",
           "name": "WriteStream",
-          "desc": "<p><code>WriteStream</code> is a <a href=\"stream.html#writable_stream\">Writable Stream</a>.\n\n</p>\n",
+          "desc": "<p><code>WriteStream</code> is a <a href=\"stream.html#stream_writable_stream\">Writable Stream</a>.\n\n</p>\n",
           "events": [
             {
               "textRaw": "Event: 'open'",
               "type": "event",
               "name": "open",
-              "desc": "<p><code>function (fd) { }</code>\n\n</p>\n<p> <code>fd</code> is the file descriptor used by the WriteStream.\n\n</p>\n",
-              "params": []
+              "params": [],
+              "desc": "<p>Emitted when the WriteStream&apos;s file is opened.\n\n</p>\n"
             }
           ],
           "properties": [
@@ -6049,11 +6108,13 @@
         }
       ],
       "type": "module",
-      "displayName": "File System"
+      "displayName": "fs"
     },
     {
       "textRaw": "Path",
       "name": "path",
+      "stability": 3,
+      "stabilityText": "Stable",
       "desc": "<p>This module contains utilities for handling and transforming file\npaths.  Almost all these methods perform only string transformations.\nThe file system is not consulted to check whether paths are valid.\n\n</p>\n<p><code>path.exists</code> and <code>path.existsSync</code> are the exceptions, and should\nlogically be found in the fs module as they do access the file system.\n\n</p>\n<p>Use <code>require(&apos;path&apos;)</code> to use this module.  The following methods are provided:\n\n</p>\n",
       "methods": [
         {
@@ -6171,42 +6232,40 @@
           "type": "method",
           "name": "extname",
           "desc": "<p>Return the extension of the path, from the last &apos;.&apos; to end of string\nin the last portion of the path.  If there is no &apos;.&apos; in the last portion\nof the path or the first character of it is &apos;.&apos;, then it returns\nan empty string.  Examples:\n\n</p>\n<pre><code>path.extname(&apos;index.html&apos;)\n// returns\n&apos;.html&apos;\n\npath.extname(&apos;index.&apos;)\n// returns\n&apos;.&apos;\n\npath.extname(&apos;index&apos;)\n// returns\n&apos;&apos;</code></pre>\n",
-          "methods": [
+          "signatures": [
             {
-              "textRaw": "path.exists(p, [callback])",
-              "type": "method",
-              "name": "exists",
-              "desc": "<p>Test whether or not the given path exists by checking with the file system.\nThen call the <code>callback</code> argument with either true or false.  Example:\n\n</p>\n<pre><code>path.exists(&apos;/etc/passwd&apos;, function (exists) {\n  util.debug(exists ? &quot;it&apos;s there&quot; : &quot;no passwd!&quot;);\n});</code></pre>\n",
-              "signatures": [
+              "params": [
                 {
-                  "params": [
-                    {
-                      "name": "p"
-                    },
-                    {
-                      "name": "callback",
-                      "optional": true
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "textRaw": "path.existsSync(p)",
-              "type": "method",
-              "name": "existsSync",
-              "desc": "<p>Synchronous version of <code>path.exists</code>.\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": [
-                    {
-                      "name": "p"
-                    }
-                  ]
+                  "name": "p"
                 }
               ]
             }
-          ],
+          ]
+        },
+        {
+          "textRaw": "path.exists(p, [callback])",
+          "type": "method",
+          "name": "exists",
+          "desc": "<p>Test whether or not the given path exists by checking with the file system.\nThen call the <code>callback</code> argument with either true or false.  Example:\n\n</p>\n<pre><code>path.exists(&apos;/etc/passwd&apos;, function (exists) {\n  util.debug(exists ? &quot;it&apos;s there&quot; : &quot;no passwd!&quot;);\n});</code></pre>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "p"
+                },
+                {
+                  "name": "callback",
+                  "optional": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "path.existsSync(p)",
+          "type": "method",
+          "name": "existsSync",
+          "desc": "<p>Synchronous version of <code>path.exists</code>.\n\n</p>\n",
           "signatures": [
             {
               "params": [
@@ -6224,6 +6283,8 @@
     {
       "textRaw": "net",
       "name": "net",
+      "stability": 3,
+      "stabilityText": "Stable",
       "desc": "<p>The <code>net</code> module provides you with an asynchronous network wrapper. It contains\nmethods for creating both servers and clients (called streams). You can include\nthis module with <code>require(&apos;net&apos;);</code>\n\n</p>\n",
       "methods": [
         {
@@ -6798,6 +6859,8 @@
     {
       "textRaw": "UDP / Datagram Sockets",
       "name": "dgram",
+      "stability": 3,
+      "stabilityText": "Stable",
       "desc": "<p>Datagram sockets are available through <code>require(&apos;dgram&apos;)</code>.\n\n</p>\n",
       "methods": [
         {
@@ -7172,6 +7235,8 @@
     {
       "textRaw": "DNS",
       "name": "dns",
+      "stability": 3,
+      "stabilityText": "Stable",
       "desc": "<p>Use <code>require(&apos;dns&apos;)</code> to access this module. All methods in the dns module\nuse C-Ares except for <code>dns.lookup</code> which uses <code>getaddrinfo(3)</code> in a thread\npool. C-Ares is much faster than <code>getaddrinfo</code> but the system resolver is\nmore constant with how other programs operate. When a user does\n<code>net.connect(80, &apos;google.com&apos;)</code> or <code>http.get({ host: &apos;google.com&apos; })</code> the\n<code>dns.lookup</code> method is used. Users who need to do a large number of look ups\nquickly should use the methods that go through C-Ares.\n\n</p>\n<p>Here is an example which resolves <code>&apos;www.google.com&apos;</code> then reverse\nresolves the IP addresses which are returned.\n\n</p>\n<pre><code>var dns = require(&apos;dns&apos;);\n\ndns.resolve4(&apos;www.google.com&apos;, function (err, addresses) {\n  if (err) throw err;\n\n  console.log(&apos;addresses: &apos; + JSON.stringify(addresses));\n\n  addresses.forEach(function (a) {\n    dns.reverse(a, function (err, domains) {\n      if (err) {\n        console.log(&apos;reverse for &apos; + a + &apos; failed: &apos; +\n          err.message);\n      } else {\n        console.log(&apos;reverse for &apos; + a + &apos;: &apos; +\n          JSON.stringify(domains));\n      }\n    });\n  });\n});</code></pre>\n",
       "methods": [
         {
@@ -7369,6 +7434,8 @@
     {
       "textRaw": "HTTP",
       "name": "http",
+      "stability": 3,
+      "stabilityText": "Stable",
       "desc": "<p>To use the HTTP server and client one must <code>require(&apos;http&apos;)</code>.\n\n</p>\n<p>The HTTP interfaces in Node are designed to support many features\nof the protocol which have been traditionally difficult to use.\nIn particular, large, possibly chunk-encoded, messages. The interface is\ncareful to never buffer entire requests or responses--the\nuser is able to stream data.\n\n</p>\n<p>HTTP message headers are represented by an object like this:\n\n</p>\n<pre><code>{ &apos;content-length&apos;: &apos;123&apos;,\n  &apos;content-type&apos;: &apos;text/plain&apos;,\n  &apos;connection&apos;: &apos;keep-alive&apos;,\n  &apos;accept&apos;: &apos;*/*&apos; }</code></pre>\n<p>Keys are lowercased. Values are not modified.\n\n</p>\n<p>In order to support the full spectrum of possible HTTP applications, Node&apos;s\nHTTP API is very low-level. It deals with stream handling and message\nparsing only. It parses a message into headers and body but it does not\nparse the actual headers or the body.\n\n\n</p>\n",
       "methods": [
         {
@@ -8059,18 +8126,37 @@
       "displayName": "HTTP"
     },
     {
-      "textRaw": "HTTP",
-      "name": "http",
-      "desc": "<p>To use the HTTP server and client one must <code>require(&apos;http&apos;)</code>.\n\n</p>\n<p>The HTTP interfaces in Node are designed to support many features\nof the protocol which have been traditionally difficult to use.\nIn particular, large, possibly chunk-encoded, messages. The interface is\ncareful to never buffer entire requests or responses--the\nuser is able to stream data.\n\n</p>\n<p>HTTP message headers are represented by an object like this:\n\n</p>\n<pre><code>{ &apos;content-length&apos;: &apos;123&apos;,\n  &apos;content-type&apos;: &apos;text/plain&apos;,\n  &apos;connection&apos;: &apos;keep-alive&apos;,\n  &apos;accept&apos;: &apos;*/*&apos; }</code></pre>\n<p>Keys are lowercased. Values are not modified.\n\n</p>\n<p>In order to support the full spectrum of possible HTTP applications, Node&apos;s\nHTTP API is very low-level. It deals with stream handling and message\nparsing only. It parses a message into headers and body but it does not\nparse the actual headers or the body.\n\n\n</p>\n",
+      "textRaw": "HTTPS",
+      "name": "https",
+      "stability": 3,
+      "stabilityText": "Stable",
+      "desc": "<p>HTTPS is the HTTP protocol over TLS/SSL. In Node this is implemented as a\nseparate module.\n\n</p>\n",
+      "classes": [
+        {
+          "textRaw": "Class: https.Server",
+          "type": "class",
+          "name": "https.Server",
+          "desc": "<p>This class is a subclass of <code>tls.Server</code> and emits events same as\n<code>http.Server</code>. See <code>http.Server</code> for more information.\n\n</p>\n"
+        },
+        {
+          "textRaw": "Class: https.Agent",
+          "type": "class",
+          "name": "https.Agent",
+          "desc": "<p>An Agent object for HTTPS similar to <a href=\"http.html#http.Agent\">http.Agent</a>.\nSee <a href=\"#https.request\">https.request()</a> for more information.\n\n\n</p>\n"
+        }
+      ],
       "methods": [
         {
-          "textRaw": "http.createServer([requestListener])",
+          "textRaw": "https.createServer(options, [requestListener])",
           "type": "method",
           "name": "createServer",
-          "desc": "<p>Returns a new web server object.\n\n</p>\n<p>The <code>requestListener</code> is a function which is automatically\nadded to the <code>&apos;request&apos;</code> event.\n\n</p>\n",
+          "desc": "<p>Returns a new HTTPS web server object. The <code>options</code> is similar to\n<code>tls.createServer()</code>. The <code>requestListener</code> is a function which is\nautomatically added to the <code>&apos;request&apos;</code> event.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>// curl -k https://localhost:8000/\nvar https = require(&apos;https&apos;);\nvar fs = require(&apos;fs&apos;);\n\nvar options = {\n  key: fs.readFileSync(&apos;test/fixtures/keys/agent2-key.pem&apos;),\n  cert: fs.readFileSync(&apos;test/fixtures/keys/agent2-cert.pem&apos;)\n};\n\nhttps.createServer(options, function (req, res) {\n  res.writeHead(200);\n  res.end(&quot;hello world\\n&quot;);\n}).listen(8000);</code></pre>\n",
           "signatures": [
             {
               "params": [
+                {
+                  "name": "options"
+                },
                 {
                   "name": "requestListener",
                   "optional": true
@@ -8080,10 +8166,10 @@
           ]
         },
         {
-          "textRaw": "http.request(options, callback)",
+          "textRaw": "https.request(options, callback)",
           "type": "method",
           "name": "request",
-          "desc": "<p>Node maintains several connections per server to make HTTP requests.\nThis function allows one to transparently issue requests.  <code>options</code> align\nwith <a href=\"url.html#url.parse\">url.parse()</a>.\n\n</p>\n<p>Options:\n\n</p>\n<ul>\n<li><code>host</code>: A domain name or IP address of the server to issue the request to.\nDefaults to <code>&apos;localhost&apos;</code>.</li>\n<li><code>hostname</code>: To support <code>url.parse()</code> <code>hostname</code> is preferred over <code>host</code></li>\n<li><code>port</code>: Port of remote server. Defaults to 80.</li>\n<li><code>socketPath</code>: Unix Domain Socket (use one of host:port or socketPath)</li>\n<li><code>method</code>: A string specifying the HTTP request method. Defaults to <code>&apos;GET&apos;</code>.</li>\n<li><code>path</code>: Request path. Defaults to <code>&apos;/&apos;</code>. Should include query string if any.\nE.G. <code>&apos;/index.html?page=12&apos;</code></li>\n<li><code>headers</code>: An object containing request headers.</li>\n<li><code>auth</code>: Basic authentication i.e. <code>&apos;user:password&apos;</code> to compute an\nAuthorization header.</li>\n<li><code>agent</code>: Controls <a href=\"#http.Agent\">Agent</a> behavior. When an Agent is used\nrequest will default to <code>Connection: keep-alive</code>. Possible values:<ul>\n<li><code>undefined</code> (default): use <a href=\"#http.globalAgent\">global Agent</a> for this host\nand port.</li>\n<li><code>Agent</code> object: explicitly use the passed in <code>Agent</code>.</li>\n<li><code>false</code>: opts out of connection pooling with an Agent, defaults request to\n<code>Connection: close</code>.</li>\n</ul>\n</li>\n</ul>\n<p><code>http.request()</code> returns an instance of the <code>http.ClientRequest</code>\nclass. The <code>ClientRequest</code> instance is a writable stream. If one needs to\nupload a file with a POST request, then write to the <code>ClientRequest</code> object.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>var options = {\n  host: &apos;www.google.com&apos;,\n  port: 80,\n  path: &apos;/upload&apos;,\n  method: &apos;POST&apos;\n};\n\nvar req = http.request(options, function(res) {\n  console.log(&apos;STATUS: &apos; + res.statusCode);\n  console.log(&apos;HEADERS: &apos; + JSON.stringify(res.headers));\n  res.setEncoding(&apos;utf8&apos;);\n  res.on(&apos;data&apos;, function (chunk) {\n    console.log(&apos;BODY: &apos; + chunk);\n  });\n});\n\nreq.on(&apos;error&apos;, function(e) {\n  console.log(&apos;problem with request: &apos; + e.message);\n});\n\n// write data to request body\nreq.write(&apos;data\\n&apos;);\nreq.write(&apos;data\\n&apos;);\nreq.end();</code></pre>\n<p>Note that in the example <code>req.end()</code> was called. With <code>http.request()</code> one\nmust always call <code>req.end()</code> to signify that you&apos;re done with the request -\neven if there is no data being written to the request body.\n\n</p>\n<p>If any error is encountered during the request (be that with DNS resolution,\nTCP level errors, or actual HTTP parse errors) an <code>&apos;error&apos;</code> event is emitted\non the returned request object.\n\n</p>\n<p>There are a few special headers that should be noted.\n\n</p>\n<ul>\n<li><p>Sending a &apos;Connection: keep-alive&apos; will notify Node that the connection to\nthe server should be persisted until the next request.</p>\n</li>\n<li><p>Sending a &apos;Content-length&apos; header will disable the default chunked encoding.</p>\n</li>\n<li><p>Sending an &apos;Expect&apos; header will immediately send the request headers.\nUsually, when sending &apos;Expect: 100-continue&apos;, you should both set a timeout\nand listen for the <code>continue</code> event. See RFC2616 Section 8.2.3 for more\ninformation.</p>\n</li>\n<li><p>Sending an Authorization header will override using the <code>auth</code> option\nto compute basic authentication.</p>\n</li>\n</ul>\n",
+          "desc": "<p>Makes a request to a secure web server.\nAll options from <a href=\"http.html#http.request\">http.request()</a> are valid.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>var https = require(&apos;https&apos;);\n\nvar options = {\n  host: &apos;encrypted.google.com&apos;,\n  port: 443,\n  path: &apos;/&apos;,\n  method: &apos;GET&apos;\n};\n\nvar req = https.request(options, function(res) {\n  console.log(&quot;statusCode: &quot;, res.statusCode);\n  console.log(&quot;headers: &quot;, res.headers);\n\n  res.on(&apos;data&apos;, function(d) {\n    process.stdout.write(d);\n  });\n});\nreq.end();\n\nreq.on(&apos;error&apos;, function(e) {\n  console.error(e);\n});</code></pre>\n<p>The options argument has the following options\n\n</p>\n<ul>\n<li>host: IP or domain of host to make request to. Defaults to <code>&apos;localhost&apos;</code>.</li>\n<li>port: port of host to request to. Defaults to 443.</li>\n<li>path: Path to request. Default <code>&apos;/&apos;</code>.</li>\n<li><p>method: HTTP request method. Default <code>&apos;GET&apos;</code>.</p>\n</li>\n<li><p><code>host</code>: A domain name or IP address of the server to issue the request to.\nDefaults to <code>&apos;localhost&apos;</code>.</p>\n</li>\n<li><code>hostname</code>: To support <code>url.parse()</code> <code>hostname</code> is preferred over <code>host</code></li>\n<li><code>port</code>: Port of remote server. Defaults to 443.</li>\n<li><code>method</code>: A string specifying the HTTP request method. Defaults to <code>&apos;GET&apos;</code>.</li>\n<li><code>path</code>: Request path. Defaults to <code>&apos;/&apos;</code>. Should include query string if any.\nE.G. <code>&apos;/index.html?page=12&apos;</code></li>\n<li><code>headers</code>: An object containing request headers.</li>\n<li><code>auth</code>: Basic authentication i.e. <code>&apos;user:password&apos;</code> to compute an\nAuthorization header.</li>\n<li><code>agent</code>: Controls <a href=\"#https.Agent\">Agent</a> behavior. When an Agent is\nused request will default to <code>Connection: keep-alive</code>. Possible values:<ul>\n<li><code>undefined</code> (default): use <a href=\"#https.globalAgent\">globalAgent</a> for this\nhost and port.</li>\n<li><code>Agent</code> object: explicitly use the passed in <code>Agent</code>.</li>\n<li><code>false</code>: opts out of connection pooling with an Agent, defaults request to\n<code>Connection: close</code>.</li>\n</ul>\n</li>\n</ul>\n<p>The following options from <a href=\"tls.html#tls.connect\">tls.connect()</a> can also be\nspecified. However, a <a href=\"#https.globalAgent\">globalAgent</a> silently ignores these.\n\n</p>\n<ul>\n<li><code>key</code>: Private key to use for SSL. Default <code>null</code>.</li>\n<li><code>passphrase</code>: A string of passphrase for the private key. Default <code>null</code>.</li>\n<li><code>cert</code>: Public x509 certificate to use. Default <code>null</code>.</li>\n<li><code>ca</code>: An authority certificate or array of authority certificates to check\nthe remote host against.</li>\n</ul>\n<p>In order to specify these options, use a custom <code>Agent</code>.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>var options = {\n  host: &apos;encrypted.google.com&apos;,\n  port: 443,\n  path: &apos;/&apos;,\n  method: &apos;GET&apos;,\n  key: fs.readFileSync(&apos;test/fixtures/keys/agent2-key.pem&apos;),\n  cert: fs.readFileSync(&apos;test/fixtures/keys/agent2-cert.pem&apos;)\n};\noptions.agent = new https.Agent(options);\n\nvar req = https.request(options, function(res) {\n  ...\n}</code></pre>\n<p>Or does not use an <code>Agent</code>.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>var options = {\n  host: &apos;encrypted.google.com&apos;,\n  port: 443,\n  path: &apos;/&apos;,\n  method: &apos;GET&apos;,\n  key: fs.readFileSync(&apos;test/fixtures/keys/agent2-key.pem&apos;),\n  cert: fs.readFileSync(&apos;test/fixtures/keys/agent2-cert.pem&apos;),\n  agent: false\n};\n\nvar req = https.request(options, function(res) {\n  ...\n}</code></pre>\n",
           "signatures": [
             {
               "params": [
@@ -8098,10 +8184,10 @@
           ]
         },
         {
-          "textRaw": "http.get(options, callback)",
+          "textRaw": "https.get(options, callback)",
           "type": "method",
           "name": "get",
-          "desc": "<p>Since most requests are GET requests without bodies, Node provides this\nconvenience method. The only difference between this method and <code>http.request()</code> is\nthat it sets the method to GET and calls <code>req.end()</code> automatically.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>var options = {\n  host: &apos;www.google.com&apos;,\n  port: 80,\n  path: &apos;/index.html&apos;\n};\n\nhttp.get(options, function(res) {\n  console.log(&quot;Got response: &quot; + res.statusCode);\n}).on(&apos;error&apos;, function(e) {\n  console.log(&quot;Got error: &quot; + e.message);\n});</code></pre>\n",
+          "desc": "<p>Like <code>http.get()</code> but for HTTPS.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>var https = require(&apos;https&apos;);\n\nhttps.get({ host: &apos;encrypted.google.com&apos;, path: &apos;/&apos; }, function(res) {\n  console.log(&quot;statusCode: &quot;, res.statusCode);\n  console.log(&quot;headers: &quot;, res.headers);\n\n  res.on(&apos;data&apos;, function(d) {\n    process.stdout.write(d);\n  });\n\n}).on(&apos;error&apos;, function(e) {\n  console.error(e);\n});</code></pre>\n",
           "signatures": [
             {
               "params": [
@@ -8110,540 +8196,6 @@
                 },
                 {
                   "name": "callback"
-                }
-              ]
-            }
-          ]
-        }
-      ],
-      "classes": [
-        {
-          "textRaw": "Class: http.Server",
-          "type": "class",
-          "name": "http.Server",
-          "desc": "<p>This is an <code>EventEmitter</code> with the following events:\n\n</p>\n",
-          "events": [
-            {
-              "textRaw": "Event: 'request'",
-              "type": "event",
-              "name": "request",
-              "desc": "<p><code>function (request, response) { }</code>\n\n</p>\n<p>Emitted each time there is a request. Note that there may be multiple requests\nper connection (in the case of keep-alive connections).\n <code>request</code> is an instance of <code>http.ServerRequest</code> and <code>response</code> is\n an instance of <code>http.ServerResponse</code>\n\n</p>\n",
-              "params": []
-            },
-            {
-              "textRaw": "Event: 'connection'",
-              "type": "event",
-              "name": "connection",
-              "desc": "<p><code>function (socket) { }</code>\n\n</p>\n<p> When a new TCP stream is established. <code>socket</code> is an object of type\n <code>net.Socket</code>. Usually users will not want to access this event. The\n <code>socket</code> can also be accessed at <code>request.connection</code>.\n\n</p>\n",
-              "params": []
-            },
-            {
-              "textRaw": "Event: 'close'",
-              "type": "event",
-              "name": "close",
-              "desc": "<p><code>function () { }</code>\n\n</p>\n<p> Emitted when the server closes.\n\n</p>\n",
-              "params": []
-            },
-            {
-              "textRaw": "Event: 'checkContinue'",
-              "type": "event",
-              "name": "checkContinue",
-              "desc": "<p><code>function (request, response) { }</code>\n\n</p>\n<p>Emitted each time a request with an http Expect: 100-continue is received.\nIf this event isn&apos;t listened for, the server will automatically respond\nwith a 100 Continue as appropriate.\n\n</p>\n<p>Handling this event involves calling <code>response.writeContinue</code> if the client\nshould continue to send the request body, or generating an appropriate HTTP\nresponse (e.g., 400 Bad Request) if the client should not continue to send the\nrequest body.\n\n</p>\n<p>Note that when this event is emitted and handled, the <code>request</code> event will\nnot be emitted.\n\n</p>\n",
-              "params": []
-            },
-            {
-              "textRaw": "Event: 'upgrade'",
-              "type": "event",
-              "name": "upgrade",
-              "desc": "<p><code>function (request, socket, head) { }</code>\n\n</p>\n<p>Emitted each time a client requests a http upgrade. If this event isn&apos;t\nlistened for, then clients requesting an upgrade will have their connections\nclosed.\n\n</p>\n<ul>\n<li><code>request</code> is the arguments for the http request, as it is in the request event.</li>\n<li><code>socket</code> is the network socket between the server and client.</li>\n<li><code>head</code> is an instance of Buffer, the first packet of the upgraded stream, this may be empty.</li>\n</ul>\n<p>After this event is emitted, the request&apos;s socket will not have a <code>data</code>\nevent listener, meaning you will need to bind to it in order to handle data\nsent to the server on that socket.\n\n</p>\n",
-              "params": []
-            },
-            {
-              "textRaw": "Event: 'clientError'",
-              "type": "event",
-              "name": "clientError",
-              "desc": "<p><code>function (exception) { }</code>\n\n</p>\n<p>If a client connection emits an &apos;error&apos; event - it will forwarded here.\n\n</p>\n",
-              "params": []
-            }
-          ],
-          "methods": [
-            {
-              "textRaw": "server.listen(port, [hostname], [callback])",
-              "type": "method",
-              "name": "listen",
-              "desc": "<p>Begin accepting connections on the specified port and hostname.  If the\nhostname is omitted, the server will accept connections directed to any\nIPv4 address (<code>INADDR_ANY</code>).\n\n</p>\n<p>To listen to a unix socket, supply a filename instead of port and hostname.\n\n</p>\n<p>This function is asynchronous. The last parameter <code>callback</code> will be added as\na listener for the <a href=\"net.html#event_listening_\">&apos;listening&apos;</a> event.\nSee also <a href=\"net.html#server.listen\">net.Server.listen()</a>.\n\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": [
-                    {
-                      "name": "port"
-                    },
-                    {
-                      "name": "hostname",
-                      "optional": true
-                    },
-                    {
-                      "name": "callback",
-                      "optional": true
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "textRaw": "server.listen(path, [callback])",
-              "type": "method",
-              "name": "listen",
-              "desc": "<p>Start a UNIX socket server listening for connections on the given <code>path</code>.\n\n</p>\n<p>This function is asynchronous. The last parameter <code>callback</code> will be added as\na listener for the <a href=\"net.html#event_listening_\">&apos;listening&apos;</a> event.\nSee also <a href=\"net.html#server.listen\">net.Server.listen()</a>.\n\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": [
-                    {
-                      "name": "path"
-                    },
-                    {
-                      "name": "callback",
-                      "optional": true
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "textRaw": "server.close()",
-              "type": "method",
-              "name": "close",
-              "desc": "<p>Stops the server from accepting new connections.\nSee <a href=\"net.html#server.close\">net.Server.close()</a>.\n\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": []
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "textRaw": "Class: http.ServerRequest",
-          "type": "class",
-          "name": "http.ServerRequest",
-          "desc": "<p>This object is created internally by a HTTP server -- not by\nthe user -- and passed as the first argument to a <code>&apos;request&apos;</code> listener.\n\n</p>\n<p>The request implements the <a href=\"stream.html#readable_stream\">Readable Stream</a>\ninterface. This is an <code>EventEmitter</code> with the following events:\n\n</p>\n",
-          "events": [
-            {
-              "textRaw": "Event: 'data'",
-              "type": "event",
-              "name": "data",
-              "desc": "<p><code>function (chunk) { }</code>\n\n</p>\n<p>Emitted when a piece of the message body is received. The chunk is a string if\nan encoding has been set with <code>request.setEncoding()</code>, otherwise it&apos;s a\n<a href=\"buffer.html\">Buffer</a>.\n\n</p>\n<p>Note that the <strong>data will be lost</strong> if there is no listener when a\n<code>ServerRequest</code> emits a <code>&apos;data&apos;</code> event.\n\n</p>\n",
-              "params": []
-            },
-            {
-              "textRaw": "Event: 'end'",
-              "type": "event",
-              "name": "end",
-              "desc": "<p><code>function () { }</code>\n\n</p>\n<p>Emitted exactly once for each request. After that, no more <code>&apos;data&apos;</code> events\nwill be emitted on the request.\n\n</p>\n",
-              "params": []
-            },
-            {
-              "textRaw": "Event: 'close'",
-              "type": "event",
-              "name": "close",
-              "desc": "<p><code>function () { }</code>\n\n</p>\n<p>Indicates that the underlaying connection was terminated before\n<code>response.end()</code> was called or able to flush.\n\n</p>\n<p>Just like <code>&apos;end&apos;</code>, this event occurs only once per request, and no more <code>&apos;data&apos;</code>\nevents will fire afterwards.\n\n</p>\n<p>Note: <code>&apos;close&apos;</code> can fire after <code>&apos;end&apos;</code>, but not vice versa.\n\n</p>\n",
-              "params": []
-            }
-          ],
-          "properties": [
-            {
-              "textRaw": "request.method",
-              "name": "method",
-              "desc": "<p>The request method as a string. Read only. Example:\n<code>&apos;GET&apos;</code>, <code>&apos;DELETE&apos;</code>.\n\n\n</p>\n"
-            },
-            {
-              "textRaw": "request.url",
-              "name": "url",
-              "desc": "<p>Request URL string. This contains only the URL that is\npresent in the actual HTTP request. If the request is:\n\n</p>\n<pre><code>GET /status?name=ryan HTTP/1.1\\r\\n\nAccept: text/plain\\r\\n\n\\r\\n</code></pre>\n<p>Then <code>request.url</code> will be:\n\n</p>\n<pre><code>&apos;/status?name=ryan&apos;</code></pre>\n<p>If you would like to parse the URL into its parts, you can use\n<code>require(&apos;url&apos;).parse(request.url)</code>.  Example:\n\n</p>\n<pre><code>node&gt; require(&apos;url&apos;).parse(&apos;/status?name=ryan&apos;)\n{ href: &apos;/status?name=ryan&apos;,\n  search: &apos;?name=ryan&apos;,\n  query: &apos;name=ryan&apos;,\n  pathname: &apos;/status&apos; }</code></pre>\n<p>If you would like to extract the params from the query string,\nyou can use the <code>require(&apos;querystring&apos;).parse</code> function, or pass\n<code>true</code> as the second argument to <code>require(&apos;url&apos;).parse</code>.  Example:\n\n</p>\n<pre><code>node&gt; require(&apos;url&apos;).parse(&apos;/status?name=ryan&apos;, true)\n{ href: &apos;/status?name=ryan&apos;,\n  search: &apos;?name=ryan&apos;,\n  query: { name: &apos;ryan&apos; },\n  pathname: &apos;/status&apos; }</code></pre>\n"
-            },
-            {
-              "textRaw": "request.headers",
-              "name": "headers",
-              "desc": "<p>Read only.\n\n</p>\n"
-            },
-            {
-              "textRaw": "request.trailers",
-              "name": "trailers",
-              "desc": "<p>Read only; HTTP trailers (if present). Only populated after the &apos;end&apos; event.\n\n</p>\n"
-            },
-            {
-              "textRaw": "request.httpVersion",
-              "name": "httpVersion",
-              "desc": "<p>The HTTP protocol version as a string. Read only. Examples:\n<code>&apos;1.1&apos;</code>, <code>&apos;1.0&apos;</code>.\nAlso <code>request.httpVersionMajor</code> is the first integer and\n<code>request.httpVersionMinor</code> is the second.\n\n\n</p>\n"
-            },
-            {
-              "textRaw": "request.connection",
-              "name": "connection",
-              "desc": "<p>The <code>net.Socket</code> object associated with the connection.\n\n\n</p>\n<p>With HTTPS support, use request.connection.verifyPeer() and\nrequest.connection.getPeerCertificate() to obtain the client&apos;s\nauthentication details.\n\n\n\n</p>\n"
-            }
-          ],
-          "methods": [
-            {
-              "textRaw": "request.setEncoding([encoding])",
-              "type": "method",
-              "name": "setEncoding",
-              "desc": "<p>Set the encoding for the request body. Either <code>&apos;utf8&apos;</code> or <code>&apos;binary&apos;</code>. Defaults\nto <code>null</code>, which means that the <code>&apos;data&apos;</code> event will emit a <code>Buffer</code> object..\n\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": [
-                    {
-                      "name": "encoding",
-                      "optional": true
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "textRaw": "request.pause()",
-              "type": "method",
-              "name": "pause",
-              "desc": "<p>Pauses request from emitting events.  Useful to throttle back an upload.\n\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": []
-                }
-              ]
-            },
-            {
-              "textRaw": "request.resume()",
-              "type": "method",
-              "name": "resume",
-              "desc": "<p>Resumes a paused request.\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": []
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "textRaw": "Class: http.ServerResponse",
-          "type": "class",
-          "name": "http.ServerResponse",
-          "desc": "<p>This object is created internally by a HTTP server--not by the user. It is\npassed as the second parameter to the <code>&apos;request&apos;</code> event.\n\n</p>\n<p>The response implements the <a href=\"stream.html#writable_stream\">Writable  Stream</a>\ninterface. This is an <code>EventEmitter</code> with the following events:\n\n</p>\n",
-          "events": [
-            {
-              "textRaw": "Event: 'close'",
-              "type": "event",
-              "name": "close",
-              "desc": "<p><code>function () { }</code>\n\n</p>\n<p>Indicates that the underlaying connection was terminated before\n<code>response.end()</code> was called or able to flush.\n\n</p>\n",
-              "params": []
-            }
-          ],
-          "methods": [
-            {
-              "textRaw": "response.writeContinue()",
-              "type": "method",
-              "name": "writeContinue",
-              "desc": "<p>Sends a HTTP/1.1 100 Continue message to the client, indicating that\nthe request body should be sent. See the <a href=\"#event_checkContinue_\">checkContinue</a> event on\n<code>Server</code>.\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": []
-                }
-              ]
-            },
-            {
-              "textRaw": "response.writeHead(statusCode, [reasonPhrase], [headers])",
-              "type": "method",
-              "name": "writeHead",
-              "desc": "<p>Sends a response header to the request. The status code is a 3-digit HTTP\nstatus code, like <code>404</code>. The last argument, <code>headers</code>, are the response headers.\nOptionally one can give a human-readable <code>reasonPhrase</code> as the second\nargument.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>var body = &apos;hello world&apos;;\nresponse.writeHead(200, {\n  &apos;Content-Length&apos;: body.length,\n  &apos;Content-Type&apos;: &apos;text/plain&apos; });</code></pre>\n<p>This method must only be called once on a message and it must\nbe called before <code>response.end()</code> is called.\n\n</p>\n<p>If you call <code>response.write()</code> or <code>response.end()</code> before calling this, the\nimplicit/mutable headers will be calculated and call this function for you.\n\n</p>\n<p>Note: that Content-Length is given in bytes not characters. The above example\nworks because the string <code>&apos;hello world&apos;</code> contains only single byte characters.\nIf the body contains higher coded characters then <code>Buffer.byteLength()</code>\nshould be used to determine the number of bytes in a given encoding.\nAnd Node does not check whether Content-Length and the length of the body\nwhich has been transmitted are equal or not.\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": [
-                    {
-                      "name": "statusCode"
-                    },
-                    {
-                      "name": "reasonPhrase",
-                      "optional": true
-                    },
-                    {
-                      "name": "headers",
-                      "optional": true
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "textRaw": "response.setHeader(name, value)",
-              "type": "method",
-              "name": "setHeader",
-              "desc": "<p>Sets a single header value for implicit headers.  If this header already exists\nin the to-be-sent headers, its value will be replaced.  Use an array of strings\nhere if you need to send multiple headers with the same name.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>response.setHeader(&quot;Content-Type&quot;, &quot;text/html&quot;);</code></pre>\n<p>or\n\n</p>\n<pre><code>response.setHeader(&quot;Set-Cookie&quot;, [&quot;type=ninja&quot;, &quot;language=javascript&quot;]);</code></pre>\n",
-              "signatures": [
-                {
-                  "params": [
-                    {
-                      "name": "name"
-                    },
-                    {
-                      "name": "value"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "textRaw": "response.getHeader(name)",
-              "type": "method",
-              "name": "getHeader",
-              "desc": "<p>Reads out a header that&apos;s already been queued but not sent to the client.  Note\nthat the name is case insensitive.  This can only be called before headers get\nimplicitly flushed.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>var contentType = response.getHeader(&apos;content-type&apos;);</code></pre>\n",
-              "signatures": [
-                {
-                  "params": [
-                    {
-                      "name": "name"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "textRaw": "response.removeHeader(name)",
-              "type": "method",
-              "name": "removeHeader",
-              "desc": "<p>Removes a header that&apos;s queued for implicit sending.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>response.removeHeader(&quot;Content-Encoding&quot;);</code></pre>\n",
-              "signatures": [
-                {
-                  "params": [
-                    {
-                      "name": "name"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "textRaw": "response.write(chunk, [encoding])",
-              "type": "method",
-              "name": "write",
-              "desc": "<p>If this method is called and <code>response.writeHead()</code> has not been called, it will\nswitch to implicit header mode and flush the implicit headers.\n\n</p>\n<p>This sends a chunk of the response body. This method may\nbe called multiple times to provide successive parts of the body.\n\n</p>\n<p><code>chunk</code> can be a string or a buffer. If <code>chunk</code> is a string,\nthe second parameter specifies how to encode it into a byte stream.\nBy default the <code>encoding</code> is <code>&apos;utf8&apos;</code>.\n\n</p>\n<p><strong>Note</strong>: This is the raw HTTP body and has nothing to do with\nhigher-level multi-part body encodings that may be used.\n\n</p>\n<p>The first time <code>response.write()</code> is called, it will send the buffered\nheader information and the first body to the client. The second time\n<code>response.write()</code> is called, Node assumes you&apos;re going to be streaming\ndata, and sends that separately. That is, the response is buffered up to the\nfirst chunk of body.\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": [
-                    {
-                      "name": "chunk"
-                    },
-                    {
-                      "name": "encoding",
-                      "optional": true
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "textRaw": "response.addTrailers(headers)",
-              "type": "method",
-              "name": "addTrailers",
-              "desc": "<p>This method adds HTTP trailing headers (a header but at the end of the\nmessage) to the response.\n\n</p>\n<p>Trailers will <strong>only</strong> be emitted if chunked encoding is used for the\nresponse; if it is not (e.g., if the request was HTTP/1.0), they will\nbe silently discarded.\n\n</p>\n<p>Note that HTTP requires the <code>Trailer</code> header to be sent if you intend to\nemit trailers, with a list of the header fields in its value. E.g.,\n\n</p>\n<pre><code>response.writeHead(200, { &apos;Content-Type&apos;: &apos;text/plain&apos;,\n                          &apos;Trailer&apos;: &apos;Content-MD5&apos; });\nresponse.write(fileData);\nresponse.addTrailers({&apos;Content-MD5&apos;: &quot;7895bf4b8828b55ceaf47747b4bca667&quot;});\nresponse.end();</code></pre>\n",
-              "signatures": [
-                {
-                  "params": [
-                    {
-                      "name": "headers"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "textRaw": "response.end([data], [encoding])",
-              "type": "method",
-              "name": "end",
-              "desc": "<p>This method signals to the server that all of the response headers and body\nhas been sent; that server should consider this message complete.\nThe method, <code>response.end()</code>, MUST be called on each\nresponse.\n\n</p>\n<p>If <code>data</code> is specified, it is equivalent to calling <code>response.write(data, encoding)</code>\nfollowed by <code>response.end()</code>.\n\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": [
-                    {
-                      "name": "data",
-                      "optional": true
-                    },
-                    {
-                      "name": "encoding",
-                      "optional": true
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
-          "properties": [
-            {
-              "textRaw": "response.statusCode",
-              "name": "statusCode",
-              "desc": "<p>When using implicit headers (not calling <code>response.writeHead()</code> explicitly), this property\ncontrols the status code that will be send to the client when the headers get\nflushed.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>response.statusCode = 404;</code></pre>\n<p>After response header was sent to the client, this property indicates the\nstatus code which was sent out.\n\n</p>\n"
-            }
-          ]
-        },
-        {
-          "textRaw": "Class: http.Agent",
-          "type": "class",
-          "name": "http.Agent",
-          "desc": "<p>In node 0.5.3+ there is a new implementation of the HTTP Agent which is used\nfor pooling sockets used in HTTP client requests.\n\n</p>\n<p>Previously, a single agent instance help the pool for single host+port. The\ncurrent implementation now holds sockets for any number of hosts.\n\n</p>\n<p>The current HTTP Agent also defaults client requests to using\nConnection:keep-alive. If no pending HTTP requests are waiting on a socket\nto become free the socket is closed. This means that node&apos;s pool has the\nbenefit of keep-alive when under load but still does not require developers\nto manually close the HTTP clients using keep-alive.\n\n</p>\n<p>Sockets are removed from the agent&apos;s pool when the socket emits either a\n&quot;close&quot; event or a special &quot;agentRemove&quot; event. This means that if you intend\nto keep one HTTP request open for a long time and don&apos;t want it to stay in the\npool you can do something along the lines of:\n\n</p>\n<pre><code>http.get(options, function(res) {\n  // Do stuff\n}).on(&quot;socket&quot;, function (socket) {\n  socket.emit(&quot;agentRemove&quot;);\n});</code></pre>\n<p>Alternatively, you could just opt out of pooling entirely using <code>agent:false</code>:\n\n</p>\n<pre><code>http.get({host:&apos;localhost&apos;, port:80, path:&apos;/&apos;, agent:false}, function (res) {\n  // Do stuff\n})</code></pre>\n",
-          "properties": [
-            {
-              "textRaw": "agent.maxSockets",
-              "name": "maxSockets",
-              "desc": "<p>By default set to 5. Determines how many concurrent sockets the agent can have \nopen per host.\n\n</p>\n"
-            },
-            {
-              "textRaw": "agent.sockets",
-              "name": "sockets",
-              "desc": "<p>An object which contains arrays of sockets currently in use by the Agent. Do not \nmodify.\n\n</p>\n"
-            },
-            {
-              "textRaw": "agent.requests",
-              "name": "requests",
-              "desc": "<p>An object which contains queues of requests that have not yet been assigned to \nsockets. Do not modify.\n\n</p>\n"
-            }
-          ]
-        },
-        {
-          "textRaw": "Class: http.ClientRequest",
-          "type": "class",
-          "name": "http.ClientRequest",
-          "desc": "<p>This object is created internally and returned from <code>http.request()</code>.  It\nrepresents an <em>in-progress</em> request whose header has already been queued.  The\nheader is still mutable using the <code>setHeader(name, value)</code>, <code>getHeader(name)</code>,\n<code>removeHeader(name)</code> API.  The actual header will be sent along with the first\ndata chunk or when closing the connection.\n\n</p>\n<p>To get the response, add a listener for <code>&apos;response&apos;</code> to the request object.\n<code>&apos;response&apos;</code> will be emitted from the request object when the response\nheaders have been received.  The <code>&apos;response&apos;</code> event is executed with one\nargument which is an instance of <code>http.ClientResponse</code>.\n\n</p>\n<p>During the <code>&apos;response&apos;</code> event, one can add listeners to the\nresponse object; particularly to listen for the <code>&apos;data&apos;</code> event. Note that\nthe <code>&apos;response&apos;</code> event is called before any part of the response body is received,\nso there is no need to worry about racing to catch the first part of the\nbody. As long as a listener for <code>&apos;data&apos;</code> is added during the <code>&apos;response&apos;</code>\nevent, the entire body will be caught.\n\n\n</p>\n<pre><code>// Good\nrequest.on(&apos;response&apos;, function (response) {\n  response.on(&apos;data&apos;, function (chunk) {\n    console.log(&apos;BODY: &apos; + chunk);\n  });\n});\n\n// Bad - misses all or part of the body\nrequest.on(&apos;response&apos;, function (response) {\n  setTimeout(function () {\n    response.on(&apos;data&apos;, function (chunk) {\n      console.log(&apos;BODY: &apos; + chunk);\n    });\n  }, 10);\n});</code></pre>\n<p>Note: Node does not check whether Content-Length and the length of the body\nwhich has been transmitted are equal or not.\n\n</p>\n<p>The request implements the <a href=\"stream.html#writable_stream\">Writable  Stream</a>\ninterface. This is an <code>EventEmitter</code> with the following events:\n\n</p>\n",
-          "events": [
-            {
-              "textRaw": "Event 'response'",
-              "type": "event",
-              "name": "response",
-              "desc": "<p><code>function (response) { }</code>\n\n</p>\n<p>Emitted when a response is received to this request. This event is emitted only once. The\n<code>response</code> argument will be an instance of <code>http.ClientResponse</code>.\n\n</p>\n<p>Options:\n\n</p>\n<ul>\n<li><code>host</code>: A domain name or IP address of the server to issue the request to.</li>\n<li><code>port</code>: Port of remote server.</li>\n<li><code>socketPath</code>: Unix Domain Socket (use one of host:port or socketPath)</li>\n</ul>\n",
-              "params": []
-            },
-            {
-              "textRaw": "Event: 'socket'",
-              "type": "event",
-              "name": "socket",
-              "desc": "<p><code>function (socket) { }</code>\n\n</p>\n<p>Emitted after a socket is assigned to this request.\n\n</p>\n",
-              "params": []
-            },
-            {
-              "textRaw": "Event: 'upgrade'",
-              "type": "event",
-              "name": "upgrade",
-              "desc": "<p><code>function (response, socket, head) { }</code>\n\n</p>\n<p>Emitted each time a server responds to a request with an upgrade. If this\nevent isn&apos;t being listened for, clients receiving an upgrade header will have\ntheir connections closed.\n\n</p>\n<p>A client server pair that show you how to listen for the <code>upgrade</code> event using <code>http.getAgent</code>:\n\n</p>\n<pre><code>var http = require(&apos;http&apos;);\nvar net = require(&apos;net&apos;);\n\n// Create an HTTP server\nvar srv = http.createServer(function (req, res) {\n  res.writeHead(200, {&apos;Content-Type&apos;: &apos;text/plain&apos;});\n  res.end(&apos;okay&apos;);\n});\nsrv.on(&apos;upgrade&apos;, function(req, socket, upgradeHead) {\n  socket.write(&apos;HTTP/1.1 101 Web Socket Protocol Handshake\\r\\n&apos; +\n               &apos;Upgrade: WebSocket\\r\\n&apos; +\n               &apos;Connection: Upgrade\\r\\n&apos; +\n               &apos;\\r\\n\\r\\n&apos;);\n\n  socket.ondata = function(data, start, end) {\n    socket.write(data.toString(&apos;utf8&apos;, start, end), &apos;utf8&apos;); // echo back\n  };\n});\n\n// now that server is running\nsrv.listen(1337, &apos;127.0.0.1&apos;, function() {\n\n  // make a request\n  var options = {\n    port: 1337,\n    host: &apos;127.0.0.1&apos;,\n    headers: {\n      &apos;Connection&apos;: &apos;Upgrade&apos;,\n      &apos;Upgrade&apos;: &apos;websocket&apos;\n    }\n  };\n\n  var req = http.request(options);\n  req.end();\n\n  req.on(&apos;upgrade&apos;, function(res, socket, upgradeHead) {\n    console.log(&apos;got upgraded!&apos;);\n    socket.end();\n    process.exit(0);\n  });\n});</code></pre>\n",
-              "params": []
-            },
-            {
-              "textRaw": "Event: 'continue'",
-              "type": "event",
-              "name": "continue",
-              "desc": "<p><code>function () { }</code>\n\n</p>\n<p>Emitted when the server sends a &apos;100 Continue&apos; HTTP response, usually because\nthe request contained &apos;Expect: 100-continue&apos;. This is an instruction that\nthe client should send the request body.\n\n</p>\n",
-              "params": []
-            }
-          ],
-          "methods": [
-            {
-              "textRaw": "request.write(chunk, [encoding])",
-              "type": "method",
-              "name": "write",
-              "desc": "<p>Sends a chunk of the body.  By calling this method\nmany times, the user can stream a request body to a\nserver--in that case it is suggested to use the\n<code>[&apos;Transfer-Encoding&apos;, &apos;chunked&apos;]</code> header line when\ncreating the request.\n\n</p>\n<p>The <code>chunk</code> argument should be a <a href=\"buffer.html\">buffer</a> or a string.\n\n</p>\n<p>The <code>encoding</code> argument is optional and only applies when <code>chunk</code> is a string.\nDefaults to <code>&apos;utf8&apos;</code>.\n\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": [
-                    {
-                      "name": "chunk"
-                    },
-                    {
-                      "name": "encoding",
-                      "optional": true
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "textRaw": "request.end([data], [encoding])",
-              "type": "method",
-              "name": "end",
-              "desc": "<p>Finishes sending the request. If any parts of the body are\nunsent, it will flush them to the stream. If the request is\nchunked, this will send the terminating <code>&apos;0\\r\\n\\r\\n&apos;</code>.\n\n</p>\n<p>If <code>data</code> is specified, it is equivalent to calling\n<code>request.write(data, encoding)</code> followed by <code>request.end()</code>.\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": [
-                    {
-                      "name": "data",
-                      "optional": true
-                    },
-                    {
-                      "name": "encoding",
-                      "optional": true
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "textRaw": "request.abort()",
-              "type": "method",
-              "name": "abort",
-              "desc": "<p>Aborts a request.  (New since v0.3.8.)\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": []
-                }
-              ]
-            },
-            {
-              "textRaw": "request.setTimeout(timeout, [callback])",
-              "type": "method",
-              "name": "setTimeout",
-              "desc": "<p>Once a socket is assigned to this request and is connected \n<a href=\"net.html#socket.setTimeout\">socket.setTimeout(timeout, [callback])</a>\nwill be called.\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": [
-                    {
-                      "name": "timeout"
-                    },
-                    {
-                      "name": "callback",
-                      "optional": true
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "textRaw": "request.setNoDelay([noDelay])",
-              "type": "method",
-              "name": "setNoDelay",
-              "desc": "<p>Once a socket is assigned to this request and is connected \n<a href=\"net.html#socket.setNoDelay\">socket.setNoDelay(noDelay)</a>\nwill be called.\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": [
-                    {
-                      "name": "noDelay",
-                      "optional": true
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "textRaw": "request.setSocketKeepAlive([enable], [initialDelay])",
-              "type": "method",
-              "name": "setSocketKeepAlive",
-              "desc": "<p>Once a socket is assigned to this request and is connected \n<a href=\"net.html#socket.setKeepAlive\">socket.setKeepAlive(enable, [initialDelay])</a>\nwill be called.\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": [
-                    {
-                      "name": "enable",
-                      "optional": true
-                    },
-                    {
-                      "name": "initialDelay",
-                      "optional": true
-                    }
-                  ]
                 }
               ]
             }
@@ -8652,107 +8204,19 @@
       ],
       "properties": [
         {
-          "textRaw": "http.globalAgent",
+          "textRaw": "https.globalAgent",
           "name": "globalAgent",
-          "desc": "<p>Global instance of Agent which is used as the default for all http client\nrequests.\n\n\n</p>\n"
-        },
-        {
-          "textRaw": "http.ClientResponse",
-          "name": "ClientResponse",
-          "desc": "<p>This object is created when making a request with <code>http.request()</code>. It is\npassed to the <code>&apos;response&apos;</code> event of the request object.\n\n</p>\n<p>The response implements the <a href=\"stream.html#readable_stream\">Readable Stream</a>\ninterface. This is an <code>EventEmitter</code> with the following events:\n\n\n</p>\n",
-          "events": [
-            {
-              "textRaw": "Event: 'data'",
-              "type": "event",
-              "name": "data",
-              "desc": "<p><code>function (chunk) { }</code>\n\n</p>\n<p>Emitted when a piece of the message body is received.\n\n</p>\n<p>Note that the <strong>data will be lost</strong> if there is no listener when a\n<code>ClientResponse</code> emits a <code>&apos;data&apos;</code> event.\n\n\n</p>\n",
-              "params": []
-            },
-            {
-              "textRaw": "Event: 'end'",
-              "type": "event",
-              "name": "end",
-              "desc": "<p><code>function () { }</code>\n\n</p>\n<p>Emitted exactly once for each message. No arguments. After\nemitted no other events will be emitted on the response.\n\n</p>\n",
-              "params": []
-            },
-            {
-              "textRaw": "Event: 'close'",
-              "type": "event",
-              "name": "close",
-              "desc": "<p><code>function (err) { }</code>\n\n</p>\n<p>Indicates that the underlaying connection was terminated before\n<code>end</code> event was emitted.\nSee <a href=\"#http.ServerRequest\">http.ServerRequest</a>&apos;s <code>&apos;close&apos;</code> event for more\ninformation.\n\n</p>\n",
-              "params": []
-            }
-          ],
-          "properties": [
-            {
-              "textRaw": "response.statusCode",
-              "name": "statusCode",
-              "desc": "<p>The 3-digit HTTP response status code. E.G. <code>404</code>.\n\n</p>\n"
-            },
-            {
-              "textRaw": "response.httpVersion",
-              "name": "httpVersion",
-              "desc": "<p>The HTTP version of the connected-to server. Probably either\n<code>&apos;1.1&apos;</code> or <code>&apos;1.0&apos;</code>.\nAlso <code>response.httpVersionMajor</code> is the first integer and\n<code>response.httpVersionMinor</code> is the second.\n\n</p>\n"
-            },
-            {
-              "textRaw": "response.headers",
-              "name": "headers",
-              "desc": "<p>The response headers object.\n\n</p>\n"
-            },
-            {
-              "textRaw": "response.trailers",
-              "name": "trailers",
-              "desc": "<p>The response trailers object. Only populated after the &apos;end&apos; event.\n\n</p>\n"
-            }
-          ],
-          "methods": [
-            {
-              "textRaw": "response.setEncoding([encoding])",
-              "type": "method",
-              "name": "setEncoding",
-              "desc": "<p>Set the encoding for the response body. Either <code>&apos;utf8&apos;</code>, <code>&apos;ascii&apos;</code>, or\n<code>&apos;base64&apos;</code>. Defaults to <code>null</code>, which means that the <code>&apos;data&apos;</code> event will emit\na <code>Buffer</code> object.\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": [
-                    {
-                      "name": "encoding",
-                      "optional": true
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "textRaw": "response.pause()",
-              "type": "method",
-              "name": "pause",
-              "desc": "<p>Pauses response from emitting events.  Useful to throttle back a download.\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": []
-                }
-              ]
-            },
-            {
-              "textRaw": "response.resume()",
-              "type": "method",
-              "name": "resume",
-              "desc": "<p>Resumes a paused response.\ns\n</p>\n",
-              "signatures": [
-                {
-                  "params": []
-                }
-              ]
-            }
-          ]
+          "desc": "<p>Global instance of <a href=\"#https.Agent\">https.Agent</a> which is used as the default\nfor all HTTPS client requests.\n\n</p>\n"
         }
       ],
       "type": "module",
-      "displayName": "HTTP"
+      "displayName": "HTTPS"
     },
     {
       "textRaw": "URL",
       "name": "url",
+      "stability": 3,
+      "stabilityText": "Stable",
       "desc": "<p>This module has utilities for URL resolution and parsing.\nCall <code>require(&apos;url&apos;)</code> to use it.\n\n</p>\n<p>Parsed URL objects have some or all of the following fields, depending on\nwhether or not they exist in the URL string. Any parts that are not in the URL\nstring will not be in the parsed object. Examples are shown for the URL\n\n</p>\n<p><code>&apos;http://user:pass@host.com:8080/p/a/t/h?query=string#hash&apos;</code>\n\n</p>\n<ul>\n<li><p><code>href</code>: The full URL that was originally parsed. Both the protocol and host are lowercased.</p>\n<p>Example: <code>&apos;http://user:pass@host.com:8080/p/a/t/h?query=string#hash&apos;</code></p>\n</li>\n<li><p><code>protocol</code>: The request protocol, lowercased.</p>\n<p>Example: <code>&apos;http:&apos;</code></p>\n</li>\n<li><p><code>host</code>: The full lowercased host portion of the URL, including port and authentication information.</p>\n<p>Example: <code>&apos;user:pass@host.com:8080&apos;</code></p>\n</li>\n<li><p><code>auth</code>: The authentication information portion of a URL.</p>\n<p>Example: <code>&apos;user:pass&apos;</code></p>\n</li>\n<li><p><code>hostname</code>: Just the lowercased hostname portion of the host.</p>\n<p>Example: <code>&apos;host.com&apos;</code></p>\n</li>\n<li><p><code>port</code>: The port number portion of the host.</p>\n<p>Example: <code>&apos;8080&apos;</code></p>\n</li>\n<li><p><code>pathname</code>: The path section of the URL, that comes after the host and before the query, including the initial slash if present.</p>\n<p>Example: <code>&apos;/p/a/t/h&apos;</code></p>\n</li>\n<li><p><code>search</code>: The &apos;query string&apos; portion of the URL, including the leading question mark.</p>\n<p>Example: <code>&apos;?query=string&apos;</code></p>\n</li>\n<li><p><code>path</code>: Concatenation of <code>pathname</code> and <code>search</code>.</p>\n<p>Example: <code>&apos;/p/a/t/h?query=string&apos;</code></p>\n</li>\n<li><p><code>query</code>: Either the &apos;params&apos; portion of the query string, or a querystring-parsed object.</p>\n<p>Example: <code>&apos;query=string&apos;</code> or <code>{&apos;query&apos;:&apos;string&apos;}</code></p>\n</li>\n<li><p><code>hash</code>: The &apos;fragment&apos; portion of the URL including the pound-sign.</p>\n<p>Example: <code>&apos;#hash&apos;</code></p>\n</li>\n</ul>\n<p>The following methods are provided by the URL module:\n\n</p>\n",
       "methods": [
         {
@@ -8818,6 +8282,8 @@
     {
       "textRaw": "Query String",
       "name": "querystring",
+      "stability": 3,
+      "stabilityText": "Stable",
       "desc": "<p>This module provides utilities for dealing with query strings.\nIt provides the following methods:\n\n</p>\n",
       "methods": [
         {
@@ -8885,6 +8351,8 @@
     {
       "textRaw": "Readline",
       "name": "readline",
+      "stability": 3,
+      "stabilityText": "Stable",
       "desc": "<p>To use this module, do <code>require(&apos;readline&apos;)</code>. Readline allows reading of a\nstream (such as STDIN) on a line-by-line basis.\n\n</p>\n<p>Note that once you&apos;ve invoked this module, your node program will not\nterminate until you&apos;ve closed the interface, and the STDIN stream. Here&apos;s how\nto allow your program to gracefully terminate:\n\n</p>\n<pre><code>var rl = require(&apos;readline&apos;);\n\nvar i = rl.createInterface(process.stdin, process.stdout, null);\ni.question(&quot;What do you think of node.js?&quot;, function(answer) {\n  // TODO: Log the answer in a database\n  console.log(&quot;Thank you for your valuable feedback.&quot;);\n\n  // These two lines together allow the program to terminate. Without\n  // them, it would run forever.\n  i.close();\n  process.stdin.destroy();\n});</code></pre>\n",
       "methods": [
         {
@@ -9081,6 +8549,8 @@
     {
       "textRaw": "Executing JavaScript",
       "name": "vm",
+      "stability": 3,
+      "stabilityText": "Stable",
       "desc": "<p>You can access this module with:\n\n</p>\n<pre><code>var vm = require(&apos;vm&apos;);</code></pre>\n<p>JavaScript code can be compiled and run immediately or compiled, saved, and run later.\n\n\n</p>\n",
       "methods": [
         {
@@ -9226,6 +8696,8 @@
     {
       "textRaw": "Child Process",
       "name": "child_process",
+      "stability": 3,
+      "stabilityText": "Stable",
       "desc": "<p>Node provides a tri-directional <code>popen(3)</code> facility through the\n<code>child_process</code> module.\n\n</p>\n<p>It is possible to stream data through a child&apos;s <code>stdin</code>, <code>stdout</code>, and\n<code>stderr</code> in a fully non-blocking way.\n\n</p>\n<p>To create a child process use <code>require(&apos;child_process&apos;).spawn()</code> or\n<code>require(&apos;child_process&apos;).fork()</code>.  The semantics of each are slightly\ndifferent, and explained below.\n\n</p>\n",
       "classes": [
         {
@@ -9763,6 +9235,8 @@
     {
       "textRaw": "Assert",
       "name": "assert",
+      "stability": 5,
+      "stabilityText": "Locked",
       "desc": "<p>This module is used for writing unit tests for your applications, you can\naccess it with <code>require(&apos;assert&apos;)</code>.\n\n</p>\n",
       "methods": [
         {
@@ -10014,6 +9488,8 @@
     {
       "textRaw": "TTY",
       "name": "tty",
+      "stability": 3,
+      "stabilityText": "Stable",
       "desc": "<p>Use <code>require(&apos;tty&apos;)</code> to access this module.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>var tty = require(&apos;tty&apos;);\nprocess.stdin.resume();\ntty.setRawMode(true);\nprocess.stdin.on(&apos;keypress&apos;, function(char, key) {\n  if (key &amp;&amp; key.ctrl &amp;&amp; key.name == &apos;c&apos;) {\n    console.log(&apos;graceful exit&apos;);\n    process.exit()\n  }\n});</code></pre>\n",
       "methods": [
         {
@@ -10035,48 +9511,12 @@
           "textRaw": "tty.setRawMode(mode)",
           "type": "method",
           "name": "setRawMode",
-          "desc": "<p><code>mode</code> should be <code>true</code> or <code>false</code>. This sets the properties of the current\nprocess&apos;s stdin fd to act either as a raw device or default.\n\n\n</p>\n",
+          "desc": "<p><code>mode</code> should be <code>true</code> or <code>false</code>. This sets the properties of the current\nprocess&apos;s stdin fd to act either as a raw device or default.\n\n</p>\n",
           "signatures": [
             {
               "params": [
                 {
                   "name": "mode"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "textRaw": "tty.setWindowSize(fd, row, col)",
-          "type": "method",
-          "name": "setWindowSize",
-          "desc": "<p>This function was removed in v0.6.0.\n\n</p>\n",
-          "signatures": [
-            {
-              "params": [
-                {
-                  "name": "fd"
-                },
-                {
-                  "name": "row"
-                },
-                {
-                  "name": "col"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "textRaw": "tty.getWindowSize(fd)",
-          "type": "method",
-          "name": "getWindowSize",
-          "desc": "<p>This function was removed in v0.6.0. Use <code>process.stdout.getWindowSize()</code>\ninstead.\n\n\n\n</p>\n",
-          "signatures": [
-            {
-              "params": [
-                {
-                  "name": "fd"
                 }
               ]
             }
@@ -10089,6 +9529,8 @@
     {
       "textRaw": "Zlib",
       "name": "zlib",
+      "stability": 3,
+      "stabilityText": "Stable",
       "desc": "<p>You can access this module with:\n\n</p>\n<pre><code>var zlib = require(&apos;zlib&apos;);</code></pre>\n<p>This provides bindings to Gzip/Gunzip, Deflate/Inflate, and\nDeflateRaw/InflateRaw classes.  Each class takes the same options, and\nis a readable/writable Stream.\n\n</p>\n<h2>Examples</h2>\n<p>Compressing or decompressing a file can be done by piping an\nfs.ReadStream into a zlib stream, then into an fs.WriteStream.\n\n</p>\n<pre><code>var gzip = zlib.createGzip();\nvar fs = require(&apos;fs&apos;);\nvar inp = fs.createReadStream(&apos;input.txt&apos;);\nvar out = fs.createWriteStream(&apos;input.txt.gz&apos;);\n\ninp.pipe(gzip).pipe(out);</code></pre>\n<p>Compressing or decompressing data in one step can be done by using\nthe convenience methods.\n\n</p>\n<pre><code>var input = &apos;.................................&apos;;\nzlib.deflate(input, function(err, buffer) {\n  if (!err) {\n    console.log(buffer.toString(&apos;base64&apos;));\n  }\n});\n\nvar buffer = new Buffer(&apos;eJzT0yMAAGTvBe8=&apos;, &apos;base64&apos;);\nzlib.unzip(buffer, function(err, buffer) {\n  if (!err) {\n    console.log(buffer.toString());\n  }\n});</code></pre>\n<p>To use this module in an HTTP client or server, use the\n<a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.3\">accept-encoding</a>\non requests, and the\n<a href=\"http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.11\">content-encoding</a>\nheader on responses.\n\n</p>\n<p><strong>Note: these examples are drastically simplified to show\nthe basic concept.</strong>  Zlib encoding can be expensive, and the results\nought to be cached.  See <a href=\"#memory_Usage_Tuning\">Memory Usage Tuning</a>\nbelow for more information on the speed/memory/compression\ntradeoffs involved in zlib usage.\n\n</p>\n<pre><code>// client request example\nvar zlib = require(&apos;zlib&apos;);\nvar http = require(&apos;http&apos;);\nvar fs = require(&apos;fs&apos;);\nvar request = http.get({ host: &apos;izs.me&apos;,\n                         path: &apos;/&apos;,\n                         port: 80,\n                         headers: { &apos;accept-encoding&apos;: &apos;gzip,deflate&apos; } });\nrequest.on(&apos;response&apos;, function(response) {\n  var output = fs.createWriteStream(&apos;izs.me_index.html&apos;);\n\n  switch (response.headers[&apos;content-encoding&apos;]) {\n    // or, just use zlib.createUnzip() to handle both cases\n    case &apos;gzip&apos;:\n      response.pipe(zlib.createGunzip()).pipe(output);\n      break;\n    case &apos;deflate&apos;:\n      response.pipe(zlib.createInflate()).pipe(output);\n      break;\n    default:\n      response.pipe(output);\n      break;\n  }\n});\n\n// server example\n// Running a gzip operation on every request is quite expensive.\n// It would be much more efficient to cache the compressed buffer.\nvar zlib = require(&apos;zlib&apos;);\nvar http = require(&apos;http&apos;);\nvar fs = require(&apos;fs&apos;);\nhttp.createServer(function(request, response) {\n  var raw = fs.createReadStream(&apos;index.html&apos;);\n  var acceptEncoding = request.headers[&apos;accept-encoding&apos;];\n  if (!acceptEncoding) {\n    acceptEncoding = &apos;&apos;;\n  }\n\n  // Note: this is not a conformant accept-encoding parser.\n  // See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.3\n  if (acceptEncoding.match(/\\bdeflate\\b/)) {\n    response.writeHead(200, { &apos;content-encoding&apos;: &apos;deflate&apos; });\n    raw.pipe(zlib.createDeflate()).pipe(response);\n  } else if (acceptEncoding.match(/\\bgzip\\b/)) {\n    response.writeHead(200, { &apos;content-encoding&apos;: &apos;gzip&apos; });\n    raw.pipe(zlib.createGzip()).pipe(response);\n  } else {\n    response.writeHead(200, {});\n    raw.pipe(response);\n  }\n}).listen(1337);</code></pre>\n",
       "miscs": [
         {
@@ -10406,6 +9848,8 @@
     {
       "textRaw": "os",
       "name": "os",
+      "stability": 4,
+      "stabilityText": "API Frozen",
       "desc": "<p>Provides a few basic operating-system related utility functions.\n\n</p>\n<p>Use <code>require(&apos;os&apos;)</code> to access this module.\n\n</p>\n",
       "methods": [
         {
@@ -10536,6 +9980,8 @@
     {
       "textRaw": "Cluster",
       "name": "cluster",
+      "stability": 1,
+      "stabilityText": "Experimental - Drastic changes in future versions",
       "desc": "<p>A single instance of Node runs in a single thread. To take advantage of\nmulti-core systems the user will sometimes want to launch a cluster of Node\nprocesses to handle the load.\n\n</p>\n<p>The cluster module allows you to easily create a network of processes that\nall share server ports.\n\n</p>\n<pre><code>var cluster = require(&apos;cluster&apos;);\nvar http = require(&apos;http&apos;);\nvar numCPUs = require(&apos;os&apos;).cpus().length;\n\nif (cluster.isMaster) {\n  // Fork workers.\n  for (var i = 0; i &lt; numCPUs; i++) {\n    cluster.fork();\n  }\n\n  cluster.on(&apos;death&apos;, function(worker) {\n    console.log(&apos;worker &apos; + worker.pid + &apos; died&apos;);\n  });\n} else {\n  // Worker processes have a http server.\n  http.Server(function(req, res) {\n    res.writeHead(200);\n    res.end(&quot;hello world\\n&quot;);\n  }).listen(8000);\n}</code></pre>\n<p>Running node will now share port 8000 between the workers:\n\n</p>\n<pre><code>% node server.js\nWorker 2438 online\nWorker 2437 online</code></pre>\n<p>The difference between <code>cluster.fork()</code> and <code>child_process.fork()</code> is simply\nthat cluster allows TCP servers to be shared between workers. <code>cluster.fork</code>\nis implemented on top of <code>child_process.fork</code>. The message passing API that\nis available with <code>child_process.fork</code> is available with <code>cluster</code> as well.\nAs an example, here is a cluster which keeps count of the number of requests\nin the master process via message passing:\n\n</p>\n<pre><code>var cluster = require(&apos;cluster&apos;);\nvar http = require(&apos;http&apos;);\nvar numReqs = 0;\n\nif (cluster.isMaster) {\n  // Fork workers.\n  for (var i = 0; i &lt; 2; i++) {\n    var worker = cluster.fork();\n\n    worker.on(&apos;message&apos;, function(msg) {\n      if (msg.cmd &amp;&amp; msg.cmd == &apos;notifyRequest&apos;) {\n        numReqs++;\n      }\n    });\n  }\n\n  setInterval(function() {\n    console.log(&quot;numReqs =&quot;, numReqs);\n  }, 1000);\n} else {\n  // Worker processes have a http server.\n  http.Server(function(req, res) {\n    res.writeHead(200);\n    res.end(&quot;hello world\\n&quot;);\n    // Send message to master process\n    process.send({ cmd: &apos;notifyRequest&apos; });\n  }).listen(8000);\n}</code></pre>\n",
       "methods": [
         {
@@ -10581,5 +10027,7 @@
       "type": "module",
       "displayName": "Appendix 1 - Third Party Modules"
     }
-  ]
+  ],
+  "stability": 3,
+  "stabilityText": "Stable"
 }

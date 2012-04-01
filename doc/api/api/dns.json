@@ -4,6 +4,8 @@
     {
       "textRaw": "DNS",
       "name": "dns",
+      "stability": 3,
+      "stabilityText": "Stable",
       "desc": "<p>Use <code>require(&apos;dns&apos;)</code> to access this module. All methods in the dns module\nuse C-Ares except for <code>dns.lookup</code> which uses <code>getaddrinfo(3)</code> in a thread\npool. C-Ares is much faster than <code>getaddrinfo</code> but the system resolver is\nmore constant with how other programs operate. When a user does\n<code>net.connect(80, &apos;google.com&apos;)</code> or <code>http.get({ host: &apos;google.com&apos; })</code> the\n<code>dns.lookup</code> method is used. Users who need to do a large number of look ups\nquickly should use the methods that go through C-Ares.\n\n</p>\n<p>Here is an example which resolves <code>&apos;www.google.com&apos;</code> then reverse\nresolves the IP addresses which are returned.\n\n</p>\n<pre><code>var dns = require(&apos;dns&apos;);\n\ndns.resolve4(&apos;www.google.com&apos;, function (err, addresses) {\n  if (err) throw err;\n\n  console.log(&apos;addresses: &apos; + JSON.stringify(addresses));\n\n  addresses.forEach(function (a) {\n    dns.reverse(a, function (err, domains) {\n      if (err) {\n        console.log(&apos;reverse for &apos; + a + &apos; failed: &apos; +\n          err.message);\n      } else {\n        console.log(&apos;reverse for &apos; + a + &apos;: &apos; +\n          JSON.stringify(domains));\n      }\n    });\n  });\n});</code></pre>\n",
       "methods": [
         {

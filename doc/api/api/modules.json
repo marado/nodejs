@@ -4,6 +4,8 @@
     {
       "textRaw": "Modules",
       "name": "module",
+      "stability": 5,
+      "stabilityText": "Locked",
       "desc": "<p>Node has a simple module loading system.  In Node, files and modules are in\none-to-one correspondence.  As an example, <code>foo.js</code> loads the module\n<code>circle.js</code> in the same directory.\n\n</p>\n<p>The contents of <code>foo.js</code>:\n\n</p>\n<pre><code>var circle = require(&apos;./circle.js&apos;);\nconsole.log( &apos;The area of a circle of radius 4 is &apos;\n           + circle.area(4));</code></pre>\n<p>The contents of <code>circle.js</code>:\n\n</p>\n<pre><code>var PI = Math.PI;\n\nexports.area = function (r) {\n  return PI * r * r;\n};\n\nexports.circumference = function (r) {\n  return 2 * PI * r;\n};</code></pre>\n<p>The module <code>circle.js</code> has exported the functions <code>area()</code> and\n<code>circumference()</code>.  To export an object, add to the special <code>exports</code>\nobject.\n\n</p>\n<p>Variables\nlocal to the module will be private. In this example the variable <code>PI</code> is\nprivate to <code>circle.js</code>.\n\n</p>\n<p>The module system is implemented in the <code>require(&quot;module&quot;)</code> module.\n\n</p>\n",
       "miscs": [
         {

@@ -4,6 +4,8 @@
     {
       "textRaw": "Child Process",
       "name": "child_process",
+      "stability": 3,
+      "stabilityText": "Stable",
       "desc": "<p>Node provides a tri-directional <code>popen(3)</code> facility through the\n<code>child_process</code> module.\n\n</p>\n<p>It is possible to stream data through a child&apos;s <code>stdin</code>, <code>stdout</code>, and\n<code>stderr</code> in a fully non-blocking way.\n\n</p>\n<p>To create a child process use <code>require(&apos;child_process&apos;).spawn()</code> or\n<code>require(&apos;child_process&apos;).fork()</code>.  The semantics of each are slightly\ndifferent, and explained below.\n\n</p>\n",
       "classes": [
         {
