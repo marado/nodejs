@@ -1,8 +1,16 @@
 nodejs (0.6.14~dfsg1-1) UNRELEASED; urgency=low
 
-  * test-cluster-kill-workers can fail on any arch because it is racey.
+  * test-cluster-kill-workers can fail on any arch, not only armel,
+    because it is racey.
   * Enable test-buffer.js because it is fixed by that upstream patch :
-    1001_align_fast_buffers_8byte_boundary.patch. Closes: bug#660802.
+    1001_align_fast_buffers_8byte_boundary.patch. Closes: bug#660800.
+  * Include tools/doc, now properly licensed.
+  * Include tools/doc/node_modules/marked : there are several other
+    markdown parsers in debian, but porting tools/doc/generate.js to one
+    of them is not an easy task.
+  * Update copyright file:
+    + tools/doc is already covered by default
+    + Add Files paragraph covering tools/doc/node_modules/marked.
 
  -- Jérémy Lal <kapouer@melix.org>  Thu, 22 Mar 2012 17:59:13 +0100
 
