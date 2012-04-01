@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>About this Documentation Node.js v0.6.12 Manual &amp; Documentation</title>
+  <title>About this Documentation Node.js v0.6.14 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/all.html">
@@ -20,7 +20,7 @@
                 <li><a href="/#download" class="download">Download</a></li>
                 <li><a href="/about/" class="about">About</a></li>
                 <li><a href="http://search.npmjs.org/" class="npm">npm Registry</a></li>
-                <li><a href="http://nodejs.org/docs/latest/api/index.html" class="docs current">Docs</a></li>
+                <li><a href="http://nodejs.org/api/" class="docs current">Docs</a></li>
                 <li><a href="http://blog.nodejs.org" class="blog">Blog</a></li>
                 <li><a href="/community/" class="community">Community</a></li>
                 <li><a href="/logos/" class="logos">Logos</a></li>
@@ -31,9 +31,13 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.6.12 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.6.14 Manual &amp; Documentation</h1>
             <div id="gtoc">
-              <p><a href="index.html" name="toc">Index</a> | <a href="all.html">View on single page</a></p>
+              <p>
+                <a href="index.html" name="toc">Index</a> |
+                <a href="all.html">View on single page</a> |
+                <a href="all.json">View as JSON</a>
+              </p>
             </div>
             <hr>
           </header>
@@ -43,6 +47,7 @@
             <ul>
 <li><a href="#all_about_this_documentation">About this Documentation</a><ul>
 <li><a href="#all_stability_index">Stability Index</a></li>
+<li><a href="#all_json_output">JSON Output</a></li>
 </ul>
 </li>
 <li><a href="#all_synopsis">Synopsis</a></li>
@@ -415,7 +420,14 @@
 <li><a href="#all_fs_writefilesync_filename_data_encoding">fs.writeFileSync(filename, data, [encoding])</a></li>
 <li><a href="#all_fs_watchfile_filename_options_listener">fs.watchFile(filename, [options], listener)</a></li>
 <li><a href="#all_fs_unwatchfile_filename">fs.unwatchFile(filename)</a></li>
-<li><a href="#all_fs_watch_filename_options_listener">fs.watch(filename, [options], listener)</a></li>
+<li><a href="#all_fs_watch_filename_options_listener">fs.watch(filename, [options], listener)</a><ul>
+<li><a href="#all_caveats">Caveats</a><ul>
+<li><a href="#all_availability">Availability</a></li>
+<li><a href="#all_filename_argument">Filename Argument</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a href="#all_class_fs_stats">Class: fs.Stats</a></li>
 <li><a href="#all_fs_createreadstream_path_options">fs.createReadStream(path, [options])</a></li>
 <li><a href="#all_class_fs_readstream">Class: fs.ReadStream</a><ul>
@@ -443,11 +455,9 @@
 <li><a href="#all_path_relative_from_to">path.relative(from, to)</a></li>
 <li><a href="#all_path_dirname_p">path.dirname(p)</a></li>
 <li><a href="#all_path_basename_p_ext">path.basename(p, [ext])</a></li>
-<li><a href="#all_path_extname_p">path.extname(p)</a><ul>
+<li><a href="#all_path_extname_p">path.extname(p)</a></li>
 <li><a href="#all_path_exists_p_callback">path.exists(p, [callback])</a></li>
 <li><a href="#all_path_existssync_p">path.existsSync(p)</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li><a href="#all_net">net</a><ul>
@@ -617,83 +627,13 @@
 </li>
 </ul>
 </li>
-<li><a href="#all_http_1">HTTP</a><ul>
-<li><a href="#all_http_createserver_requestlistener_1">http.createServer([requestListener])</a></li>
-<li><a href="#all_class_http_server_1">Class: http.Server</a><ul>
-<li><a href="#all_event_request_1">Event: &apos;request&apos;</a></li>
-<li><a href="#all_event_connection_2">Event: &apos;connection&apos;</a></li>
-<li><a href="#all_event_close_9">Event: &apos;close&apos;</a></li>
-<li><a href="#all_event_checkcontinue_1">Event: &apos;checkContinue&apos;</a></li>
-<li><a href="#all_event_upgrade_2">Event: &apos;upgrade&apos;</a></li>
-<li><a href="#all_event_clienterror_2">Event: &apos;clientError&apos;</a></li>
-<li><a href="#all_server_listen_port_hostname_callback_1">server.listen(port, [hostname], [callback])</a></li>
-<li><a href="#all_server_listen_path_callback_1">server.listen(path, [callback])</a></li>
-<li><a href="#all_server_close_3">server.close()</a></li>
-</ul>
-</li>
-<li><a href="#all_class_http_serverrequest_1">Class: http.ServerRequest</a><ul>
-<li><a href="#all_event_data_4">Event: &apos;data&apos;</a></li>
-<li><a href="#all_event_end_4">Event: &apos;end&apos;</a></li>
-<li><a href="#all_event_close_10">Event: &apos;close&apos;</a></li>
-<li><a href="#all_request_method_1">request.method</a></li>
-<li><a href="#all_request_url_1">request.url</a></li>
-<li><a href="#all_request_headers_1">request.headers</a></li>
-<li><a href="#all_request_trailers_1">request.trailers</a></li>
-<li><a href="#all_request_httpversion_1">request.httpVersion</a></li>
-<li><a href="#all_request_setencoding_encoding_1">request.setEncoding([encoding])</a></li>
-<li><a href="#all_request_pause_1">request.pause()</a></li>
-<li><a href="#all_request_resume_1">request.resume()</a></li>
-<li><a href="#all_request_connection_1">request.connection</a></li>
-</ul>
-</li>
-<li><a href="#all_class_http_serverresponse_1">Class: http.ServerResponse</a><ul>
-<li><a href="#all_event_close_11">Event: &apos;close&apos;</a></li>
-<li><a href="#all_response_writecontinue_1">response.writeContinue()</a></li>
-<li><a href="#all_response_writehead_statuscode_reasonphrase_headers_1">response.writeHead(statusCode, [reasonPhrase], [headers])</a></li>
-<li><a href="#all_response_statuscode_2">response.statusCode</a></li>
-<li><a href="#all_response_setheader_name_value_1">response.setHeader(name, value)</a></li>
-<li><a href="#all_response_getheader_name_1">response.getHeader(name)</a></li>
-<li><a href="#all_response_removeheader_name_1">response.removeHeader(name)</a></li>
-<li><a href="#all_response_write_chunk_encoding_1">response.write(chunk, [encoding])</a></li>
-<li><a href="#all_response_addtrailers_headers_1">response.addTrailers(headers)</a></li>
-<li><a href="#all_response_end_data_encoding_1">response.end([data], [encoding])</a></li>
-</ul>
-</li>
-<li><a href="#all_http_request_options_callback_1">http.request(options, callback)</a></li>
-<li><a href="#all_http_get_options_callback_1">http.get(options, callback)</a></li>
-<li><a href="#all_class_http_agent_1">Class: http.Agent</a><ul>
-<li><a href="#all_agent_maxsockets_1">agent.maxSockets</a></li>
-<li><a href="#all_agent_sockets_1">agent.sockets</a></li>
-<li><a href="#all_agent_requests_1">agent.requests</a></li>
-</ul>
-</li>
-<li><a href="#all_http_globalagent_1">http.globalAgent</a></li>
-<li><a href="#all_class_http_clientrequest_1">Class: http.ClientRequest</a><ul>
-<li><a href="#all_event_response_1">Event &apos;response&apos;</a></li>
-<li><a href="#all_event_socket_1">Event: &apos;socket&apos;</a></li>
-<li><a href="#all_event_upgrade_3">Event: &apos;upgrade&apos;</a></li>
-<li><a href="#all_event_continue_1">Event: &apos;continue&apos;</a></li>
-<li><a href="#all_request_write_chunk_encoding_1">request.write(chunk, [encoding])</a></li>
-<li><a href="#all_request_end_data_encoding_1">request.end([data], [encoding])</a></li>
-<li><a href="#all_request_abort_1">request.abort()</a></li>
-<li><a href="#all_request_settimeout_timeout_callback_1">request.setTimeout(timeout, [callback])</a></li>
-<li><a href="#all_request_setnodelay_nodelay_1">request.setNoDelay([noDelay])</a></li>
-<li><a href="#all_request_setsocketkeepalive_enable_initialdelay_1">request.setSocketKeepAlive([enable], [initialDelay])</a></li>
-</ul>
-</li>
-<li><a href="#all_http_clientresponse_1">http.ClientResponse</a><ul>
-<li><a href="#all_event_data_5">Event: &apos;data&apos;</a></li>
-<li><a href="#all_event_end_5">Event: &apos;end&apos;</a></li>
-<li><a href="#all_event_close_12">Event: &apos;close&apos;</a></li>
-<li><a href="#all_response_statuscode_3">response.statusCode</a></li>
-<li><a href="#all_response_httpversion_1">response.httpVersion</a></li>
-<li><a href="#all_response_headers_1">response.headers</a></li>
-<li><a href="#all_response_trailers_1">response.trailers</a></li>
-<li><a href="#all_response_setencoding_encoding_1">response.setEncoding([encoding])</a></li>
-<li><a href="#all_response_pause_1">response.pause()</a></li>
-<li><a href="#all_response_resume_1">response.resume()</a></li>
-</ul>
-</li>
+<li><a href="#all_https">HTTPS</a><ul>
+<li><a href="#all_class_https_server">Class: https.Server</a></li>
+<li><a href="#all_https_createserver_options_requestlistener">https.createServer(options, [requestListener])</a></li>
+<li><a href="#all_https_request_options_callback">https.request(options, callback)</a></li>
+<li><a href="#all_https_get_options_callback">https.get(options, callback)</a></li>
+<li><a href="#all_class_https_agent">Class: https.Agent</a></li>
+<li><a href="#all_https_globalagent">https.globalAgent</a></li>
 </ul>
 </li>
 <li><a href="#all_url">URL</a><ul>
@@ -720,7 +660,7 @@
 <li><a href="#all_rl_resume">rl.resume()</a></li>
 <li><a href="#all_rl_write">rl.write()</a></li>
 <li><a href="#all_event_line">Event: &apos;line&apos;</a></li>
-<li><a href="#all_event_close_13">Event: &apos;close&apos;</a></li>
+<li><a href="#all_event_close_9">Event: &apos;close&apos;</a></li>
 </ul>
 </li>
 </ul>
@@ -777,8 +717,6 @@
 <li><a href="#all_tty">TTY</a><ul>
 <li><a href="#all_tty_isatty_fd">tty.isatty(fd)</a></li>
 <li><a href="#all_tty_setrawmode_mode">tty.setRawMode(mode)</a></li>
-<li><a href="#all_tty_setwindowsize_fd_row_col">tty.setWindowSize(fd, row, col)</a></li>
-<li><a href="#all_tty_getwindowsize_fd">tty.getWindowSize(fd)</a></li>
 </ul>
 </li>
 <li><a href="#all_zlib">Zlib</a><ul>
@@ -920,6 +858,15 @@ unlikely to ever have to change.</li>
 <li><strong>5 - Locked</strong>  Unless serious bugs are found, this code will not ever
 change.  Please do not suggest changes in this area; they will be refused.</li>
 </ul>
+<h2>JSON Output<span><a class="mark" href="#all_json_output" id="all_json_output">#</a></span></h2>
+<pre><code>Stability: 1 - Experimental</code></pre>
+<p>Every HTML file in the markdown has a corresponding JSON file with the
+same data.
+
+</p>
+<p>This feature is new as of node v0.6.12.  It is experimental.
+
+</p>
 <h1>Synopsis<span><a class="mark" href="#all_synopsis" id="all_synopsis">#</a></span></h1>
 <!--type=misc-->
 
@@ -1092,9 +1039,10 @@ information.
 
 </p>
 <h1>console<span><a class="mark" href="#all_console_1" id="all_console_1">#</a></span></h1>
-<div class="signature"><ul>
-<li><span class="type">Object</span></li>
-</div></ul>
+<pre><code>Stability: 4 - API Frozen</code></pre>
+<ul>
+<li>{Object}</li>
+</ul>
 <!--type=global-->
 
 <p>For printing to stdout and stderr.  Similar to the console object functions
@@ -1150,6 +1098,7 @@ console.timeEnd(&apos;100-elements&apos;);</code></pre>
 
 </p>
 <h1>Timers<span><a class="mark" href="#all_timers" id="all_timers">#</a></span></h1>
+<pre><code>Stability: 5 - Locked</code></pre>
 <p>All of the timer functions are globals.  You do not need to <code>require()</code>
 this module in order to use them.
 
@@ -1181,6 +1130,7 @@ you can also pass arguments to the callback.
 
 </p>
 <h1>Modules<span><a class="mark" href="#all_modules" id="all_modules">#</a></span></h1>
+<pre><code>Stability: 5 - Locked</code></pre>
 <!--name=module-->
 
 <p>Node has a simple module loading system.  In Node, files and modules are in
@@ -2634,6 +2584,7 @@ console.log(&apos;Changed umask from: &apos; + oldmask.toString(8) +
 
 </p>
 <h1>util<span><a class="mark" href="#all_util" id="all_util">#</a></span></h1>
+<pre><code>Stability: 5 - Locked</code></pre>
 <p>These functions are in the module <code>&apos;util&apos;</code>. Use <code>require(&apos;util&apos;)</code> to access
 them.
 
@@ -2802,6 +2753,7 @@ stream.on(&quot;data&quot;, function(data) {
 })
 stream.write(&quot;It works!&quot;); // Received data: &quot;It works!&quot;</code></pre>
 <h1>Events<span><a class="mark" href="#all_events" id="all_events">#</a></span></h1>
+<pre><code>Stability: 4 - API Frozen</code></pre>
 <!--type=module-->
 
 <p>Many objects in Node emit events: a <code>net.Server</code> emits an event each time
@@ -2896,6 +2848,7 @@ console.log(util.inspect(server.listeners(&apos;connection&apos;))); // [ [Funct
 
 </p>
 <h1>Buffer<span><a class="mark" href="#all_buffer_1" id="all_buffer_1">#</a></span></h1>
+<pre><code>Stability: 3 - Stable</code></pre>
 <p>Pure Javascript is Unicode friendly but not nice to binary data.  When
 dealing with TCP streams or the file system, it&apos;s necessary to handle octet
 streams. Node has several strategies for manipulating, creating, and
@@ -3596,6 +3549,7 @@ then Node will allocate a SlowBuffer slab for it directly.
 
 </p>
 <h1>Stream<span><a class="mark" href="#all_stream" id="all_stream">#</a></span></h1>
+<pre><code>Stability: 2 - Unstable</code></pre>
 <p>A stream is an abstract interface implemented by various objects in Node.
 For example a request to an HTTP server is a stream, as is stdout. Streams
 are readable, writable, or both. All streams are instances of <code>EventEmitter</code>.
@@ -3791,6 +3745,7 @@ for writes.
 
 </p>
 <h1>Crypto<span><a class="mark" href="#all_crypto" id="all_crypto">#</a></span></h1>
+<pre><code>Stability: 3 - Stable</code></pre>
 <p>Use <code>require(&apos;crypto&apos;)</code> to access this module.
 
 </p>
@@ -4136,6 +4091,7 @@ try {
   // handle error
 }</code></pre>
 <h1>TLS (SSL)<span><a class="mark" href="#all_tls_ssl" id="all_tls_ssl">#</a></span></h1>
+<pre><code>Stability: 3 - Stable</code></pre>
 <p>Use <code>require(&apos;tls&apos;)</code> to access this module.
 
 </p>
@@ -4549,6 +4505,9 @@ operating system. Returns an object with two properties, e.g.
 
 </p>
 <h1>File System<span><a class="mark" href="#all_file_system" id="all_file_system">#</a></span></h1>
+<pre><code>Stability: 3 - Stable</code></pre>
+<!--name=fs-->
+
 <p>File I/O is provided by simple wrappers around standard POSIX functions.  To
 use this module do <code>require(&apos;fs&apos;)</code>. All the methods have asynchronous and
 synchronous forms.
@@ -4686,7 +4645,7 @@ are given to the completion callback.
 </p>
 <h2>fs.stat(path, [callback])<span><a class="mark" href="#all_fs_stat_path_callback" id="all_fs_stat_path_callback">#</a></span></h2>
 <p>Asynchronous stat(2). The callback gets two arguments <code>(err, stats)</code> where
-<code>stats</code> is a <a href="#fs.Stats">fs.Stats</a> object.  See the <a href="#fs.Stats">fs.Stats</a>
+<code>stats</code> is a <a href="#fs_class_fs_stats">fs.Stats</a> object.  See the <a href="#fs_class_fs_stats">fs.Stats</a>
 section below for more information.
 
 </p>
@@ -4956,6 +4915,7 @@ returns a buffer.
 
 </p>
 <h2>fs.watchFile(filename, [options], listener)<span><a class="mark" href="#all_fs_watchfile_filename_options_listener" id="all_fs_watchfile_filename_options_listener">#</a></span></h2>
+<pre><code>Stability: 2 - Unstable.  Use fs.watch instead, if available.</code></pre>
 <p>Watch for changes on <code>filename</code>. The callback <code>listener</code> will be called each
 time the file is accessed.
 
@@ -4985,12 +4945,14 @@ you need to compare <code>curr.mtime</code> and <code>prev.mtime</code>.
 
 </p>
 <h2>fs.unwatchFile(filename)<span><a class="mark" href="#all_fs_unwatchfile_filename" id="all_fs_unwatchfile_filename">#</a></span></h2>
+<pre><code>Stability: 2 - Unstable.  Use fs.watch instead, if available.</code></pre>
 <p>Stop watching for changes on <code>filename</code>.
 
 </p>
 <h2>fs.watch(filename, [options], listener)<span><a class="mark" href="#all_fs_watch_filename_options_listener" id="all_fs_watch_filename_options_listener">#</a></span></h2>
+<pre><code>Stability: 2 - Unstable.  Not available on all platforms.</code></pre>
 <p>Watch for changes on <code>filename</code>, where <code>filename</code> is either a file or a
-directory.  The returned object is <a href="#fs.FSWatcher">fs.FSWatcher</a>.
+directory.  The returned object is a <a href="#fs_class_fs_fswatcher">fs.FSWatcher</a>.
 
 </p>
 <p>The second argument is optional. The <code>options</code> if provided should be an object
@@ -5004,8 +4966,36 @@ should continue to run as long as files are being watched. The default is
 the event.
 
 </p>
-<p><strong><em>Warning:</em></strong>
-Providing <code>filename</code> argument in the callback is not supported
+<h3>Caveats<span><a class="mark" href="#all_caveats" id="all_caveats">#</a></span></h3>
+<!--type=misc-->
+
+<p>The <code>fs.watch</code> API is not 100% consistent across platforms, and is
+unavailable in some situations.
+
+</p>
+<h4>Availability<span><a class="mark" href="#all_availability" id="all_availability">#</a></span></h4>
+<!--type=misc-->
+
+<p>This feature depends on the underlying operating system providing a way
+to be notified of filesystem changes.
+
+</p>
+<ul>
+<li>On Linux systems, this uses <code>inotify</code>.</li>
+<li>On BSD systems (including OS X), this uses <code>kqueue</code>.</li>
+<li>On SunOS systems (including Solaris and SmartOS), this uses <code>event ports</code>.</li>
+<li>On Windows systems, this feature depends on <code>ReadDirectoryChangesW</code>.</li>
+</ul>
+<p>If the underlying functionality is not available for some reason, then
+<code>fs.watch</code> will not be able to function.  You can still use
+<code>fs.watchFile</code>, which uses stat polling, but it is slower and less
+reliable.
+
+</p>
+<h4>Filename Argument<span><a class="mark" href="#all_filename_argument" id="all_filename_argument">#</a></span></h4>
+<!--type=misc-->
+
+<p>Providing <code>filename</code> argument in the callback is not supported
 on every platform (currently it&apos;s only supported on Linux and Windows).  Even
 on supported platforms <code>filename</code> is not always guaranteed to be provided.
 Therefore, don&apos;t assume that <code>filename</code> argument is always provided in the
@@ -5085,14 +5075,14 @@ start at 0.
 </p>
 <pre><code>fs.createReadStream(&apos;sample.txt&apos;, {start: 90, end: 99});</code></pre>
 <h2>Class: fs.ReadStream<span><a class="mark" href="#all_class_fs_readstream" id="all_class_fs_readstream">#</a></span></h2>
-<p><code>ReadStream</code> is a <a href="stream.html#readable_stream">Readable Stream</a>.
+<p><code>ReadStream</code> is a <a href="stream.html#stream_readable_stream">Readable Stream</a>.
 
 </p>
 <h3>Event: &apos;open&apos;<span><a class="mark" href="#all_event_open" id="all_event_open">#</a></span></h3>
-<p><code>function (fd) { }</code>
-
-</p>
-<p> <code>fd</code> is the file descriptor used by the ReadStream.
+<div class="signature"><ul>
+<li><code>fd</code> <span class="type">Integer</span> file descriptor used by the ReadStream.</li>
+</div></ul>
+<p>Emitted when the ReadStream&apos;s file is opened.
 
 
 </p>
@@ -5113,14 +5103,14 @@ default mode <code>w</code>.
 
 </p>
 <h2>fs.WriteStream<span><a class="mark" href="#all_fs_writestream" id="all_fs_writestream">#</a></span></h2>
-<p><code>WriteStream</code> is a <a href="stream.html#writable_stream">Writable Stream</a>.
+<p><code>WriteStream</code> is a <a href="stream.html#stream_writable_stream">Writable Stream</a>.
 
 </p>
 <h3>Event: &apos;open&apos;<span><a class="mark" href="#all_event_open_1" id="all_event_open_1">#</a></span></h3>
-<p><code>function (fd) { }</code>
-
-</p>
-<p> <code>fd</code> is the file descriptor used by the WriteStream.
+<div class="signature"><ul>
+<li><code>fd</code> <span class="type">Integer</span> file descriptor used by the ReadStream.</li>
+</div></ul>
+<p>Emitted when the WriteStream&apos;s file is opened.
 
 </p>
 <h3>file.bytesWritten<span><a class="mark" href="#all_file_byteswritten" id="all_file_byteswritten">#</a></span></h3>
@@ -5142,17 +5132,18 @@ for writing.
 <li><code>filename</code> <span class="type">String</span> The filename that changed (if relevant/available)</li>
 </div></ul>
 <p>Emitted when something changes in a watched directory or file.
-See more details in <a href="#fs.watch">fs.watch</a>.
+See more details in <a href="#fs_fs_watch_filename_options_listener">fs.watch</a>.
 
 </p>
 <h3>Event: &apos;error&apos;<span><a class="mark" href="#all_event_error_2" id="all_event_error_2">#</a></span></h3>
-<p><code>function (exception) {}</code>
-
-</p>
+<div class="signature"><ul>
+<li><code>error</code> <span class="type">Error object</span></li>
+</div></ul>
 <p>Emitted when an error occurs.
 
 </p>
 <h1>Path<span><a class="mark" href="#all_path" id="all_path">#</a></span></h1>
+<pre><code>Stability: 3 - Stable</code></pre>
 <p>This module contains utilities for handling and transforming file
 paths.  Almost all these methods perform only string transformations.
 The file system is not consulted to check whether paths are valid.
@@ -5298,7 +5289,7 @@ path.extname(&apos;index.&apos;)
 path.extname(&apos;index&apos;)
 // returns
 &apos;&apos;</code></pre>
-<h3>path.exists(p, [callback])<span><a class="mark" href="#all_path_exists_p_callback" id="all_path_exists_p_callback">#</a></span></h3>
+<h2>path.exists(p, [callback])<span><a class="mark" href="#all_path_exists_p_callback" id="all_path_exists_p_callback">#</a></span></h2>
 <p>Test whether or not the given path exists by checking with the file system.
 Then call the <code>callback</code> argument with either true or false.  Example:
 
@@ -5306,11 +5297,12 @@ Then call the <code>callback</code> argument with either true or false.  Example
 <pre><code>path.exists(&apos;/etc/passwd&apos;, function (exists) {
   util.debug(exists ? &quot;it&apos;s there&quot; : &quot;no passwd!&quot;);
 });</code></pre>
-<h3>path.existsSync(p)<span><a class="mark" href="#all_path_existssync_p" id="all_path_existssync_p">#</a></span></h3>
+<h2>path.existsSync(p)<span><a class="mark" href="#all_path_existssync_p" id="all_path_existssync_p">#</a></span></h2>
 <p>Synchronous version of <code>path.exists</code>.
 
 </p>
 <h1>net<span><a class="mark" href="#all_net" id="all_net">#</a></span></h1>
+<pre><code>Stability: 3 - Stable</code></pre>
 <p>The <code>net</code> module provides you with an asynchronous network wrapper. It contains
 methods for creating both servers and clients (called streams). You can include
 this module with <code>require(&apos;net&apos;);</code>
@@ -5783,6 +5775,7 @@ returns 4 for IP version 4 addresses, and returns 6 for IP version 6 addresses.
 
 </p>
 <h1>UDP / Datagram Sockets<span><a class="mark" href="#all_udp_datagram_sockets" id="all_udp_datagram_sockets">#</a></span></h1>
+<pre><code>Stability: 3 - Stable</code></pre>
 <!-- name=dgram -->
 
 <p>Datagram sockets are available through <code>require(&apos;dgram&apos;)</code>.
@@ -6012,6 +6005,7 @@ interfaces.
 
 </p>
 <h1>DNS<span><a class="mark" href="#all_dns" id="all_dns">#</a></span></h1>
+<pre><code>Stability: 3 - Stable</code></pre>
 <p>Use <code>require(&apos;dns&apos;)</code> to access this module. All methods in the dns module
 use C-Ares except for <code>dns.lookup</code> which uses <code>getaddrinfo(3)</code> in a thread
 pool. C-Ares is much faster than <code>getaddrinfo</code> but the system resolver is
@@ -6144,6 +6138,7 @@ object.
 <li><code>dns.BADQUERY</code>: the query is malformed.</li>
 </ul>
 <h1>HTTP<span><a class="mark" href="#all_http" id="all_http">#</a></span></h1>
+<pre><code>Stability: 3 - Stable</code></pre>
 <p>To use the HTTP server and client one must <code>require(&apos;http&apos;)</code>.
 
 </p>
@@ -6982,846 +6977,181 @@ a <code>Buffer</code> object.
 <p>Resumes a paused response.
 
 </p>
-<h1>HTTP<span><a class="mark" href="#all_http_1" id="all_http_1">#</a></span></h1>
-<p>To use the HTTP server and client one must <code>require(&apos;http&apos;)</code>.
+<h1>HTTPS<span><a class="mark" href="#all_https" id="all_https">#</a></span></h1>
+<pre><code>Stability: 3 - Stable</code></pre>
+<p>HTTPS is the HTTP protocol over TLS/SSL. In Node this is implemented as a
+separate module.
 
 </p>
-<p>The HTTP interfaces in Node are designed to support many features
-of the protocol which have been traditionally difficult to use.
-In particular, large, possibly chunk-encoded, messages. The interface is
-careful to never buffer entire requests or responses--the
-user is able to stream data.
+<h2>Class: https.Server<span><a class="mark" href="#all_class_https_server" id="all_class_https_server">#</a></span></h2>
+<p>This class is a subclass of <code>tls.Server</code> and emits events same as
+<code>http.Server</code>. See <code>http.Server</code> for more information.
 
 </p>
-<p>HTTP message headers are represented by an object like this:
+<h2>https.createServer(options, [requestListener])<span><a class="mark" href="#all_https_createserver_options_requestlistener" id="all_https_createserver_options_requestlistener">#</a></span></h2>
+<p>Returns a new HTTPS web server object. The <code>options</code> is similar to
+<code>tls.createServer()</code>. The <code>requestListener</code> is a function which is
+automatically added to the <code>&apos;request&apos;</code> event.
 
 </p>
-<pre><code>{ &apos;content-length&apos;: &apos;123&apos;,
-  &apos;content-type&apos;: &apos;text/plain&apos;,
-  &apos;connection&apos;: &apos;keep-alive&apos;,
-  &apos;accept&apos;: &apos;*/*&apos; }</code></pre>
-<p>Keys are lowercased. Values are not modified.
+<p>Example:
 
 </p>
-<p>In order to support the full spectrum of possible HTTP applications, Node&apos;s
-HTTP API is very low-level. It deals with stream handling and message
-parsing only. It parses a message into headers and body but it does not
-parse the actual headers or the body.
+<pre><code>// curl -k https://localhost:8000/
+var https = require(&apos;https&apos;);
+var fs = require(&apos;fs&apos;);
 
+var options = {
+  key: fs.readFileSync(&apos;test/fixtures/keys/agent2-key.pem&apos;),
+  cert: fs.readFileSync(&apos;test/fixtures/keys/agent2-cert.pem&apos;)
+};
 
-</p>
-<h2>http.createServer([requestListener])<span><a class="mark" href="#all_http_createserver_requestlistener_1" id="all_http_createserver_requestlistener_1">#</a></span></h2>
-<p>Returns a new web server object.
-
-</p>
-<p>The <code>requestListener</code> is a function which is automatically
-added to the <code>&apos;request&apos;</code> event.
-
-</p>
-<h2>Class: http.Server<span><a class="mark" href="#all_class_http_server_1" id="all_class_http_server_1">#</a></span></h2>
-<p>This is an <code>EventEmitter</code> with the following events:
-
-</p>
-<h3>Event: &apos;request&apos;<span><a class="mark" href="#all_event_request_1" id="all_event_request_1">#</a></span></h3>
-<p><code>function (request, response) { }</code>
+https.createServer(options, function (req, res) {
+  res.writeHead(200);
+  res.end(&quot;hello world\n&quot;);
+}).listen(8000);</code></pre>
+<h2>https.request(options, callback)<span><a class="mark" href="#all_https_request_options_callback" id="all_https_request_options_callback">#</a></span></h2>
+<p>Makes a request to a secure web server.
+All options from <a href="http.html#http.request">http.request()</a> are valid.
 
 </p>
-<p>Emitted each time there is a request. Note that there may be multiple requests
-per connection (in the case of keep-alive connections).
- <code>request</code> is an instance of <code>http.ServerRequest</code> and <code>response</code> is
- an instance of <code>http.ServerResponse</code>
+<p>Example:
 
 </p>
-<h3>Event: &apos;connection&apos;<span><a class="mark" href="#all_event_connection_2" id="all_event_connection_2">#</a></span></h3>
-<p><code>function (socket) { }</code>
+<pre><code>var https = require(&apos;https&apos;);
 
-</p>
-<p> When a new TCP stream is established. <code>socket</code> is an object of type
- <code>net.Socket</code>. Usually users will not want to access this event. The
- <code>socket</code> can also be accessed at <code>request.connection</code>.
+var options = {
+  host: &apos;encrypted.google.com&apos;,
+  port: 443,
+  path: &apos;/&apos;,
+  method: &apos;GET&apos;
+};
 
-</p>
-<h3>Event: &apos;close&apos;<span><a class="mark" href="#all_event_close_9" id="all_event_close_9">#</a></span></h3>
-<p><code>function () { }</code>
+var req = https.request(options, function(res) {
+  console.log(&quot;statusCode: &quot;, res.statusCode);
+  console.log(&quot;headers: &quot;, res.headers);
 
-</p>
-<p> Emitted when the server closes.
+  res.on(&apos;data&apos;, function(d) {
+    process.stdout.write(d);
+  });
+});
+req.end();
 
-</p>
-<h3>Event: &apos;checkContinue&apos;<span><a class="mark" href="#all_event_checkcontinue_1" id="all_event_checkcontinue_1">#</a></span></h3>
-<p><code>function (request, response) { }</code>
-
-</p>
-<p>Emitted each time a request with an http Expect: 100-continue is received.
-If this event isn&apos;t listened for, the server will automatically respond
-with a 100 Continue as appropriate.
-
-</p>
-<p>Handling this event involves calling <code>response.writeContinue</code> if the client
-should continue to send the request body, or generating an appropriate HTTP
-response (e.g., 400 Bad Request) if the client should not continue to send the
-request body.
-
-</p>
-<p>Note that when this event is emitted and handled, the <code>request</code> event will
-not be emitted.
-
-</p>
-<h3>Event: &apos;upgrade&apos;<span><a class="mark" href="#all_event_upgrade_2" id="all_event_upgrade_2">#</a></span></h3>
-<p><code>function (request, socket, head) { }</code>
-
-</p>
-<p>Emitted each time a client requests a http upgrade. If this event isn&apos;t
-listened for, then clients requesting an upgrade will have their connections
-closed.
+req.on(&apos;error&apos;, function(e) {
+  console.error(e);
+});</code></pre>
+<p>The options argument has the following options
 
 </p>
 <ul>
-<li><code>request</code> is the arguments for the http request, as it is in the request event.</li>
-<li><code>socket</code> is the network socket between the server and client.</li>
-<li><code>head</code> is an instance of Buffer, the first packet of the upgraded stream, this may be empty.</li>
-</ul>
-<p>After this event is emitted, the request&apos;s socket will not have a <code>data</code>
-event listener, meaning you will need to bind to it in order to handle data
-sent to the server on that socket.
-
-</p>
-<h3>Event: &apos;clientError&apos;<span><a class="mark" href="#all_event_clienterror_2" id="all_event_clienterror_2">#</a></span></h3>
-<p><code>function (exception) { }</code>
-
-</p>
-<p>If a client connection emits an &apos;error&apos; event - it will forwarded here.
-
-</p>
-<h3>server.listen(port, [hostname], [callback])<span><a class="mark" href="#all_server_listen_port_hostname_callback_1" id="all_server_listen_port_hostname_callback_1">#</a></span></h3>
-<p>Begin accepting connections on the specified port and hostname.  If the
-hostname is omitted, the server will accept connections directed to any
-IPv4 address (<code>INADDR_ANY</code>).
-
-</p>
-<p>To listen to a unix socket, supply a filename instead of port and hostname.
-
-</p>
-<p>This function is asynchronous. The last parameter <code>callback</code> will be added as
-a listener for the <a href="net.html#event_listening_">&apos;listening&apos;</a> event.
-See also <a href="net.html#server.listen">net.Server.listen()</a>.
-
-
-</p>
-<h3>server.listen(path, [callback])<span><a class="mark" href="#all_server_listen_path_callback_1" id="all_server_listen_path_callback_1">#</a></span></h3>
-<p>Start a UNIX socket server listening for connections on the given <code>path</code>.
-
-</p>
-<p>This function is asynchronous. The last parameter <code>callback</code> will be added as
-a listener for the <a href="net.html#event_listening_">&apos;listening&apos;</a> event.
-See also <a href="net.html#server.listen">net.Server.listen()</a>.
-
-
-</p>
-<h3>server.close()<span><a class="mark" href="#all_server_close_3" id="all_server_close_3">#</a></span></h3>
-<p>Stops the server from accepting new connections.
-See <a href="net.html#server.close">net.Server.close()</a>.
-
-
-</p>
-<h2>Class: http.ServerRequest<span><a class="mark" href="#all_class_http_serverrequest_1" id="all_class_http_serverrequest_1">#</a></span></h2>
-<p>This object is created internally by a HTTP server -- not by
-the user -- and passed as the first argument to a <code>&apos;request&apos;</code> listener.
-
-</p>
-<p>The request implements the <a href="stream.html#readable_stream">Readable Stream</a>
-interface. This is an <code>EventEmitter</code> with the following events:
-
-</p>
-<h3>Event: &apos;data&apos;<span><a class="mark" href="#all_event_data_4" id="all_event_data_4">#</a></span></h3>
-<p><code>function (chunk) { }</code>
-
-</p>
-<p>Emitted when a piece of the message body is received. The chunk is a string if
-an encoding has been set with <code>request.setEncoding()</code>, otherwise it&apos;s a
-<a href="buffer.html">Buffer</a>.
-
-</p>
-<p>Note that the <strong>data will be lost</strong> if there is no listener when a
-<code>ServerRequest</code> emits a <code>&apos;data&apos;</code> event.
-
-</p>
-<h3>Event: &apos;end&apos;<span><a class="mark" href="#all_event_end_4" id="all_event_end_4">#</a></span></h3>
-<p><code>function () { }</code>
-
-</p>
-<p>Emitted exactly once for each request. After that, no more <code>&apos;data&apos;</code> events
-will be emitted on the request.
-
-</p>
-<h3>Event: &apos;close&apos;<span><a class="mark" href="#all_event_close_10" id="all_event_close_10">#</a></span></h3>
-<p><code>function () { }</code>
-
-</p>
-<p>Indicates that the underlaying connection was terminated before
-<code>response.end()</code> was called or able to flush.
-
-</p>
-<p>Just like <code>&apos;end&apos;</code>, this event occurs only once per request, and no more <code>&apos;data&apos;</code>
-events will fire afterwards.
-
-</p>
-<p>Note: <code>&apos;close&apos;</code> can fire after <code>&apos;end&apos;</code>, but not vice versa.
-
-</p>
-<h3>request.method<span><a class="mark" href="#all_request_method_1" id="all_request_method_1">#</a></span></h3>
-<p>The request method as a string. Read only. Example:
-<code>&apos;GET&apos;</code>, <code>&apos;DELETE&apos;</code>.
-
-
-</p>
-<h3>request.url<span><a class="mark" href="#all_request_url_1" id="all_request_url_1">#</a></span></h3>
-<p>Request URL string. This contains only the URL that is
-present in the actual HTTP request. If the request is:
-
-</p>
-<pre><code>GET /status?name=ryan HTTP/1.1\r\n
-Accept: text/plain\r\n
-\r\n</code></pre>
-<p>Then <code>request.url</code> will be:
-
-</p>
-<pre><code>&apos;/status?name=ryan&apos;</code></pre>
-<p>If you would like to parse the URL into its parts, you can use
-<code>require(&apos;url&apos;).parse(request.url)</code>.  Example:
-
-</p>
-<pre><code>node&gt; require(&apos;url&apos;).parse(&apos;/status?name=ryan&apos;)
-{ href: &apos;/status?name=ryan&apos;,
-  search: &apos;?name=ryan&apos;,
-  query: &apos;name=ryan&apos;,
-  pathname: &apos;/status&apos; }</code></pre>
-<p>If you would like to extract the params from the query string,
-you can use the <code>require(&apos;querystring&apos;).parse</code> function, or pass
-<code>true</code> as the second argument to <code>require(&apos;url&apos;).parse</code>.  Example:
-
-</p>
-<pre><code>node&gt; require(&apos;url&apos;).parse(&apos;/status?name=ryan&apos;, true)
-{ href: &apos;/status?name=ryan&apos;,
-  search: &apos;?name=ryan&apos;,
-  query: { name: &apos;ryan&apos; },
-  pathname: &apos;/status&apos; }</code></pre>
-<h3>request.headers<span><a class="mark" href="#all_request_headers_1" id="all_request_headers_1">#</a></span></h3>
-<p>Read only.
-
-</p>
-<h3>request.trailers<span><a class="mark" href="#all_request_trailers_1" id="all_request_trailers_1">#</a></span></h3>
-<p>Read only; HTTP trailers (if present). Only populated after the &apos;end&apos; event.
-
-</p>
-<h3>request.httpVersion<span><a class="mark" href="#all_request_httpversion_1" id="all_request_httpversion_1">#</a></span></h3>
-<p>The HTTP protocol version as a string. Read only. Examples:
-<code>&apos;1.1&apos;</code>, <code>&apos;1.0&apos;</code>.
-Also <code>request.httpVersionMajor</code> is the first integer and
-<code>request.httpVersionMinor</code> is the second.
-
-
-</p>
-<h3>request.setEncoding([encoding])<span><a class="mark" href="#all_request_setencoding_encoding_1" id="all_request_setencoding_encoding_1">#</a></span></h3>
-<p>Set the encoding for the request body. Either <code>&apos;utf8&apos;</code> or <code>&apos;binary&apos;</code>. Defaults
-to <code>null</code>, which means that the <code>&apos;data&apos;</code> event will emit a <code>Buffer</code> object..
-
-
-</p>
-<h3>request.pause()<span><a class="mark" href="#all_request_pause_1" id="all_request_pause_1">#</a></span></h3>
-<p>Pauses request from emitting events.  Useful to throttle back an upload.
-
-
-</p>
-<h3>request.resume()<span><a class="mark" href="#all_request_resume_1" id="all_request_resume_1">#</a></span></h3>
-<p>Resumes a paused request.
-
-</p>
-<h3>request.connection<span><a class="mark" href="#all_request_connection_1" id="all_request_connection_1">#</a></span></h3>
-<p>The <code>net.Socket</code> object associated with the connection.
-
-
-</p>
-<p>With HTTPS support, use request.connection.verifyPeer() and
-request.connection.getPeerCertificate() to obtain the client&apos;s
-authentication details.
-
-
-
-</p>
-<h2>Class: http.ServerResponse<span><a class="mark" href="#all_class_http_serverresponse_1" id="all_class_http_serverresponse_1">#</a></span></h2>
-<p>This object is created internally by a HTTP server--not by the user. It is
-passed as the second parameter to the <code>&apos;request&apos;</code> event.
-
-</p>
-<p>The response implements the <a href="stream.html#writable_stream">Writable  Stream</a>
-interface. This is an <code>EventEmitter</code> with the following events:
-
-</p>
-<h3>Event: &apos;close&apos;<span><a class="mark" href="#all_event_close_11" id="all_event_close_11">#</a></span></h3>
-<p><code>function () { }</code>
-
-</p>
-<p>Indicates that the underlaying connection was terminated before
-<code>response.end()</code> was called or able to flush.
-
-</p>
-<h3>response.writeContinue()<span><a class="mark" href="#all_response_writecontinue_1" id="all_response_writecontinue_1">#</a></span></h3>
-<p>Sends a HTTP/1.1 100 Continue message to the client, indicating that
-the request body should be sent. See the <a href="#event_checkContinue_">checkContinue</a> event on
-<code>Server</code>.
-
-</p>
-<h3>response.writeHead(statusCode, [reasonPhrase], [headers])<span><a class="mark" href="#all_response_writehead_statuscode_reasonphrase_headers_1" id="all_response_writehead_statuscode_reasonphrase_headers_1">#</a></span></h3>
-<p>Sends a response header to the request. The status code is a 3-digit HTTP
-status code, like <code>404</code>. The last argument, <code>headers</code>, are the response headers.
-Optionally one can give a human-readable <code>reasonPhrase</code> as the second
-argument.
-
-</p>
-<p>Example:
-
-</p>
-<pre><code>var body = &apos;hello world&apos;;
-response.writeHead(200, {
-  &apos;Content-Length&apos;: body.length,
-  &apos;Content-Type&apos;: &apos;text/plain&apos; });</code></pre>
-<p>This method must only be called once on a message and it must
-be called before <code>response.end()</code> is called.
-
-</p>
-<p>If you call <code>response.write()</code> or <code>response.end()</code> before calling this, the
-implicit/mutable headers will be calculated and call this function for you.
-
-</p>
-<p>Note: that Content-Length is given in bytes not characters. The above example
-works because the string <code>&apos;hello world&apos;</code> contains only single byte characters.
-If the body contains higher coded characters then <code>Buffer.byteLength()</code>
-should be used to determine the number of bytes in a given encoding.
-And Node does not check whether Content-Length and the length of the body
-which has been transmitted are equal or not.
-
-</p>
-<h3>response.statusCode<span><a class="mark" href="#all_response_statuscode_2" id="all_response_statuscode_2">#</a></span></h3>
-<p>When using implicit headers (not calling <code>response.writeHead()</code> explicitly), this property
-controls the status code that will be send to the client when the headers get
-flushed.
-
-</p>
-<p>Example:
-
-</p>
-<pre><code>response.statusCode = 404;</code></pre>
-<p>After response header was sent to the client, this property indicates the
-status code which was sent out.
-
-</p>
-<h3>response.setHeader(name, value)<span><a class="mark" href="#all_response_setheader_name_value_1" id="all_response_setheader_name_value_1">#</a></span></h3>
-<p>Sets a single header value for implicit headers.  If this header already exists
-in the to-be-sent headers, its value will be replaced.  Use an array of strings
-here if you need to send multiple headers with the same name.
-
-</p>
-<p>Example:
-
-</p>
-<pre><code>response.setHeader(&quot;Content-Type&quot;, &quot;text/html&quot;);</code></pre>
-<p>or
-
-</p>
-<pre><code>response.setHeader(&quot;Set-Cookie&quot;, [&quot;type=ninja&quot;, &quot;language=javascript&quot;]);</code></pre>
-<h3>response.getHeader(name)<span><a class="mark" href="#all_response_getheader_name_1" id="all_response_getheader_name_1">#</a></span></h3>
-<p>Reads out a header that&apos;s already been queued but not sent to the client.  Note
-that the name is case insensitive.  This can only be called before headers get
-implicitly flushed.
-
-</p>
-<p>Example:
-
-</p>
-<pre><code>var contentType = response.getHeader(&apos;content-type&apos;);</code></pre>
-<h3>response.removeHeader(name)<span><a class="mark" href="#all_response_removeheader_name_1" id="all_response_removeheader_name_1">#</a></span></h3>
-<p>Removes a header that&apos;s queued for implicit sending.
-
-</p>
-<p>Example:
-
-</p>
-<pre><code>response.removeHeader(&quot;Content-Encoding&quot;);</code></pre>
-<h3>response.write(chunk, [encoding])<span><a class="mark" href="#all_response_write_chunk_encoding_1" id="all_response_write_chunk_encoding_1">#</a></span></h3>
-<p>If this method is called and <code>response.writeHead()</code> has not been called, it will
-switch to implicit header mode and flush the implicit headers.
-
-</p>
-<p>This sends a chunk of the response body. This method may
-be called multiple times to provide successive parts of the body.
-
-</p>
-<p><code>chunk</code> can be a string or a buffer. If <code>chunk</code> is a string,
-the second parameter specifies how to encode it into a byte stream.
-By default the <code>encoding</code> is <code>&apos;utf8&apos;</code>.
-
-</p>
-<p><strong>Note</strong>: This is the raw HTTP body and has nothing to do with
-higher-level multi-part body encodings that may be used.
-
-</p>
-<p>The first time <code>response.write()</code> is called, it will send the buffered
-header information and the first body to the client. The second time
-<code>response.write()</code> is called, Node assumes you&apos;re going to be streaming
-data, and sends that separately. That is, the response is buffered up to the
-first chunk of body.
-
-</p>
-<h3>response.addTrailers(headers)<span><a class="mark" href="#all_response_addtrailers_headers_1" id="all_response_addtrailers_headers_1">#</a></span></h3>
-<p>This method adds HTTP trailing headers (a header but at the end of the
-message) to the response.
-
-</p>
-<p>Trailers will <strong>only</strong> be emitted if chunked encoding is used for the
-response; if it is not (e.g., if the request was HTTP/1.0), they will
-be silently discarded.
-
-</p>
-<p>Note that HTTP requires the <code>Trailer</code> header to be sent if you intend to
-emit trailers, with a list of the header fields in its value. E.g.,
-
-</p>
-<pre><code>response.writeHead(200, { &apos;Content-Type&apos;: &apos;text/plain&apos;,
-                          &apos;Trailer&apos;: &apos;Content-MD5&apos; });
-response.write(fileData);
-response.addTrailers({&apos;Content-MD5&apos;: &quot;7895bf4b8828b55ceaf47747b4bca667&quot;});
-response.end();</code></pre>
-<h3>response.end([data], [encoding])<span><a class="mark" href="#all_response_end_data_encoding_1" id="all_response_end_data_encoding_1">#</a></span></h3>
-<p>This method signals to the server that all of the response headers and body
-has been sent; that server should consider this message complete.
-The method, <code>response.end()</code>, MUST be called on each
-response.
-
-</p>
-<p>If <code>data</code> is specified, it is equivalent to calling <code>response.write(data, encoding)</code>
-followed by <code>response.end()</code>.
-
-
-</p>
-<h2>http.request(options, callback)<span><a class="mark" href="#all_http_request_options_callback_1" id="all_http_request_options_callback_1">#</a></span></h2>
-<p>Node maintains several connections per server to make HTTP requests.
-This function allows one to transparently issue requests.  <code>options</code> align
-with <a href="url.html#url.parse">url.parse()</a>.
-
-</p>
-<p>Options:
-
-</p>
-<ul>
-<li><code>host</code>: A domain name or IP address of the server to issue the request to.
-Defaults to <code>&apos;localhost&apos;</code>.</li>
+<li>host: IP or domain of host to make request to. Defaults to <code>&apos;localhost&apos;</code>.</li>
+<li>port: port of host to request to. Defaults to 443.</li>
+<li>path: Path to request. Default <code>&apos;/&apos;</code>.</li>
+<li><p>method: HTTP request method. Default <code>&apos;GET&apos;</code>.</p>
+</li>
+<li><p><code>host</code>: A domain name or IP address of the server to issue the request to.
+Defaults to <code>&apos;localhost&apos;</code>.</p>
+</li>
 <li><code>hostname</code>: To support <code>url.parse()</code> <code>hostname</code> is preferred over <code>host</code></li>
-<li><code>port</code>: Port of remote server. Defaults to 80.</li>
-<li><code>socketPath</code>: Unix Domain Socket (use one of host:port or socketPath)</li>
+<li><code>port</code>: Port of remote server. Defaults to 443.</li>
 <li><code>method</code>: A string specifying the HTTP request method. Defaults to <code>&apos;GET&apos;</code>.</li>
 <li><code>path</code>: Request path. Defaults to <code>&apos;/&apos;</code>. Should include query string if any.
 E.G. <code>&apos;/index.html?page=12&apos;</code></li>
 <li><code>headers</code>: An object containing request headers.</li>
 <li><code>auth</code>: Basic authentication i.e. <code>&apos;user:password&apos;</code> to compute an
 Authorization header.</li>
-<li><code>agent</code>: Controls <a href="#http.Agent">Agent</a> behavior. When an Agent is used
-request will default to <code>Connection: keep-alive</code>. Possible values:<ul>
-<li><code>undefined</code> (default): use <a href="#http.globalAgent">global Agent</a> for this host
-and port.</li>
+<li><code>agent</code>: Controls <a href="#https.Agent">Agent</a> behavior. When an Agent is
+used request will default to <code>Connection: keep-alive</code>. Possible values:<ul>
+<li><code>undefined</code> (default): use <a href="#https.globalAgent">globalAgent</a> for this
+host and port.</li>
 <li><code>Agent</code> object: explicitly use the passed in <code>Agent</code>.</li>
 <li><code>false</code>: opts out of connection pooling with an Agent, defaults request to
 <code>Connection: close</code>.</li>
 </ul>
 </li>
 </ul>
-<p><code>http.request()</code> returns an instance of the <code>http.ClientRequest</code>
-class. The <code>ClientRequest</code> instance is a writable stream. If one needs to
-upload a file with a POST request, then write to the <code>ClientRequest</code> object.
-
-</p>
-<p>Example:
-
-</p>
-<pre><code>var options = {
-  host: &apos;www.google.com&apos;,
-  port: 80,
-  path: &apos;/upload&apos;,
-  method: &apos;POST&apos;
-};
-
-var req = http.request(options, function(res) {
-  console.log(&apos;STATUS: &apos; + res.statusCode);
-  console.log(&apos;HEADERS: &apos; + JSON.stringify(res.headers));
-  res.setEncoding(&apos;utf8&apos;);
-  res.on(&apos;data&apos;, function (chunk) {
-    console.log(&apos;BODY: &apos; + chunk);
-  });
-});
-
-req.on(&apos;error&apos;, function(e) {
-  console.log(&apos;problem with request: &apos; + e.message);
-});
-
-// write data to request body
-req.write(&apos;data\n&apos;);
-req.write(&apos;data\n&apos;);
-req.end();</code></pre>
-<p>Note that in the example <code>req.end()</code> was called. With <code>http.request()</code> one
-must always call <code>req.end()</code> to signify that you&apos;re done with the request -
-even if there is no data being written to the request body.
-
-</p>
-<p>If any error is encountered during the request (be that with DNS resolution,
-TCP level errors, or actual HTTP parse errors) an <code>&apos;error&apos;</code> event is emitted
-on the returned request object.
-
-</p>
-<p>There are a few special headers that should be noted.
+<p>The following options from <a href="tls.html#tls.connect">tls.connect()</a> can also be
+specified. However, a <a href="#https.globalAgent">globalAgent</a> silently ignores these.
 
 </p>
 <ul>
-<li><p>Sending a &apos;Connection: keep-alive&apos; will notify Node that the connection to
-the server should be persisted until the next request.</p>
-</li>
-<li><p>Sending a &apos;Content-length&apos; header will disable the default chunked encoding.</p>
-</li>
-<li><p>Sending an &apos;Expect&apos; header will immediately send the request headers.
-Usually, when sending &apos;Expect: 100-continue&apos;, you should both set a timeout
-and listen for the <code>continue</code> event. See RFC2616 Section 8.2.3 for more
-information.</p>
-</li>
-<li><p>Sending an Authorization header will override using the <code>auth</code> option
-to compute basic authentication.</p>
-</li>
+<li><code>key</code>: Private key to use for SSL. Default <code>null</code>.</li>
+<li><code>passphrase</code>: A string of passphrase for the private key. Default <code>null</code>.</li>
+<li><code>cert</code>: Public x509 certificate to use. Default <code>null</code>.</li>
+<li><code>ca</code>: An authority certificate or array of authority certificates to check
+the remote host against.</li>
 </ul>
-<h2>http.get(options, callback)<span><a class="mark" href="#all_http_get_options_callback_1" id="all_http_get_options_callback_1">#</a></span></h2>
-<p>Since most requests are GET requests without bodies, Node provides this
-convenience method. The only difference between this method and <code>http.request()</code> is
-that it sets the method to GET and calls <code>req.end()</code> automatically.
+<p>In order to specify these options, use a custom <code>Agent</code>.
 
 </p>
 <p>Example:
 
 </p>
 <pre><code>var options = {
-  host: &apos;www.google.com&apos;,
-  port: 80,
-  path: &apos;/index.html&apos;
+  host: &apos;encrypted.google.com&apos;,
+  port: 443,
+  path: &apos;/&apos;,
+  method: &apos;GET&apos;,
+  key: fs.readFileSync(&apos;test/fixtures/keys/agent2-key.pem&apos;),
+  cert: fs.readFileSync(&apos;test/fixtures/keys/agent2-cert.pem&apos;)
+};
+options.agent = new https.Agent(options);
+
+var req = https.request(options, function(res) {
+  ...
+}</code></pre>
+<p>Or does not use an <code>Agent</code>.
+
+</p>
+<p>Example:
+
+</p>
+<pre><code>var options = {
+  host: &apos;encrypted.google.com&apos;,
+  port: 443,
+  path: &apos;/&apos;,
+  method: &apos;GET&apos;,
+  key: fs.readFileSync(&apos;test/fixtures/keys/agent2-key.pem&apos;),
+  cert: fs.readFileSync(&apos;test/fixtures/keys/agent2-cert.pem&apos;),
+  agent: false
 };
 
-http.get(options, function(res) {
-  console.log(&quot;Got response: &quot; + res.statusCode);
+var req = https.request(options, function(res) {
+  ...
+}</code></pre>
+<h2>https.get(options, callback)<span><a class="mark" href="#all_https_get_options_callback" id="all_https_get_options_callback">#</a></span></h2>
+<p>Like <code>http.get()</code> but for HTTPS.
+
+</p>
+<p>Example:
+
+</p>
+<pre><code>var https = require(&apos;https&apos;);
+
+https.get({ host: &apos;encrypted.google.com&apos;, path: &apos;/&apos; }, function(res) {
+  console.log(&quot;statusCode: &quot;, res.statusCode);
+  console.log(&quot;headers: &quot;, res.headers);
+
+  res.on(&apos;data&apos;, function(d) {
+    process.stdout.write(d);
+  });
+
 }).on(&apos;error&apos;, function(e) {
-  console.log(&quot;Got error: &quot; + e.message);
+  console.error(e);
 });</code></pre>
-<h2>Class: http.Agent<span><a class="mark" href="#all_class_http_agent_1" id="all_class_http_agent_1">#</a></span></h2>
-<p>In node 0.5.3+ there is a new implementation of the HTTP Agent which is used
-for pooling sockets used in HTTP client requests.
-
-</p>
-<p>Previously, a single agent instance help the pool for single host+port. The
-current implementation now holds sockets for any number of hosts.
-
-</p>
-<p>The current HTTP Agent also defaults client requests to using
-Connection:keep-alive. If no pending HTTP requests are waiting on a socket
-to become free the socket is closed. This means that node&apos;s pool has the
-benefit of keep-alive when under load but still does not require developers
-to manually close the HTTP clients using keep-alive.
-
-</p>
-<p>Sockets are removed from the agent&apos;s pool when the socket emits either a
-&quot;close&quot; event or a special &quot;agentRemove&quot; event. This means that if you intend
-to keep one HTTP request open for a long time and don&apos;t want it to stay in the
-pool you can do something along the lines of:
-
-</p>
-<pre><code>http.get(options, function(res) {
-  // Do stuff
-}).on(&quot;socket&quot;, function (socket) {
-  socket.emit(&quot;agentRemove&quot;);
-});</code></pre>
-<p>Alternatively, you could just opt out of pooling entirely using <code>agent:false</code>:
-
-</p>
-<pre><code>http.get({host:&apos;localhost&apos;, port:80, path:&apos;/&apos;, agent:false}, function (res) {
-  // Do stuff
-})</code></pre>
-<h3>agent.maxSockets<span><a class="mark" href="#all_agent_maxsockets_1" id="all_agent_maxsockets_1">#</a></span></h3>
-<p>By default set to 5. Determines how many concurrent sockets the agent can have 
-open per host.
-
-</p>
-<h3>agent.sockets<span><a class="mark" href="#all_agent_sockets_1" id="all_agent_sockets_1">#</a></span></h3>
-<p>An object which contains arrays of sockets currently in use by the Agent. Do not 
-modify.
-
-</p>
-<h3>agent.requests<span><a class="mark" href="#all_agent_requests_1" id="all_agent_requests_1">#</a></span></h3>
-<p>An object which contains queues of requests that have not yet been assigned to 
-sockets. Do not modify.
-
-</p>
-<h2>http.globalAgent<span><a class="mark" href="#all_http_globalagent_1" id="all_http_globalagent_1">#</a></span></h2>
-<p>Global instance of Agent which is used as the default for all http client
-requests.
+<h2>Class: https.Agent<span><a class="mark" href="#all_class_https_agent" id="all_class_https_agent">#</a></span></h2>
+<p>An Agent object for HTTPS similar to <a href="http.html#http.Agent">http.Agent</a>.
+See <a href="#https.request">https.request()</a> for more information.
 
 
 </p>
-<h2>Class: http.ClientRequest<span><a class="mark" href="#all_class_http_clientrequest_1" id="all_class_http_clientrequest_1">#</a></span></h2>
-<p>This object is created internally and returned from <code>http.request()</code>.  It
-represents an <em>in-progress</em> request whose header has already been queued.  The
-header is still mutable using the <code>setHeader(name, value)</code>, <code>getHeader(name)</code>,
-<code>removeHeader(name)</code> API.  The actual header will be sent along with the first
-data chunk or when closing the connection.
+<h2>https.globalAgent<span><a class="mark" href="#all_https_globalagent" id="all_https_globalagent">#</a></span></h2>
+<p>Global instance of <a href="#https.Agent">https.Agent</a> which is used as the default
+for all HTTPS client requests.
 
-</p>
-<p>To get the response, add a listener for <code>&apos;response&apos;</code> to the request object.
-<code>&apos;response&apos;</code> will be emitted from the request object when the response
-headers have been received.  The <code>&apos;response&apos;</code> event is executed with one
-argument which is an instance of <code>http.ClientResponse</code>.
-
-</p>
-<p>During the <code>&apos;response&apos;</code> event, one can add listeners to the
-response object; particularly to listen for the <code>&apos;data&apos;</code> event. Note that
-the <code>&apos;response&apos;</code> event is called before any part of the response body is received,
-so there is no need to worry about racing to catch the first part of the
-body. As long as a listener for <code>&apos;data&apos;</code> is added during the <code>&apos;response&apos;</code>
-event, the entire body will be caught.
-
-
-</p>
-<pre><code>// Good
-request.on(&apos;response&apos;, function (response) {
-  response.on(&apos;data&apos;, function (chunk) {
-    console.log(&apos;BODY: &apos; + chunk);
-  });
-});
-
-// Bad - misses all or part of the body
-request.on(&apos;response&apos;, function (response) {
-  setTimeout(function () {
-    response.on(&apos;data&apos;, function (chunk) {
-      console.log(&apos;BODY: &apos; + chunk);
-    });
-  }, 10);
-});</code></pre>
-<p>Note: Node does not check whether Content-Length and the length of the body
-which has been transmitted are equal or not.
-
-</p>
-<p>The request implements the <a href="stream.html#writable_stream">Writable  Stream</a>
-interface. This is an <code>EventEmitter</code> with the following events:
-
-</p>
-<h3>Event &apos;response&apos;<span><a class="mark" href="#all_event_response_1" id="all_event_response_1">#</a></span></h3>
-<p><code>function (response) { }</code>
-
-</p>
-<p>Emitted when a response is received to this request. This event is emitted only once. The
-<code>response</code> argument will be an instance of <code>http.ClientResponse</code>.
-
-</p>
-<p>Options:
-
-</p>
-<ul>
-<li><code>host</code>: A domain name or IP address of the server to issue the request to.</li>
-<li><code>port</code>: Port of remote server.</li>
-<li><code>socketPath</code>: Unix Domain Socket (use one of host:port or socketPath)</li>
-</ul>
-<h3>Event: &apos;socket&apos;<span><a class="mark" href="#all_event_socket_1" id="all_event_socket_1">#</a></span></h3>
-<p><code>function (socket) { }</code>
-
-</p>
-<p>Emitted after a socket is assigned to this request.
-
-</p>
-<h3>Event: &apos;upgrade&apos;<span><a class="mark" href="#all_event_upgrade_3" id="all_event_upgrade_3">#</a></span></h3>
-<p><code>function (response, socket, head) { }</code>
-
-</p>
-<p>Emitted each time a server responds to a request with an upgrade. If this
-event isn&apos;t being listened for, clients receiving an upgrade header will have
-their connections closed.
-
-</p>
-<p>A client server pair that show you how to listen for the <code>upgrade</code> event using <code>http.getAgent</code>:
-
-</p>
-<pre><code>var http = require(&apos;http&apos;);
-var net = require(&apos;net&apos;);
-
-// Create an HTTP server
-var srv = http.createServer(function (req, res) {
-  res.writeHead(200, {&apos;Content-Type&apos;: &apos;text/plain&apos;});
-  res.end(&apos;okay&apos;);
-});
-srv.on(&apos;upgrade&apos;, function(req, socket, upgradeHead) {
-  socket.write(&apos;HTTP/1.1 101 Web Socket Protocol Handshake\r\n&apos; +
-               &apos;Upgrade: WebSocket\r\n&apos; +
-               &apos;Connection: Upgrade\r\n&apos; +
-               &apos;\r\n\r\n&apos;);
-
-  socket.ondata = function(data, start, end) {
-    socket.write(data.toString(&apos;utf8&apos;, start, end), &apos;utf8&apos;); // echo back
-  };
-});
-
-// now that server is running
-srv.listen(1337, &apos;127.0.0.1&apos;, function() {
-
-  // make a request
-  var options = {
-    port: 1337,
-    host: &apos;127.0.0.1&apos;,
-    headers: {
-      &apos;Connection&apos;: &apos;Upgrade&apos;,
-      &apos;Upgrade&apos;: &apos;websocket&apos;
-    }
-  };
-
-  var req = http.request(options);
-  req.end();
-
-  req.on(&apos;upgrade&apos;, function(res, socket, upgradeHead) {
-    console.log(&apos;got upgraded!&apos;);
-    socket.end();
-    process.exit(0);
-  });
-});</code></pre>
-<h3>Event: &apos;continue&apos;<span><a class="mark" href="#all_event_continue_1" id="all_event_continue_1">#</a></span></h3>
-<p><code>function () { }</code>
-
-</p>
-<p>Emitted when the server sends a &apos;100 Continue&apos; HTTP response, usually because
-the request contained &apos;Expect: 100-continue&apos;. This is an instruction that
-the client should send the request body.
-
-</p>
-<h3>request.write(chunk, [encoding])<span><a class="mark" href="#all_request_write_chunk_encoding_1" id="all_request_write_chunk_encoding_1">#</a></span></h3>
-<p>Sends a chunk of the body.  By calling this method
-many times, the user can stream a request body to a
-server--in that case it is suggested to use the
-<code>[&apos;Transfer-Encoding&apos;, &apos;chunked&apos;]</code> header line when
-creating the request.
-
-</p>
-<p>The <code>chunk</code> argument should be a <a href="buffer.html">buffer</a> or a string.
-
-</p>
-<p>The <code>encoding</code> argument is optional and only applies when <code>chunk</code> is a string.
-Defaults to <code>&apos;utf8&apos;</code>.
-
-
-</p>
-<h3>request.end([data], [encoding])<span><a class="mark" href="#all_request_end_data_encoding_1" id="all_request_end_data_encoding_1">#</a></span></h3>
-<p>Finishes sending the request. If any parts of the body are
-unsent, it will flush them to the stream. If the request is
-chunked, this will send the terminating <code>&apos;0\r\n\r\n&apos;</code>.
-
-</p>
-<p>If <code>data</code> is specified, it is equivalent to calling
-<code>request.write(data, encoding)</code> followed by <code>request.end()</code>.
-
-</p>
-<h3>request.abort()<span><a class="mark" href="#all_request_abort_1" id="all_request_abort_1">#</a></span></h3>
-<p>Aborts a request.  (New since v0.3.8.)
-
-</p>
-<h3>request.setTimeout(timeout, [callback])<span><a class="mark" href="#all_request_settimeout_timeout_callback_1" id="all_request_settimeout_timeout_callback_1">#</a></span></h3>
-<p>Once a socket is assigned to this request and is connected 
-<a href="net.html#socket.setTimeout">socket.setTimeout(timeout, [callback])</a>
-will be called.
-
-</p>
-<h3>request.setNoDelay([noDelay])<span><a class="mark" href="#all_request_setnodelay_nodelay_1" id="all_request_setnodelay_nodelay_1">#</a></span></h3>
-<p>Once a socket is assigned to this request and is connected 
-<a href="net.html#socket.setNoDelay">socket.setNoDelay(noDelay)</a>
-will be called.
-
-</p>
-<h3>request.setSocketKeepAlive([enable], [initialDelay])<span><a class="mark" href="#all_request_setsocketkeepalive_enable_initialdelay_1" id="all_request_setsocketkeepalive_enable_initialdelay_1">#</a></span></h3>
-<p>Once a socket is assigned to this request and is connected 
-<a href="net.html#socket.setKeepAlive">socket.setKeepAlive(enable, [initialDelay])</a>
-will be called.
-
-</p>
-<h2>http.ClientResponse<span><a class="mark" href="#all_http_clientresponse_1" id="all_http_clientresponse_1">#</a></span></h2>
-<p>This object is created when making a request with <code>http.request()</code>. It is
-passed to the <code>&apos;response&apos;</code> event of the request object.
-
-</p>
-<p>The response implements the <a href="stream.html#readable_stream">Readable Stream</a>
-interface. This is an <code>EventEmitter</code> with the following events:
-
-
-</p>
-<h3>Event: &apos;data&apos;<span><a class="mark" href="#all_event_data_5" id="all_event_data_5">#</a></span></h3>
-<p><code>function (chunk) { }</code>
-
-</p>
-<p>Emitted when a piece of the message body is received.
-
-</p>
-<p>Note that the <strong>data will be lost</strong> if there is no listener when a
-<code>ClientResponse</code> emits a <code>&apos;data&apos;</code> event.
-
-
-</p>
-<h3>Event: &apos;end&apos;<span><a class="mark" href="#all_event_end_5" id="all_event_end_5">#</a></span></h3>
-<p><code>function () { }</code>
-
-</p>
-<p>Emitted exactly once for each message. No arguments. After
-emitted no other events will be emitted on the response.
-
-</p>
-<h3>Event: &apos;close&apos;<span><a class="mark" href="#all_event_close_12" id="all_event_close_12">#</a></span></h3>
-<p><code>function (err) { }</code>
-
-</p>
-<p>Indicates that the underlaying connection was terminated before
-<code>end</code> event was emitted.
-See <a href="#http.ServerRequest">http.ServerRequest</a>&apos;s <code>&apos;close&apos;</code> event for more
-information.
-
-</p>
-<h3>response.statusCode<span><a class="mark" href="#all_response_statuscode_3" id="all_response_statuscode_3">#</a></span></h3>
-<p>The 3-digit HTTP response status code. E.G. <code>404</code>.
-
-</p>
-<h3>response.httpVersion<span><a class="mark" href="#all_response_httpversion_1" id="all_response_httpversion_1">#</a></span></h3>
-<p>The HTTP version of the connected-to server. Probably either
-<code>&apos;1.1&apos;</code> or <code>&apos;1.0&apos;</code>.
-Also <code>response.httpVersionMajor</code> is the first integer and
-<code>response.httpVersionMinor</code> is the second.
-
-</p>
-<h3>response.headers<span><a class="mark" href="#all_response_headers_1" id="all_response_headers_1">#</a></span></h3>
-<p>The response headers object.
-
-</p>
-<h3>response.trailers<span><a class="mark" href="#all_response_trailers_1" id="all_response_trailers_1">#</a></span></h3>
-<p>The response trailers object. Only populated after the &apos;end&apos; event.
-
-</p>
-<h3>response.setEncoding([encoding])<span><a class="mark" href="#all_response_setencoding_encoding_1" id="all_response_setencoding_encoding_1">#</a></span></h3>
-<p>Set the encoding for the response body. Either <code>&apos;utf8&apos;</code>, <code>&apos;ascii&apos;</code>, or
-<code>&apos;base64&apos;</code>. Defaults to <code>null</code>, which means that the <code>&apos;data&apos;</code> event will emit
-a <code>Buffer</code> object.
-
-</p>
-<h3>response.pause()<span><a class="mark" href="#all_response_pause_1" id="all_response_pause_1">#</a></span></h3>
-<p>Pauses response from emitting events.  Useful to throttle back a download.
-
-</p>
-<h3>response.resume()<span><a class="mark" href="#all_response_resume_1" id="all_response_resume_1">#</a></span></h3>
-<p>Resumes a paused response.
-s
 </p>
 <h1>URL<span><a class="mark" href="#all_url" id="all_url">#</a></span></h1>
+<pre><code>Stability: 3 - Stable</code></pre>
 <p>This module has utilities for URL resolution and parsing.
 Call <code>require(&apos;url&apos;)</code> to use it.
 
@@ -7912,6 +7242,7 @@ Defaults to <code>false</code>.
 
 </p>
 <h1>Query String<span><a class="mark" href="#all_query_string" id="all_query_string">#</a></span></h1>
+<pre><code>Stability: 3 - Stable</code></pre>
 <!--name=querystring-->
 
 <p>This module provides utilities for dealing with query strings.
@@ -7957,6 +7288,7 @@ provided so that it could be overridden if necessary.
 
 </p>
 <h1>Readline<span><a class="mark" href="#all_readline" id="all_readline">#</a></span></h1>
+<pre><code>Stability: 3 - Stable</code></pre>
 <p>To use this module, do <code>require(&apos;readline&apos;)</code>. Readline allows reading of a
 stream (such as STDIN) on a line-by-line basis.
 
@@ -8055,7 +7387,7 @@ user hits enter, or return. This is a good hook to listen for user input.
 <pre><code>rl.on(&apos;line&apos;, function (cmd) {
   console.log(&apos;You just typed: &apos;+cmd);
 });</code></pre>
-<h3>Event: &apos;close&apos;<span><a class="mark" href="#all_event_close_13" id="all_event_close_13">#</a></span></h3>
+<h3>Event: &apos;close&apos;<span><a class="mark" href="#all_event_close_9" id="all_event_close_9">#</a></span></h3>
 <p><code>function () {}</code>
 
 </p>
@@ -8247,6 +7579,7 @@ command.  Press twice on a blank line to forcibly exit.</li>
 <li><code>&lt;ctrl&gt;D</code> - Similar to the <code>.exit</code> keyword.</li>
 </ul>
 <h1>Executing JavaScript<span><a class="mark" href="#all_executing_javascript" id="all_executing_javascript">#</a></span></h1>
+<pre><code>Stability: 3 - Stable</code></pre>
 <!--name=vm-->
 
 <p>You can access this module with:
@@ -8436,6 +7769,7 @@ requires a separate process.
 
 </p>
 <h1>Child Process<span><a class="mark" href="#all_child_process" id="all_child_process">#</a></span></h1>
+<pre><code>Stability: 3 - Stable</code></pre>
 <p>Node provides a tri-directional <code>popen(3)</code> facility through the
 <code>child_process</code> module.
 
@@ -8854,6 +8188,7 @@ processes:
   }
 });</code></pre>
 <h1>Assert<span><a class="mark" href="#all_assert" id="all_assert">#</a></span></h1>
+<pre><code>Stability: 5 - Locked</code></pre>
 <p>This module is used for writing unit tests for your applications, you can
 access it with <code>require(&apos;assert&apos;)</code>.
 
@@ -8937,6 +8272,7 @@ testing the first argument, <code>error</code> in callbacks.
 
 </p>
 <h1>TTY<span><a class="mark" href="#all_tty" id="all_tty">#</a></span></h1>
+<pre><code>Stability: 3 - Stable</code></pre>
 <p>Use <code>require(&apos;tty&apos;)</code> to access this module.
 
 </p>
@@ -8962,20 +8298,9 @@ terminal.
 <p><code>mode</code> should be <code>true</code> or <code>false</code>. This sets the properties of the current
 process&apos;s stdin fd to act either as a raw device or default.
 
-
-</p>
-<h2>tty.setWindowSize(fd, row, col)<span><a class="mark" href="#all_tty_setwindowsize_fd_row_col" id="all_tty_setwindowsize_fd_row_col">#</a></span></h2>
-<p>This function was removed in v0.6.0.
-
-</p>
-<h2>tty.getWindowSize(fd)<span><a class="mark" href="#all_tty_getwindowsize_fd" id="all_tty_getwindowsize_fd">#</a></span></h2>
-<p>This function was removed in v0.6.0. Use <code>process.stdout.getWindowSize()</code>
-instead.
-
-
-
 </p>
 <h1>Zlib<span><a class="mark" href="#all_zlib" id="all_zlib">#</a></span></h1>
+<pre><code>Stability: 3 - Stable</code></pre>
 <p>You can access this module with:
 
 </p>
@@ -9253,6 +8578,7 @@ speed, at the cost of memory usage.
 
 </p>
 <h1>os<span><a class="mark" href="#all_os" id="all_os">#</a></span></h1>
+<pre><code>Stability: 4 - API Frozen</code></pre>
 <p>Provides a few basic operating-system related utility functions.
 
 </p>
@@ -9382,6 +8708,7 @@ speed, at the cost of memory usage.
   vmnet8: [ { address: &apos;10.88.88.1&apos;, family: &apos;IPv4&apos;, internal: false } ],
   ppp0: [ { address: &apos;10.2.0.231&apos;, family: &apos;IPv4&apos;, internal: false } ] }</code></pre>
 <h1>Debugger<span><a class="mark" href="#all_debugger" id="all_debugger">#</a></span></h1>
+<pre><code>Stability: 3 - Stable</code></pre>
 <!-- type=misc -->
 
 <p>V8 comes with an extensive debugger which is accessible out-of-process via a
@@ -9517,6 +8844,7 @@ with <code>SIGUSR1</code>.
 
 </p>
 <h1>Cluster<span><a class="mark" href="#all_cluster" id="all_cluster">#</a></span></h1>
+<pre><code>Stability: 1 Experimental - Drastic changes in future versions</code></pre>
 <p>A single instance of Node runs in a single thread. To take advantage of
 multi-core systems the user will sometimes want to launch a cluster of Node
 processes to handle the load.
@@ -9671,7 +8999,7 @@ tool.</p>
             <li><a href="/#download">Download</a></li>
             <li><a href="/about/">About</a></li>
             <li><a href="http://search.npmjs.org/">npm Registry</a></li>
-            <li><a href="http://nodejs.org/docs/latest/api/index.html">Docs</a></li>
+            <li><a href="http://nodejs.org/api/">Docs</a></li>
             <li><a href="http://blog.nodejs.org">Blog</a></li>
             <li><a href="/community/">Community</a></li>
             <li><a href="/logos/">Logos</a></li>
@@ -9679,11 +9007,11 @@ tool.</p>
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright 2010 <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.12/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.14/LICENSE">license</a>.</p>
     </div>
 
-  <script src="assets/sh_main.js"></script>
-  <script src="assets/sh_javascript.min.js"></script>
+  <script src="../sh_main.js"></script>
+  <script src="../sh_javascript.min.js"></script>
   <script>highlight(undefined, undefined, 'pre');</script>
   <script>
     var gaJsHost = (("https:" == document.location.protocol) ?

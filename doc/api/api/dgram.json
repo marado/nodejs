@@ -4,6 +4,8 @@
     {
       "textRaw": "UDP / Datagram Sockets",
       "name": "dgram",
+      "stability": 3,
+      "stabilityText": "Stable",
       "desc": "<p>Datagram sockets are available through <code>require(&apos;dgram&apos;)</code>.\n\n</p>\n",
       "methods": [
         {

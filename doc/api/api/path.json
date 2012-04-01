@@ -4,6 +4,8 @@
     {
       "textRaw": "Path",
       "name": "path",
+      "stability": 3,
+      "stabilityText": "Stable",
       "desc": "<p>This module contains utilities for handling and transforming file\npaths.  Almost all these methods perform only string transformations.\nThe file system is not consulted to check whether paths are valid.\n\n</p>\n<p><code>path.exists</code> and <code>path.existsSync</code> are the exceptions, and should\nlogically be found in the fs module as they do access the file system.\n\n</p>\n<p>Use <code>require(&apos;path&apos;)</code> to use this module.  The following methods are provided:\n\n</p>\n",
       "methods": [
         {
@@ -121,42 +123,40 @@
           "type": "method",
           "name": "extname",
           "desc": "<p>Return the extension of the path, from the last &apos;.&apos; to end of string\nin the last portion of the path.  If there is no &apos;.&apos; in the last portion\nof the path or the first character of it is &apos;.&apos;, then it returns\nan empty string.  Examples:\n\n</p>\n<pre><code>path.extname(&apos;index.html&apos;)\n// returns\n&apos;.html&apos;\n\npath.extname(&apos;index.&apos;)\n// returns\n&apos;.&apos;\n\npath.extname(&apos;index&apos;)\n// returns\n&apos;&apos;</code></pre>\n",
-          "methods": [
+          "signatures": [
             {
-              "textRaw": "path.exists(p, [callback])",
-              "type": "method",
-              "name": "exists",
-              "desc": "<p>Test whether or not the given path exists by checking with the file system.\nThen call the <code>callback</code> argument with either true or false.  Example:\n\n</p>\n<pre><code>path.exists(&apos;/etc/passwd&apos;, function (exists) {\n  util.debug(exists ? &quot;it&apos;s there&quot; : &quot;no passwd!&quot;);\n});</code></pre>\n",
-              "signatures": [
+              "params": [
                 {
-                  "params": [
-                    {
-                      "name": "p"
-                    },
-                    {
-                      "name": "callback",
-                      "optional": true
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "textRaw": "path.existsSync(p)",
-              "type": "method",
-              "name": "existsSync",
-              "desc": "<p>Synchronous version of <code>path.exists</code>.\n</p>\n",
-              "signatures": [
-                {
-                  "params": [
-                    {
-                      "name": "p"
-                    }
-                  ]
+                  "name": "p"
                 }
               ]
             }
-          ],
+          ]
+        },
+        {
+          "textRaw": "path.exists(p, [callback])",
+          "type": "method",
+          "name": "exists",
+          "desc": "<p>Test whether or not the given path exists by checking with the file system.\nThen call the <code>callback</code> argument with either true or false.  Example:\n\n</p>\n<pre><code>path.exists(&apos;/etc/passwd&apos;, function (exists) {\n  util.debug(exists ? &quot;it&apos;s there&quot; : &quot;no passwd!&quot;);\n});</code></pre>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "p"
+                },
+                {
+                  "name": "callback",
+                  "optional": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "path.existsSync(p)",
+          "type": "method",
+          "name": "existsSync",
+          "desc": "<p>Synchronous version of <code>path.exists</code>.\n</p>\n",
           "signatures": [
             {
               "params": [

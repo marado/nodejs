@@ -4,6 +4,8 @@
     {
       "textRaw": "Crypto",
       "name": "crypto",
+      "stability": 3,
+      "stabilityText": "Stable",
       "desc": "<p>Use <code>require(&apos;crypto&apos;)</code> to access this module.\n\n</p>\n<p>The crypto module requires OpenSSL to be available on the underlying platform.\nIt offers a way of encapsulating secure credentials to be used as part\nof a secure HTTPS net or http connection.\n\n</p>\n<p>It also offers a set of wrappers for OpenSSL&apos;s hash, hmac, cipher, decipher, sign and verify methods.\n\n</p>\n",
       "methods": [
         {

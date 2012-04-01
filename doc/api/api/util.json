@@ -4,6 +4,8 @@
     {
       "textRaw": "util",
       "name": "util",
+      "stability": 5,
+      "stabilityText": "Locked",
       "desc": "<p>These functions are in the module <code>&apos;util&apos;</code>. Use <code>require(&apos;util&apos;)</code> to access\nthem.\n\n\n</p>\n",
       "methods": [
         {
