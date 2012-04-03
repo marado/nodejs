@@ -548,6 +548,9 @@ Files: benchmark/next-tick-2.js
  test/simple/test-zlib-from-string.js
  test/simple/test-zlib-invalid-input.js
  test/simple/test-zlib-random-byte-pipes.js
+ tools/doc/generate.js
+ tools/doc/html.js
+ tools/doc/json.js
  wscript
 Copyright: HOLDERS BE LIABLE FOR ANY CLAIM
   Joyent, Inc. and other Node contributors
@@ -1129,7 +1132,6 @@ Files: AUTHORS
  debian/patches/2009_fix_shared_ev.patch
  debian/patches/2011_enable_mipsel_build.patch
  debian/patches/series
- debian/source.lintian-overrides
  debian/source/format
  debian/watch
  deps/http_parser/.gitignore
@@ -1381,6 +1383,12 @@ Files: AUTHORS
  test/simple/simple.status
  test/simple/test-fs-non-number-arguments-throw.js
  test/simple/test-http-parser-bad-ref.js
+ tools/doc/README.md
+ tools/doc/node_modules/marked/.npmignore
+ tools/doc/node_modules/marked/Makefile
+ tools/doc/node_modules/marked/index.js
+ tools/doc/node_modules/marked/package.json
+ tools/doc/package.json
  tools/getnodeversion.py
  tools/gyp_node
  tools/msvs/msi/nodemsi.sln
@@ -1578,6 +1586,7 @@ Files: deps/http_parser/LICENSE-MIT
  deps/uv/test/test-udp-multicast-ttl.c
  deps/uv/test/test-udp-options.c
  deps/uv/test/test-udp-send-and-recv.c
+ tools/doc/LICENSE
 Copyright: HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   Joyent, Inc. and other Node contributors.
 License: MIT/X11 (BSD like)
@@ -1656,6 +1665,13 @@ Files: doc/about/index.html
  doc/index.html
  doc/template.html
 Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/__VERSION__/LICENSE">license</a>.</p>
+License: UNKNOWN
+ FIXME
+
+Files: tools/doc/node_modules/.bin/marked
+ tools/doc/node_modules/marked/bin/marked
+ tools/doc/node_modules/marked/man/marked.1
+Copyright: 2011-2012, Christopher Jeffrey (MIT License)
 License: UNKNOWN
  FIXME
 
@@ -1887,6 +1903,12 @@ Copyright: 2011, Ben Noordhuis <info@bnoordhuis.nl>
 License: MIT/X11 (BSD like)
  FIXME
 
+Files: tools/doc/node_modules/marked/LICENSE
+Copyright: 2011-2012, Christopher Jeffrey (https://github.com/chjj/)
+  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+License: MIT/X11 (BSD like)
+ FIXME
+
 Files: deps/uv/LICENSE
 Copyright: Daniel Stenberg and others. MIT licensed
   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -1971,6 +1993,16 @@ License: UNKNOWN
 
 Files: doc/logos/index.html
 Copyright: <a href="http://joyent.com">Joyent, Inc</a>., Node.js is a <a href="/trademark-policy.pdf">trademark of Joyent, Inc</a>., <a href="https://raw.github.com/joyent/node/__VERSION__/LICENSE">View License</a></p>
+License: UNKNOWN
+ FIXME
+
+Files: tools/doc/node_modules/marked/README.md
+Copyright: 2011-2012, Christopher Jeffrey. (MIT License)
+License: UNKNOWN
+ FIXME
+
+Files: tools/doc/node_modules/marked/lib/marked.js
+Copyright: 2011-2012, Christopher Jeffrey. (MIT Licensed)
 License: UNKNOWN
  FIXME
 
