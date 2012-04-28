@@ -80,8 +80,7 @@ Files: lib/punycode.js
 Copyright: 2011 Mathias Bynens <http://mathiasbynens.be/>
 License: Expat
 
-Files: tools/doc/node_modules/marked
- tools/doc/node_modules/.bin/marked
+Files: tools/doc/node_modules/marked/*
 Copyright: 2011-2012, Christopher Jeffrey (https://github.com/chjj/)
 License: Expat
 
