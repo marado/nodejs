@@ -86,25 +86,25 @@ License: Expat
 
 Files: tools/waf-light
  tools/wafadmin/*
-Copyright: © 2005-2009, Thomas Nagy <tnagy1024@gmail.com>
-    © 2008-2009, Yinon Ehrlich
-    © 2005, Scott Newton
-    © 2003-2005, Peter Astrand
-    © 2006, Ralf Habacker
-    © 2006, John O'Meara
-    © 2008, Ruediger Sonderfeld
-    © 2008, Bjoern Michaelsen
-    © 2008, Luca Fossati
-    © 2007-2008, Matthias Jahn
-    © 2006-2007, Carlos Rafael Giani
-    © 2007, Ali Sabil
-    © 2008, Stian Selnes
-    © 2008, Sebastian Schlingmann
-    © 2007, Tamas Pal
-    © 2009, Nicolas Mercier
-    © 2007, Anders Waldenborg
-    © 2007, Gustavo Carneiro
-    © 2007, Brant Young
+Copyright: 2003-2005, Peter Astrand
+  2005-2009, Thomas Nagy <tnagy1024@gmail.com>
+  2005, Scott Newton
+  2006-2007, Carlos Rafael Giani
+  2006, John O'Meara
+  2006, Ralf Habacker
+  2007-2008, Matthias Jahn
+  2007, Ali Sabil
+  2007, Anders Waldenborg
+  2007, Brant Young
+  2007, Gustavo Carneiro
+  2007, Tamas Pal
+  2008-2009, Yinon Ehrlich
+  2008, Bjoern Michaelsen
+  2008, Luca Fossati
+  2008, Ruediger Sonderfeld
+  2008, Sebastian Schlingmann
+  2008, Stian Selnes
+  2009, Nicolas Mercier
 License: BSD-3-clause~author
 
 Files: tools/wafadmin/pproc.py
