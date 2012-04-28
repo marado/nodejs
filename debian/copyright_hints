@@ -1032,7 +1032,6 @@ Files: deps/v8/LICENSE
  deps/v8/tools/splaytree.js
  deps/v8/tools/stats-viewer.py
  deps/v8/tools/test-wrapper-gypbuild.py
- deps/v8/tools/test.py
  deps/v8/tools/tickprocessor-driver.js
  deps/v8/tools/tickprocessor.js
  deps/v8/tools/utils.py
@@ -1119,6 +1118,7 @@ Files: AUTHORS
  debian/nodejs.doc-base
  debian/nodejs.docs
  debian/nodejs.install
+ debian/nodejs.links
  debian/nodejs.manpages
  debian/nodejs.postinst
  debian/nodejs.prerm
@@ -1684,6 +1684,13 @@ Copyright: 2006-2008, the V8 project authors.
 License: BSD (3 clause)
  FIXME
 
+Files: deps/v8/tools/test.py
+ tools/test.py
+Copyright: 2008, the V8 project authors. /
+  HOLDERS AND CONTRIBUTORS
+License: BSD (3 clause)
+ FIXME
+
 Files: deps/v8/LICENSE.valgrind
  deps/v8/src/third_party/valgrind/valgrind.h
 Copyright: 2000-2007, Julian Seward.
@@ -1819,12 +1826,6 @@ Copyright: 2006-2008, the V8 project authors.
 License: BSD (3 clause)
  FIXME
 
-Files: tools/test.py
-Copyright: 2008, the V8 project authors. /
-  HOLDERS AND CONTRIBUTORS
-License: BSD (3 clause)
- FIXME
-
 Files: deps/uv/src/unix/eio/aclocal.m4
 Copyright: 1996, 1998, 2000-2005, 2008
   1996-1997, 2000-2001, 2003, 2005, 2008
@@ -1880,9 +1881,7 @@ License: MIT/X11 (BSD like)
 Files: deps/http_parser/http_parser.c
 Copyright: & 0x80))
   (IS_ALPHANUM || == '.' || == '-')
-  (normal_url_char[(unsigned char)
-  (unsigned char)(c | 0x20)
-  Joyent, Inc. and other Node contributors.
+  (tokens[(unsigned char)c
 License: MIT/X11 (BSD like)
  FIXME
 

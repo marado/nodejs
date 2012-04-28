@@ -1,3 +1,18 @@
+nodejs (0.6.14~dfsg1-2) UNRELEASED; urgency=low
+
+  [ Jonas Smedegaard ]
+  * Update copyright file:
+    + Fix Files section for marked: Use asterisk for dir, and ignore
+      symlink.
+    + Tidy Files section for waf-light: Drop superfluous © mark and
+      excess indendation, and sort by year and then name.
+
+  [ Jonathan Nieder ]
+  * Add /usr/bin/nodejs as a symlink to node.
+    Closes: #650343.
+
+ -- Jonas Smedegaard <dr@jones.dk>  Sat, 28 Apr 2012 14:50:29 +0200
+
 nodejs (0.6.14~dfsg1-1) unstable; urgency=low
 
   * debian/patches/2005_expected_failing_tests.patch:
