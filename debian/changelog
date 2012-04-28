@@ -8,7 +8,8 @@ nodejs (0.6.14~dfsg1-2) UNRELEASED; urgency=low
       excess indendation, and sort by year and then name.
 
   [ Jonathan Nieder ]
-  * Add /usr/bin/nodejs as a symlink to node.
+  * Add /usr/bin/nodejs as a symlink to node and nodejs.1.gz as a
+    symlink to the node(1) manpage. Explanation in README.Debian.
     Closes: #650343.
   * Include README.Debian in nodejs package instead of nodejs-dev.
 
