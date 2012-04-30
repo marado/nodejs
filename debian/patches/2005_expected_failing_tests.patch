@@ -9,7 +9,7 @@ Description: Expected failing tests
  
 Forwarded: not-needed
 Author: Jérémy Lal <kapouer@melix.org>
-Last-Update: 2012-04-01
+Last-Update: 2012-04-30
 --- a/test/simple/simple.status
 +++ b/test/simple/simple.status
 @@ -1 +1,19 @@
@@ -21,8 +21,8 @@ Last-Update: 2012-04-01
 +test-dgram-multicast-multi-process: PASS || FAIL
 +test-dgram-broadcast-multi-process: PASS || FAIL
 +
-+# sometimes these tests TIMEOUT
-+test-dgram-pingpong: PASS || TIMEOUT
++# sometimes these tests TIMEOUT or FAIL
++test-dgram-pingpong: PASS || FAIL || TIMEOUT
 +test-stream-pipe-multi: PASS || TIMEOUT
 +
 +# http://bugs.debian.org/660802
