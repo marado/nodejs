@@ -5,7 +5,7 @@ nodejs (0.6.16~dfsg1-1) unstable; urgency=low
     + Fix Files section for marked: Use asterisk for dir, and ignore
       symlink.
     + Tidy Files section for waf-light: Drop superfluous © mark and
-      excess indendation, and sort by year and then name.
+      excess indentation, and sort by year and then name.
 
   [ Jonathan Nieder ]
   * Add /usr/bin/nodejs as a symlink to node and nodejs.1.gz as a
