@@ -1,4 +1,4 @@
-nodejs (0.6.16~dfsg1-1) UNRELEASED; urgency=low
+nodejs (0.6.16~dfsg1-1) unstable; urgency=low
 
   [ Jonas Smedegaard ]
   * Update copyright file:
@@ -17,7 +17,7 @@ nodejs (0.6.16~dfsg1-1) UNRELEASED; urgency=low
   * Upstream update. 
   * Fix dversionmangle in watch file. 
 
- -- Jérémy Lal <kapouer@melix.org>  Mon, 30 Apr 2012 20:52:47 +0200
+ -- Jérémy Lal <kapouer@melix.org>  Mon, 30 Apr 2012 20:58:46 +0200
 
 nodejs (0.6.14~dfsg1-1) unstable; urgency=low
 
