@@ -127,7 +127,7 @@ Last-Update: 2012-01-23
    conf.define("HAVE_CONFIG_H", 1)
  
    if sys.platform.startswith("sunos"):
-@@ -676,10 +688,6 @@
+@@ -679,10 +691,6 @@
    bld.install_files('${PREFIX}/include/node/', 'deps/uv/include/*.h')
    bld.install_files('${PREFIX}/include/node/uv-private', 'deps/uv/include/uv-private/*.h')
    bld.install_files('${PREFIX}/include/node/ev', 'deps/uv/src/ev/*.h')
@@ -138,7 +138,7 @@ Last-Update: 2012-01-23
  
  
  def build(bld):
-@@ -936,7 +944,6 @@
+@@ -939,7 +947,6 @@
      deps/http_parser
      deps/uv/include
      deps/uv/src/ev
