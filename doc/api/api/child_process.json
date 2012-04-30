@@ -491,30 +491,6 @@
                   "name": "options",
                   "type": "Object",
                   "optional": true
-                },
-                {
-                  "textRaw": "`callback` {Function} called with the output when process terminates ",
-                  "options": [
-                    {
-                      "textRaw": "`code` {Integer} Exit code ",
-                      "name": "code",
-                      "type": "Integer",
-                      "desc": "Exit code"
-                    },
-                    {
-                      "textRaw": "`stdout` {Buffer} ",
-                      "name": "stdout",
-                      "type": "Buffer"
-                    },
-                    {
-                      "textRaw": "`stderr` {Buffer} ",
-                      "name": "stderr",
-                      "type": "Buffer"
-                    }
-                  ],
-                  "name": "callback",
-                  "type": "Function",
-                  "desc": "called with the output when process terminates"
                 }
               ]
             },
