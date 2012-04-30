@@ -108,7 +108,6 @@ Files: benchmark/next-tick-2.js
  test/disabled/test-dgram-unix.js
  test/disabled/test-dns.js
  test/disabled/test-eio-race3.js
- test/disabled/test-fs-largefile.js
  test/disabled/test-fs-sendfile.js
  test/disabled/test-http-agent2.js
  test/disabled/test-http-big-proxy-responses.js
@@ -244,6 +243,7 @@ Files: benchmark/next-tick-2.js
  test/simple/test-cli-eval.js
  test/simple/test-cluster-kill-workers.js
  test/simple/test-cluster-uncaught-exception.js
+ test/simple/test-cluster-worker-death.js
  test/simple/test-console-not-call-toString.js
  test/simple/test-console.js
  test/simple/test-crypto-ecb.js
@@ -285,6 +285,7 @@ Files: benchmark/next-tick-2.js
  test/simple/test-fs-chmod.js
  test/simple/test-fs-error-messages.js
  test/simple/test-fs-fsync.js
+ test/simple/test-fs-largefile.js
  test/simple/test-fs-long-path.js
  test/simple/test-fs-mkdir.js
  test/simple/test-fs-open.js
@@ -295,6 +296,7 @@ Files: benchmark/next-tick-2.js
  test/simple/test-fs-read-stream.js
  test/simple/test-fs-read.js
  test/simple/test-fs-readfile-empty.js
+ test/simple/test-fs-readfile-unlink.js
  test/simple/test-fs-realpath.js
  test/simple/test-fs-sir-writes-alot.js
  test/simple/test-fs-stat.js
@@ -304,6 +306,7 @@ Files: benchmark/next-tick-2.js
  test/simple/test-fs-write-buffer.js
  test/simple/test-fs-write-file-buffer.js
  test/simple/test-fs-write-file.js
+ test/simple/test-fs-write-stream-change-open.js
  test/simple/test-fs-write-stream-end.js
  test/simple/test-fs-write-stream.js
  test/simple/test-fs-write-sync.js
@@ -1032,6 +1035,7 @@ Files: deps/v8/LICENSE
  deps/v8/tools/splaytree.js
  deps/v8/tools/stats-viewer.py
  deps/v8/tools/test-wrapper-gypbuild.py
+ deps/v8/tools/test.py
  deps/v8/tools/tickprocessor-driver.js
  deps/v8/tools/tickprocessor.js
  deps/v8/tools/utils.py
@@ -1099,7 +1103,6 @@ Files: AUTHORS
  configure
  configure-gyp
  debian/NEWS
- debian/README.Debian
  debian/README.source
  debian/TODO
  debian/compat
@@ -1114,6 +1117,7 @@ Files: AUTHORS
  debian/nodejs-dev.dirs
  debian/nodejs-dev.install
  debian/nodejs-dev.manpages
+ debian/nodejs.README.Debian
  debian/nodejs.dirs
  debian/nodejs.doc-base
  debian/nodejs.docs
@@ -1258,6 +1262,7 @@ Files: AUTHORS
  doc/api/zlib.markdown
  doc/api_assets/sh.css
  doc/api_assets/style.css
+ doc/changelog-head.html
  doc/cla.html
  doc/favicon.ico
  doc/node.1
@@ -1383,14 +1388,18 @@ Files: AUTHORS
  test/simple/simple.status
  test/simple/test-fs-non-number-arguments-throw.js
  test/simple/test-http-parser-bad-ref.js
+ tools/build-changelog.sh
+ tools/changelog-head.sh
  tools/doc/README.md
  tools/doc/node_modules/marked/.npmignore
  tools/doc/node_modules/marked/Makefile
  tools/doc/node_modules/marked/index.js
  tools/doc/node_modules/marked/package.json
  tools/doc/package.json
+ tools/email-footer.md
  tools/getnodeversion.py
  tools/gyp_node
+ tools/license2rtf.js
  tools/msvs/msi/nodemsi.sln
  tools/msvs/msi/nodemsi.wixproj
  tools/msvs/msi/product.wxs
@@ -1628,7 +1637,7 @@ Files: doc/api/api/_toc.html
  doc/api/api/util.html
  doc/api/api/vm.html
  doc/api/api/zlib.html
-Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.14/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.16/LICENSE">license</a>.</p>
 License: UNKNOWN
  FIXME
 
@@ -1648,6 +1657,15 @@ Copyright: 1994-2006, Sun Microsystems Inc
 License: BSD (2 clause)
  FIXME
 
+Files: doc/about/index.html
+ doc/changelog-foot.html
+ doc/community/index.html
+ doc/index.html
+ doc/template.html
+Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/__VERSION__/LICENSE">license</a>.</p>
+License: UNKNOWN
+ FIXME
+
 Files: deps/v8/src/arm/assembler-arm-inl.h
  deps/v8/src/arm/assembler-arm.cc
  deps/v8/src/arm/assembler-arm.h
@@ -1658,14 +1676,6 @@ Copyright: 1994-2006, Sun Microsystems Inc
   HOLDERS AND CONTRIBUTORS
   OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT
 License: BSD (2 clause)
- FIXME
-
-Files: doc/about/index.html
- doc/community/index.html
- doc/index.html
- doc/template.html
-Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/__VERSION__/LICENSE">license</a>.</p>
-License: UNKNOWN
  FIXME
 
 Files: tools/doc/node_modules/.bin/marked
@@ -1680,13 +1690,6 @@ Files: deps/v8/src/extensions/experimental/i18n-js2c.py
 Copyright: 2006-2008, the V8 project authors.
   2011, Google Inc.
   2011, the V8 project authors.
-  HOLDERS AND CONTRIBUTORS
-License: BSD (3 clause)
- FIXME
-
-Files: deps/v8/tools/test.py
- tools/test.py
-Copyright: 2008, the V8 project authors. /
   HOLDERS AND CONTRIBUTORS
 License: BSD (3 clause)
  FIXME
@@ -1713,7 +1716,7 @@ License: UNKNOWN
 
 Files: doc/api/api/all.html
  doc/api/api/net.html
-Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.14/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.16/LICENSE">license</a>.</p>
   { //&apos;connection&apos; listener
 License: UNKNOWN
  FIXME
@@ -1826,6 +1829,12 @@ Copyright: 2006-2008, the V8 project authors.
 License: BSD (3 clause)
  FIXME
 
+Files: tools/test.py
+Copyright: 2008, the V8 project authors. /
+  HOLDERS AND CONTRIBUTORS
+License: BSD (3 clause)
+ FIXME
+
 Files: deps/uv/src/unix/eio/aclocal.m4
 Copyright: 1996, 1998, 2000-2005, 2008
   1996-1997, 2000-2001, 2003, 2005, 2008
@@ -1857,31 +1866,12 @@ Copyright: 1996, John Maloney and Mario Wolczko
 License: GPL-2+
  FIXME
 
-Files: LICENSE
-Copyright: 1995-2010, Jean-loup Gailly and Mark Adler
-  2008, Fair Oaks Labs, Inc. and released
-  2009, - 2012,
-  2009, Google Inc and
-  2009-2010, Dominic Baggott and Ash
-  2011, Mathias Bynens <http://mathiasbynens.be/>
-  2011-2012, Christopher Jeffrey (https://github.com/chjj/). Marked
-  Google Inc. and released under a
-  Google Inc. and released under a BSD license
-  Google, Inc, and released
-  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  Joyent, Inc. and other Node contributors.
-  Marc Alexander Lehmann, and dual-licensed
-  Ryan Lienhart Dahl and released under the MIT license
-  The Closure Linter Authors and
-  Thomas Nagy
-  the Massachusetts Institute of Technology, authored by
-License: MIT/X11 (BSD like)
- FIXME
-
 Files: deps/http_parser/http_parser.c
 Copyright: & 0x80))
   (IS_ALPHANUM || == '.' || == '-')
-  (tokens[(unsigned char)c
+  (normal_url_char[(unsigned char)
+  (unsigned char)(c | 0x20)
+  Joyent, Inc. and other Node contributors.
 License: MIT/X11 (BSD like)
  FIXME
 
@@ -2055,5 +2045,30 @@ License: UNKNOWN
 Files: test/fixtures/person.jpg.gz
 Copyright: Ûhﬂ$HÛ†≤Ín'hdv¬´„y∂\·\7ƒ"Ü?äpYè0q ÿb«Nôà_ì∂LôgXÏ|Ù%€*c∑mÙÀB+hÈkhÒRŸ5újÕzH !›*ÖJV◊Np0€n“ÔDÍ∂B¶ÿ„∫.d4ø–◊Àª@0Ò÷ò6w…Éqæ=HM‰ë@Ú\•¨‚≥c”Í`£⁄=cj$~·|ƒ›_ÏÀM(UªQﬂë&Ä˘ñ„øóƒ€∞m⁄”´—πÁ˛`\›ÖbüÔπ∆U´&NE
 License: UNKNOWN
+ FIXME
+
+Files: LICENSE
+Copyright: 1995-2010, Jean-loup Gailly and Mark Adler
+  1998, the Massachusetts Institute of Technology
+  1998-2011, The OpenSSL Project.
+  2006-2012, the V8 project authors.
+  2007, Google Inc
+  2007-2008, Marc Alexander Lehmann
+  2007-2009, Marc Alexander Lehmann
+  2008, Fair Oaks Labs, Inc
+  2009, Google Inc.
+  2009-2012, Isaac Z. Schlueter (the "Original Author")
+  2010, James Halliday
+  2010, Robert Kieffer
+  2011, Mathias Bynens <http://mathiasbynens.be/>
+  2011, Mikeal Rogers
+  2011-2012, Christopher Jeffrey (https://github.com/chjj/)
+  HOLDERS AND CONTRIBUTORS
+  HOLDERS AND CONTRIBUTORS "AS IS"
+  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  Joyent, Inc. and other Node contributors.
+  OWNER OR CONTRIBUTORS BE
+  Thomas Nagy, 2005-2011,
+License: zlib/libpng BSD (4 clause) MIT/X11 (BSD like)
  FIXME
 
