@@ -1,4 +1,56 @@
-2012.03.22 Version 0.6.14 (stable)
+2012.04.30 Version 0.6.16 (stable)
+
+* Upgrade V8 to 3.6.6.25
+
+* Upgrade npm to 1.1.18
+
+* Windows: add mappings for UV_ENOENT (Bert Belder)
+
+* linux: add IN_MOVE_SELF to inotify event mask (Ben Noordhuis)
+
+* unix: call pipe handle connection cb on accept() error (Ben Noordhuis)
+
+* unix: handle EWOULDBLOCK (Ben Noordhuis)
+
+* map EWOULDBLOCK to UV_EAGAIN (Ben Noordhuis)
+
+* Map ENOMEM to UV_ENOMEM (isaacs)
+
+* Child process: support the `gid` and `uid` options (Bert Belder)
+
+* test: cluster: add worker death event test (Ben Noordhuis)
+
+* typo in node_http_parser (isaacs)
+
+* http_parser: Eat CRLF between requests, even on connection:close. (Ben Noordhuis)
+
+* don't check return value of unsetenv (Ben Noordhuis)
+
+
+2012.04.09 Version 0.6.15 (stable), f160a45b254e591eb33716311c92be533c6d86c4
+
+* Update npm to 1.1.16
+
+* Show licenses in binary installers.
+
+* unix: add uv_fs_read64, uv_fs_write64 and uv_fs_ftruncate64 (Ben Noordhuis)
+
+* add 64bit offset fs functions (Igor Zinkovsky)
+
+* windows: don't report ENOTSOCK when attempting to bind an udp handle twice (Bert Belder)
+
+* windows: backport pipe-connect-to-file fixes from master (Bert Belder)
+
+* windows: never call fs event callbacks after closing the watcher (Bert Belder)
+
+* fs.readFile: don't make the callback before the fd is closed (Bert Belder)
+
+* windows: use 64bit offsets for uv_fs apis (Igor Zinkovsky)
+
+* Fix #2061: segmentation fault on OS X due to stat size mismatch (Ben Noordhuis)
+
+
+2012.03.22 Version 0.6.14 (stable), e513ffef7549a56a5af728e1f0c2c0c8f290518a
 
 * net: don't crash when queued write fails (Igor Zinkovsky)
 

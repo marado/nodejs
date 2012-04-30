@@ -1058,6 +1058,34 @@ struct uv_process_s {
 UV_EXTERN int uv_spawn(uv_loop_t*, uv_process_t*,
     uv_process_options_t options);
 
+
+/* Temporary fix for node. Do no use. */
+enum uv_process_flags {
+  UV_PROCESS_SETUID = (1 << 0),
+  UV_PROCESS_SETGID = (1 << 1),
+  UV_PROCESS_WINDOWS_VERBATIM_ARGUMENTS = (1 << 2)
+};
+
+/* Temporary fix for node. Do not use. */
+typedef struct uv_process_options2_s {
+  uv_exit_cb exit_cb; /* Called after the process exits. */
+  const char* file; /* Path to program to execute. */
+  char** args;
+  char** env;
+  char* cwd;
+  unsigned int flags;
+  uv_pipe_t* stdin_stream;
+  uv_pipe_t* stdout_stream;
+  uv_pipe_t* stderr_stream;
+  uv_uid_t uid;
+  uv_gid_t gid;
+} uv_process_options2_t;
+
+/* Temporary fix for node. Do not use. */
+UV_EXTERN int uv_spawn2(uv_loop_t*, uv_process_t*,
+    uv_process_options2_t options);
+
+
 /*
  * Kills the process with the specified signal. The user must still
  * call uv_close on the process.
@@ -1155,11 +1183,17 @@ UV_EXTERN int uv_fs_open(uv_loop_t* loop, uv_fs_t* req, const char* path,
 UV_EXTERN int uv_fs_read(uv_loop_t* loop, uv_fs_t* req, uv_file file,
     void* buf, size_t length, off_t offset, uv_fs_cb cb);
 
+int uv_fs_read64(uv_loop_t* loop, uv_fs_t* req, uv_file file,
+    void* buf, size_t length, int64_t offset, uv_fs_cb cb);
+
 UV_EXTERN int uv_fs_unlink(uv_loop_t* loop, uv_fs_t* req, const char* path,
     uv_fs_cb cb);
 
 UV_EXTERN int uv_fs_write(uv_loop_t* loop, uv_fs_t* req, uv_file file,
     void* buf, size_t length, off_t offset, uv_fs_cb cb);
+
+int uv_fs_write64(uv_loop_t* loop, uv_fs_t* req, uv_file file,
+    void* buf, size_t length, int64_t offset, uv_fs_cb cb);
 
 UV_EXTERN int uv_fs_mkdir(uv_loop_t* loop, uv_fs_t* req, const char* path,
     int mode, uv_fs_cb cb);
@@ -1187,6 +1221,9 @@ UV_EXTERN int uv_fs_fdatasync(uv_loop_t* loop, uv_fs_t* req, uv_file file,
 
 UV_EXTERN int uv_fs_ftruncate(uv_loop_t* loop, uv_fs_t* req, uv_file file,
     off_t offset, uv_fs_cb cb);
+
+int uv_fs_ftruncate64(uv_loop_t* loop, uv_fs_t* req, uv_file file,
+    int64_t offset, uv_fs_cb cb);
 
 UV_EXTERN int uv_fs_sendfile(uv_loop_t* loop, uv_fs_t* req, uv_file out_fd,
     uv_file in_fd, off_t in_offset, size_t length, uv_fs_cb cb);

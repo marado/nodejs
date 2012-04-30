@@ -352,29 +352,6 @@
               ]
             },
             {
-              "textRaw": "socket.write(data, [encoding], [callback])",
-              "type": "method",
-              "name": "write",
-              "desc": "<p>Write data with the optional encoding. The callback will be made when the\ndata is flushed to the kernel.\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": [
-                    {
-                      "name": "data"
-                    },
-                    {
-                      "name": "encoding",
-                      "optional": true
-                    },
-                    {
-                      "name": "callback",
-                      "optional": true
-                    }
-                  ]
-                }
-              ]
-            },
-            {
               "textRaw": "socket.end([data], [encoding])",
               "type": "method",
               "name": "end",
