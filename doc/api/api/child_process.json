@@ -262,10 +262,9 @@
                   "textRaw": "`callback` {Function} called with the output when process terminates ",
                   "options": [
                     {
-                      "textRaw": "`code` {Integer} Exit code ",
-                      "name": "code",
-                      "type": "Integer",
-                      "desc": "Exit code"
+                      "textRaw": "`error` {Error} ",
+                      "name": "error",
+                      "type": "Error"
                     },
                     {
                       "textRaw": "`stdout` {Buffer} ",
@@ -383,10 +382,9 @@
                   "textRaw": "`callback` {Function} called with the output when process terminates ",
                   "options": [
                     {
-                      "textRaw": "`code` {Integer} Exit code ",
-                      "name": "code",
-                      "type": "Integer",
-                      "desc": "Exit code"
+                      "textRaw": "`error` {Error} ",
+                      "name": "error",
+                      "type": "Error"
                     },
                     {
                       "textRaw": "`stdout` {Buffer} ",
