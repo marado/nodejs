@@ -32,6 +32,11 @@ License: BSD-2-clause~author or GPL-2+
 Files: deps/v8/*
  tools/test.py
  tools/js2c.py
+ test/simple/testcfg.py
+ test/pummel/testcfg.py
+ test/message/testcfg.py
+ test/internet/testcfg.py
+ test/gc/testcfg.py
 Copyright: 2006-2011, the V8 Project Authors <v8-dev@googlegroups.com>
 License: BSD-3-clause~Google
 
