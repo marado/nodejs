@@ -2,6 +2,8 @@ nodejs (0.6.17~dfsg1-1) unstable; urgency=low
 
   * Upstream update.
   * Update copyright file: add test/*/testcfg.py files.
+  * debian/patches/1002_make_test_not_weak.patch fixes Makefile
+    test target, otherwise it tries to install an unneeded npm module.
 
  -- Jérémy Lal <kapouer@melix.org>  Fri, 04 May 2012 22:38:30 +0200
 
