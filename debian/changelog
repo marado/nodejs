@@ -1,3 +1,10 @@
+nodejs (0.6.17~dfsg1-1) unstable; urgency=low
+
+  * Upstream update.
+  * Update copyright file: add test/*/testcfg.py files.
+
+ -- Jérémy Lal <kapouer@melix.org>  Fri, 04 May 2012 22:38:30 +0200
+
 nodejs (0.6.16~dfsg1-2) unstable; urgency=low
 
   * Allow test-dgram-pingpong failure on buildd servers.
