@@ -1,0 +1,15 @@
+Description: make test does not need to install 'weak' module
+Forwarded: https://github.com/joyent/node/commit/91120e04#L1R35
+Author: Jérémy Lal <kapouer@melix.org>
+Last-Update: 2012-05-04
+--- a/Makefile
++++ b/Makefile
+@@ -32,7 +32,7 @@
+ uninstall:
+ 	@$(WAF) uninstall
+ 
+-test: all node_modules/weak
++test: all
+ 	$(PYTHON) tools/test.py --mode=release simple message
+ 
+ test-http1: all
