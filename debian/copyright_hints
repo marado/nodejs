@@ -300,7 +300,9 @@ Files: benchmark/next-tick-2.js
  test/simple/test-fs-realpath.js
  test/simple/test-fs-sir-writes-alot.js
  test/simple/test-fs-stat.js
+ test/simple/test-fs-stream-double-close.js
  test/simple/test-fs-symlink.js
+ test/simple/test-fs-sync-fd-leak.js
  test/simple/test-fs-utimes.js
  test/simple/test-fs-watch.js
  test/simple/test-fs-write-buffer.js
@@ -1039,6 +1041,7 @@ Files: deps/v8/LICENSE
  deps/v8/tools/tickprocessor-driver.js
  deps/v8/tools/tickprocessor.js
  deps/v8/tools/utils.py
+ test/gc/testcfg.py
  test/internet/testcfg.py
  test/message/testcfg.py
  test/pummel/testcfg.py
@@ -1127,6 +1130,7 @@ Files: AUTHORS
  debian/nodejs.postinst
  debian/nodejs.prerm
  debian/patches/1001_align_fast_buffers_8byte_boundary.patch
+ debian/patches/1002_make_test_not_weak.patch
  debian/patches/2001_FHS_paths_for_nodejs.patch
  debian/patches/2002_build_without_libv8_debug.patch
  debian/patches/2005_expected_failing_tests.patch
@@ -1377,6 +1381,11 @@ Files: AUTHORS
  test/fixtures/utf8-bom.js
  test/fixtures/utf8-bom.json
  test/fixtures/x.txt
+ test/gc/test-http-client-connaborted.js
+ test/gc/test-http-client-onerror.js
+ test/gc/test-http-client-timeout.js
+ test/gc/test-http-client.js
+ test/gc/test-net-timeout.js
  test/internet/internet.status
  test/message/2100bytes.out
  test/message/hello_world.out
@@ -1618,7 +1627,6 @@ Files: doc/api/api/_toc.html
  doc/api/api/globals.html
  doc/api/api/http.html
  doc/api/api/https.html
- doc/api/api/index.html
  doc/api/api/modules.html
  doc/api/api/os.html
  doc/api/api/path.html
@@ -1628,7 +1636,6 @@ Files: doc/api/api/_toc.html
  doc/api/api/repl.html
  doc/api/api/stdio.html
  doc/api/api/stream.html
- doc/api/api/string_decoder.html
  doc/api/api/synopsis.html
  doc/api/api/timers.html
  doc/api/api/tls.html
@@ -1637,7 +1644,7 @@ Files: doc/api/api/_toc.html
  doc/api/api/util.html
  doc/api/api/vm.html
  doc/api/api/zlib.html
-Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.16/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.17/LICENSE">license</a>.</p>
 License: UNKNOWN
  FIXME
 
@@ -1714,9 +1721,15 @@ Copyright:
 License: UNKNOWN
  FIXME
 
+Files: doc/api/api/index.html
+ doc/api/api/string_decoder.html
+Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.16/LICENSE">license</a>.</p>
+License: UNKNOWN
+ FIXME
+
 Files: doc/api/api/all.html
  doc/api/api/net.html
-Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.16/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.17/LICENSE">license</a>.</p>
   { //&apos;connection&apos; listener
 License: UNKNOWN
  FIXME
