@@ -33,10 +33,10 @@
                       "optional": true
                     },
                     {
-                      "textRaw": "`length` Number, Optional ",
+                      "textRaw": "`length` Number, Optional, Default: `buffer.length - offset` ",
                       "name": "length",
-                      "optional": true,
-                      "desc": "Number"
+                      "desc": "Number, Optional, Default: `buffer.length - offset`",
+                      "optional": true
                     },
                     {
                       "textRaw": "`encoding` String, Optional, Default: 'utf8' ",
@@ -88,10 +88,10 @@
                       "optional": true
                     },
                     {
-                      "textRaw": "`end` Number, Optional ",
+                      "textRaw": "`end` Number, Optional, Default: `buffer.length` ",
                       "name": "end",
-                      "optional": true,
-                      "desc": "Number"
+                      "desc": "Number, Optional, Default: `buffer.length`",
+                      "optional": true
                     }
                   ]
                 },
@@ -139,9 +139,9 @@
                       "optional": true
                     },
                     {
-                      "textRaw": "`sourceEnd` Number, Optional, Default: 0 ",
+                      "textRaw": "`sourceEnd` Number, Optional, Default: `buffer.length` ",
                       "name": "sourceEnd",
-                      "desc": "Number, Optional, Default: 0",
+                      "desc": "Number, Optional, Default: `buffer.length`",
                       "optional": true
                     }
                   ]
@@ -182,9 +182,9 @@
                       "optional": true
                     },
                     {
-                      "textRaw": "`end` Number, Optional, Default: 0 ",
+                      "textRaw": "`end` Number, Optional, Default: `buffer.length` ",
                       "name": "end",
-                      "desc": "Number, Optional, Default: 0",
+                      "desc": "Number, Optional, Default: `buffer.length`",
                       "optional": true
                     }
                   ]
