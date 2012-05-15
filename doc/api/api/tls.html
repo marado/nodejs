@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>TLS (SSL) Node.js v0.6.17 Manual &amp; Documentation</title>
+  <title>TLS (SSL) Node.js v0.6.18 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/tls.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.6.17 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.6.18 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -115,6 +115,17 @@ file. This is done with:
 <code>test/fixtures/keys/Makefile</code> in the Node source code)
 
 </p>
+<p>To create .pfx or .p12, do this:
+
+</p>
+<pre><code>openssl pkcs12 -export -in agent5-cert.pem -inkey agent5-key.pem \
+    -certfile ca-cert.pem -out agent5.pfx</code></pre>
+<ul>
+<li><code>in</code>:  certificate</li>
+<li><code>inkey</code>: private key</li>
+<li><code>certfile</code>: all CA certs concatenated in one file like
+<code>cat ca1-cert.pem ca2-cert.pem &gt; ca-cert.pem</code></li>
+</ul>
 <h2>Client-initiated renegotiation attack mitigation<span><a class="mark" href="#tls_client_initiated_renegotiation_attack_mitigation" id="tls_client_initiated_renegotiation_attack_mitigation">#</a></span></h2>
 <!-- type=misc -->
 
@@ -165,10 +176,14 @@ The <code>options</code> object has these possibilities:
 
 </p>
 <ul>
+<li><p><code>pfx</code>: A string or <code>Buffer</code> containing the private key, certificate and
+CA certs of the server in PFX or PKCS12 format. (Mutually exclusive with
+the <code>key</code>, <code>cert</code> and <code>ca</code> options.)</p>
+</li>
 <li><p><code>key</code>: A string or <code>Buffer</code> containing the private key of the server in
 PEM format. (Required)</p>
 </li>
-<li><p><code>passphrase</code>: A string of passphrase for the private key.</p>
+<li><p><code>passphrase</code>: A string of passphrase for the private key or pfx.</p>
 </li>
 <li><p><code>cert</code>: A string or <code>Buffer</code> containing the certificate key of the server in
 PEM format. (Required)</p>
@@ -231,6 +246,30 @@ var server = tls.createServer(options, function(cleartextStream) {
 server.listen(8000, function() {
   console.log(&apos;server bound&apos;);
 });</code></pre>
+<p>Or
+
+</p>
+<pre><code>var tls = require(&apos;tls&apos;);
+var fs = require(&apos;fs&apos;);
+
+var options = {
+  pfx: fs.readFileSync(&apos;server.pfx&apos;),
+
+  // This is necessary only if using the client certificate authentication.
+  requestCert: true,
+
+};
+
+var server = tls.createServer(options, function(cleartextStream) {
+  console.log(&apos;server connected&apos;,
+              cleartextStream.authorized ? &apos;authorized&apos; : &apos;unauthorized&apos;);
+  cleartextStream.write(&quot;welcome!\n&quot;);
+  cleartextStream.setEncoding(&apos;utf8&apos;);
+  cleartextStream.pipe(cleartextStream);
+});
+server.listen(8000, function() {
+  console.log(&apos;server bound&apos;);
+});</code></pre>
 <p>You can test this server by connecting to it with <code>openssl s_client</code>:
 
 
@@ -242,10 +281,13 @@ defaults to <code>localhost</code>.) <code>options</code> should be an object wh
 
 </p>
 <ul>
+<li><p><code>pfx</code>: A string or <code>Buffer</code> containing the private key, certificate and
+CA certs of the server in PFX or PKCS12 format.</p>
+</li>
 <li><p><code>key</code>: A string or <code>Buffer</code> containing the private key of the client in
 PEM format.</p>
 </li>
-<li><p><code>passphrase</code>: A string of passphrase for the private key.</p>
+<li><p><code>passphrase</code>: A string of passphrase for the private key or pfx.</p>
 </li>
 <li><p><code>cert</code>: A string or <code>Buffer</code> containing the certificate key of the client in
 PEM format.</p>
@@ -287,6 +329,29 @@ var options = {
 
   // This is necessary only if the server uses the self-signed certificate
   ca: [ fs.readFileSync(&apos;server-cert.pem&apos;) ]
+};
+
+var cleartextStream = tls.connect(8000, options, function() {
+  console.log(&apos;client connected&apos;,
+              cleartextStream.authorized ? &apos;authorized&apos; : &apos;unauthorized&apos;);
+  process.stdin.pipe(cleartextStream);
+  process.stdin.resume();
+});
+cleartextStream.setEncoding(&apos;utf8&apos;);
+cleartextStream.on(&apos;data&apos;, function(data) {
+  console.log(data);
+});
+cleartextStream.on(&apos;end&apos;, function() {
+  server.close();
+});</code></pre>
+<p>Or
+
+</p>
+<pre><code>var tls = require(&apos;tls&apos;);
+var fs = require(&apos;fs&apos;);
+
+var options = {
+  pfx: fs.readFileSync(&apos;client.pfx&apos;)
 };
 
 var cleartextStream = tls.connect(8000, options, function() {
@@ -513,7 +578,7 @@ operating system. Returns an object with two properties, e.g.
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.17/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.18/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

@@ -92,18 +92,7 @@
               "textRaw": "stream.destroy()",
               "type": "method",
               "name": "destroy",
-              "desc": "<p>Closes the underlying file descriptor. Stream will not emit any more events.\n\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": []
-                }
-              ]
-            },
-            {
-              "textRaw": "stream.destroySoon()",
-              "type": "method",
-              "name": "destroySoon",
-              "desc": "<p>After the write queue is drained, close the file descriptor.\n\n</p>\n",
+              "desc": "<p>Closes the underlying file descriptor. Stream will not emit any more events.\n\n</p>\n",
               "signatures": [
                 {
                   "params": []
