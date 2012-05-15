@@ -5,7 +5,7 @@ Author: Jérémy Lal <kapouer@melix.org>
 Last-Update: 2010-01-01
 --- a/wscript
 +++ b/wscript
-@@ -423,7 +423,7 @@
+@@ -435,7 +435,7 @@
        conf.fatal("Cannot find v8")
  
      if o.debug:

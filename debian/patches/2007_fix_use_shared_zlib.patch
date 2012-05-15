@@ -5,7 +5,7 @@ Last-Update: 2012-01-23
 
 --- a/wscript
 +++ b/wscript
-@@ -284,9 +284,6 @@
+@@ -296,9 +296,6 @@
    conf.env["USE_GDBJIT"] = o.use_gdbjit
    conf.env['USE_NPM'] = not o.without_npm
  
@@ -15,7 +15,7 @@ Last-Update: 2012-01-23
    conf.check(lib='dl', uselib_store='DL')
    if not sys.platform.startswith("sunos") and not sys.platform.startswith("win32"):
      conf.env.append_value("CCFLAGS", "-rdynamic")
-@@ -429,6 +426,9 @@
+@@ -441,6 +438,9 @@
                              libpath=v8_libpath):
          conf.fatal("Cannot find v8_g")
  

@@ -108,7 +108,7 @@ Last-Update: 2012-01-23
  	-rm -f src/unix/eio/*.o
 --- a/wscript
 +++ b/wscript
-@@ -429,6 +429,18 @@
+@@ -441,6 +441,18 @@
    if conf.env["USE_SHARED_ZLIB"] and not sys.platform.startswith("win32"):
      conf.env.append_value("LINKFLAGS", "-lz")
  
@@ -127,7 +127,7 @@ Last-Update: 2012-01-23
    conf.define("HAVE_CONFIG_H", 1)
  
    if sys.platform.startswith("sunos"):
-@@ -679,10 +691,6 @@
+@@ -678,10 +690,6 @@
    bld.install_files('${PREFIX}/include/node/', 'deps/uv/include/*.h')
    bld.install_files('${PREFIX}/include/node/uv-private', 'deps/uv/include/uv-private/*.h')
    bld.install_files('${PREFIX}/include/node/ev', 'deps/uv/src/ev/*.h')
@@ -138,7 +138,7 @@ Last-Update: 2012-01-23
  
  
  def build(bld):
-@@ -939,7 +947,6 @@
+@@ -938,7 +946,6 @@
      deps/http_parser
      deps/uv/include
      deps/uv/src/ev

@@ -56,7 +56,7 @@ Last-Update: 2011-09-11
  t = join(w, 'Tools')
 --- a/lib/module.js
 +++ b/lib/module.js
-@@ -480,7 +480,7 @@
+@@ -485,7 +485,7 @@
  };
  
  Module._initPaths = function() {
