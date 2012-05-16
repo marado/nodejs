@@ -1,8 +1,11 @@
-nodejs (0.6.18~dfsg1-1) UNRELEASED; urgency=low
+nodejs (0.6.18~dfsg1-1) unstable; urgency=low
 
-  * Upstream update. 
+  * Upstream update.
+  * debian/patches:
+    + 1002_make_test_not_weak.patch removed, applied upstream.
+    + unfuzz patches.
 
- -- Jérémy Lal <kapouer@melix.org>  Wed, 16 May 2012 01:45:18 +0200
+ -- Jérémy Lal <kapouer@melix.org>  Wed, 16 May 2012 02:06:42 +0200
 
 nodejs (0.6.17~dfsg1-1) unstable; urgency=low
 
