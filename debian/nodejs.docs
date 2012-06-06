@@ -1,1 +1,2 @@
-doc/api/api
+doc/api/*.html
+doc/api/*.markdown
