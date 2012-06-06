@@ -284,6 +284,7 @@ Files: benchmark/next-tick-2.js
  test/simple/test-file-write-stream2.js
  test/simple/test-file-write-stream3.js
  test/simple/test-fs-chmod.js
+ test/simple/test-fs-empty-readStream.js
  test/simple/test-fs-error-messages.js
  test/simple/test-fs-fsync.js
  test/simple/test-fs-largefile.js
@@ -1087,6 +1088,7 @@ Files: AUTHORS
  benchmark/function_call/wscript
  benchmark/http_simple.js
  benchmark/http_simple.rb
+ benchmark/http_simple_auto.js
  benchmark/http_simple_bench.sh
  benchmark/http_simple_cluster.js
  benchmark/idle_clients.js
@@ -1278,7 +1280,6 @@ Files: AUTHORS
  doc/sh_javascript.min.js
  doc/sh_vim-dark.css
  doc/v0.4_announcement.html
- lib/punycode.js
  node.gyp
  src/macros.py
  src/v8constants.h
@@ -1618,7 +1619,9 @@ Files: doc/api/api/_toc.html
  doc/api/api/addons.html
  doc/api/api/appendix_1.html
  doc/api/api/assert.html
+ doc/api/api/buffer.html
  doc/api/api/cluster.html
+ doc/api/api/crypto.html
  doc/api/api/debugger.html
  doc/api/api/dgram.html
  doc/api/api/dns.html
@@ -1627,6 +1630,8 @@ Files: doc/api/api/_toc.html
  doc/api/api/fs.html
  doc/api/api/globals.html
  doc/api/api/http.html
+ doc/api/api/https.html
+ doc/api/api/index.html
  doc/api/api/modules.html
  doc/api/api/os.html
  doc/api/api/path.html
@@ -1635,14 +1640,17 @@ Files: doc/api/api/_toc.html
  doc/api/api/readline.html
  doc/api/api/repl.html
  doc/api/api/stdio.html
+ doc/api/api/stream.html
+ doc/api/api/string_decoder.html
  doc/api/api/synopsis.html
  doc/api/api/timers.html
+ doc/api/api/tls.html
  doc/api/api/tty.html
  doc/api/api/url.html
  doc/api/api/util.html
  doc/api/api/vm.html
  doc/api/api/zlib.html
-Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.17/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.18/LICENSE">license</a>.</p>
 License: UNKNOWN
  FIXME
 
@@ -1668,15 +1676,6 @@ Files: doc/about/index.html
  doc/index.html
  doc/template.html
 Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/__VERSION__/LICENSE">license</a>.</p>
-License: UNKNOWN
- FIXME
-
-Files: doc/api/api/buffer.html
- doc/api/api/crypto.html
- doc/api/api/https.html
- doc/api/api/stream.html
- doc/api/api/tls.html
-Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.18/LICENSE">license</a>.</p>
 License: UNKNOWN
  FIXME
 
@@ -1728,15 +1727,9 @@ Copyright:
 License: UNKNOWN
  FIXME
 
-Files: doc/api/api/index.html
- doc/api/api/string_decoder.html
-Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.16/LICENSE">license</a>.</p>
-License: UNKNOWN
- FIXME
-
 Files: doc/api/api/all.html
  doc/api/api/net.html
-Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.17/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.18/LICENSE">license</a>.</p>
   { //&apos;connection&apos; listener
 License: UNKNOWN
  FIXME
@@ -2001,7 +1994,7 @@ License: UNKNOWN
  FIXME
 
 Files: doc/api/api/child_process.html
-Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.18-pre/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.19/LICENSE">license</a>.</p>
 License: UNKNOWN
  FIXME
 
@@ -2029,6 +2022,11 @@ License: UNKNOWN
 
 Files: deps/uv/include/uv-private/ngx-queue.h
 Copyright: Igor Sysoev
+License: UNKNOWN
+ FIXME
+
+Files: lib/punycode.js
+Copyright: 2011, Mathias Bynens <http://mathiasbynens.be/>
 License: UNKNOWN
  FIXME
 
