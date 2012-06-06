@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>About this Documentation Node.js v0.6.17 Manual &amp; Documentation</title>
+  <title>About this Documentation Node.js v0.6.18 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/all.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.6.17 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.6.18 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -248,7 +248,6 @@
 <li><a href="#all_stream_pause">stream.pause()</a></li>
 <li><a href="#all_stream_resume">stream.resume()</a></li>
 <li><a href="#all_stream_destroy">stream.destroy()</a></li>
-<li><a href="#all_stream_destroysoon">stream.destroySoon()</a></li>
 <li><a href="#all_stream_pipe_destination_options">stream.pipe(destination, [options])</a></li>
 </ul>
 </li>
@@ -264,7 +263,7 @@
 <li><a href="#all_stream_end_string_encoding">stream.end(string, encoding)</a></li>
 <li><a href="#all_stream_end_buffer">stream.end(buffer)</a></li>
 <li><a href="#all_stream_destroy_1">stream.destroy()</a></li>
-<li><a href="#all_stream_destroysoon_1">stream.destroySoon()</a></li>
+<li><a href="#all_stream_destroysoon">stream.destroySoon()</a></li>
 </ul>
 </li>
 </ul>
@@ -2919,7 +2918,7 @@ It can be constructed in a variety of ways.
 <div class="signature"><ul>
 <li><code>string</code> String - data to be written to buffer</li>
 <li><code>offset</code> Number, Optional, Default: 0</li>
-<li><code>length</code> Number, Optional</li>
+<li><code>length</code> Number, Optional, Default: <code>buffer.length - offset</code></li>
 <li><code>encoding</code> String, Optional, Default: &apos;utf8&apos;</li>
 </div></ul>
 <p>Writes <code>string</code> to the buffer at <code>offset</code> using the given encoding.
@@ -2943,7 +2942,7 @@ next time <code>buf.write()</code> is called.
 <div class="signature"><ul>
 <li><code>encoding</code> String, Optional, Default: &apos;utf8&apos;</li>
 <li><code>start</code> Number, Optional, Default: 0</li>
-<li><code>end</code> Number, Optional</li>
+<li><code>end</code> Number, Optional, Default: <code>buffer.length</code></li>
 </div></ul>
 <p>Decodes and returns a string from buffer data encoded with <code>encoding</code>
 (defaults to <code>&apos;utf8&apos;</code>) beginning at <code>start</code> (defaults to <code>0</code>) and ending at
@@ -3025,7 +3024,7 @@ console.log(buf.length);
 <li><code>targetBuffer</code> Buffer object - Buffer to copy into</li>
 <li><code>targetStart</code> Number, Optional, Default: 0</li>
 <li><code>sourceStart</code> Number, Optional, Default: 0</li>
-<li><code>sourceEnd</code> Number, Optional, Default: 0</li>
+<li><code>sourceEnd</code> Number, Optional, Default: <code>buffer.length</code></li>
 </div></ul>
 <p>Does copy between buffers. The source and target regions can be overlapped.
 <code>targetStart</code> and <code>sourceStart</code> default to <code>0</code>.
@@ -3051,7 +3050,7 @@ console.log(buf2.toString(&apos;ascii&apos;, 0, 25));
 <h3>buf.slice([start], [end])<span><a class="mark" href="#all_buf_slice_start_end" id="all_buf_slice_start_end">#</a></span></h3>
 <div class="signature"><ul>
 <li><code>start</code> Number, Optional, Default: 0</li>
-<li><code>end</code> Number, Optional, Default: 0</li>
+<li><code>end</code> Number, Optional, Default: <code>buffer.length</code></li>
 </div></ul>
 <p>Returns a new buffer which references the same memory as the old, but offset
 and cropped by the <code>start</code> (defaults to <code>0</code>) and <code>end</code> (defaults to
@@ -3619,11 +3618,6 @@ occurred, the stream came to an <code>&apos;end&apos;</code>, or <code>destroy()
 <h3>stream.destroy()<span><a class="mark" href="#all_stream_destroy" id="all_stream_destroy">#</a></span></h3>
 <p>Closes the underlying file descriptor. Stream will not emit any more events.
 
-
-</p>
-<h3>stream.destroySoon()<span><a class="mark" href="#all_stream_destroysoon" id="all_stream_destroysoon">#</a></span></h3>
-<p>After the write queue is drained, close the file descriptor.
-
 </p>
 <h3>stream.pipe(destination, [options])<span><a class="mark" href="#all_stream_pipe_destination_options" id="all_stream_pipe_destination_options">#</a></span></h3>
 <p>This is a <code>Stream.prototype</code> method available on all <code>Stream</code>s.
@@ -3735,7 +3729,7 @@ or FIN. This is useful to reduce the number of packets sent.
 Any queued write data will not be sent.
 
 </p>
-<h3>stream.destroySoon()<span><a class="mark" href="#all_stream_destroysoon_1" id="all_stream_destroysoon_1">#</a></span></h3>
+<h3>stream.destroySoon()<span><a class="mark" href="#all_stream_destroysoon" id="all_stream_destroysoon">#</a></span></h3>
 <p>After the write queue is drained, close the file descriptor. <code>destroySoon()</code>
 can still destroy straight away, as long as there is no data left in the queue
 for writes.
@@ -3759,8 +3753,10 @@ of a secure HTTPS net or http connection.
 
 </p>
 <ul>
+<li><code>pfx</code> : A string or buffer holding the PFX or PKCS12 encoded private key, certificate and CA certificates</li>
 <li><code>key</code> : a string holding the PEM encoded private key</li>
 <li><code>cert</code> : a string holding the PEM encoded certificate</li>
+<li><code>passphrase</code> : A string of passphrase for the private key or pfx</li>
 <li><code>ca</code> : either a string or list of strings of PEM encoded CA certificates to trust.</li>
 <li><code>ciphers</code>: a string describing the ciphers to use or exclude. Consult
 <a href="http://www.openssl.org/docs/apps/ciphers.html#CIPHER_LIST_FORMAT">http://www.openssl.org/docs/apps/ciphers.html#CIPHER_LIST_FORMAT</a> for details
@@ -4119,6 +4115,17 @@ file. This is done with:
 <code>test/fixtures/keys/Makefile</code> in the Node source code)
 
 </p>
+<p>To create .pfx or .p12, do this:
+
+</p>
+<pre><code>openssl pkcs12 -export -in agent5-cert.pem -inkey agent5-key.pem \
+    -certfile ca-cert.pem -out agent5.pfx</code></pre>
+<ul>
+<li><code>in</code>:  certificate</li>
+<li><code>inkey</code>: private key</li>
+<li><code>certfile</code>: all CA certs concatenated in one file like
+<code>cat ca1-cert.pem ca2-cert.pem &gt; ca-cert.pem</code></li>
+</ul>
 <h2>Client-initiated renegotiation attack mitigation<span><a class="mark" href="#all_client_initiated_renegotiation_attack_mitigation" id="all_client_initiated_renegotiation_attack_mitigation">#</a></span></h2>
 <!-- type=misc -->
 
@@ -4169,10 +4176,14 @@ The <code>options</code> object has these possibilities:
 
 </p>
 <ul>
+<li><p><code>pfx</code>: A string or <code>Buffer</code> containing the private key, certificate and
+CA certs of the server in PFX or PKCS12 format. (Mutually exclusive with
+the <code>key</code>, <code>cert</code> and <code>ca</code> options.)</p>
+</li>
 <li><p><code>key</code>: A string or <code>Buffer</code> containing the private key of the server in
 PEM format. (Required)</p>
 </li>
-<li><p><code>passphrase</code>: A string of passphrase for the private key.</p>
+<li><p><code>passphrase</code>: A string of passphrase for the private key or pfx.</p>
 </li>
 <li><p><code>cert</code>: A string or <code>Buffer</code> containing the certificate key of the server in
 PEM format. (Required)</p>
@@ -4235,6 +4246,30 @@ var server = tls.createServer(options, function(cleartextStream) {
 server.listen(8000, function() {
   console.log(&apos;server bound&apos;);
 });</code></pre>
+<p>Or
+
+</p>
+<pre><code>var tls = require(&apos;tls&apos;);
+var fs = require(&apos;fs&apos;);
+
+var options = {
+  pfx: fs.readFileSync(&apos;server.pfx&apos;),
+
+  // This is necessary only if using the client certificate authentication.
+  requestCert: true,
+
+};
+
+var server = tls.createServer(options, function(cleartextStream) {
+  console.log(&apos;server connected&apos;,
+              cleartextStream.authorized ? &apos;authorized&apos; : &apos;unauthorized&apos;);
+  cleartextStream.write(&quot;welcome!\n&quot;);
+  cleartextStream.setEncoding(&apos;utf8&apos;);
+  cleartextStream.pipe(cleartextStream);
+});
+server.listen(8000, function() {
+  console.log(&apos;server bound&apos;);
+});</code></pre>
 <p>You can test this server by connecting to it with <code>openssl s_client</code>:
 
 
@@ -4246,10 +4281,13 @@ defaults to <code>localhost</code>.) <code>options</code> should be an object wh
 
 </p>
 <ul>
+<li><p><code>pfx</code>: A string or <code>Buffer</code> containing the private key, certificate and
+CA certs of the server in PFX or PKCS12 format.</p>
+</li>
 <li><p><code>key</code>: A string or <code>Buffer</code> containing the private key of the client in
 PEM format.</p>
 </li>
-<li><p><code>passphrase</code>: A string of passphrase for the private key.</p>
+<li><p><code>passphrase</code>: A string of passphrase for the private key or pfx.</p>
 </li>
 <li><p><code>cert</code>: A string or <code>Buffer</code> containing the certificate key of the client in
 PEM format.</p>
@@ -4291,6 +4329,29 @@ var options = {
 
   // This is necessary only if the server uses the self-signed certificate
   ca: [ fs.readFileSync(&apos;server-cert.pem&apos;) ]
+};
+
+var cleartextStream = tls.connect(8000, options, function() {
+  console.log(&apos;client connected&apos;,
+              cleartextStream.authorized ? &apos;authorized&apos; : &apos;unauthorized&apos;);
+  process.stdin.pipe(cleartextStream);
+  process.stdin.resume();
+});
+cleartextStream.setEncoding(&apos;utf8&apos;);
+cleartextStream.on(&apos;data&apos;, function(data) {
+  console.log(data);
+});
+cleartextStream.on(&apos;end&apos;, function() {
+  server.close();
+});</code></pre>
+<p>Or
+
+</p>
+<pre><code>var tls = require(&apos;tls&apos;);
+var fs = require(&apos;fs&apos;);
+
+var options = {
+  pfx: fs.readFileSync(&apos;client.pfx&apos;)
 };
 
 var cleartextStream = tls.connect(8000, options, function() {
@@ -7002,6 +7063,20 @@ https.createServer(options, function (req, res) {
   res.writeHead(200);
   res.end(&quot;hello world\n&quot;);
 }).listen(8000);</code></pre>
+<p>Or
+
+</p>
+<pre><code>var https = require(&apos;https&apos;);
+var fs = require(&apos;fs&apos;);
+
+var options = {
+  pfx: fs.readFileSync(&apos;server.pfx&apos;)
+};
+
+https.createServer(options, function (req, res) {
+  res.writeHead(200);
+  res.end(&quot;hello world\n&quot;);
+}).listen(8000);</code></pre>
 <h2>https.request(options, callback)<span><a class="mark" href="#all_https_request_options_callback" id="all_https_request_options_callback">#</a></span></h2>
 <p>Makes a request to a secure web server.
 All options from <a href="http.html#http.request">http.request()</a> are valid.
@@ -7067,8 +7142,9 @@ specified. However, a <a href="#https.globalAgent">globalAgent</a> silently igno
 
 </p>
 <ul>
+<li><code>pfx</code>: Certificate, Private key and CA certificates to use for SSL. Default <code>null</code>.</li>
 <li><code>key</code>: Private key to use for SSL. Default <code>null</code>.</li>
-<li><code>passphrase</code>: A string of passphrase for the private key. Default <code>null</code>.</li>
+<li><code>passphrase</code>: A string of passphrase for the private key or pfx. Default <code>null</code>.</li>
 <li><code>cert</code>: Public x509 certificate to use. Default <code>null</code>.</li>
 <li><code>ca</code>: An authority certificate or array of authority certificates to check
 the remote host against.</li>
@@ -9000,7 +9076,7 @@ tool.</p>
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.17/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.18/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>
