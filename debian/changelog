@@ -4,8 +4,11 @@ nodejs (0.6.19~dfsg1-2) unstable; urgency=low
     + 2005_expected_failing_tests.patch, more tests can timeout.
     + 1002_upstream_forgot_to_build_doc.patch, include docs from
       late release of version 0.6.19.
+  * debian/nodejs.docs:
+    + update path
+    + include markdown files.
 
- -- Jérémy Lal <kapouer@melix.org>  Wed, 06 Jun 2012 23:21:32 +0200
+ -- Jérémy Lal <kapouer@melix.org>  Wed, 06 Jun 2012 23:35:37 +0200
 
 nodejs (0.6.19~dfsg1-1) unstable; urgency=low
 
