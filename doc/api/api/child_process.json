@@ -154,11 +154,6 @@
                       "name": "env",
                       "type": "Object",
                       "desc": "Environment key-value pairs"
-                    },
-                    {
-                      "textRaw": "`setsid` {Boolean} ",
-                      "name": "setsid",
-                      "type": "Boolean"
                     }
                   ],
                   "name": "options",
@@ -223,11 +218,6 @@
                       "name": "env",
                       "type": "Object",
                       "desc": "Environment key-value pairs"
-                    },
-                    {
-                      "textRaw": "`setsid` {Boolean} ",
-                      "name": "setsid",
-                      "type": "Boolean"
                     },
                     {
                       "textRaw": "`encoding` {String} (Default: 'utf8') ",
@@ -346,11 +336,6 @@
                       "desc": "Environment key-value pairs"
                     },
                     {
-                      "textRaw": "`setsid` {Boolean} ",
-                      "name": "setsid",
-                      "type": "Boolean"
-                    },
-                    {
                       "textRaw": "`encoding` {String} (Default: 'utf8') ",
                       "name": "encoding",
                       "default": "utf8",
@@ -467,11 +452,6 @@
                       "name": "env",
                       "type": "Object",
                       "desc": "Environment key-value pairs"
-                    },
-                    {
-                      "textRaw": "`setsid` {Boolean} ",
-                      "name": "setsid",
-                      "type": "Boolean"
                     },
                     {
                       "textRaw": "`encoding` {String} (Default: 'utf8') ",
