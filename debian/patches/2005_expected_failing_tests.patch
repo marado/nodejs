@@ -34,6 +34,6 @@ Last-Update: 2012-06-06
 +test-tls-server-verify: PASS || FAIL
 +
 +# https://buildd.debian.org/status/fetch.php?pkg=nodejs&arch=armhf&ver=0.6.19~dfsg1-1&stamp=1339013006
-+test-debugger-repl-utf8: PASS || TIMEOUT
++test-debugger-repl-utf8: PASS || TIMEOUT
 +test-debugger-repl: PASS || TIMEOUT
 +test-debugger-client: PASS || TIMEOUT
