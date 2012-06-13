@@ -7,3 +7,4 @@
 2011_enable_mipsel_build.patch
 1001_align_fast_buffers_8byte_boundary.patch
 1002_upstream_forgot_to_build_doc.patch
+2012_fix_v8_3_10.patch
