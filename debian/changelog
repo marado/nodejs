@@ -1,12 +1,25 @@
-nodejs (0.6.19~dfsg1-3) UNRELEASED; urgency=low
+nodejs (0.6.19~dfsg1-3) unstable; urgency=low
 
+  [ Jérémy Lal ]
   * debian/patches:
     + 2012_fix_v8_3_10.patch, fix crash on exit when building
       against libv8-3.10.8.
     + 2013_waf_linkflags.patch, waf must support LINKFLAGS,
       Closes: #678563.
 
- -- Jérémy Lal <kapouer@melix.org>  Wed, 13 Jun 2012 11:57:56 +0200
+  [ Jonas Smedegaard ]
+  * Rename binary node → nodejs:
+    + Adjust paths of binary and manpage.
+    + Adjust install scripts and add cleanup for old alternative.
+    + Patch manpage to adjust command name.
+    + Have binary package nodejs break any packages in Debian that
+      reference /usr/bin/node.
+    + Add new binary package nodejs-legacy, and have that (not nodejs)
+      conflict with node.
+    + Add NEWS entry.
+    Closes: bug#614907. Thanks to tech-ctte and everyone else involved.
+
+ -- Jonas Smedegaard <dr@jones.dk>  Wed, 25 Jul 2012 17:54:27 +0200
 
 nodejs (0.6.19~dfsg1-2) unstable; urgency=low
 
