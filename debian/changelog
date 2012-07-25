@@ -1,4 +1,4 @@
-nodejs (0.6.19~dfsg1-3) unstable; urgency=low
+nodejs (0.6.19~dfsg1-3) UNRELEASED; urgency=low
 
   [ Jérémy Lal ]
   * debian/patches:
