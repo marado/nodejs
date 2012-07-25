@@ -29,13 +29,12 @@ See also node(1) for more information about NODE_PATH.
 nodejs command
 --------------
 
-The upstream name for the Node.js interpreter command is "node", and
-Debian provides the same for compatibility.
+The upstream name for the Node.js interpreter command is "node".
+In Debian the interpreter command has been changed to "nodejs".
 
-That is a very generic name and there are other commands that use
+This was done to prevent a namespace collision: other commands use
 the same name in their upstreams, such as ax25-node from the "node"
 package.
 
-Scripts wishing to refer unambiguously to the Node.js interpreter
-can use the "nodejs" command instead.
-We are pursuing inclusion of this synonym upstream.
+Scripts calling Node.js as a shell command must be changed to instead
+use the "nodejs" command.

@@ -1,0 +1,22 @@
+Description: Change shell command from node to nodejs
+Author: Jonas Smedegaard <dr@jones.dk>
+Bug-Debian: http://bugs.debian.org/614907
+Last-Update: 2012-07-25
+
+--- a/doc/node.1
++++ b/doc/node.1
+@@ -2,12 +2,12 @@
+ 
+ 
+ .SH "NAME"
+-node \- Server-side JavaScript
++nodejs \- Server-side JavaScript
+ 
+ .SH SYNOPSIS
+ 
+ 
+-.B node
++.B nodejs
+ [
+ .B \-v
+ ]

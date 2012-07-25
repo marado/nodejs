@@ -51,7 +51,98 @@ Package: nodejs
 Architecture: any
 Depends: ${shlibs:Depends},
  ${misc:Depends}
-Conflicts: node
+Breaks:
+ buddycloud-server (<= 0.3.1-1),
+ carto (<= 0.4.6+ds1-1),
+ coffeescript (<= 1.3.3-1),
+ libjs-async (<= 0.1.22-1),
+ libjs-lru-cache (<= 1.0.5-1),
+ node-abbrev (<= 1.0.3-1),
+ node-ain2 (<= 1.1.0-1),
+ node-async (<= 0.1.22-1),
+ node-backbone (<= 0.9.2-1),
+ node-backbone-dirty (<= 1.1.2-3),
+ node-block-stream (<= 0.0.5-1),
+ node-bones (<= 2.0.1+ds1-1),
+ node-chainsaw (<= 0.1.0-1),
+ node-chrono (<= 1.0.2-2),
+ node-cli (<= 0.4.2~20120411-1),
+ node-colors (<= 0.6.0-1-1),
+ node-connect (<= 1.7.3-1),
+ node-contextify (<= 0.1.2-2),
+ node-cssom (<= 0.2.3-1),
+ node-debug (<= 0.6.0-1),
+ node-dirty (<= 0.9.6-1),
+ node-eio (<= 0.1.0-1),
+ node-express (<= 2.5.9-1),
+ node-eyes (<= 0.1.7-1),
+ node-fstream (<= 0.1.13-1),
+ node-generic-pool (<= 1.0.9-1),
+ node-get (<= 1.1.5+ds1-1),
+ node-glob (<= 3.1.9-1),
+ node-graceful-fs (<= 1.1.8-1),
+ node-htmlparser (<= 1.7.5+ds1-1),
+ node-inherits (<= 0.1-1),
+ node-ini (<= 1.0.2-1),
+ node-jake (<= 0.2.32-1),
+ node-jquery (<= 1.6.3-1),
+ node-jsconfig (<= 0.2.0-1),
+ nodejs-dbg (<= ),
+ nodejs-dev (<= ),
+ node-jsdom (<= 0.2.10+dfsg1-1),
+ node-jsv (<= 4.0.0+ds1-1),
+ node-less (<= 1.3.0~20120310-1),
+ node-libravatar (<= 2.0.0-2),
+ node-lru-cache (<= 1.0.5-1),
+ node-ltx (<= 0.2.0-1),
+ node-mapnik (<= 0.6.7-2),
+ node-mbtiles (<= 0.2.3-1),
+ node-millstone (<= 0.4.0-2),
+ node-mime (<= 1.2.5-1),
+ node-minimatch (<= 0.2.0-1),
+ node-mirror (<= 0.3.3-2),
+ node-mkdirp (<= 0.3.1-2),
+ node-modestmaps (<= 0.21.0+ds1-2),
+ node-mustache (<= 0.4.2-1),
+ node-node-expat (<= 1.6.0-2),
+ node-node-markdown (<= 0.1.0-1),
+ node-node-stringprep (<= 0.1.3-1),
+ node-node-uuid (<= 1.3.3-1),
+ node-node-xmpp (<= 0.3.2-1),
+ node-nopt (<= 1.0.10-2),
+ node-oauth (<= 0.9.6-1),
+ node-optimist (<= 0.3.1-1),
+ node-passport (<= 0.1.8-1),
+ node-passport-oauth (<= 0.1.7-1),
+ node-pg (<= 0.7.1-1),
+ node-qs (<= 0.4.2-1),
+ node-request (<= 2.9.153-1),
+ node-rimraf (<= 2.0.1-1),
+ node-sax (<= 0.4.0-1),
+ node-semver (<= 1.0.13-1),
+ node-showdown (<= 0.0.1-1),
+ node-sink-test (<= 1.0.2-1),
+ node-sphericalmercator (<= 1.0.1-2),
+ node-sqlite3 (<= 2.1.1+ds1-1),
+ node-srs (<= 0.2.12+ds1-1+b1),
+ node-step (<= 0.0.5+20111229-1),
+ node-tar (<= 0.1.13-1),
+ node-tilejson (<= 0.1.2-1),
+ node-tilelive (<= 4.2.1-3),
+ node-tilelive-mapnik (<= 0.3.0-1),
+ node-topcube (<= 0.1.2+ds1-1),
+ node-traverse (<= 0.6.1-1),
+ node-uglify (<= 1.2.6-1),
+ node-underscore (<= 1.3.3-1),
+ node-underscore.logger (<= 0.3.0~20111114-1),
+ node-vows (<= 0.6.3-1),
+ node-which (<= 1.0.5-1),
+ node-wordwrap (<= 0.0.2-2),
+ node-xml2js (<= 0.1.13-1),
+ node-zipfile (<= 0.3.1+ds1-1),
+ node-zlib (<= 1.0.5-1),
+ npm (<= 1.1.4~dfsg-1),
+ ruby-execjs (<= 1.4.0-2)
 Description: Node.js event-based server-side javascript engine
  Node.js is similar in design to and influenced by systems like
  Ruby's Event Machine or Python's Twisted.
@@ -81,3 +172,26 @@ Description: Node.js event-based server-side javascript engine (debug)
  HTTP, Multipart Parsing, TCP, DNS, Assert, Path, URL, Query Strings.
  .
  This package contains the debugging symbols.
+
+Package: nodejs-legacy
+Priority: extra
+Architecture: all
+Depends: nodejs (>= )
+Conflicts: node
+Description: Node.js event-based server-side javascript engine (legacy symlink)
+ Node.js is similar in design to and influenced by systems like
+ Ruby's Event Machine or Python's Twisted.
+ .
+ It takes the event model a bit further - it presents the event
+ loop as a language construct instead of as a library.
+ .
+ Node.js is bundled with several useful libraries to handle server tasks :
+ System, Events, Standard I/O, Modules, Timers, Child Processes, POSIX,
+ HTTP, Multipart Parsing, TCP, DNS, Assert, Path, URL, Query Strings.
+ .
+ This package contains a symlink for legacy Node.js code requiring
+ binary to be /usr/bin/node (not /usr/bin/nodejs as provided in Debian).
+ .
+ No other Debian packages should depend on this package.  For more
+ information, see
+ <http://lists.debian.org/debian-devel-announce/2012/07/msg00002.html>

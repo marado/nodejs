@@ -49,6 +49,12 @@ clean::
 	find . -name "*.pyc" -delete
 	rm -rf out
 
+binary-post-install/nodejs::
+	mv "$(cdbs_curdestdir)/usr/bin/node" "$(cdbs_curdestdir)/usr/bin/nodejs"
+	mv "$(cdbs_curdestdir)/usr/share/man/man1/node.1" "$(cdbs_curdestdir)/usr/share/man/man1/nodejs.1"
+binary-post-install/nodejs-dbg::
+	mv "$(cdbs_curdestdir)/usr/lib/debug/usr/bin/node" "$(cdbs_curdestdir)/usr/lib/debug/usr/bin/nodejs"
+
 # remove *.json files from documentation, remove google-analytics calls
 # TODO: when doc will be generated from markdown, remove it from doc/template.html
 binary-install/nodejs::
