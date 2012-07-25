@@ -17,7 +17,8 @@ nodejs (0.6.19~dfsg1-3) unstable; urgency=low
     + Add new binary package nodejs-legacy, and have that (not nodejs)
       conflict with node.
     + Add NEWS entry.
-    Closes: bug#614907. Thanks to tech-ctte and everyone else involved.
+    Closes: bug#611698, #681360. See also bug#614907. Thanks to
+    tech-ctte and everyone else helping to resolve this.
 
  -- Jonas Smedegaard <dr@jones.dk>  Wed, 25 Jul 2012 17:54:27 +0200
 
