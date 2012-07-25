@@ -65,3 +65,11 @@ binary-install/nodejs::
 install/nodejs-dev::
 	dh_bash-completion
 
+# Work around upstream shipping docs in wrong subdir
+pre-build:: debian/replace-items
+debian/replace-items: debian/stamp-copyright-check
+	cp -at doc/api doc/api/api/*
+	touch $@
+clean::
+	rm -rf $(patsubst doc/api/api/%,doc/api/%,$(wildcard doc/api/api/*))
+	rm -f debian/replace-items
