@@ -1,4 +1,4 @@
-nodejs (0.6.19~dfsg1-3) UNRELEASED; urgency=low
+nodejs (0.6.19~dfsg1-3) unstable; urgency=low
 
   [ Jérémy Lal ]
   * debian/patches:
@@ -23,7 +23,7 @@ nodejs (0.6.19~dfsg1-3) UNRELEASED; urgency=low
     patch 1002 attempting same but causing FTBFS for me. Keep patch 1002
     in source, to ease proof-reading by release team.
 
- -- Jonas Smedegaard <dr@jones.dk>  Wed, 25 Jul 2012 20:46:06 +0200
+ -- Jonas Smedegaard <dr@jones.dk>  Thu, 26 Jul 2012 12:58:25 +0200
 
 nodejs (0.6.19~dfsg1-2) unstable; urgency=low
 
