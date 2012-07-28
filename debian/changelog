@@ -25,7 +25,7 @@ nodejs (0.6.19~dfsg1-3) unstable; urgency=low
   * Add patch 2004 to fix FTBFS: Relax a test to work with slightly
     different output when linked against recent v8.
 
- -- Jonas Smedegaard <dr@jones.dk>  Sat, 28 Jul 2012 02:46:46 +0200
+ -- Jonas Smedegaard <dr@jones.dk>  Sat, 28 Jul 2012 11:00:17 +0200
 
 nodejs (0.6.19~dfsg1-2) unstable; urgency=low
 
