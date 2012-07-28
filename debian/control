@@ -174,7 +174,8 @@ Description: Node.js event-based server-side javascript engine (debug)
 Package: nodejs-legacy
 Priority: extra
 Architecture: all
-Depends: nodejs (>= 0.6.19~dfsg1-3~)
+Depends: ${misc:Depends},
+ nodejs (>= 0.6.19~dfsg1-3~)
 Conflicts: node
 Description: Node.js event-based server-side javascript engine (legacy symlink)
  Node.js is similar in design to and influenced by systems like
