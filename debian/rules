@@ -68,6 +68,8 @@ pre-build:: debian/replace-items
 debian/replace-items: debian/stamp-copyright-check
 	cp -at doc/api doc/api/api/*
 	touch $@
+binary-post-install/nodejs::
+	rm -rf debian/nodejs/usr/share/doc/nodejs/api/api
 clean::
 	rm -rf $(patsubst doc/api/api/%,doc/api/%,$(wildcard doc/api/api/*))
 	rm -f debian/replace-items
