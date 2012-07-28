@@ -10,6 +10,7 @@ nodejs (0.6.19~dfsg1-3) unstable; urgency=low
   [ Jonas Smedegaard ]
   * Rename binary node → nodejs:
     + Adjust paths of binary and manpage.
+    + Fix avoid bogus explicit installation of debug files.
     + Adjust install scripts and add cleanup for old alternative.
     + Patch manpage to adjust command name.
     + Have binary package nodejs break any packages in Debian that
@@ -25,7 +26,7 @@ nodejs (0.6.19~dfsg1-3) unstable; urgency=low
   * Add patch 2004 to fix FTBFS: Relax a test to work with slightly
     different output when linked against recent v8.
 
- -- Jonas Smedegaard <dr@jones.dk>  Sat, 28 Jul 2012 11:00:17 +0200
+ -- Jonas Smedegaard <dr@jones.dk>  Sat, 28 Jul 2012 11:19:38 +0200
 
 nodejs (0.6.19~dfsg1-2) unstable; urgency=low
 
