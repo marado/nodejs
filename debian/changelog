@@ -1,11 +1,13 @@
-nodejs (0.6.19~dfsg1-4) UNRELEASED; urgency=low
+nodejs (0.6.19~dfsg1-4) unstable; urgency=medium
 
   * Update package relations:
     + Break only packages actually calling /usr/bin/node (directly or
       via env).
     + Tighten breaks for packages with fixed release.
+  * Set urgency=medium as this change affects only packaging hints so
+    should not need reset of aging timer in unstable.
 
- -- Jonas Smedegaard <dr@jones.dk>  Mon, 06 Aug 2012 04:26:39 +0200
+ -- Jonas Smedegaard <dr@jones.dk>  Mon, 06 Aug 2012 14:51:31 +0200
 
 nodejs (0.6.19~dfsg1-3) unstable; urgency=low
 
