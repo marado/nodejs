@@ -1,10 +1,10 @@
-nodejs (0.6.19~dfsg1-5) UNRELEASED; urgency=low
+nodejs (0.6.19~dfsg1-5) unstable; urgency=low
 
   * Team upload.
   * Fix node-waf so that it correctly looks for "nodejs" instead of
     "node" (patched node_addon.py)
 
- -- David Paleino <dapal@debian.org>  Thu, 20 Sep 2012 16:41:24 +0200
+ -- David Paleino <dapal@debian.org>  Fri, 21 Sep 2012 23:23:16 +0200
 
 nodejs (0.6.19~dfsg1-4) unstable; urgency=medium
 
