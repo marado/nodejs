@@ -1,13 +1,10 @@
 nodejs (0.6.19~dfsg1-6) UNRELEASED; urgency=low
 
   * Update package relations:
-    + Tighten to break on older than working version or backport thereof
-      (not older than or equal to last known broken version): carto,
-      node-cli, node-express, node-get, node-jake, node-mapnik,
-      node-mbtiles, node-optimist, node-semver, node-tilelive, npm,
-      node-vows.
-    + Relax to break on older than working version or backport thereof
-      (not later version with not-strictly-related fixes): node-bones.
+    + Generally tighten breaks to relate to (backport of) first known
+      working version (not last known broken version): node → nodejs
+      transition now done for all dependent packages.
+    + Relax needlesly tight breaks for node-bones.
 
  -- Jonas Smedegaard <dr@jones.dk>  Sat, 22 Sep 2012 16:09:56 +0200
 
