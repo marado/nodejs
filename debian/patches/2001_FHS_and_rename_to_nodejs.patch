@@ -58,3 +58,20 @@ Last-Update: 2012-09-30
  
    if (process.env['HOME']) {
      paths.unshift(path.resolve(process.env['HOME'], '.node_libraries'));
+--- a/doc/node.1
++++ b/doc/node.1
+@@ -2,12 +2,12 @@
+ 
+ 
+ .SH "NAME"
+-node \- Server-side JavaScript
++nodejs \- Server-side JavaScript
+ 
+ .SH SYNOPSIS
+ 
+ 
+-.B node
++.B nodejs
+ [
+ .B \-v
+ ]
