@@ -40,10 +40,8 @@ DEB_MAKE_CHECK_TARGET = $(exp-relax-check) test
 
 # properly clean files from build, waf, test, python
 clean::
-	rm -f node
-	rm -f node_g
-	rm -f .lock-wscript
-	rm -rf build
+	rm -f config.gypi
+	rm -f config.mk
 	rm -f test/fixtures/hello.txt
 	rm -rf test/tmp
 	find . -name "*.pyc" -delete
