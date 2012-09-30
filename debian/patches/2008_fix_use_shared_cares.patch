@@ -76,7 +76,7 @@ Last-Update: 2012-09-30
 -CPPFLAGS += -Isrc/ares/config_linux
 -LINKFLAGS+=-ldl -lrt
 +CPPFLAGS += -I/usr/include
-+LINKFLAGS+=-ldl -lrt -lc-ares
++LINKFLAGS+=-ldl -lrt -lcares
  OBJS += src/unix/linux/linux-core.o \
          src/unix/linux/inotify.o    \
          src/unix/linux/syscalls.o
@@ -250,7 +250,7 @@ Last-Update: 2012-09-30
            ],
            'direct_dependent_settings': {
 -            'libraries': [ '-lrt' ],
-+            'libraries': [ '-lrt', '-lc-ares' ],
++            'libraries': [ '-lrt', '-lcares' ],
            },
          }],
          [ 'OS=="solaris"', {

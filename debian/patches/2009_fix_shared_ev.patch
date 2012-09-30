@@ -42,8 +42,8 @@ Last-Update: 2012-09-30
  EIO_CONFIG=config_linux.h
  CSTDFLAG += -D_GNU_SOURCE
  CPPFLAGS += -I/usr/include
--LINKFLAGS+=-ldl -lrt -lc-ares
-+LINKFLAGS+=-ldl -lrt -lc-ares -lev
+-LINKFLAGS+=-ldl -lrt -lcares
++LINKFLAGS+=-ldl -lrt -lcares -lev
  OBJS += src/unix/linux/linux-core.o \
          src/unix/linux/inotify.o    \
          src/unix/linux/syscalls.o
@@ -111,8 +111,8 @@ Last-Update: 2012-09-30
              'EIO_CONFIG_H="config_linux.h"',
            ],
            'direct_dependent_settings': {
--            'libraries': [ '-lrt', '-lc-ares' ],
-+            'libraries': [ '-lrt', '-lc-ares', '-lev' ],
+-            'libraries': [ '-lrt', '-lcares' ],
++            'libraries': [ '-lrt', '-lcares', '-lev' ],
            },
          }],
          [ 'OS=="solaris"', {
