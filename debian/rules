@@ -19,8 +19,8 @@ DEB_UPSTREAM_REPACKAGE_EXCLUDES += \
 ./deps/uv/src/unix/ev/ \
 ./deps/uv/include/ares*.h \
 ./deps/uv/include/uv-private/ev.h \
-./deps/uv/include/uv-private/tree.h \
-./tools/scons/ \
+./test/gc/node_modules/ \
+./tools/blog/ \
 ./tools/gyp/ \
 ./tools/closure_linter/
 
