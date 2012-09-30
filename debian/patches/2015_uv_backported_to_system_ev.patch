@@ -1,0 +1,332 @@
+Description: uv backported to system ev
+ Upstream changed its own copy of libev. This patch tries to restore the
+ compatibility between libuv and the system copy of libev.
+ For now it is mainly undoing of libuv commits :
+ * https://github.com/joyent/libuv/commit/649ad50c
+ * https://github.com/joyent/libuv/commit/7d2ea316
+ * https://github.com/joyent/libuv/commit/c9396dd5
+Author: Jérémy Lal <kapouer@melix.org>
+Forwarded: not-needed
+Last-Update: 2012-09-30
+--- a/deps/uv/include/uv-private/uv-unix.h
++++ b/deps/uv/include/uv-private/uv-unix.h
+@@ -131,9 +131,6 @@
+   ngx_queue_t async_handles;                                                  \
+   uv__io_t async_watcher;                                                     \
+   int async_pipefd[2];                                                        \
+-  /* RB_HEAD(uv__timers, uv_timer_s) */                                       \
+-  struct uv__timers { struct uv_timer_s* rbh_root; } timer_handles;           \
+-  uint64_t time;                                                              \
+   UV_LOOP_PRIVATE_PLATFORM_FIELDS
+ 
+ #define UV_REQ_BUFSML_SIZE (4)
+@@ -237,16 +234,8 @@
+ 
+ /* UV_TIMER */
+ #define UV_TIMER_PRIVATE_FIELDS                                               \
+-  /* RB_ENTRY(uv_timer_s) node; */                                            \
+-  struct {                                                                    \
+-    struct uv_timer_s* rbe_left;                                              \
+-    struct uv_timer_s* rbe_right;                                             \
+-    struct uv_timer_s* rbe_parent;                                            \
+-    int rbe_color;                                                            \
+-  } tree_entry;                                                               \
+-  uv_timer_cb timer_cb;                                                       \
+-  uint64_t timeout;                                                           \
+-  uint64_t repeat;
++  ev_timer timer_watcher;                                                     \
++  uv_timer_cb timer_cb;                                                       
+ 
+ #define UV_GETADDRINFO_PRIVATE_FIELDS \
+   uv_getaddrinfo_cb cb; \
+--- a/deps/uv/src/unix/core.c
++++ b/deps/uv/src/unix/core.c
+@@ -227,36 +227,35 @@
+ }
+ 
+ 
+-static unsigned int uv__poll_timeout(uv_loop_t* loop) {
+-  if (!uv__has_active_handles(loop) && !uv__has_active_reqs(loop))
+-    return 0;
+-
+-  if (!ngx_queue_empty(&loop->idle_handles))
+-    return 0;
+-
+-  if (loop->closing_handles)
+-    return 0;
+-
+-  return uv__next_timeout(loop);
++static void uv__poll(uv_loop_t* loop, int block) {
++  /* bump the loop's refcount, otherwise libev does
++   * a zero timeout poll and we end up busy looping
++   */
++  ev_ref(loop->ev);
++  ev_run(loop->ev, block ? EVRUN_ONCE : EVRUN_NOWAIT);
++  ev_unref(loop->ev);
+ }
+ 
+ 
+-static void uv__poll(uv_loop_t* loop) {
+-  void ev__run(EV_P_ ev_tstamp waittime);
+-  ev_invoke_pending(loop->ev);
+-  ev__run(loop->ev, uv__poll_timeout(loop) / 1000.);
+-  ev_invoke_pending(loop->ev);
++static int uv__should_block(uv_loop_t* loop) {
++  return loop->active_handles && ngx_queue_empty(&loop->idle_handles);
+ }
+ 
+ 
+ static int uv__run(uv_loop_t* loop) {
+-  uv_update_time(loop);
+-  uv__run_timers(loop);
+   uv__run_idle(loop);
+-  uv__run_prepare(loop);
+-  uv__poll(loop);
+-  uv__run_check(loop);
++
++  if (uv__has_active_handles(loop) || uv__has_active_reqs(loop)) {
++    uv__run_prepare(loop);
++    /* Need to poll even if there are no active handles left, otherwise
++     * uv_work_t reqs won't complete...
++     */
++    uv__poll(loop, uv__should_block(loop));
++    uv__run_check(loop);
++  }
++
+   uv__run_closing_handles(loop);
++
+   return uv__has_active_handles(loop) || uv__has_active_reqs(loop);
+ }
+ 
+@@ -273,12 +272,12 @@
+ 
+ 
+ void uv_update_time(uv_loop_t* loop) {
+-  loop->time = uv_hrtime() / 1000000;
++  ev_now_update(loop->ev);
+ }
+ 
+ 
+ int64_t uv_now(uv_loop_t* loop) {
+-  return loop->time;
++  return (int64_t)(ev_now(loop->ev) * 1000);
+ }
+ 
+ 
+--- a/deps/uv/src/unix/internal.h
++++ b/deps/uv/src/unix/internal.h
+@@ -93,7 +93,8 @@
+   UV_STREAM_WRITABLE  = 0x40,   /* The stream is writable */
+   UV_STREAM_BLOCKING  = 0x80,   /* Synchronous writes. */
+   UV_TCP_NODELAY      = 0x100,  /* Disable Nagle. */
+-  UV_TCP_KEEPALIVE    = 0x200   /* Turn on keep-alive. */
++  UV_TCP_KEEPALIVE    = 0x200,  /* Turn on keep-alive. */
++  UV_TIMER_REPEAT     = 0x100
+ };
+ 
+ inline static void uv__req_init(uv_loop_t* loop,
+@@ -148,9 +149,8 @@
+ /* pipe */
+ int uv_pipe_listen(uv_pipe_t* handle, int backlog, uv_connection_cb cb);
+ 
+-/* timer */
+-void uv__run_timers(uv_loop_t* loop);
+-unsigned int uv__next_timeout(uv_loop_t* loop);
++/* poll */
++void uv__poll_close(uv_poll_t* handle);
+ 
+ /* various */
+ void uv__async_close(uv_async_t* handle);
+@@ -158,7 +158,6 @@
+ void uv__fs_event_close(uv_fs_event_t* handle);
+ void uv__idle_close(uv_idle_t* handle);
+ void uv__pipe_close(uv_pipe_t* handle);
+-void uv__poll_close(uv_poll_t* handle);
+ void uv__prepare_close(uv_prepare_t* handle);
+ void uv__process_close(uv_process_t* handle);
+ void uv__stream_close(uv_stream_t* handle);
+--- a/deps/uv/src/unix/loop.c
++++ b/deps/uv/src/unix/loop.c
+@@ -37,7 +37,6 @@
+   memset(loop, 0, sizeof(*loop));
+ 
+   RB_INIT(&loop->ares_handles);
+-  RB_INIT(&loop->timer_handles);
+   ngx_queue_init(&loop->active_reqs);
+   ngx_queue_init(&loop->idle_handles);
+   ngx_queue_init(&loop->async_handles);
+@@ -46,7 +45,6 @@
+   ngx_queue_init(&loop->handle_queue);
+   loop->closing_handles = NULL;
+   loop->channel = NULL;
+-  loop->time = uv_hrtime() / 1000000;
+   loop->async_pipefd[0] = -1;
+   loop->async_pipefd[1] = -1;
+   loop->ev = (default_loop ? ev_default_loop : ev_loop_new)(flags);
+--- a/deps/uv/src/unix/timer.c
++++ b/deps/uv/src/unix/timer.c
+@@ -22,114 +22,92 @@
+ #include "internal.h"
+ #include <assert.h>
+ 
+-static int uv__timer_cmp(const uv_timer_t* a, const uv_timer_t* b) {
+-  if (a->timeout < b->timeout)
+-    return -1;
+-  if (a->timeout > b->timeout)
+-    return 1;
+-  if (a < b)
+-    return -1;
+-  if (a > b)
+-    return 1;
+-  return 0;
++
++static int uv__timer_repeating(const uv_timer_t* timer) {
++  return timer->flags & UV_TIMER_REPEAT;
+ }
+ 
+ 
+-RB_GENERATE_STATIC(uv__timers, uv_timer_s, tree_entry, uv__timer_cmp)
++static void uv__timer_cb(EV_P_ ev_timer* w, int revents) {
++  uv_timer_t* timer = container_of(w, uv_timer_t, timer_watcher);
++
++  if (!uv__is_active(timer))
++    return;
++
++  if (!uv__timer_repeating(timer))
++    uv__handle_stop(timer);
++
++  if (timer->timer_cb)
++    timer->timer_cb(timer, 0);
++}
+ 
+ 
+-int uv_timer_init(uv_loop_t* loop, uv_timer_t* handle) {
++int uv_timer_init(uv_loop_t* loop, uv_timer_t* timer) {
++  uv__handle_init(loop, (uv_handle_t*)timer, UV_TIMER);
+   loop->counters.timer_init++;
+ 
+-  uv__handle_init(loop, (uv_handle_t*)handle, UV_TIMER);
+-  handle->timer_cb = NULL;
++  ev_init(&timer->timer_watcher, uv__timer_cb);
+ 
+   return 0;
+ }
+ 
+ 
+-int uv_timer_start(uv_timer_t* handle,
++int uv_timer_start(uv_timer_t* timer,
+                    uv_timer_cb cb,
+                    int64_t timeout,
+                    int64_t repeat) {
+-  assert(timeout >= 0);
+-  assert(repeat >= 0);
+-
+-  if (uv__is_active(handle))
+-    uv_timer_stop(handle);
++  if (uv__is_active(timer))
++    uv_timer_stop(timer);
+ 
+-  handle->timer_cb = cb;
+-  handle->timeout = handle->loop->time + timeout;
+-  handle->repeat = repeat;
++  timer->timer_cb = cb;
+ 
+-  RB_INSERT(uv__timers, &handle->loop->timer_handles, handle);
+-  uv__handle_start(handle);
++  if (repeat)
++    timer->flags |= UV_TIMER_REPEAT;
++  else
++    timer->flags &= ~UV_TIMER_REPEAT;
++
++  ev_timer_set(&timer->timer_watcher, timeout / 1000.0, repeat / 1000.0);
++  ev_timer_start(timer->loop->ev, &timer->timer_watcher);
++  uv__handle_start(timer);
+ 
+   return 0;
+ }
+ 
+ 
+-int uv_timer_stop(uv_timer_t* handle) {
+-  if (!uv__is_active(handle))
+-    return 0;
+-
+-  RB_REMOVE(uv__timers, &handle->loop->timer_handles, handle);
+-  uv__handle_stop(handle);
+-
++int uv_timer_stop(uv_timer_t* timer) {
++  timer->flags &= ~UV_TIMER_REPEAT;
++  ev_timer_stop(timer->loop->ev, &timer->timer_watcher);
++  uv__handle_stop(timer);
+   return 0;
+ }
+ 
+ 
+-int uv_timer_again(uv_timer_t* handle) {
+-  if (handle->timer_cb == NULL)
+-    return uv__set_artificial_error(handle->loop, UV_EINVAL);
+-
+-  if (handle->repeat) {
+-    uv_timer_stop(handle);
+-    uv_timer_start(handle, handle->timer_cb, handle->repeat, handle->repeat);
++int uv_timer_again(uv_timer_t* timer) {
++  if (!uv__is_active(timer)) {
++    uv__set_artificial_error(timer->loop, UV_EINVAL);
++    return -1;
+   }
+ 
++  assert(uv__timer_repeating(timer));
++  ev_timer_again(timer->loop->ev, &timer->timer_watcher);
+   return 0;
+ }
+ 
+ 
+-void uv_timer_set_repeat(uv_timer_t* handle, int64_t repeat) {
+-  assert(repeat >= 0);
+-  handle->repeat = repeat;
+-}
+-
+-
+-int64_t uv_timer_get_repeat(uv_timer_t* handle) {
+-  return handle->repeat;
+-}
+-
+-
+-unsigned int uv__next_timeout(uv_loop_t* loop) {
+-  uv_timer_t* handle;
++void uv_timer_set_repeat(uv_timer_t* timer, int64_t repeat) {
++  assert(timer->type == UV_TIMER);
++  timer->timer_watcher.repeat = repeat / 1000.0;
+ 
+-  handle = RB_MIN(uv__timers, &loop->timer_handles);
+-
+-  if (handle == NULL)
+-    return (unsigned int) -1; /* block indefinitely */
+-
+-  if (handle->timeout <= loop->time)
+-    return 0;
+-
+-  return handle->timeout - loop->time;
++  if (repeat)
++    timer->flags |= UV_TIMER_REPEAT;
++  else
++    timer->flags &= ~UV_TIMER_REPEAT;
+ }
+ 
+ 
+-void uv__run_timers(uv_loop_t* loop) {
+-  uv_timer_t* handle;
+-
+-  while ((handle = RB_MIN(uv__timers, &loop->timer_handles))) {
+-    if (handle->timeout > loop->time)
+-      break;
+-
+-    uv_timer_stop(handle);
+-    uv_timer_again(handle);
+-    handle->timer_cb(handle, 0);
+-  }
++int64_t uv_timer_get_repeat(uv_timer_t* timer) {
++  assert(timer->type == UV_TIMER);
++  return (int64_t)(1000 * timer->timer_watcher.repeat);
+ }
+ 
+ 
