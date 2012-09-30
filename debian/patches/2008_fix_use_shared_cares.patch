@@ -1,7 +1,7 @@
 Description: Use system libc-ares
 Author: Jérémy Lal <kapouer@melix.org>
 Forwarded: not-needed
-Last-Update: 2012-01-23
+Last-Update: 2012-09-30
 
 --- a/deps/uv/Makefile
 +++ b/deps/uv/Makefile
@@ -69,86 +69,45 @@ Last-Update: 2012-01-23
  		test/runner.c $(RUNNER_SRC) $(TESTS) uv.a $(RUNNER_LIBS) $(RUNNER_LINKFLAGS)
 --- a/deps/uv/config-unix.mk
 +++ b/deps/uv/config-unix.mk
-@@ -60,8 +60,8 @@
+@@ -65,8 +65,8 @@
  EV_CONFIG=config_linux.h
  EIO_CONFIG=config_linux.h
  CSTDFLAG += -D_GNU_SOURCE
 -CPPFLAGS += -Isrc/ares/config_linux
--LINKFLAGS+=-lrt
+-LINKFLAGS+=-ldl -lrt
 +CPPFLAGS += -I/usr/include
-+LINKFLAGS+=-lrt -lc-ares
- OBJS += src/unix/linux.o
- endif
- 
-@@ -124,8 +124,8 @@
++LINKFLAGS+=-ldl -lrt -lc-ares
+ OBJS += src/unix/linux/linux-core.o \
+         src/unix/linux/inotify.o    \
+         src/unix/linux/syscalls.o
+@@ -131,7 +131,7 @@
  RUNNER_LIBS=
  RUNNER_SRC=test/runner-unix.c
  
--uv.a: $(OBJS) src/uv-common.o src/unix/ev/ev.o src/unix/uv-eio.o src/unix/eio/eio.o $(CARES_OBJS)
--	$(AR) rcs uv.a $(OBJS) src/uv-common.o src/unix/uv-eio.o src/unix/ev/ev.o src/unix/eio/eio.o $(CARES_OBJS)
-+uv.a: $(OBJS) src/uv-common.o src/unix/ev/ev.o src/unix/uv-eio.o src/unix/eio/eio.o
-+	$(AR) rcs uv.a $(OBJS) src/uv-common.o src/unix/uv-eio.o src/unix/ev/ev.o src/unix/eio/eio.o
+-uv.a: $(OBJS) src/cares.o src/fs-poll.o src/uv-common.o src/unix/ev/ev.o src/unix/uv-eio.o src/unix/eio/eio.o $(CARES_OBJS)
++uv.a: $(OBJS) src/cares.o src/fs-poll.o src/uv-common.o src/unix/ev/ev.o src/unix/uv-eio.o src/unix/eio/eio.o
+ 	$(AR) rcs uv.a $^
  
- src/unix/%.o: src/unix/%.c include/uv.h include/uv-private/uv-unix.h src/unix/internal.h
- 	$(CC) $(CSTDFLAG) $(CPPFLAGS) -Isrc  $(CFLAGS) -c $< -o $@
-@@ -150,14 +150,12 @@
+ src/%.o: src/%.c include/uv.h include/uv-private/uv-unix.h
+@@ -157,7 +157,6 @@
  
  
  clean-platform:
 -	-rm -f src/ares/*.o
+ 	-rm -f src/unix/*.o
  	-rm -f src/unix/ev/*.o
  	-rm -f src/unix/eio/*.o
- 	-rm -f src/unix/*.o
+@@ -165,7 +164,6 @@
  	-rm -rf test/run-tests.dSYM run-benchmarks.dSYM
  
  distclean-platform:
 -	-rm -f src/ares/*.o
- 	-rm -f src/unix/ev/*.o
  	-rm -f src/unix/*.o
+ 	-rm -f src/unix/ev/*.o
  	-rm -f src/unix/eio/*.o
---- a/wscript
-+++ b/wscript
-@@ -441,6 +441,18 @@
-   if conf.env["USE_SHARED_ZLIB"] and not sys.platform.startswith("win32"):
-     conf.env.append_value("LINKFLAGS", "-lz")
- 
-+  if conf.env['USE_SHARED_CARES']:
-+    cares_includes = [];
-+    if o.shared_cares_includes: cares_includes.append(o.shared_cares_includes);
-+    cares_libpath = [];
-+    if o.shared_cares_libpath: cares_libpath.append(o.shared_cares_libpath);
-+    if not conf.check_cxx(lib='cares',
-+                          header_name='ares.h',
-+                          uselib_store='CARES',
-+                          includes=cares_includes,
-+                          libpath=cares_libpath):
-+      conf.fatal("Cannot find c-ares")
-+
-   conf.define("HAVE_CONFIG_H", 1)
- 
-   if sys.platform.startswith("sunos"):
-@@ -678,10 +690,6 @@
-   bld.install_files('${PREFIX}/include/node/', 'deps/uv/include/*.h')
-   bld.install_files('${PREFIX}/include/node/uv-private', 'deps/uv/include/uv-private/*.h')
-   bld.install_files('${PREFIX}/include/node/ev', 'deps/uv/src/ev/*.h')
--  bld.install_files('${PREFIX}/include/node/c-ares', """
--    deps/uv/include/ares.h
--    deps/uv/include/ares_version.h
--  """)
- 
- 
- def build(bld):
-@@ -938,7 +946,6 @@
-     deps/http_parser
-     deps/uv/include
-     deps/uv/src/ev
--    deps/uv/src/ares
-   """
- 
-   if not bld.env["USE_SHARED_V8"]: node.includes += ' deps/v8/include '
 --- a/deps/uv/src/uv-common.c
 +++ b/deps/uv/src/uv-common.c
-@@ -27,9 +27,8 @@
+@@ -29,9 +29,8 @@
  #include <string.h> /* memset */
  
  /* use inet_pton from c-ares if necessary */
@@ -158,9 +117,9 @@ Last-Update: 2012-01-23
 +#include <ares.h>
 +#include <arpa/inet.h>
  
+ #define XX(uc, lc) case UV_##uc: return sizeof(uv_##lc##_t);
  
- static uv_counters_t counters;
-@@ -131,20 +130,20 @@
+@@ -182,20 +181,20 @@
  
    addr.sin6_family = AF_INET6;
    addr.sin6_port = htons(port);
@@ -186,12 +145,112 @@ Last-Update: 2012-01-23
  
 --- a/deps/uv/include/uv.h
 +++ b/deps/uv/include/uv.h
-@@ -54,7 +54,7 @@
+@@ -55,7 +55,7 @@
  #include <stdint.h> /* int64_t */
  #include <sys/types.h> /* size_t */
  
 -#include "ares.h"
 +#include <ares.h>
  
- #ifndef _SSIZE_T_
- typedef intptr_t ssize_t;
+ #if defined(__unix__) || defined(__POSIX__) || defined(__APPLE__)
+ # include "uv-private/uv-unix.h"
+--- a/deps/uv/uv.gyp
++++ b/deps/uv/uv.gyp
+@@ -44,8 +44,6 @@
+       ],
+       'sources': [
+         'common.gypi',
+-        'include/ares.h',
+-        'include/ares_version.h',
+         'include/uv.h',
+         'include/uv-private/ngx-queue.h',
+         'include/uv-private/tree.h',
+@@ -53,70 +51,6 @@
+         'src/fs-poll.c',
+         'src/uv-common.c',
+         'src/uv-common.h',
+-        'src/ares/ares_cancel.c',
+-        'src/ares/ares__close_sockets.c',
+-        'src/ares/ares_data.c',
+-        'src/ares/ares_data.h',
+-        'src/ares/ares_destroy.c',
+-        'src/ares/ares_dns.h',
+-        'src/ares/ares_expand_name.c',
+-        'src/ares/ares_expand_string.c',
+-        'src/ares/ares_fds.c',
+-        'src/ares/ares_free_hostent.c',
+-        'src/ares/ares_free_string.c',
+-        'src/ares/ares_getenv.h',
+-        'src/ares/ares_gethostbyaddr.c',
+-        'src/ares/ares_gethostbyname.c',
+-        'src/ares/ares__get_hostent.c',
+-        'src/ares/ares_getnameinfo.c',
+-        'src/ares/ares_getopt.c',
+-        'src/ares/ares_getopt.h',
+-        'src/ares/ares_getsock.c',
+-        'src/ares/ares_init.c',
+-        'src/ares/ares_ipv6.h',
+-        'src/ares/ares_library_init.c',
+-        'src/ares/ares_library_init.h',
+-        'src/ares/ares_llist.c',
+-        'src/ares/ares_llist.h',
+-        'src/ares/ares_mkquery.c',
+-        'src/ares/ares_nowarn.c',
+-        'src/ares/ares_nowarn.h',
+-        'src/ares/ares_options.c',
+-        'src/ares/ares_parse_aaaa_reply.c',
+-        'src/ares/ares_parse_a_reply.c',
+-        'src/ares/ares_parse_mx_reply.c',
+-        'src/ares/ares_parse_ns_reply.c',
+-        'src/ares/ares_parse_ptr_reply.c',
+-        'src/ares/ares_parse_srv_reply.c',
+-        'src/ares/ares_parse_txt_reply.c',
+-        'src/ares/ares_platform.h',
+-        'src/ares/ares_private.h',
+-        'src/ares/ares_process.c',
+-        'src/ares/ares_query.c',
+-        'src/ares/ares__read_line.c',
+-        'src/ares/ares_rules.h',
+-        'src/ares/ares_search.c',
+-        'src/ares/ares_send.c',
+-        'src/ares/ares_setup.h',
+-        'src/ares/ares_strcasecmp.c',
+-        'src/ares/ares_strcasecmp.h',
+-        'src/ares/ares_strdup.c',
+-        'src/ares/ares_strdup.h',
+-        'src/ares/ares_strerror.c',
+-        'src/ares/ares_timeout.c',
+-        'src/ares/ares__timeval.c',
+-        'src/ares/ares_version.c',
+-        'src/ares/ares_writev.c',
+-        'src/ares/ares_writev.h',
+-        'src/ares/bitncmp.c',
+-        'src/ares/bitncmp.h',
+-        'src/ares/inet_net_pton.c',
+-        'src/ares/inet_net_pton.h',
+-        'src/ares/inet_ntop.c',
+-        'src/ares/inet_ntop.h',
+-        'src/ares/nameser.h',
+-        'src/ares/setup_once.h',
+-        'src/ares/windows_port.c',
+       ],
+       'conditions': [
+         [ 'OS=="win"', {
+@@ -231,7 +165,7 @@
+           ]
+         }],
+         [ 'OS=="linux"', {
+-          'include_dirs': [ 'src/ares/config_linux' ],
++          'include_dirs': [ '/usr/include' ],
+           'sources': [
+             'src/unix/linux/linux-core.c',
+             'src/unix/linux/inotify.c',
+@@ -243,7 +177,7 @@
+             'EIO_CONFIG_H="config_linux.h"',
+           ],
+           'direct_dependent_settings': {
+-            'libraries': [ '-lrt' ],
++            'libraries': [ '-lrt', '-lc-ares' ],
+           },
+         }],
+         [ 'OS=="solaris"', {
