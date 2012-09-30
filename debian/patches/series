@@ -6,3 +6,4 @@
 2010_fix_makefile_missing_zlib.patch
 2013_waf_linkflags.patch
 2014_v8_38_compat.patch
+2015_uv_backported_to_system_ev.patch
