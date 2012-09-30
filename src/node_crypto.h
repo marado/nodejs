@@ -22,10 +22,10 @@
 #ifndef SRC_NODE_CRYPTO_H_
 #define SRC_NODE_CRYPTO_H_
 
-#include <node.h>
+#include "node.h"
 
-#include <node_object_wrap.h>
-#include <v8.h>
+#include "node_object_wrap.h"
+#include "v8.h"
 
 #include <openssl/ssl.h>
 #include <openssl/err.h>
@@ -38,7 +38,7 @@
 #include <openssl/pkcs12.h>
 
 #ifdef OPENSSL_NPN_NEGOTIATED
-#include <node_buffer.h>
+#include "node_buffer.h"
 #endif
 
 #define EVP_F_EVP_DECRYPTFINAL 101
@@ -110,7 +110,7 @@ class Connection : ObjectWrap {
 #endif
 
 #ifdef SSL_CTRL_SET_TLSEXT_SERVERNAME_CB
-  v8::Persistent<v8::Function> sniCallback_;
+  v8::Persistent<v8::Object> sniObject_;
   v8::Persistent<v8::Value> sniContext_;
   v8::Persistent<v8::String> servername_;
 #endif
@@ -185,7 +185,7 @@ class Connection : ObjectWrap {
 #endif
 
 #ifdef SSL_CTRL_SET_TLSEXT_SERVERNAME_CB
-   if (!sniCallback_.IsEmpty()) sniCallback_.Dispose();
+   if (!sniObject_.IsEmpty()) sniObject_.Dispose();
    if (!sniContext_.IsEmpty()) sniContext_.Dispose();
    if (!servername_.IsEmpty()) servername_.Dispose();
 #endif

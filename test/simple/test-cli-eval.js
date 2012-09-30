@@ -19,20 +19,21 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-var common = require('../common.js'),
-    assert = require('assert'),
-    child = require('child_process'),
-    nodejs = '"' + process.execPath + '"';
-
-// replace \ by / because windows uses backslashes in paths, but they're still
-// interpreted as the escape character when put between quotes.
-var filename = __filename.replace(/\\/g, '/');
-
 if (module.parent) {
   // signal we've been loaded as a module
   console.log('Loaded as a module, exiting with status code 42.');
   process.exit(42);
 }
+
+var common = require('../common.js'),
+    assert = require('assert'),
+    child = require('child_process'),
+    nodejs = '"' + process.execPath + '"';
+
+
+// replace \ by / because windows uses backslashes in paths, but they're still
+// interpreted as the escape character when put between quotes.
+var filename = __filename.replace(/\\/g, '/');
 
 // assert that nothing is written to stdout
 child.exec(nodejs + ' --eval 42',
@@ -46,7 +47,7 @@ child.exec(nodejs + ' --eval "console.error(42)"',
       assert.equal(stderr, '42\n');
     });
 
-// assert that nothing is written to stdout
+// assert that the expected output is written to stdout
 ['--print --eval', '-p -e', '-pe'].forEach(function(s) {
   var cmd = nodejs + ' ' + s + ' ';
 
