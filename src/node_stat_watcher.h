@@ -22,8 +22,8 @@
 #ifndef NODE_STAT_WATCHER_H_
 #define NODE_STAT_WATCHER_H_
 
-#include <node.h>
-#include <uv-private/ev.h>
+#include "node.h"
+#include "uv.h"
 
 namespace node {
 
@@ -34,30 +34,21 @@ class StatWatcher : ObjectWrap {
  protected:
   static v8::Persistent<v8::FunctionTemplate> constructor_template;
 
-  StatWatcher() : ObjectWrap() {
-    persistent_ = false;
-    path_ = NULL;
-    ev_init(&watcher_, StatWatcher::Callback);
-    watcher_.data = this;
-  }
-
-  ~StatWatcher() {
-    Stop();
-    assert(path_ == NULL);
-  }
+  StatWatcher();
+  virtual ~StatWatcher();
 
   static v8::Handle<v8::Value> New(const v8::Arguments& args);
   static v8::Handle<v8::Value> Start(const v8::Arguments& args);
   static v8::Handle<v8::Value> Stop(const v8::Arguments& args);
 
  private:
-  static void Callback(EV_P_ ev_stat *watcher, int revents);
-
+  static void Callback(uv_fs_poll_t* handle,
+                       int status,
+                       const uv_statbuf_t* prev,
+                       const uv_statbuf_t* curr);
   void Stop();
 
-  ev_stat watcher_;
-  bool persistent_;
-  char *path_;
+  uv_fs_poll_t* watcher_;
 };
 
 }  // namespace node

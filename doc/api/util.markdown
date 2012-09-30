@@ -6,7 +6,7 @@ These functions are in the module `'util'`. Use `require('util')` to access
 them.
 
 
-## util.format()
+## util.format(format, [...])
 
 Returns a formatted string using the first argument as a `printf`-like format.
 
@@ -44,6 +44,20 @@ output `string` immediately to `stderr`.
 
     require('util').debug('message on stderr');
 
+## util.error([...])
+
+Same as `util.debug()` except this will output all arguments immediately to
+`stderr`.
+
+## util.puts([...])
+
+A synchronous output function. Will block the process and output all arguments
+to `stdout` with newlines after each argument.
+
+## util.print([...])
+
+A synchronous output function. Will block the process, cast each argument to a
+string then output to `stdout`. Does not place newlines after each argument.
 
 ## util.log(string)
 
@@ -133,7 +147,7 @@ Returns `true` if the given "object" is an `Error`. `false` otherwise.
 
 ## util.pump(readableStream, writableStream, [callback])
 
-Experimental
+    Stability: 0 - Deprecated: Use readableStream.pipe(writableStream)
 
 Read the data from `readableStream` and send it to the `writableStream`.
 When `writableStream.write(data)` returns `false` `readableStream` will be

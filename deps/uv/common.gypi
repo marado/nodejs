@@ -6,6 +6,8 @@
     'library%': 'static_library',    # allow override to 'shared_library' for DLL/.so builds
     'component%': 'static_library',  # NB. these names match with what V8 expects
     'msvs_multi_core_compile': '0',  # we do enable multicore compiles, but not using the V8 way
+    'gcc_version%': 'unknown',
+    'clang%': 0,
   },
 
   'target_defaults': {
@@ -24,13 +26,16 @@
               }],
             ],
             'Optimization': 0, # /Od, no optimization
-            'MinimalRebuild': 'true',
+            'MinimalRebuild': 'false',
             'OmitFramePointers': 'false',
             'BasicRuntimeChecks': 3, # /RTC1
           },
           'VCLinkerTool': {
             'LinkIncremental': 2, # enable incremental linking
           },
+        },
+        'xcode_settings': {
+          'GCC_OPTIMIZATION_LEVEL': '0',
         },
         'conditions': [
           ['OS != "win"', {
@@ -57,9 +62,6 @@
             'OmitFramePointers': 'true',
             'EnableFunctionLevelLinking': 'true',
             'EnableIntrinsicFunctions': 'true',
-            'AdditionalOptions': [
-              '/MP', # compile across multiple CPUs
-            ],
           },
           'VCLibrarianTool': {
             'AdditionalOptions': [
@@ -84,6 +86,9 @@
         'ExceptionHandling': 1, # /EHsc
         'SuppressStartupBanner': 'true',
         'WarnAsError': 'false',
+        'AdditionalOptions': [
+           '/MP', # compile across multiple CPUs
+         ],
       },
       'VCLibrarianTool': {
       },
@@ -114,9 +119,6 @@
         ],
       }],
       [ 'OS=="linux" or OS=="freebsd" or OS=="openbsd" or OS=="solaris"', {
-        'variables': {
-          'gcc_version%': '<!(python build/gcc_version.py)>)',
-        },
         'cflags': [ '-Wall' ],
         'cflags_cc': [ '-fno-rtti', '-fno-exceptions' ],
         'conditions': [
@@ -134,7 +136,7 @@
             'cflags': [ '-pthread' ],
             'ldflags': [ '-pthread' ],
           }],
-          [ 'visibility=="hidden" and gcc_version >= "4.0.0"', {
+          [ 'visibility=="hidden" and (clang==1 or gcc_version >= 40)', {
             'cflags': [ '-fvisibility=hidden' ],
           }],
         ],

@@ -3,7 +3,13 @@ Evented I/O for V8 javascript. [![Build Status](https://secure.travis-ci.org/joy
 
 ### To build:
 
-Unix/Macintosh (requires python 2.6 or 2.7):
+Prerequisites (Unix only):
+
+    * Python 2.6 or 2.7
+    * GNU Make 3.81 or newer
+    * libexecinfo (FreeBSD and OpenBSD only)
+
+Unix/Macintosh:
 
     ./configure
     make
