@@ -1,3 +1,9 @@
+nodejs (0.8.11~dfsg1-1) UNRELEASED; urgency=low
+
+  * Upstream update. 
+
+ -- Jérémy Lal <kapouer@melix.org>  Sun, 30 Sep 2012 10:59:13 +0200
+
 nodejs (0.6.19~dfsg1-6) UNRELEASED; urgency=low
 
   * Update package relations:
