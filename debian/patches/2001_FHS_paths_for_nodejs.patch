@@ -5,22 +5,15 @@ Description: FHS paths for nodejs
  
 Forwarded: not-needed
 Author: Jérémy Lal <kapouer@melix.org>
-Last-Update: 2011-09-11
---- a/src/node_config.h.in
-+++ b/src/node_config.h.in
-@@ -22,7 +22,7 @@
- #ifndef NODE_CONFIG_H
- #define NODE_CONFIG_H
- 
--#define NODE_CFLAGS "@CCFLAGS@ @CPPFLAGS@ -I@PREFIX@/include/node"
-+#define NODE_CFLAGS "@CCFLAGS@ @CPPFLAGS@ -I@PREFIX@/include/nodejs"
- #define NODE_PREFIX "@PREFIX@"
- 
- #endif /* NODE_CONFIG_H */
+Last-Update: 2012-09-30
 --- a/tools/wafadmin/Tools/node_addon.py
 +++ b/tools/wafadmin/Tools/node_addon.py
-@@ -28,7 +28,7 @@
+@@ -26,10 +26,10 @@
+   conf.env['PREFIX_NODE'] = get_prefix()
+   prefix = conf.env['PREFIX_NODE']
    lib = join(prefix, 'lib')
+-  nodebin = join(prefix, 'bin', 'node')
++  nodebin = join(prefix, 'bin', 'nodejs')
  
    conf.env['LIBPATH_NODE'] = lib
 -  conf.env['CPPPATH_NODE'] = join(prefix, 'include', 'node')
@@ -28,7 +21,7 @@ Last-Update: 2011-09-11
  
    conf.env.append_value('CPPFLAGS_NODE', '-D_GNU_SOURCE')
  
-@@ -63,7 +63,7 @@
+@@ -70,7 +70,7 @@
      nodePath = None
      if not os.environ.has_key('NODE_PATH'):
          if not os.environ.has_key('HOME'):
@@ -56,7 +49,7 @@ Last-Update: 2011-09-11
  t = join(w, 'Tools')
 --- a/lib/module.js
 +++ b/lib/module.js
-@@ -485,7 +485,7 @@
+@@ -493,7 +493,7 @@
  };
  
  Module._initPaths = function() {
