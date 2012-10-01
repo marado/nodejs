@@ -55,7 +55,7 @@ binary-post-install/nodejs::
 # TODO: when doc will be generated from markdown, patch doc/template.html instead
 binary-install/nodejs::
 	find debian/nodejs/usr/share/doc/nodejs -name *.json -delete
-	sed -i -n '1h; 1!H; ${g; s/<script[^><]*>[^><]*<.script[^><]*>//g; p;}' debian/nodejs/usr/share/doc/nodejs/api/*.html
+	sed -i -n '1h; 1!H; $${g; s/<script[^><]*>[^><]*<.script[^><]*>//g; p;}' debian/nodejs/usr/share/doc/nodejs/api/*.html
 
 # we have completion for nodejs-waf
 install/nodejs-dev::
