@@ -40,6 +40,7 @@ DEB_MAKE_CHECK_TARGET = $(exp-relax-check) test
 # hardening gyp
 CXXFLAGS+=$(CPPFLAGS)
 export CXXFLAGS
+export LDFLAGS
 
 # properly clean files from build, waf, test, python
 clean::
