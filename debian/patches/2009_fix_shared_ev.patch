@@ -116,3 +116,13 @@ Last-Update: 2012-09-30
            },
          }],
          [ 'OS=="solaris"', {
+--- a/tools/install.py
++++ b/tools/install.py
+@@ -184,7 +184,6 @@
+           'src/node_version.h'],
+           'include/node/')
+   action(['deps/uv/include/uv-private/eio.h',
+-          'deps/uv/include/uv-private/ev.h',
+           'deps/uv/include/uv-private/ngx-queue.h',
+           'deps/uv/include/uv-private/tree.h',
+           'deps/uv/include/uv-private/uv-unix.h',
