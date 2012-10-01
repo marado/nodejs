@@ -37,6 +37,10 @@ DEB_MAKE_CLEAN_TARGET = clean
 exp-relax-check := $(if $(shell dpkg-parsechangelog | grep -x 'Distribution: \(experimental\|UNRELEASED\)'),-i)
 DEB_MAKE_CHECK_TARGET = $(exp-relax-check) test
 
+# hardening gyp
+CXXFLAGS+=$(CPPFLAGS)
+export CXXFLAGS
+
 # properly clean files from build, waf, test, python
 clean::
 	rm -f config.gypi
