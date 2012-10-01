@@ -6,8 +6,7 @@ nodejs (0.8.11~dfsg1-1) UNRELEASED; urgency=low
   * Update copyright and hints
   * Populate changelog
   * Fix failing tests
-  * Support more OS and ARCH then Linux on amd64
-  * Ensure hardening is in effect
+  * Support more OS and ARCH than Linux on amd64
 
  -- Jérémy Lal <kapouer@melix.org>  Sun, 30 Sep 2012 10:59:13 +0200
 
