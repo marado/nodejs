@@ -5,13 +5,13 @@ Maintainer: Debian Javascript Maintainers <pkg-javascript-devel@lists.alioth.deb
 Uploaders: Jérémy Lal <kapouer@melix.org>,
  Jonas Smedegaard <dr@jones.dk>
 DM-Upload-Allowed: yes
-Build-Depends: cdbs (>= 0.4.70~),
+Build-Depends: cdbs,
  devscripts,
  debhelper,
  dh-buildinfo,
  gyp,
  python,
- libv8-dev (>= 3.7),
+ libv8-dev (>= 3.11),
  binutils,
  libssl-dev (>= 1.0.0g),
  libev-dev (>= 1:4.11),
@@ -33,7 +33,7 @@ Architecture: any
 Depends: nodejs (= ${binary:Version}),
  ${misc:Depends},
  python,
- libv8-dev (>= 3.7),
+ libv8-dev (>= 3.11),
  libssl-dev (>= 1.0.0g),
  libev-dev (>= 1:4.11),
  libc-ares-dev (>= 1.7.5)
