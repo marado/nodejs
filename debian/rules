@@ -27,7 +27,7 @@ DEB_UPSTREAM_REPACKAGE_EXCLUDES += \
 DEB_UPSTREAM_REPACKAGE_TAG = $(shell echo $(DEB_UPSTREAM_VERSION) | egrep -o "dfsg[0-9]+")
 
 # suppress checking binary files, to not upset dpkg-source
-DEB_COPYRIGHT_CHECK_IGNORE_REGEX = ^(doc/trademark-policy\.pdf|doc/mac_osx_nodejs_installer_logo\.png|doc/.*-white-stripe\.jpg|favicon\.ico|debian/(changelog|copyright(|_hints|_newhints)))$
+DEB_COPYRIGHT_CHECK_IGNORE_REGEX = ^(doc/trademark-policy\.pdf|doc/mac_osx_nodejs_installer_logo\.png|doc/.*-white-stripe\.jpg|favicon\.ico|deps/v8/benchmarks/v8-logo\.png|test/fixtures/person\.jpg.*|src/res/node\.ico|debian/(changelog|copyright(|_hints|_newhints)))$
 
 DEB_CONFIGURE_NORMAL_ARGS = ""
 DEB_CONFIGURE_EXTRA_FLAGS = --debug --without-npm --shared-v8 --without-snapshot --shared-openssl --shared-zlib --no-ssl2 --prefix=/usr
