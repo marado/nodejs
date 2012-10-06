@@ -116,8 +116,7 @@ Files: tools/wafadmin/pproc.py
 Copyright: (c) 2003-2005 by Peter Astrand <astrand@lysator.liu.se>
 License: Python-CNRI
 
-Files: src/platform_darwin_proctitle.cc
- tools/cpplint.py
+Files: tools/cpplint.py
 Copyright: 2007,2009-2010, Google Inc.
 License: BSD-3-clause~Google
 
