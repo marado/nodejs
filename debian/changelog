@@ -4,7 +4,6 @@ nodejs (0.8.11~dfsg1-1) UNRELEASED; urgency=low
   * Build-Depends: libv8-dev >= 3.11.
 
   [ TODO ]
-  * Update copyright and hints
   * Populate changelog
   * Support more OS and ARCH than Linux on amd64
 
