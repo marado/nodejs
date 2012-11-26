@@ -26,6 +26,20 @@ DEB_UPSTREAM_REPACKAGE_EXCLUDES += \
 
 DEB_UPSTREAM_REPACKAGE_TAG = $(shell echo $(DEB_UPSTREAM_VERSION) | egrep -o "dfsg[0-9]+")
 
+# Needed by upstream build
+bdeps = binutils, openssl (>= 1.0.0g), pkg-config, bash-completion
+bdeps += , curl, procps, zlib1g-dev
+
+# Needed by upstream build and binary development package
+deps = python,\
+ libv8-dev (>= 3.7),\
+ libssl-dev (>= 1.0.0g),\
+ libev-dev (>= 1:4.11),\
+ libc-ares-dev (>= 1.7.5)
+
+CDBS_BUILD_DEPENDS += , $(bdeps), $(deps)
+CDBS_DEPENDS_nodejs-dev = $(deps)
+
 CDBS_BREAKS_nodejs =\
  buddycloud-server (<< 0.3.1-2),\
  carto (<< 0.4.6+ds1-2~),\

@@ -5,19 +5,7 @@ Maintainer: Debian Javascript Maintainers <pkg-javascript-devel@lists.alioth.deb
 Uploaders: Jérémy Lal <kapouer@melix.org>,
  Jonas Smedegaard <dr@jones.dk>
 DM-Upload-Allowed: yes
-Build-Depends: @cdbs@,
- python,
- libv8-dev (>= 3.7),
- binutils,
- libssl-dev (>= 1.0.0g),
- libev-dev (>= 1:4.11),
- libc-ares-dev (>= 1.7.5),
- openssl (>= 1.0.0g),
- pkg-config,
- bash-completion,
- curl,
- procps,
- zlib1g-dev
+Build-Depends: @cdbs@
 Standards-Version: 3.9.3
 Homepage: http://nodejs.org/
 Vcs-Browser: http://git.debian.org/?p=collab-maint/nodejs.git
@@ -26,13 +14,9 @@ Vcs-Git: git://git.debian.org/git/collab-maint/nodejs.git
 Package: nodejs-dev
 Section: devel
 Architecture: any
-Depends: nodejs (= ${binary:Version}),
+Depends: ${cdbs:Depends},
  ${misc:Depends},
- python,
- libv8-dev (>= 3.7),
- libssl-dev (>= 1.0.0g),
- libev-dev (>= 1:4.11),
- libc-ares-dev (>= 1.7.5)
+ nodejs (= ${binary:Version})
 Description: Development files for Node.js
  Node.js provides an event-based server-side javascript engine.
  .
