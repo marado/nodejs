@@ -1042,7 +1042,6 @@ Files: deps/v8/LICENSE
  deps/v8/tools/splaytree.js
  deps/v8/tools/stats-viewer.py
  deps/v8/tools/test-wrapper-gypbuild.py
- deps/v8/tools/test.py
  deps/v8/tools/tickprocessor-driver.js
  deps/v8/tools/tickprocessor.js
  deps/v8/tools/utils.py
@@ -1120,30 +1119,32 @@ Files: AUTHORS
  debian/gbp.conf
  debian/node-waf.1
  debian/node-waf.bash-completion
- debian/nodejs-dbg.dirs
- debian/nodejs-dbg.install
  debian/nodejs-dev.bash-completion
  debian/nodejs-dev.dirs
  debian/nodejs-dev.install
  debian/nodejs-dev.manpages
+ debian/nodejs-legacy.links
  debian/nodejs.README.Debian
  debian/nodejs.dirs
  debian/nodejs.doc-base
  debian/nodejs.docs
  debian/nodejs.install
- debian/nodejs.links
  debian/nodejs.manpages
  debian/nodejs.postinst
  debian/nodejs.prerm
  debian/patches/1001_align_fast_buffers_8byte_boundary.patch
  debian/patches/2001_FHS_paths_for_nodejs.patch
  debian/patches/2002_build_without_libv8_debug.patch
+ debian/patches/2003_rename_node_to_nodejs.patch
+ debian/patches/2004_relax_failing_test.patch
  debian/patches/2005_expected_failing_tests.patch
  debian/patches/2006_use_system_libeio.patch
  debian/patches/2007_fix_use_shared_zlib.patch
  debian/patches/2008_fix_use_shared_cares.patch
  debian/patches/2009_fix_shared_ev.patch
  debian/patches/2011_enable_mipsel_build.patch
+ debian/patches/2012_fix_v8_3_10.patch
+ debian/patches/2013_waf_linkflags.patch
  debian/patches/series
  debian/source/format
  debian/watch
@@ -1707,6 +1708,13 @@ Copyright: 2006-2008, the V8 project authors.
 License: BSD (3 clause)
  FIXME
 
+Files: deps/v8/tools/test.py
+ tools/test.py
+Copyright: 2008, the V8 project authors. /
+  HOLDERS AND CONTRIBUTORS
+License: BSD (3 clause)
+ FIXME
+
 Files: deps/v8/LICENSE.valgrind
  deps/v8/src/third_party/valgrind/valgrind.h
 Copyright: 2000-2007, Julian Seward.
@@ -1842,12 +1850,6 @@ Copyright: 2006-2008, the V8 project authors.
 License: BSD (3 clause)
  FIXME
 
-Files: tools/test.py
-Copyright: 2008, the V8 project authors. /
-  HOLDERS AND CONTRIBUTORS
-License: BSD (3 clause)
- FIXME
-
 Files: deps/uv/src/unix/eio/aclocal.m4
 Copyright: 1996, 1998, 2000-2005, 2008
   1996-1997, 2000-2001, 2003, 2005, 2008
@@ -1882,9 +1884,7 @@ License: GPL-2+
 Files: deps/http_parser/http_parser.c
 Copyright: & 0x80))
   (IS_ALPHANUM || == '.' || == '-')
-  (normal_url_char[(unsigned char)
-  (unsigned char)(c | 0x20)
-  Joyent, Inc. and other Node contributors.
+  (tokens[(unsigned char)c
 License: MIT/X11 (BSD like)
  FIXME
 
@@ -1990,6 +1990,14 @@ License: UNKNOWN
 
 Files: src/v8ustack.d
 Copyright: (this->buf[this->off++
+License: UNKNOWN
+ FIXME
+
+Files: debian/patches/1002_upstream_forgot_to_build_doc.patch
+Copyright: <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.18/LICENSE">license</a>.</p>
+  <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.6.19/LICENSE">license</a>.</p>
+  { //&apos;connection&apos; listener
+  { //&apos;connection&apos; listener\n console.log(&apos;server connected&apos;);\n c.on(&apos;end&apos;, function() {\n console.log(&apos;server disconnected&apos;);\n });\n c.write(&apos;hello\\r\\n&apos;);\n c.pipe;\n});\nserver.listen(8124, function() { //&apos;listening&apos; listener\n console.log(&apos;server bound&apos;);\n});</code></pre>\n<p>Test this by using <code>telnet</code>:\n\n</p>\n<pre><code>telnet localhost 8124</code></pre>\n<p>To listen on the socket <code>/tmp/echo.sock</code> the third line from the last would\njust be changed to\n\n</p>\n<pre><code>server.listen(&apos;/tmp/echo.sock&apos;, function() { //&apos;listening&apos; listener</code></pre>\n<p>Use <code>nc</code> to connect to a UNIX domain socket server:\n\n</p>\n<pre><code>nc -U /tmp/echo.sock</code></pre>\n"
 License: UNKNOWN
  FIXME
 

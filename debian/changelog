@@ -1,12 +1,16 @@
-nodejs (0.6.19~dfsg1-6) UNRELEASED; urgency=low
+nodejs (0.6.19~dfsg1-6) unstable; urgency=low
 
   * Update package relations:
     + Generally tighten breaks to relate to (backport of) first known
       working version (not last known broken version): node → nodejs
       transition now done for all dependent packages.
     + Relax needlesly tight breaks for node-bones.
+    + Declare (build-)dependencies in rules file.
+  * Sync rules and control.in with control: Provide binary package
+    nodejs-legacy, and break all packages depending on old binary
+    package node (not conflict directly with it).
 
- -- Jonas Smedegaard <dr@jones.dk>  Sat, 22 Sep 2012 16:09:56 +0200
+ -- Jonas Smedegaard <dr@jones.dk>  Mon, 26 Nov 2012 20:55:52 +0100
 
 nodejs (0.6.19~dfsg1-5) unstable; urgency=low
 
