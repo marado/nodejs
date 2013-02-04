@@ -79,7 +79,7 @@ Last-Update: 2012-09-30
  
 --- a/deps/uv/uv.gyp
 +++ b/deps/uv/uv.gyp
-@@ -118,7 +118,6 @@
+@@ -110,7 +110,6 @@
            ],
            'sources': [
              'include/uv-private/eio.h',
@@ -87,7 +87,7 @@ Last-Update: 2012-09-30
              'include/uv-private/uv-unix.h',
              'src/unix/async.c',
              'src/unix/core.c',
-@@ -127,10 +126,6 @@
+@@ -119,10 +118,6 @@
              'src/unix/eio/eio.c',
              'src/unix/eio/xthread.h',
              'src/unix/error.c',
@@ -98,27 +98,27 @@ Last-Update: 2012-09-30
              'src/unix/fs.c',
              'src/unix/internal.h',
              'src/unix/loop.c',
-@@ -147,7 +142,7 @@
+@@ -139,7 +134,7 @@
              'src/unix/uv-eio.c',
              'src/unix/uv-eio.h',
            ],
 -          'include_dirs': [ 'src/unix/ev', ],
 +          'include_dirs': [],
-           'libraries': [ '-lm' ]
-         }],
-         [ 'OS=="mac"', {
-@@ -177,7 +172,7 @@
+           'link_settings': {
+             'libraries': [ '-lm' ],
+             'conditions': [
+@@ -178,7 +173,7 @@
              'EIO_CONFIG_H="config_linux.h"',
            ],
-           'direct_dependent_settings': {
--            'libraries': [ '-lrt', '-lcares' ],
-+            'libraries': [ '-lrt', '-lcares', '-lev' ],
+           'link_settings': {
+-            'libraries': [ '-ldl', '-lrt', '-lcares' ],
++            'libraries': [ '-ldl', '-lrt', '-lcares', '-lev' ],
            },
          }],
          [ 'OS=="solaris"', {
 --- a/tools/install.py
 +++ b/tools/install.py
-@@ -184,7 +184,6 @@
+@@ -189,7 +189,6 @@
            'src/node_version.h'],
            'include/node/')
    action(['deps/uv/include/uv-private/eio.h',

@@ -156,7 +156,7 @@ Last-Update: 2012-09-30
  # include "uv-private/uv-unix.h"
 --- a/deps/uv/uv.gyp
 +++ b/deps/uv/uv.gyp
-@@ -44,8 +44,6 @@
+@@ -36,8 +36,6 @@
        ],
        'sources': [
          'common.gypi',
@@ -165,7 +165,7 @@ Last-Update: 2012-09-30
          'include/uv.h',
          'include/uv-private/ngx-queue.h',
          'include/uv-private/tree.h',
-@@ -53,70 +51,6 @@
+@@ -45,70 +43,6 @@
          'src/fs-poll.c',
          'src/uv-common.c',
          'src/uv-common.h',
@@ -236,7 +236,7 @@ Last-Update: 2012-09-30
        ],
        'conditions': [
          [ 'OS=="win"', {
-@@ -231,7 +165,7 @@
+@@ -232,7 +166,7 @@
            ]
          }],
          [ 'OS=="linux"', {
@@ -245,18 +245,18 @@ Last-Update: 2012-09-30
            'sources': [
              'src/unix/linux/linux-core.c',
              'src/unix/linux/inotify.c',
-@@ -243,7 +177,7 @@
+@@ -244,7 +178,7 @@
              'EIO_CONFIG_H="config_linux.h"',
            ],
-           'direct_dependent_settings': {
--            'libraries': [ '-lrt' ],
-+            'libraries': [ '-lrt', '-lcares' ],
+           'link_settings': {
+-            'libraries': [ '-ldl', '-lrt' ],
++            'libraries': [ '-ldl', '-lrt', '-lcares' ],
            },
          }],
          [ 'OS=="solaris"', {
 --- a/tools/install.py
 +++ b/tools/install.py
-@@ -168,8 +168,7 @@
+@@ -173,8 +173,7 @@
      assert(0) # unhandled action type
  
  def files(action):
