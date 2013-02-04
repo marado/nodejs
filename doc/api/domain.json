@@ -130,7 +130,7 @@
               "desc": "<p>The opposite of <code>domain.add(emitter)</code>.  Removes domain handling from the\nspecified emitter.\n\n</p>\n"
             },
             {
-              "textRaw": "domain.bind(cb)",
+              "textRaw": "domain.bind(callback)",
               "type": "method",
               "name": "bind",
               "signatures": [
@@ -143,8 +143,8 @@
                   },
                   "params": [
                     {
-                      "textRaw": "`cb` {Function} The callback function ",
-                      "name": "cb",
+                      "textRaw": "`callback` {Function} The callback function ",
+                      "name": "callback",
                       "type": "Function",
                       "desc": "The callback function"
                     }
@@ -153,7 +153,7 @@
                 {
                   "params": [
                     {
-                      "name": "cb"
+                      "name": "callback"
                     }
                   ]
                 }
@@ -161,7 +161,7 @@
               "desc": "<p>The returned function will be a wrapper around the supplied callback\nfunction.  When the returned function is called, any errors that are\nthrown will be routed to the domain&#39;s <code>error</code> event.\n\n</p>\n<h4>Example</h4>\n<pre><code>var d = domain.create();\n\nfunction readSomeFile(filename, cb) {\n  fs.readFile(filename, &#39;utf8&#39;, d.bind(function(er, data) {\n    // if this throws, it will also be passed to the domain\n    return cb(er, data ? JSON.parse(data) : null);\n  }));\n}\n\nd.on(&#39;error&#39;, function(er) {\n  // an error occurred somewhere.\n  // if we throw it now, it will crash the program\n  // with the normal line number and stack message.\n});</code></pre>\n"
             },
             {
-              "textRaw": "domain.intercept(cb)",
+              "textRaw": "domain.intercept(callback)",
               "type": "method",
               "name": "intercept",
               "signatures": [
@@ -174,8 +174,8 @@
                   },
                   "params": [
                     {
-                      "textRaw": "`cb` {Function} The callback function ",
-                      "name": "cb",
+                      "textRaw": "`callback` {Function} The callback function ",
+                      "name": "callback",
                       "type": "Function",
                       "desc": "The callback function"
                     }
@@ -184,12 +184,12 @@
                 {
                   "params": [
                     {
-                      "name": "cb"
+                      "name": "callback"
                     }
                   ]
                 }
               ],
-              "desc": "<p>This method is almost identical to <code>domain.bind(cb)</code>.  However, in\naddition to catching thrown errors, it will also intercept <code>Error</code>\nobjects sent as the first argument to the function.\n\n</p>\n<p>In this way, the common <code>if (er) return cb(er);</code> pattern can be replaced\nwith a single error handler in a single place.\n\n</p>\n<h4>Example</h4>\n<pre><code>var d = domain.create();\n\nfunction readSomeFile(filename, cb) {\n  fs.readFile(filename, &#39;utf8&#39;, d.intercept(function(data) {\n    // note, the first argument is never passed to the\n    // callback since it is assumed to be the &#39;Error&#39; argument\n    // and thus intercepted by the domain.\n\n    // if this throws, it will also be passed to the domain\n    // so the error-handling logic can be moved to the &#39;error&#39;\n    // event on the domain instead of being repeated throughout\n    // the program.\n    return cb(null, JSON.parse(data));\n  }));\n}\n\nd.on(&#39;error&#39;, function(er) {\n  // an error occurred somewhere.\n  // if we throw it now, it will crash the program\n  // with the normal line number and stack message.\n});</code></pre>\n"
+              "desc": "<p>This method is almost identical to <code>domain.bind(callback)</code>.  However, in\naddition to catching thrown errors, it will also intercept <code>Error</code>\nobjects sent as the first argument to the function.\n\n</p>\n<p>In this way, the common <code>if (er) return callback(er);</code> pattern can be replaced\nwith a single error handler in a single place.\n\n</p>\n<h4>Example</h4>\n<pre><code>var d = domain.create();\n\nfunction readSomeFile(filename, cb) {\n  fs.readFile(filename, &#39;utf8&#39;, d.intercept(function(data) {\n    // note, the first argument is never passed to the\n    // callback since it is assumed to be the &#39;Error&#39; argument\n    // and thus intercepted by the domain.\n\n    // if this throws, it will also be passed to the domain\n    // so the error-handling logic can be moved to the &#39;error&#39;\n    // event on the domain instead of being repeated throughout\n    // the program.\n    return cb(null, JSON.parse(data));\n  }));\n}\n\nd.on(&#39;error&#39;, function(er) {\n  // an error occurred somewhere.\n  // if we throw it now, it will crash the program\n  // with the normal line number and stack message.\n});</code></pre>\n"
             },
             {
               "textRaw": "domain.dispose()",

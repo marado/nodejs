@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>HTTP Node.js v0.8.11 Manual &amp; Documentation</title>
+  <title>HTTP Node.js v0.8.18 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/http.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.8.11 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.8.18 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -59,8 +59,8 @@
 <li><a href="#http_event_clienterror">Event: &#39;clientError&#39;</a></li>
 <li><a href="#http_server_listen_port_hostname_backlog_callback">server.listen(port, [hostname], [backlog], [callback])</a></li>
 <li><a href="#http_server_listen_path_callback">server.listen(path, [callback])</a></li>
-<li><a href="#http_server_listen_handle_listeninglistener">server.listen(handle, [listeningListener])</a></li>
-<li><a href="#http_server_close_cb">server.close([cb])</a></li>
+<li><a href="#http_server_listen_handle_callback">server.listen(handle, [callback])</a></li>
+<li><a href="#http_server_close_callback">server.close([callback])</a></li>
 <li><a href="#http_server_maxheaderscount">server.maxHeadersCount</a></li>
 </ul>
 </li>
@@ -302,7 +302,7 @@ parameter is 511 (not 512).
 
 </p>
 <p>This function is asynchronous. The last parameter <code>callback</code> will be added as
-a listener for the <a href="net.html#net_event_listening">&#39;listening&#39;</a> event.  See also <a href="net.html#net_server_listen_port_host_backlog_listeninglistener">net.Server.listen(port)</a>.
+a listener for the <a href="net.html#net_event_listening">&#39;listening&#39;</a> event.  See also <a href="net.html#net_server_listen_port_host_backlog_callback">net.Server.listen(port)</a>.
 
 
 </p>
@@ -311,14 +311,14 @@ a listener for the <a href="net.html#net_event_listening">&#39;listening&#39;</a
 
 </p>
 <p>This function is asynchronous. The last parameter <code>callback</code> will be added as
-a listener for the <a href="net.html#net_event_listening">&#39;listening&#39;</a> event.  See also <a href="net.html#net_server_listen_path_listeninglistener">net.Server.listen(path)</a>.
+a listener for the <a href="net.html#net_event_listening">&#39;listening&#39;</a> event.  See also <a href="net.html#net_server_listen_path_callback">net.Server.listen(path)</a>.
 
 
 </p>
-<h3>server.listen(handle, [listeningListener])<span><a class="mark" href="#http_server_listen_handle_listeninglistener" id="http_server_listen_handle_listeninglistener">#</a></span></h3>
+<h3>server.listen(handle, [callback])<span><a class="mark" href="#http_server_listen_handle_callback" id="http_server_listen_handle_callback">#</a></span></h3>
 <div class="signature"><ul>
 <li><code>handle</code> <span class="type">Object</span></li>
-<li><code>listeningListener</code> <span class="type">Function</span></li>
+<li><code>callback</code> <span class="type">Function</span></li>
 </div></ul>
 <p>The <code>handle</code> object can be set to either a server or socket (anything
 with an underlying <code>_handle</code> member), or a <code>{fd: &lt;n&gt;}</code> object.
@@ -334,11 +334,11 @@ already been bound to a port or domain socket.
 </p>
 <p>This function is asynchronous. The last parameter <code>callback</code> will be added as
 a listener for the <a href="net.html#event_listening_">&#39;listening&#39;</a> event.
-See also <a href="net.html#server.listen">net.Server.listen()</a>.
+See also <a href="net.html#net_server_listen_handle_callback">net.Server.listen()</a>.
 
 </p>
-<h3>server.close([cb])<span><a class="mark" href="#http_server_close_cb" id="http_server_close_cb">#</a></span></h3>
-<p>Stops the server from accepting new connections.  See <a href="net.html#net_server_close_cb">net.Server.close()</a>.
+<h3>server.close([callback])<span><a class="mark" href="#http_server_close_callback" id="http_server_close_callback">#</a></span></h3>
+<p>Stops the server from accepting new connections.  See <a href="net.html#net_server_close_callback">net.Server.close()</a>.
 
 
 </p>
@@ -690,7 +690,7 @@ upload a file with a POST request, then write to the <code>ClientRequest</code> 
 
 </p>
 <pre><code>var options = {
-  host: &#39;www.google.com&#39;,
+  hostname: &#39;www.google.com&#39;,
   port: 80,
   path: &#39;/upload&#39;,
   method: &#39;POST&#39;
@@ -785,7 +785,7 @@ pool you can do something along the lines of:
 <p>Alternatively, you could just opt out of pooling entirely using <code>agent:false</code>:
 
 </p>
-<pre><code>http.get({host:&#39;localhost&#39;, port:80, path:&#39;/&#39;, agent:false}, function (res) {
+<pre><code>http.get({hostname:&#39;localhost&#39;, port:80, path:&#39;/&#39;, agent:false}, function (res) {
   // Do stuff
 })</code></pre>
 <h3>agent.maxSockets<span><a class="mark" href="#http_agent_maxsockets" id="http_agent_maxsockets">#</a></span></h3>
@@ -918,7 +918,7 @@ proxy.listen(1337, &#39;127.0.0.1&#39;, function() {
   // make a request to a tunneling proxy
   var options = {
     port: 1337,
-    host: &#39;127.0.0.1&#39;,
+    hostname: &#39;127.0.0.1&#39;,
     method: &#39;CONNECT&#39;,
     path: &#39;www.google.com:80&#39;
   };
@@ -976,7 +976,7 @@ srv.listen(1337, &#39;127.0.0.1&#39;, function() {
   // make a request
   var options = {
     port: 1337,
-    host: &#39;127.0.0.1&#39;,
+    hostname: &#39;127.0.0.1&#39;,
     headers: {
       &#39;Connection&#39;: &#39;Upgrade&#39;,
       &#39;Upgrade&#39;: &#39;websocket&#39;
@@ -1072,17 +1072,26 @@ passed to the <code>&#39;response&#39;</code> event of the request object.
 <p><code>function () { }</code>
 
 </p>
-<p>Emitted exactly once for each message. No arguments. After
-emitted no other events will be emitted on the response.
+<p>Emitted exactly once for each response. After that, no more <code>&#39;data&#39;</code> events
+will be emitted on the response.
+
 
 </p>
 <h3>Event: &#39;close&#39;<span><a class="mark" href="#http_event_close_3" id="http_event_close_3">#</a></span></h3>
-<p><code>function (err) { }</code>
+<p><code>function () { }</code>
 
 </p>
 <p>Indicates that the underlaying connection was terminated before
-<code>end</code> event was emitted.
-See <a href="#http_class_http_serverrequest">http.ServerRequest</a>&#39;s <code>&#39;close&#39;</code> event for more information.
+<code>response.end()</code> was called or able to flush.
+
+</p>
+<p>Just like <code>&#39;end&#39;</code>, this event occurs only once per response, and no more
+<code>&#39;data&#39;</code> events will fire afterwards. See [http.ServerResponse][]&#39;s <code>&#39;close&#39;</code>
+event for more information.
+
+</p>
+<p>Note: <code>&#39;close&#39;</code> can fire after <code>&#39;end&#39;</code>, but not vice versa.
+
 
 </p>
 <h3>response.statusCode<span><a class="mark" href="#http_response_statuscode_1" id="http_response_statuscode_1">#</a></span></h3>
@@ -1135,7 +1144,7 @@ information.
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.8.11/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.8.18/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

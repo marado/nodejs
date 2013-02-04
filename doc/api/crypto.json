@@ -4,9 +4,7 @@
     {
       "textRaw": "Crypto",
       "name": "crypto",
-      "stability": 3,
-      "stabilityText": "Stable",
-      "desc": "<p>Use <code>require(&#39;crypto&#39;)</code> to access this module.\n\n</p>\n<p>The crypto module requires OpenSSL to be available on the underlying platform.\nIt offers a way of encapsulating secure credentials to be used as part\nof a secure HTTPS net or http connection.\n\n</p>\n<p>It also offers a set of wrappers for OpenSSL&#39;s hash, hmac, cipher, decipher, sign and verify methods.\n\n</p>\n",
+      "desc": "<pre><code>Stability: 2 - Unstable; API changes are being discussed for\nfuture versions.  Breaking changes will be minimized.  See below.</code></pre>\n<p>Use <code>require(&#39;crypto&#39;)</code> to access this module.\n\n</p>\n<p>The crypto module requires OpenSSL to be available on the underlying platform.\nIt offers a way of encapsulating secure credentials to be used as part\nof a secure HTTPS net or http connection.\n\n</p>\n<p>It also offers a set of wrappers for OpenSSL&#39;s hash, hmac, cipher, decipher, sign and verify methods.\n\n</p>\n",
       "methods": [
         {
           "textRaw": "crypto.createCredentials(details)",
@@ -704,6 +702,15 @@
               ]
             }
           ]
+        }
+      ],
+      "modules": [
+        {
+          "textRaw": "Proposed API Changes in Future Versions of Node",
+          "name": "proposed_api_changes_in_future_versions_of_node",
+          "desc": "<p>The Crypto module was added to Node before there was the concept of a\nunified Stream API, and before there were Buffer objects for handling\nbinary data.\n\n</p>\n<p>As such, the streaming classes don&#39;t have the typical methods found on\nother Node classes, and many methods accept and return Binary-encoded\nstrings by default rather than Buffers.\n\n</p>\n<p>A future version of node will make Buffers the default data type.\nThis will be a breaking change for some use cases, but not all.\n\n</p>\n<p>For example, if you currently use the default arguments to the Sign\nclass, and then pass the results to the Verify class, without ever\ninspecting the data, then it will continue to work as before.  Where\nyou now get a binary string and then present the binary string to the\nVerify object, you&#39;ll get a Buffer, and present the Buffer to the\nVerify object.\n\n</p>\n<p>However, if you are doing things with the string data that will not\nwork properly on Buffers (such as, concatenating them, storing in\ndatabases, etc.), or you are passing binary strings to the crypto\nfunctions without an encoding argument, then you will need to start\nproviding encoding arguments to specify which encoding you&#39;d like to\nuse.\n\n</p>\n<p>Also, a Streaming API will be provided, but this will be done in such\na way as to preserve the legacy API surface.\n\n\n</p>\n",
+          "type": "module",
+          "displayName": "Proposed API Changes in Future Versions of Node"
         }
       ],
       "type": "module",

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>TLS (SSL) Node.js v0.8.11 Manual &amp; Documentation</title>
+  <title>TLS (SSL) Node.js v0.8.18 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/tls.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.8.11 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.8.18 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -49,8 +49,8 @@
 <li><a href="#tls_client_initiated_renegotiation_attack_mitigation">Client-initiated renegotiation attack mitigation</a></li>
 <li><a href="#tls_npn_and_sni">NPN and SNI</a></li>
 <li><a href="#tls_tls_createserver_options_secureconnectionlistener">tls.createServer(options, [secureConnectionListener])</a></li>
-<li><a href="#tls_tls_connect_options_secureconnectlistener">tls.connect(options, [secureConnectListener])</a></li>
-<li><a href="#tls_tls_connect_port_host_options_secureconnectlistener">tls.connect(port, [host], [options], [secureConnectListener])</a></li>
+<li><a href="#tls_tls_connect_options_callback">tls.connect(options, [callback])</a></li>
+<li><a href="#tls_tls_connect_port_host_options_callback">tls.connect(port, [host], [options], [callback])</a></li>
 <li><a href="#tls_tls_createsecurepair_credentials_isserver_requestcert_rejectunauthorized">tls.createSecurePair([credentials], [isServer], [requestCert], [rejectUnauthorized])</a></li>
 <li><a href="#tls_class_securepair">Class: SecurePair</a><ul>
 <li><a href="#tls_event_secure">Event: &#39;secure&#39;</a></li>
@@ -298,8 +298,8 @@ server.listen(8000, function() {
 
 </p>
 <pre><code>openssl s_client -connect 127.0.0.1:8000</code></pre>
-<h2>tls.connect(options, [secureConnectListener])<span><a class="mark" href="#tls_tls_connect_options_secureconnectlistener" id="tls_tls_connect_options_secureconnectlistener">#</a></span></h2>
-<h2>tls.connect(port, [host], [options], [secureConnectListener])<span><a class="mark" href="#tls_tls_connect_port_host_options_secureconnectlistener" id="tls_tls_connect_port_host_options_secureconnectlistener">#</a></span></h2>
+<h2>tls.connect(options, [callback])<span><a class="mark" href="#tls_tls_connect_options_callback" id="tls_tls_connect_options_callback">#</a></span></h2>
+<h2>tls.connect(port, [host], [options], [callback])<span><a class="mark" href="#tls_tls_connect_port_host_options_callback" id="tls_tls_connect_port_host_options_callback">#</a></span></h2>
 <p>Creates a new client connection to the given <code>port</code> and <code>host</code> (old API) or
 <code>options.port</code> and <code>options.host</code>. (If <code>host</code> is omitted, it defaults to
 <code>localhost</code>.) <code>options</code> should be an object which specifies:
@@ -341,7 +341,7 @@ usually be much simpler: <code>[&#39;hello&#39;, &#39;world&#39;]</code>.)</p>
 <li><p><code>servername</code>: Servername for SNI (Server Name Indication) TLS extension.</p>
 </li>
 </ul>
-<p>The <code>secureConnectListener</code> parameter will be added as a listener for the
+<p>The <code>callback</code> parameter will be added as a listener for the
 <a href="#tls_event_secureconnect">&#39;secureConnect&#39;</a> event.
 
 </p>
@@ -625,7 +625,7 @@ object with three properties, e.g.
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.8.11/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.8.18/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

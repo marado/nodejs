@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Domain Node.js v0.8.11 Manual &amp; Documentation</title>
+  <title>Domain Node.js v0.8.18 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/domain.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.8.11 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.8.18 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -55,11 +55,11 @@
 <li><a href="#domain_domain_members">domain.members</a></li>
 <li><a href="#domain_domain_add_emitter">domain.add(emitter)</a></li>
 <li><a href="#domain_domain_remove_emitter">domain.remove(emitter)</a></li>
-<li><a href="#domain_domain_bind_cb">domain.bind(cb)</a><ul>
+<li><a href="#domain_domain_bind_callback">domain.bind(callback)</a><ul>
 <li><a href="#domain_example">Example</a></li>
 </ul>
 </li>
-<li><a href="#domain_domain_intercept_cb">domain.intercept(cb)</a><ul>
+<li><a href="#domain_domain_intercept_callback">domain.intercept(callback)</a><ul>
 <li><a href="#domain_example_1">Example</a></li>
 </ul>
 </li>
@@ -273,9 +273,9 @@ from that one, and bound to this one instead.
 specified emitter.
 
 </p>
-<h3>domain.bind(cb)<span><a class="mark" href="#domain_domain_bind_cb" id="domain_domain_bind_cb">#</a></span></h3>
+<h3>domain.bind(callback)<span><a class="mark" href="#domain_domain_bind_callback" id="domain_domain_bind_callback">#</a></span></h3>
 <div class="signature"><ul>
-<li><code>cb</code> <span class="type">Function</span> The callback function</li>
+<li><code>callback</code> <span class="type">Function</span> The callback function</li>
 <li>return: <span class="type">Function</span> The bound function</li>
 </div></ul>
 <p>The returned function will be a wrapper around the supplied callback
@@ -298,17 +298,17 @@ d.on(&#39;error&#39;, function(er) {
   // if we throw it now, it will crash the program
   // with the normal line number and stack message.
 });</code></pre>
-<h3>domain.intercept(cb)<span><a class="mark" href="#domain_domain_intercept_cb" id="domain_domain_intercept_cb">#</a></span></h3>
+<h3>domain.intercept(callback)<span><a class="mark" href="#domain_domain_intercept_callback" id="domain_domain_intercept_callback">#</a></span></h3>
 <div class="signature"><ul>
-<li><code>cb</code> <span class="type">Function</span> The callback function</li>
+<li><code>callback</code> <span class="type">Function</span> The callback function</li>
 <li>return: <span class="type">Function</span> The intercepted function</li>
 </div></ul>
-<p>This method is almost identical to <code>domain.bind(cb)</code>.  However, in
+<p>This method is almost identical to <code>domain.bind(callback)</code>.  However, in
 addition to catching thrown errors, it will also intercept <code>Error</code>
 objects sent as the first argument to the function.
 
 </p>
-<p>In this way, the common <code>if (er) return cb(er);</code> pattern can be replaced
+<p>In this way, the common <code>if (er) return callback(er);</code> pattern can be replaced
 with a single error handler in a single place.
 
 </p>
@@ -374,7 +374,7 @@ in flight, Node.js will not communicate further about them.
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.8.11/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.8.18/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>
