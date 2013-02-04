@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>About this Documentation Node.js v0.8.11 Manual &amp; Documentation</title>
+  <title>About this Documentation Node.js v0.8.18 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/all.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.8.11 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.8.18 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -205,11 +205,11 @@
 <li><a href="#all_domain_members">domain.members</a></li>
 <li><a href="#all_domain_add_emitter">domain.add(emitter)</a></li>
 <li><a href="#all_domain_remove_emitter">domain.remove(emitter)</a></li>
-<li><a href="#all_domain_bind_cb">domain.bind(cb)</a><ul>
+<li><a href="#all_domain_bind_callback">domain.bind(callback)</a><ul>
 <li><a href="#all_example">Example</a></li>
 </ul>
 </li>
-<li><a href="#all_domain_intercept_cb">domain.intercept(cb)</a><ul>
+<li><a href="#all_domain_intercept_callback">domain.intercept(callback)</a><ul>
 <li><a href="#all_example_1">Example</a></li>
 </ul>
 </li>
@@ -287,7 +287,7 @@
 <li><a href="#all_event_close_1">Event: &#39;close&#39;</a></li>
 <li><a href="#all_event_pipe">Event: &#39;pipe&#39;</a></li>
 <li><a href="#all_stream_writable">stream.writable</a></li>
-<li><a href="#all_stream_write_string_encoding_fd">stream.write(string, [encoding], [fd])</a></li>
+<li><a href="#all_stream_write_string_encoding">stream.write(string, [encoding])</a></li>
 <li><a href="#all_stream_write_buffer">stream.write(buffer)</a></li>
 <li><a href="#all_stream_end">stream.end()</a></li>
 <li><a href="#all_stream_end_string_encoding">stream.end(string, encoding)</a></li>
@@ -356,14 +356,15 @@
 <li><a href="#all_crypto_getdiffiehellman_group_name">crypto.getDiffieHellman(group_name)</a></li>
 <li><a href="#all_crypto_pbkdf2_password_salt_iterations_keylen_callback">crypto.pbkdf2(password, salt, iterations, keylen, callback)</a></li>
 <li><a href="#all_crypto_randombytes_size_callback">crypto.randomBytes(size, [callback])</a></li>
+<li><a href="#all_proposed_api_changes_in_future_versions_of_node">Proposed API Changes in Future Versions of Node</a></li>
 </ul>
 </li>
 <li><a href="#all_tls_ssl">TLS (SSL)</a><ul>
 <li><a href="#all_client_initiated_renegotiation_attack_mitigation">Client-initiated renegotiation attack mitigation</a></li>
 <li><a href="#all_npn_and_sni">NPN and SNI</a></li>
 <li><a href="#all_tls_createserver_options_secureconnectionlistener">tls.createServer(options, [secureConnectionListener])</a></li>
-<li><a href="#all_tls_connect_options_secureconnectlistener">tls.connect(options, [secureConnectListener])</a></li>
-<li><a href="#all_tls_connect_port_host_options_secureconnectlistener">tls.connect(port, [host], [options], [secureConnectListener])</a></li>
+<li><a href="#all_tls_connect_options_callback">tls.connect(options, [callback])</a></li>
+<li><a href="#all_tls_connect_port_host_options_callback">tls.connect(port, [host], [options], [callback])</a></li>
 <li><a href="#all_tls_createsecurepair_credentials_isserver_requestcert_rejectunauthorized">tls.createSecurePair([credentials], [isServer], [requestCert], [rejectUnauthorized])</a></li>
 <li><a href="#all_class_securepair">Class: SecurePair</a><ul>
 <li><a href="#all_event_secure">Event: &#39;secure&#39;</a></li>
@@ -511,10 +512,10 @@
 <li><a href="#all_net_connect_path_connectlistener">net.connect(path, [connectListener])</a></li>
 <li><a href="#all_net_createconnection_path_connectlistener">net.createConnection(path, [connectListener])</a></li>
 <li><a href="#all_class_net_server">Class: net.Server</a><ul>
-<li><a href="#all_server_listen_port_host_backlog_listeninglistener">server.listen(port, [host], [backlog], [listeningListener])</a></li>
-<li><a href="#all_server_listen_path_listeninglistener">server.listen(path, [listeningListener])</a></li>
-<li><a href="#all_server_listen_handle_listeninglistener">server.listen(handle, [listeningListener])</a></li>
-<li><a href="#all_server_close_cb">server.close([cb])</a></li>
+<li><a href="#all_server_listen_port_host_backlog_callback">server.listen(port, [host], [backlog], [callback])</a></li>
+<li><a href="#all_server_listen_path_callback">server.listen(path, [callback])</a></li>
+<li><a href="#all_server_listen_handle_callback">server.listen(handle, [callback])</a></li>
+<li><a href="#all_server_close_callback">server.close([callback])</a></li>
 <li><a href="#all_server_address_1">server.address()</a></li>
 <li><a href="#all_server_maxconnections_1">server.maxConnections</a></li>
 <li><a href="#all_server_connections_1">server.connections</a></li>
@@ -605,9 +606,9 @@
 <li><a href="#all_event_upgrade">Event: &#39;upgrade&#39;</a></li>
 <li><a href="#all_event_clienterror_1">Event: &#39;clientError&#39;</a></li>
 <li><a href="#all_server_listen_port_hostname_backlog_callback">server.listen(port, [hostname], [backlog], [callback])</a></li>
-<li><a href="#all_server_listen_path_callback">server.listen(path, [callback])</a></li>
-<li><a href="#all_server_listen_handle_listeninglistener_1">server.listen(handle, [listeningListener])</a></li>
-<li><a href="#all_server_close_cb_1">server.close([cb])</a></li>
+<li><a href="#all_server_listen_path_callback_1">server.listen(path, [callback])</a></li>
+<li><a href="#all_server_listen_handle_callback_1">server.listen(handle, [callback])</a></li>
+<li><a href="#all_server_close_callback_1">server.close([callback])</a></li>
 <li><a href="#all_server_maxheaderscount">server.maxHeadersCount</a></li>
 </ul>
 </li>
@@ -680,7 +681,13 @@
 </li>
 <li><a href="#all_https">HTTPS</a><ul>
 <li><a href="#all_class_https_server">Class: https.Server</a></li>
-<li><a href="#all_https_createserver_options_requestlistener">https.createServer(options, [requestListener])</a></li>
+<li><a href="#all_https_createserver_options_requestlistener">https.createServer(options, [requestListener])</a><ul>
+<li><a href="#all_server_listen_port_host_backlog_callback_1">server.listen(port, [host], [backlog], [callback])</a></li>
+<li><a href="#all_server_listen_path_callback_2">server.listen(path, [callback])</a></li>
+<li><a href="#all_server_listen_handle_callback_2">server.listen(handle, [callback])</a></li>
+<li><a href="#all_server_close_callback_2">server.close([callback])</a></li>
+</ul>
+</li>
 <li><a href="#all_https_request_options_callback">https.request(options, callback)</a></li>
 <li><a href="#all_https_get_options_callback">https.get(options, callback)</a></li>
 <li><a href="#all_class_https_agent">Class: https.Agent</a></li>
@@ -1093,14 +1100,6 @@ value from this object, the next <code>require</code> will reload the module.
 
 </p>
 <pre><code>require.extensions[&#39;.sjs&#39;] = require.extensions[&#39;.js&#39;];</code></pre>
-<p>Write your own extension handler:
-
-</p>
-<pre><code>require.extensions[&#39;.sjs&#39;] = function(module, filename) {
-  var content = fs.readFileSync(filename, &#39;utf8&#39;);
-  // Parse the file content and give to module.exports
-  module.exports = content;
-};</code></pre>
 <h2>__filename<span><a class="mark" href="#all_filename" id="all_filename">#</a></span></h2>
 <!-- type=var -->
 
@@ -2830,15 +2829,15 @@ primary use is for measuring performance between intervals.
 a diff reading, useful for benchmarks and measuring intervals:
 
 </p>
-<pre><code>var t = process.hrtime();
-// [ 1800216, 927643717 ]
+<pre><code>var time = process.hrtime();
+// [ 1800216, 25 ]
 
 setTimeout(function () {
-  t = process.hrtime(t);
-  // [ 1, 6962306 ]
+  var diff = process.hrtime(time);
+  // [ 1, 552 ]
 
-  console.log(&#39;benchmark took %d seconds and %d nanoseconds&#39;, t[0], t[1]);
-  // benchmark took 1 seconds and 6962306 nanoseconds
+  console.log(&#39;benchmark took %d nanoseconds&#39;, diff[0] * 1e9 + diff[1]);
+  // benchmark took 1000000527 nanoseconds
 }, 1000);</code></pre>
 <h1>util<span><a class="mark" href="#all_util" id="all_util">#</a></span></h1>
 <pre><code>Stability: 5 - Locked</code></pre>
@@ -2931,6 +2930,19 @@ Defaults to <code>false</code>.
 <pre><code>var util = require(&#39;util&#39;);
 
 console.log(util.inspect(util, true, null));</code></pre>
+<p>Objects also may define their own <code>inspect(depth)</code> function which <code>util.inspect()</code>
+will invoke and use the result of when inspecting the object:
+
+</p>
+<pre><code>var util = require(&#39;util&#39;);
+
+var obj = { name: &#39;nate&#39; };
+obj.inspect = function(depth) {
+  return &#39;{&#39; + this.name + &#39;}&#39;;
+};
+
+util.inspect(obj);
+  // &quot;{nate}&quot;</code></pre>
 <h2>util.isArray(object)<span><a class="mark" href="#all_util_isarray_object" id="all_util_isarray_object">#</a></span></h2>
 <p>Returns <code>true</code> if the given &quot;object&quot; is an <code>Array</code>. <code>false</code> otherwise.
 
@@ -3337,9 +3349,9 @@ from that one, and bound to this one instead.
 specified emitter.
 
 </p>
-<h3>domain.bind(cb)<span><a class="mark" href="#all_domain_bind_cb" id="all_domain_bind_cb">#</a></span></h3>
+<h3>domain.bind(callback)<span><a class="mark" href="#all_domain_bind_callback" id="all_domain_bind_callback">#</a></span></h3>
 <div class="signature"><ul>
-<li><code>cb</code> <span class="type">Function</span> The callback function</li>
+<li><code>callback</code> <span class="type">Function</span> The callback function</li>
 <li>return: <span class="type">Function</span> The bound function</li>
 </div></ul>
 <p>The returned function will be a wrapper around the supplied callback
@@ -3362,17 +3374,17 @@ d.on(&#39;error&#39;, function(er) {
   // if we throw it now, it will crash the program
   // with the normal line number and stack message.
 });</code></pre>
-<h3>domain.intercept(cb)<span><a class="mark" href="#all_domain_intercept_cb" id="all_domain_intercept_cb">#</a></span></h3>
+<h3>domain.intercept(callback)<span><a class="mark" href="#all_domain_intercept_callback" id="all_domain_intercept_callback">#</a></span></h3>
 <div class="signature"><ul>
-<li><code>cb</code> <span class="type">Function</span> The callback function</li>
+<li><code>callback</code> <span class="type">Function</span> The callback function</li>
 <li>return: <span class="type">Function</span> The intercepted function</li>
 </div></ul>
-<p>This method is almost identical to <code>domain.bind(cb)</code>.  However, in
+<p>This method is almost identical to <code>domain.bind(callback)</code>.  However, in
 addition to catching thrown errors, it will also intercept <code>Error</code>
 objects sent as the first argument to the function.
 
 </p>
-<p>In this way, the common <code>if (er) return cb(er);</code> pattern can be replaced
+<p>In this way, the common <code>if (er) return callback(er);</code> pattern can be replaced
 with a single error handler in a single place.
 
 </p>
@@ -3466,6 +3478,23 @@ will be removed in future versions of Node.</p>
 <li><p><code>&#39;hex&#39;</code> - Encode each byte as two hexadecimal characters.</p>
 </li>
 </ul>
+<p><code>Buffer</code> can also be used with Typed Array Views and DataViews.
+
+</p>
+<pre><code>var buff = new Buffer(4);
+var ui16 = new Uint16Array(buff);
+var view = new DataView(buff);
+
+ui16[0] = 1;
+ui16[1] = 2;
+console.log(buff);
+
+view.setInt16(0, 1);       // set big-endian int16 at byte offset 0
+view.setInt16(2, 2, true); // set little-endian int16 at byte offset 2
+console.log(buff);
+
+// &lt;Buffer 01 00 02 00&gt;
+// &lt;Buffer 00 01 02 00&gt;</code></pre>
 <h2>Class: Buffer<span><a class="mark" href="#all_class_buffer_1" id="all_class_buffer_1">#</a></span></h2>
 <p>The Buffer class is a global type for dealing with binary data directly.
 It can be constructed in a variety of ways.
@@ -4278,8 +4307,13 @@ process.stdout.write(&quot;Goodbye\n&quot;); });</code></pre>
 <p><code>function () { }</code>
 
 </p>
-<p>After a <code>write()</code> method returned <code>false</code>, this event is emitted to
-indicate that it is safe to write again.
+<p>Emitted when the stream&#39;s write queue empties and it&#39;s safe to write without
+buffering again. Listen for it when <code>stream.write()</code> returns <code>false</code>.
+
+</p>
+<p>The <code>&#39;drain&#39;</code> event can happen at <em>any</em> time, regardless of whether or not
+<code>stream.write()</code> has previously returned <code>false</code>. To avoid receiving unwanted
+<code>&#39;drain&#39;</code> events, listen using <code>stream.once()</code>.
 
 </p>
 <h3>Event: &#39;error&#39;<span><a class="mark" href="#all_event_error_1" id="all_event_error_1">#</a></span></h3>
@@ -4308,19 +4342,12 @@ indicate that it is safe to write again.
 <code>&#39;error&#39;</code> occurred or <code>end()</code> / <code>destroy()</code> was called.
 
 </p>
-<h3>stream.write(string, [encoding], [fd])<span><a class="mark" href="#all_stream_write_string_encoding_fd" id="all_stream_write_string_encoding_fd">#</a></span></h3>
+<h3>stream.write(string, [encoding])<span><a class="mark" href="#all_stream_write_string_encoding" id="all_stream_write_string_encoding">#</a></span></h3>
 <p>Writes <code>string</code> with the given <code>encoding</code> to the stream.  Returns <code>true</code>
 if the string has been flushed to the kernel buffer.  Returns <code>false</code> to
 indicate that the kernel buffer is full, and the data will be sent out
 in the future. The <code>&#39;drain&#39;</code> event will indicate when the kernel buffer
 is empty again. The <code>encoding</code> defaults to <code>&#39;utf8&#39;</code>.
-
-</p>
-<p>If the optional <code>fd</code> parameter is specified, it is interpreted as an
-integral file descriptor to be sent over the stream. This is only
-supported for UNIX streams, and is silently ignored otherwise. When
-writing a file descriptor in this manner, closing the descriptor before
-the stream drains risks sending an invalid (closed) FD.
 
 </p>
 <h3>stream.write(buffer)<span><a class="mark" href="#all_stream_write_buffer" id="all_stream_write_buffer">#</a></span></h3>
@@ -4355,7 +4382,8 @@ data left in the queue for writes.
 
 </p>
 <h1>Crypto<span><a class="mark" href="#all_crypto" id="all_crypto">#</a></span></h1>
-<pre><code>Stability: 3 - Stable</code></pre>
+<pre><code>Stability: 2 - Unstable; API changes are being discussed for
+future versions.  Breaking changes will be minimized.  See below.</code></pre>
 <p>Use <code>require(&#39;crypto&#39;)</code> to access this module.
 
 </p>
@@ -4748,6 +4776,42 @@ try {
 } catch (ex) {
   // handle error
 }</code></pre>
+<h2>Proposed API Changes in Future Versions of Node<span><a class="mark" href="#all_proposed_api_changes_in_future_versions_of_node" id="all_proposed_api_changes_in_future_versions_of_node">#</a></span></h2>
+<p>The Crypto module was added to Node before there was the concept of a
+unified Stream API, and before there were Buffer objects for handling
+binary data.
+
+</p>
+<p>As such, the streaming classes don&#39;t have the typical methods found on
+other Node classes, and many methods accept and return Binary-encoded
+strings by default rather than Buffers.
+
+</p>
+<p>A future version of node will make Buffers the default data type.
+This will be a breaking change for some use cases, but not all.
+
+</p>
+<p>For example, if you currently use the default arguments to the Sign
+class, and then pass the results to the Verify class, without ever
+inspecting the data, then it will continue to work as before.  Where
+you now get a binary string and then present the binary string to the
+Verify object, you&#39;ll get a Buffer, and present the Buffer to the
+Verify object.
+
+</p>
+<p>However, if you are doing things with the string data that will not
+work properly on Buffers (such as, concatenating them, storing in
+databases, etc.), or you are passing binary strings to the crypto
+functions without an encoding argument, then you will need to start
+providing encoding arguments to specify which encoding you&#39;d like to
+use.
+
+</p>
+<p>Also, a Streaming API will be provided, but this will be done in such
+a way as to preserve the legacy API surface.
+
+
+</p>
 <h1>TLS (SSL)<span><a class="mark" href="#all_tls_ssl" id="all_tls_ssl">#</a></span></h1>
 <pre><code>Stability: 3 - Stable</code></pre>
 <p>Use <code>require(&#39;tls&#39;)</code> to access this module.
@@ -4961,8 +5025,8 @@ server.listen(8000, function() {
 
 </p>
 <pre><code>openssl s_client -connect 127.0.0.1:8000</code></pre>
-<h2>tls.connect(options, [secureConnectListener])<span><a class="mark" href="#all_tls_connect_options_secureconnectlistener" id="all_tls_connect_options_secureconnectlistener">#</a></span></h2>
-<h2>tls.connect(port, [host], [options], [secureConnectListener])<span><a class="mark" href="#all_tls_connect_port_host_options_secureconnectlistener" id="all_tls_connect_port_host_options_secureconnectlistener">#</a></span></h2>
+<h2>tls.connect(options, [callback])<span><a class="mark" href="#all_tls_connect_options_callback" id="all_tls_connect_options_callback">#</a></span></h2>
+<h2>tls.connect(port, [host], [options], [callback])<span><a class="mark" href="#all_tls_connect_port_host_options_callback" id="all_tls_connect_port_host_options_callback">#</a></span></h2>
 <p>Creates a new client connection to the given <code>port</code> and <code>host</code> (old API) or
 <code>options.port</code> and <code>options.host</code>. (If <code>host</code> is omitted, it defaults to
 <code>localhost</code>.) <code>options</code> should be an object which specifies:
@@ -5004,7 +5068,7 @@ usually be much simpler: <code>[&#39;hello&#39;, &#39;world&#39;]</code>.)</p>
 <li><p><code>servername</code>: Servername for SNI (Server Name Indication) TLS extension.</p>
 </li>
 </ul>
-<p>The <code>secureConnectListener</code> parameter will be added as a listener for the
+<p>The <code>callback</code> parameter will be added as a listener for the
 <a href="#tls_event_secureconnect">&#39;secureConnect&#39;</a> event.
 
 </p>
@@ -5670,7 +5734,7 @@ without waiting for the callback. For this scenario,
 <p><code>buffer</code> is the buffer that the data will be written to.
 
 </p>
-<p><code>offset</code> is offset within the buffer where writing will start.
+<p><code>offset</code> is offset within the buffer where reading will start.
 
 </p>
 <p><code>length</code> is an integer specifying the number of bytes to read.
@@ -6281,7 +6345,7 @@ The <code>connectListener</code> parameter will be added as an listener for the
 A server is a <code>net.Socket</code> that can listen for new incoming connections.
 
 </p>
-<h3>server.listen(port, [host], [backlog], [listeningListener])<span><a class="mark" href="#all_server_listen_port_host_backlog_listeninglistener" id="all_server_listen_port_host_backlog_listeninglistener">#</a></span></h3>
+<h3>server.listen(port, [host], [backlog], [callback])<span><a class="mark" href="#all_server_listen_port_host_backlog_callback" id="all_server_listen_port_host_backlog_callback">#</a></span></h3>
 <p>Begin accepting connections on the specified <code>port</code> and <code>host</code>.  If the
 <code>host</code> is omitted, the server will accept connections directed to any
 IPv4 address (<code>INADDR_ANY</code>). A port value of zero will assign a random port.
@@ -6294,7 +6358,7 @@ parameter is 511 (not 512).
 
 </p>
 <p>This function is asynchronous.  When the server has been bound,
-<a href="net.html#net_event_listening">&#39;listening&#39;</a> event will be emitted.  The last parameter <code>listeningListener</code>
+<a href="net.html#net_event_listening">&#39;listening&#39;</a> event will be emitted.  The last parameter <code>callback</code>
 will be added as an listener for the <a href="net.html#net_event_listening">&#39;listening&#39;</a> event.
 
 </p>
@@ -6316,19 +6380,19 @@ would be to wait a second and then try again. This can be done with
 
 
 </p>
-<h3>server.listen(path, [listeningListener])<span><a class="mark" href="#all_server_listen_path_listeninglistener" id="all_server_listen_path_listeninglistener">#</a></span></h3>
+<h3>server.listen(path, [callback])<span><a class="mark" href="#all_server_listen_path_callback" id="all_server_listen_path_callback">#</a></span></h3>
 <p>Start a UNIX socket server listening for connections on the given <code>path</code>.
 
 </p>
 <p>This function is asynchronous.  When the server has been bound,
-<a href="net.html#net_event_listening">&#39;listening&#39;</a> event will be emitted.  The last parameter <code>listeningListener</code>
+<a href="net.html#net_event_listening">&#39;listening&#39;</a> event will be emitted.  The last parameter <code>callback</code>
 will be added as an listener for the <a href="net.html#net_event_listening">&#39;listening&#39;</a> event.
 
 </p>
-<h3>server.listen(handle, [listeningListener])<span><a class="mark" href="#all_server_listen_handle_listeninglistener" id="all_server_listen_handle_listeninglistener">#</a></span></h3>
+<h3>server.listen(handle, [callback])<span><a class="mark" href="#all_server_listen_handle_callback" id="all_server_listen_handle_callback">#</a></span></h3>
 <div class="signature"><ul>
 <li><code>handle</code> <span class="type">Object</span></li>
-<li><code>listeningListener</code> <span class="type">Function</span></li>
+<li><code>callback</code> <span class="type">Function</span></li>
 </div></ul>
 <p>The <code>handle</code> object can be set to either a server or socket (anything
 with an underlying <code>_handle</code> member), or a <code>{fd: &lt;n&gt;}</code> object.
@@ -6344,11 +6408,11 @@ already been bound to a port or domain socket.
 </p>
 <p>This function is asynchronous.  When the server has been bound,
 <a href="#event_listening_">&#39;listening&#39;</a> event will be emitted.
-the last parameter <code>listeningListener</code> will be added as an listener for the
+the last parameter <code>callback</code> will be added as an listener for the
 <a href="#event_listening_">&#39;listening&#39;</a> event.
 
 </p>
-<h3>server.close([cb])<span><a class="mark" href="#all_server_close_cb" id="all_server_close_cb">#</a></span></h3>
+<h3>server.close([callback])<span><a class="mark" href="#all_server_close_callback" id="all_server_close_callback">#</a></span></h3>
 <p>Stops the server from accepting new connections and keeps existing
 connections. This function is asynchronous, the server is finally
 closed when all connections are ended and the server emits a <code>&#39;close&#39;</code>
@@ -7225,23 +7289,23 @@ parameter is 511 (not 512).
 
 </p>
 <p>This function is asynchronous. The last parameter <code>callback</code> will be added as
-a listener for the <a href="net.html#net_event_listening">&#39;listening&#39;</a> event.  See also <a href="net.html#net_server_listen_port_host_backlog_listeninglistener">net.Server.listen(port)</a>.
+a listener for the <a href="net.html#net_event_listening">&#39;listening&#39;</a> event.  See also <a href="net.html#net_server_listen_port_host_backlog_callback">net.Server.listen(port)</a>.
 
 
 </p>
-<h3>server.listen(path, [callback])<span><a class="mark" href="#all_server_listen_path_callback" id="all_server_listen_path_callback">#</a></span></h3>
+<h3>server.listen(path, [callback])<span><a class="mark" href="#all_server_listen_path_callback_1" id="all_server_listen_path_callback_1">#</a></span></h3>
 <p>Start a UNIX socket server listening for connections on the given <code>path</code>.
 
 </p>
 <p>This function is asynchronous. The last parameter <code>callback</code> will be added as
-a listener for the <a href="net.html#net_event_listening">&#39;listening&#39;</a> event.  See also <a href="net.html#net_server_listen_path_listeninglistener">net.Server.listen(path)</a>.
+a listener for the <a href="net.html#net_event_listening">&#39;listening&#39;</a> event.  See also <a href="net.html#net_server_listen_path_callback">net.Server.listen(path)</a>.
 
 
 </p>
-<h3>server.listen(handle, [listeningListener])<span><a class="mark" href="#all_server_listen_handle_listeninglistener_1" id="all_server_listen_handle_listeninglistener_1">#</a></span></h3>
+<h3>server.listen(handle, [callback])<span><a class="mark" href="#all_server_listen_handle_callback_1" id="all_server_listen_handle_callback_1">#</a></span></h3>
 <div class="signature"><ul>
 <li><code>handle</code> <span class="type">Object</span></li>
-<li><code>listeningListener</code> <span class="type">Function</span></li>
+<li><code>callback</code> <span class="type">Function</span></li>
 </div></ul>
 <p>The <code>handle</code> object can be set to either a server or socket (anything
 with an underlying <code>_handle</code> member), or a <code>{fd: &lt;n&gt;}</code> object.
@@ -7257,11 +7321,11 @@ already been bound to a port or domain socket.
 </p>
 <p>This function is asynchronous. The last parameter <code>callback</code> will be added as
 a listener for the <a href="net.html#event_listening_">&#39;listening&#39;</a> event.
-See also <a href="net.html#server.listen">net.Server.listen()</a>.
+See also <a href="net.html#net_server_listen_handle_callback">net.Server.listen()</a>.
 
 </p>
-<h3>server.close([cb])<span><a class="mark" href="#all_server_close_cb_1" id="all_server_close_cb_1">#</a></span></h3>
-<p>Stops the server from accepting new connections.  See <a href="net.html#net_server_close_cb">net.Server.close()</a>.
+<h3>server.close([callback])<span><a class="mark" href="#all_server_close_callback_1" id="all_server_close_callback_1">#</a></span></h3>
+<p>Stops the server from accepting new connections.  See <a href="net.html#net_server_close_callback">net.Server.close()</a>.
 
 
 </p>
@@ -7613,7 +7677,7 @@ upload a file with a POST request, then write to the <code>ClientRequest</code> 
 
 </p>
 <pre><code>var options = {
-  host: &#39;www.google.com&#39;,
+  hostname: &#39;www.google.com&#39;,
   port: 80,
   path: &#39;/upload&#39;,
   method: &#39;POST&#39;
@@ -7708,7 +7772,7 @@ pool you can do something along the lines of:
 <p>Alternatively, you could just opt out of pooling entirely using <code>agent:false</code>:
 
 </p>
-<pre><code>http.get({host:&#39;localhost&#39;, port:80, path:&#39;/&#39;, agent:false}, function (res) {
+<pre><code>http.get({hostname:&#39;localhost&#39;, port:80, path:&#39;/&#39;, agent:false}, function (res) {
   // Do stuff
 })</code></pre>
 <h3>agent.maxSockets<span><a class="mark" href="#all_agent_maxsockets" id="all_agent_maxsockets">#</a></span></h3>
@@ -7841,7 +7905,7 @@ proxy.listen(1337, &#39;127.0.0.1&#39;, function() {
   // make a request to a tunneling proxy
   var options = {
     port: 1337,
-    host: &#39;127.0.0.1&#39;,
+    hostname: &#39;127.0.0.1&#39;,
     method: &#39;CONNECT&#39;,
     path: &#39;www.google.com:80&#39;
   };
@@ -7899,7 +7963,7 @@ srv.listen(1337, &#39;127.0.0.1&#39;, function() {
   // make a request
   var options = {
     port: 1337,
-    host: &#39;127.0.0.1&#39;,
+    hostname: &#39;127.0.0.1&#39;,
     headers: {
       &#39;Connection&#39;: &#39;Upgrade&#39;,
       &#39;Upgrade&#39;: &#39;websocket&#39;
@@ -7995,17 +8059,26 @@ passed to the <code>&#39;response&#39;</code> event of the request object.
 <p><code>function () { }</code>
 
 </p>
-<p>Emitted exactly once for each message. No arguments. After
-emitted no other events will be emitted on the response.
+<p>Emitted exactly once for each response. After that, no more <code>&#39;data&#39;</code> events
+will be emitted on the response.
+
 
 </p>
 <h3>Event: &#39;close&#39;<span><a class="mark" href="#all_event_close_8" id="all_event_close_8">#</a></span></h3>
-<p><code>function (err) { }</code>
+<p><code>function () { }</code>
 
 </p>
 <p>Indicates that the underlaying connection was terminated before
-<code>end</code> event was emitted.
-See <a href="#http_class_http_serverrequest">http.ServerRequest</a>&#39;s <code>&#39;close&#39;</code> event for more information.
+<code>response.end()</code> was called or able to flush.
+
+</p>
+<p>Just like <code>&#39;end&#39;</code>, this event occurs only once per response, and no more
+<code>&#39;data&#39;</code> events will fire afterwards. See [http.ServerResponse][]&#39;s <code>&#39;close&#39;</code>
+event for more information.
+
+</p>
+<p>Note: <code>&#39;close&#39;</code> can fire after <code>&#39;end&#39;</code>, but not vice versa.
+
 
 </p>
 <h3>response.statusCode<span><a class="mark" href="#all_response_statuscode_1" id="all_response_statuscode_1">#</a></span></h3>
@@ -8087,6 +8160,16 @@ https.createServer(options, function (req, res) {
   res.writeHead(200);
   res.end(&quot;hello world\n&quot;);
 }).listen(8000);</code></pre>
+<h3>server.listen(port, [host], [backlog], [callback])<span><a class="mark" href="#all_server_listen_port_host_backlog_callback_1" id="all_server_listen_port_host_backlog_callback_1">#</a></span></h3>
+<h3>server.listen(path, [callback])<span><a class="mark" href="#all_server_listen_path_callback_2" id="all_server_listen_path_callback_2">#</a></span></h3>
+<h3>server.listen(handle, [callback])<span><a class="mark" href="#all_server_listen_handle_callback_2" id="all_server_listen_handle_callback_2">#</a></span></h3>
+<p>See <a href="http.html#http_server_listen_port_hostname_backlog_callback">http.listen()</a> for details.
+
+</p>
+<h3>server.close([callback])<span><a class="mark" href="#all_server_close_callback_2" id="all_server_close_callback_2">#</a></span></h3>
+<p>See <a href="http.html#http_server_close_callback">http.close()</a> for details.
+
+</p>
 <h2>https.request(options, callback)<span><a class="mark" href="#all_https_request_options_callback" id="all_https_request_options_callback">#</a></span></h2>
 <p>Makes a request to a secure web server.
 
@@ -8104,7 +8187,7 @@ automatically parsed with <a href="url.html#url.parse">url.parse()</a>.
 <pre><code>var https = require(&#39;https&#39;);
 
 var options = {
-  host: &#39;encrypted.google.com&#39;,
+  hostname: &#39;encrypted.google.com&#39;,
   port: 443,
   path: &#39;/&#39;,
   method: &#39;GET&#39;
@@ -8127,14 +8210,8 @@ req.on(&#39;error&#39;, function(e) {
 
 </p>
 <ul>
-<li>host: IP or domain of host to make request to. Defaults to <code>&#39;localhost&#39;</code>.</li>
-<li>port: port of host to request to. Defaults to 443.</li>
-<li>path: Path to request. Default <code>&#39;/&#39;</code>.</li>
-<li><p>method: HTTP request method. Default <code>&#39;GET&#39;</code>.</p>
-</li>
-<li><p><code>host</code>: A domain name or IP address of the server to issue the request to.
-Defaults to <code>&#39;localhost&#39;</code>.</p>
-</li>
+<li><code>host</code>: A domain name or IP address of the server to issue the request to.
+Defaults to <code>&#39;localhost&#39;</code>.</li>
 <li><code>hostname</code>: To support <code>url.parse()</code> <code>hostname</code> is preferred over <code>host</code></li>
 <li><code>port</code>: Port of remote server. Defaults to 443.</li>
 <li><code>method</code>: A string specifying the HTTP request method. Defaults to <code>&#39;GET&#39;</code>.</li>
@@ -8178,7 +8255,7 @@ request is sent. Default <code>false</code>.</li>
 
 </p>
 <pre><code>var options = {
-  host: &#39;encrypted.google.com&#39;,
+  hostname: &#39;encrypted.google.com&#39;,
   port: 443,
   path: &#39;/&#39;,
   method: &#39;GET&#39;,
@@ -8197,7 +8274,7 @@ var req = https.request(options, function(res) {
 
 </p>
 <pre><code>var options = {
-  host: &#39;encrypted.google.com&#39;,
+  hostname: &#39;encrypted.google.com&#39;,
   port: 443,
   path: &#39;/&#39;,
   method: &#39;GET&#39;,
@@ -8234,7 +8311,7 @@ https.get(&#39;https://encrypted.google.com/&#39;, function(res) {
   console.error(e);
 });</code></pre>
 <h2>Class: https.Agent<span><a class="mark" href="#all_class_https_agent" id="all_class_https_agent">#</a></span></h2>
-<p>An Agent object for HTTPS similar to <a href="http.html#http_class_http_agent">http.Agent</a>.  See [https.request()][]
+<p>An Agent object for HTTPS similar to <a href="http.html#http_class_http_agent">http.Agent</a>.  See <a href="#https_https_request_options_callback">https.request()</a>
 for more information.
 
 
@@ -9468,6 +9545,8 @@ there is no IPC channel keeping it alive. When calling this method the
 for stdio.  (See below)</li>
 <li><code>env</code> <span class="type">Object</span> Environment key-value pairs</li>
 <li><code>detached</code> <span class="type">Boolean</span> The child will be a process group leader.  (See below)</li>
+<li><code>uid</code> <span class="type">Number</span> Sets the user identity of the process. (See setuid(2).)</li>
+<li><code>gid</code> <span class="type">Number</span> Sets the group identity of the process. (See setgid(2).)</li>
 </ul>
 </li>
 <li>return: <span class="type">ChildProcess object</span></li>
@@ -11124,7 +11203,7 @@ worker.on(&#39;exit&#39;, function(code, signal) {
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.8.11/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.8.18/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

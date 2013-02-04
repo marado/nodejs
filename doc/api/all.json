@@ -512,7 +512,7 @@
               "textRaw": "process.hrtime()",
               "type": "method",
               "name": "hrtime",
-              "desc": "<p>Returns the current high-resolution real time in a <code>[seconds, nanoseconds]</code>\ntuple Array. It is relative to an arbitrary time in the past. It is not\nrelated to the time of day and therefore not subject to clock drift. The\nprimary use is for measuring performance between intervals.\n\n</p>\n<p>You may pass in the result of a previous call to <code>process.hrtime()</code> to get\na diff reading, useful for benchmarks and measuring intervals:\n\n</p>\n<pre><code>var t = process.hrtime();\n// [ 1800216, 927643717 ]\n\nsetTimeout(function () {\n  t = process.hrtime(t);\n  // [ 1, 6962306 ]\n\n  console.log(&#39;benchmark took %d seconds and %d nanoseconds&#39;, t[0], t[1]);\n  // benchmark took 1 seconds and 6962306 nanoseconds\n}, 1000);</code></pre>\n",
+              "desc": "<p>Returns the current high-resolution real time in a <code>[seconds, nanoseconds]</code>\ntuple Array. It is relative to an arbitrary time in the past. It is not\nrelated to the time of day and therefore not subject to clock drift. The\nprimary use is for measuring performance between intervals.\n\n</p>\n<p>You may pass in the result of a previous call to <code>process.hrtime()</code> to get\na diff reading, useful for benchmarks and measuring intervals:\n\n</p>\n<pre><code>var time = process.hrtime();\n// [ 1800216, 25 ]\n\nsetTimeout(function () {\n  var diff = process.hrtime(time);\n  // [ 1, 552 ]\n\n  console.log(&#39;benchmark took %d nanoseconds&#39;, diff[0] * 1e9 + diff[1]);\n  // benchmark took 1000000527 nanoseconds\n}, 1000);</code></pre>\n",
               "signatures": [
                 {
                   "params": []
@@ -550,7 +550,7 @@
             {
               "textRaw": "`extensions` {Array} ",
               "name": "extensions",
-              "desc": "<p>Instruct <code>require</code> on how to handle certain file extensions.\n\n</p>\n<p>Process files with the extension <code>.sjs</code> as <code>.js</code>:\n\n</p>\n<pre><code>require.extensions[&#39;.sjs&#39;] = require.extensions[&#39;.js&#39;];</code></pre>\n<p>Write your own extension handler:\n\n</p>\n<pre><code>require.extensions[&#39;.sjs&#39;] = function(module, filename) {\n  var content = fs.readFileSync(filename, &#39;utf8&#39;);\n  // Parse the file content and give to module.exports\n  module.exports = content;\n};</code></pre>\n"
+              "desc": "<p>Instruct <code>require</code> on how to handle certain file extensions.\n\n</p>\n<p>Process files with the extension <code>.sjs</code> as <code>.js</code>:\n\n</p>\n<pre><code>require.extensions[&#39;.sjs&#39;] = require.extensions[&#39;.js&#39;];</code></pre>\n"
             }
           ]
         },
@@ -1155,7 +1155,7 @@
           "textRaw": "process.hrtime()",
           "type": "method",
           "name": "hrtime",
-          "desc": "<p>Returns the current high-resolution real time in a <code>[seconds, nanoseconds]</code>\ntuple Array. It is relative to an arbitrary time in the past. It is not\nrelated to the time of day and therefore not subject to clock drift. The\nprimary use is for measuring performance between intervals.\n\n</p>\n<p>You may pass in the result of a previous call to <code>process.hrtime()</code> to get\na diff reading, useful for benchmarks and measuring intervals:\n\n</p>\n<pre><code>var t = process.hrtime();\n// [ 1800216, 927643717 ]\n\nsetTimeout(function () {\n  t = process.hrtime(t);\n  // [ 1, 6962306 ]\n\n  console.log(&#39;benchmark took %d seconds and %d nanoseconds&#39;, t[0], t[1]);\n  // benchmark took 1 seconds and 6962306 nanoseconds\n}, 1000);</code></pre>\n",
+          "desc": "<p>Returns the current high-resolution real time in a <code>[seconds, nanoseconds]</code>\ntuple Array. It is relative to an arbitrary time in the past. It is not\nrelated to the time of day and therefore not subject to clock drift. The\nprimary use is for measuring performance between intervals.\n\n</p>\n<p>You may pass in the result of a previous call to <code>process.hrtime()</code> to get\na diff reading, useful for benchmarks and measuring intervals:\n\n</p>\n<pre><code>var time = process.hrtime();\n// [ 1800216, 25 ]\n\nsetTimeout(function () {\n  var diff = process.hrtime(time);\n  // [ 1, 552 ]\n\n  console.log(&#39;benchmark took %d nanoseconds&#39;, diff[0] * 1e9 + diff[1]);\n  // benchmark took 1000000527 nanoseconds\n}, 1000);</code></pre>\n",
           "signatures": [
             {
               "params": []
@@ -1193,7 +1193,7 @@
         {
           "textRaw": "`extensions` {Array} ",
           "name": "extensions",
-          "desc": "<p>Instruct <code>require</code> on how to handle certain file extensions.\n\n</p>\n<p>Process files with the extension <code>.sjs</code> as <code>.js</code>:\n\n</p>\n<pre><code>require.extensions[&#39;.sjs&#39;] = require.extensions[&#39;.js&#39;];</code></pre>\n<p>Write your own extension handler:\n\n</p>\n<pre><code>require.extensions[&#39;.sjs&#39;] = function(module, filename) {\n  var content = fs.readFileSync(filename, &#39;utf8&#39;);\n  // Parse the file content and give to module.exports\n  module.exports = content;\n};</code></pre>\n"
+          "desc": "<p>Instruct <code>require</code> on how to handle certain file extensions.\n\n</p>\n<p>Process files with the extension <code>.sjs</code> as <code>.js</code>:\n\n</p>\n<pre><code>require.extensions[&#39;.sjs&#39;] = require.extensions[&#39;.js&#39;];</code></pre>\n"
         }
       ]
     },
@@ -1702,7 +1702,7 @@
           "textRaw": "util.inspect(object, [showHidden], [depth], [colors])",
           "type": "method",
           "name": "inspect",
-          "desc": "<p>Return a string representation of <code>object</code>, which is useful for debugging.\n\n</p>\n<p>If <code>showHidden</code> is <code>true</code>, then the object&#39;s non-enumerable properties will be\nshown too. Defaults to <code>false</code>.\n\n</p>\n<p>If <code>depth</code> is provided, it tells <code>inspect</code> how many times to recurse while\nformatting the object. This is useful for inspecting large complicated objects.\n\n</p>\n<p>The default is to only recurse twice.  To make it recurse indefinitely, pass\nin <code>null</code> for <code>depth</code>.\n\n</p>\n<p>If <code>colors</code> is <code>true</code>, the output will be styled with ANSI color codes.\nDefaults to <code>false</code>.\n\n</p>\n<p>Example of inspecting all properties of the <code>util</code> object:\n\n</p>\n<pre><code>var util = require(&#39;util&#39;);\n\nconsole.log(util.inspect(util, true, null));</code></pre>\n",
+          "desc": "<p>Return a string representation of <code>object</code>, which is useful for debugging.\n\n</p>\n<p>If <code>showHidden</code> is <code>true</code>, then the object&#39;s non-enumerable properties will be\nshown too. Defaults to <code>false</code>.\n\n</p>\n<p>If <code>depth</code> is provided, it tells <code>inspect</code> how many times to recurse while\nformatting the object. This is useful for inspecting large complicated objects.\n\n</p>\n<p>The default is to only recurse twice.  To make it recurse indefinitely, pass\nin <code>null</code> for <code>depth</code>.\n\n</p>\n<p>If <code>colors</code> is <code>true</code>, the output will be styled with ANSI color codes.\nDefaults to <code>false</code>.\n\n</p>\n<p>Example of inspecting all properties of the <code>util</code> object:\n\n</p>\n<pre><code>var util = require(&#39;util&#39;);\n\nconsole.log(util.inspect(util, true, null));</code></pre>\n<p>Objects also may define their own <code>inspect(depth)</code> function which <code>util.inspect()</code>\nwill invoke and use the result of when inspecting the object:\n\n</p>\n<pre><code>var util = require(&#39;util&#39;);\n\nvar obj = { name: &#39;nate&#39; };\nobj.inspect = function(depth) {\n  return &#39;{&#39; + this.name + &#39;}&#39;;\n};\n\nutil.inspect(obj);\n  // &quot;{nate}&quot;</code></pre>\n",
           "signatures": [
             {
               "params": [
@@ -2142,7 +2142,7 @@
               "desc": "<p>The opposite of <code>domain.add(emitter)</code>.  Removes domain handling from the\nspecified emitter.\n\n</p>\n"
             },
             {
-              "textRaw": "domain.bind(cb)",
+              "textRaw": "domain.bind(callback)",
               "type": "method",
               "name": "bind",
               "signatures": [
@@ -2155,8 +2155,8 @@
                   },
                   "params": [
                     {
-                      "textRaw": "`cb` {Function} The callback function ",
-                      "name": "cb",
+                      "textRaw": "`callback` {Function} The callback function ",
+                      "name": "callback",
                       "type": "Function",
                       "desc": "The callback function"
                     }
@@ -2165,7 +2165,7 @@
                 {
                   "params": [
                     {
-                      "name": "cb"
+                      "name": "callback"
                     }
                   ]
                 }
@@ -2173,7 +2173,7 @@
               "desc": "<p>The returned function will be a wrapper around the supplied callback\nfunction.  When the returned function is called, any errors that are\nthrown will be routed to the domain&#39;s <code>error</code> event.\n\n</p>\n<h4>Example</h4>\n<pre><code>var d = domain.create();\n\nfunction readSomeFile(filename, cb) {\n  fs.readFile(filename, &#39;utf8&#39;, d.bind(function(er, data) {\n    // if this throws, it will also be passed to the domain\n    return cb(er, data ? JSON.parse(data) : null);\n  }));\n}\n\nd.on(&#39;error&#39;, function(er) {\n  // an error occurred somewhere.\n  // if we throw it now, it will crash the program\n  // with the normal line number and stack message.\n});</code></pre>\n"
             },
             {
-              "textRaw": "domain.intercept(cb)",
+              "textRaw": "domain.intercept(callback)",
               "type": "method",
               "name": "intercept",
               "signatures": [
@@ -2186,8 +2186,8 @@
                   },
                   "params": [
                     {
-                      "textRaw": "`cb` {Function} The callback function ",
-                      "name": "cb",
+                      "textRaw": "`callback` {Function} The callback function ",
+                      "name": "callback",
                       "type": "Function",
                       "desc": "The callback function"
                     }
@@ -2196,12 +2196,12 @@
                 {
                   "params": [
                     {
-                      "name": "cb"
+                      "name": "callback"
                     }
                   ]
                 }
               ],
-              "desc": "<p>This method is almost identical to <code>domain.bind(cb)</code>.  However, in\naddition to catching thrown errors, it will also intercept <code>Error</code>\nobjects sent as the first argument to the function.\n\n</p>\n<p>In this way, the common <code>if (er) return cb(er);</code> pattern can be replaced\nwith a single error handler in a single place.\n\n</p>\n<h4>Example</h4>\n<pre><code>var d = domain.create();\n\nfunction readSomeFile(filename, cb) {\n  fs.readFile(filename, &#39;utf8&#39;, d.intercept(function(data) {\n    // note, the first argument is never passed to the\n    // callback since it is assumed to be the &#39;Error&#39; argument\n    // and thus intercepted by the domain.\n\n    // if this throws, it will also be passed to the domain\n    // so the error-handling logic can be moved to the &#39;error&#39;\n    // event on the domain instead of being repeated throughout\n    // the program.\n    return cb(null, JSON.parse(data));\n  }));\n}\n\nd.on(&#39;error&#39;, function(er) {\n  // an error occurred somewhere.\n  // if we throw it now, it will crash the program\n  // with the normal line number and stack message.\n});</code></pre>\n"
+              "desc": "<p>This method is almost identical to <code>domain.bind(callback)</code>.  However, in\naddition to catching thrown errors, it will also intercept <code>Error</code>\nobjects sent as the first argument to the function.\n\n</p>\n<p>In this way, the common <code>if (er) return callback(er);</code> pattern can be replaced\nwith a single error handler in a single place.\n\n</p>\n<h4>Example</h4>\n<pre><code>var d = domain.create();\n\nfunction readSomeFile(filename, cb) {\n  fs.readFile(filename, &#39;utf8&#39;, d.intercept(function(data) {\n    // note, the first argument is never passed to the\n    // callback since it is assumed to be the &#39;Error&#39; argument\n    // and thus intercepted by the domain.\n\n    // if this throws, it will also be passed to the domain\n    // so the error-handling logic can be moved to the &#39;error&#39;\n    // event on the domain instead of being repeated throughout\n    // the program.\n    return cb(null, JSON.parse(data));\n  }));\n}\n\nd.on(&#39;error&#39;, function(er) {\n  // an error occurred somewhere.\n  // if we throw it now, it will crash the program\n  // with the normal line number and stack message.\n});</code></pre>\n"
             },
             {
               "textRaw": "domain.dispose()",
@@ -2232,7 +2232,7 @@
       "name": "buffer",
       "stability": 3,
       "stabilityText": "Stable",
-      "desc": "<p>Pure JavaScript is Unicode friendly but not nice to binary data.  When\ndealing with TCP streams or the file system, it&#39;s necessary to handle octet\nstreams. Node has several strategies for manipulating, creating, and\nconsuming octet streams.\n\n</p>\n<p>Raw data is stored in instances of the <code>Buffer</code> class. A <code>Buffer</code> is similar\nto an array of integers but corresponds to a raw memory allocation outside\nthe V8 heap. A <code>Buffer</code> cannot be resized.\n\n</p>\n<p>The <code>Buffer</code> class is a global, making it very rare that one would need\nto ever <code>require(&#39;buffer&#39;)</code>.\n\n</p>\n<p>Converting between Buffers and JavaScript string objects requires an explicit\nencoding method.  Here are the different string encodings.\n\n</p>\n<ul>\n<li><p><code>&#39;ascii&#39;</code> - for 7 bit ASCII data only.  This encoding method is very fast, and\nwill strip the high bit if set.\nNote that this encoding converts a null character (<code>&#39;\\0&#39;</code> or <code>&#39;\\u0000&#39;</code>) into\n<code>0x20</code> (character code of a space). If you want to convert a null character\ninto <code>0x00</code>, you should use <code>&#39;utf8&#39;</code>.</p>\n</li>\n<li><p><code>&#39;utf8&#39;</code> - Multibyte encoded Unicode characters. Many web pages and other\ndocument formats use UTF-8.</p>\n</li>\n<li><p><code>&#39;utf16le&#39;</code> - 2 or 4 bytes, little endian encoded Unicode characters.\nSurrogate pairs (U+10000 to U+10FFFF) are supported.</p>\n</li>\n<li><p><code>&#39;ucs2&#39;</code> - Alias of <code>&#39;utf16le&#39;</code>.</p>\n</li>\n<li><p><code>&#39;base64&#39;</code> - Base64 string encoding.</p>\n</li>\n<li><p><code>&#39;binary&#39;</code> - A way of encoding raw binary data into strings by using only\nthe first 8 bits of each character. This encoding method is deprecated and\nshould be avoided in favor of <code>Buffer</code> objects where possible. This encoding\nwill be removed in future versions of Node.</p>\n</li>\n<li><p><code>&#39;hex&#39;</code> - Encode each byte as two hexadecimal characters.</p>\n</li>\n</ul>\n",
+      "desc": "<p>Pure JavaScript is Unicode friendly but not nice to binary data.  When\ndealing with TCP streams or the file system, it&#39;s necessary to handle octet\nstreams. Node has several strategies for manipulating, creating, and\nconsuming octet streams.\n\n</p>\n<p>Raw data is stored in instances of the <code>Buffer</code> class. A <code>Buffer</code> is similar\nto an array of integers but corresponds to a raw memory allocation outside\nthe V8 heap. A <code>Buffer</code> cannot be resized.\n\n</p>\n<p>The <code>Buffer</code> class is a global, making it very rare that one would need\nto ever <code>require(&#39;buffer&#39;)</code>.\n\n</p>\n<p>Converting between Buffers and JavaScript string objects requires an explicit\nencoding method.  Here are the different string encodings.\n\n</p>\n<ul>\n<li><p><code>&#39;ascii&#39;</code> - for 7 bit ASCII data only.  This encoding method is very fast, and\nwill strip the high bit if set.\nNote that this encoding converts a null character (<code>&#39;\\0&#39;</code> or <code>&#39;\\u0000&#39;</code>) into\n<code>0x20</code> (character code of a space). If you want to convert a null character\ninto <code>0x00</code>, you should use <code>&#39;utf8&#39;</code>.</p>\n</li>\n<li><p><code>&#39;utf8&#39;</code> - Multibyte encoded Unicode characters. Many web pages and other\ndocument formats use UTF-8.</p>\n</li>\n<li><p><code>&#39;utf16le&#39;</code> - 2 or 4 bytes, little endian encoded Unicode characters.\nSurrogate pairs (U+10000 to U+10FFFF) are supported.</p>\n</li>\n<li><p><code>&#39;ucs2&#39;</code> - Alias of <code>&#39;utf16le&#39;</code>.</p>\n</li>\n<li><p><code>&#39;base64&#39;</code> - Base64 string encoding.</p>\n</li>\n<li><p><code>&#39;binary&#39;</code> - A way of encoding raw binary data into strings by using only\nthe first 8 bits of each character. This encoding method is deprecated and\nshould be avoided in favor of <code>Buffer</code> objects where possible. This encoding\nwill be removed in future versions of Node.</p>\n</li>\n<li><p><code>&#39;hex&#39;</code> - Encode each byte as two hexadecimal characters.</p>\n</li>\n</ul>\n<p><code>Buffer</code> can also be used with Typed Array Views and DataViews.\n\n</p>\n<pre><code>var buff = new Buffer(4);\nvar ui16 = new Uint16Array(buff);\nvar view = new DataView(buff);\n\nui16[0] = 1;\nui16[1] = 2;\nconsole.log(buff);\n\nview.setInt16(0, 1);       // set big-endian int16 at byte offset 0\nview.setInt16(2, 2, true); // set little-endian int16 at byte offset 2\nconsole.log(buff);\n\n// &lt;Buffer 01 00 02 00&gt;\n// &lt;Buffer 00 01 02 00&gt;</code></pre>\n",
       "classes": [
         {
           "textRaw": "Class: Buffer",
@@ -4092,7 +4092,7 @@
               "textRaw": "Event: 'drain'",
               "type": "event",
               "name": "drain",
-              "desc": "<p><code>function () { }</code>\n\n</p>\n<p>After a <code>write()</code> method returned <code>false</code>, this event is emitted to\nindicate that it is safe to write again.\n\n</p>\n",
+              "desc": "<p><code>function () { }</code>\n\n</p>\n<p>Emitted when the stream&#39;s write queue empties and it&#39;s safe to write without\nbuffering again. Listen for it when <code>stream.write()</code> returns <code>false</code>.\n\n</p>\n<p>The <code>&#39;drain&#39;</code> event can happen at <em>any</em> time, regardless of whether or not\n<code>stream.write()</code> has previously returned <code>false</code>. To avoid receiving unwanted\n<code>&#39;drain&#39;</code> events, listen using <code>stream.once()</code>.\n\n</p>\n",
               "params": []
             },
             {
@@ -4126,10 +4126,10 @@
           ],
           "methods": [
             {
-              "textRaw": "stream.write(string, [encoding], [fd])",
+              "textRaw": "stream.write(string, [encoding])",
               "type": "method",
               "name": "write",
-              "desc": "<p>Writes <code>string</code> with the given <code>encoding</code> to the stream.  Returns <code>true</code>\nif the string has been flushed to the kernel buffer.  Returns <code>false</code> to\nindicate that the kernel buffer is full, and the data will be sent out\nin the future. The <code>&#39;drain&#39;</code> event will indicate when the kernel buffer\nis empty again. The <code>encoding</code> defaults to <code>&#39;utf8&#39;</code>.\n\n</p>\n<p>If the optional <code>fd</code> parameter is specified, it is interpreted as an\nintegral file descriptor to be sent over the stream. This is only\nsupported for UNIX streams, and is silently ignored otherwise. When\nwriting a file descriptor in this manner, closing the descriptor before\nthe stream drains risks sending an invalid (closed) FD.\n\n</p>\n",
+              "desc": "<p>Writes <code>string</code> with the given <code>encoding</code> to the stream.  Returns <code>true</code>\nif the string has been flushed to the kernel buffer.  Returns <code>false</code> to\nindicate that the kernel buffer is full, and the data will be sent out\nin the future. The <code>&#39;drain&#39;</code> event will indicate when the kernel buffer\nis empty again. The <code>encoding</code> defaults to <code>&#39;utf8&#39;</code>.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -4138,10 +4138,6 @@
                     },
                     {
                       "name": "encoding",
-                      "optional": true
-                    },
-                    {
-                      "name": "fd",
                       "optional": true
                     }
                   ]
@@ -4238,9 +4234,7 @@
     {
       "textRaw": "Crypto",
       "name": "crypto",
-      "stability": 3,
-      "stabilityText": "Stable",
-      "desc": "<p>Use <code>require(&#39;crypto&#39;)</code> to access this module.\n\n</p>\n<p>The crypto module requires OpenSSL to be available on the underlying platform.\nIt offers a way of encapsulating secure credentials to be used as part\nof a secure HTTPS net or http connection.\n\n</p>\n<p>It also offers a set of wrappers for OpenSSL&#39;s hash, hmac, cipher, decipher, sign and verify methods.\n\n</p>\n",
+      "desc": "<pre><code>Stability: 2 - Unstable; API changes are being discussed for\nfuture versions.  Breaking changes will be minimized.  See below.</code></pre>\n<p>Use <code>require(&#39;crypto&#39;)</code> to access this module.\n\n</p>\n<p>The crypto module requires OpenSSL to be available on the underlying platform.\nIt offers a way of encapsulating secure credentials to be used as part\nof a secure HTTPS net or http connection.\n\n</p>\n<p>It also offers a set of wrappers for OpenSSL&#39;s hash, hmac, cipher, decipher, sign and verify methods.\n\n</p>\n",
       "methods": [
         {
           "textRaw": "crypto.createCredentials(details)",
@@ -4940,6 +4934,15 @@
           ]
         }
       ],
+      "modules": [
+        {
+          "textRaw": "Proposed API Changes in Future Versions of Node",
+          "name": "proposed_api_changes_in_future_versions_of_node",
+          "desc": "<p>The Crypto module was added to Node before there was the concept of a\nunified Stream API, and before there were Buffer objects for handling\nbinary data.\n\n</p>\n<p>As such, the streaming classes don&#39;t have the typical methods found on\nother Node classes, and many methods accept and return Binary-encoded\nstrings by default rather than Buffers.\n\n</p>\n<p>A future version of node will make Buffers the default data type.\nThis will be a breaking change for some use cases, but not all.\n\n</p>\n<p>For example, if you currently use the default arguments to the Sign\nclass, and then pass the results to the Verify class, without ever\ninspecting the data, then it will continue to work as before.  Where\nyou now get a binary string and then present the binary string to the\nVerify object, you&#39;ll get a Buffer, and present the Buffer to the\nVerify object.\n\n</p>\n<p>However, if you are doing things with the string data that will not\nwork properly on Buffers (such as, concatenating them, storing in\ndatabases, etc.), or you are passing binary strings to the crypto\nfunctions without an encoding argument, then you will need to start\nproviding encoding arguments to specify which encoding you&#39;d like to\nuse.\n\n</p>\n<p>Also, a Streaming API will be provided, but this will be done in such\na way as to preserve the legacy API surface.\n\n\n</p>\n",
+          "type": "module",
+          "displayName": "Proposed API Changes in Future Versions of Node"
+        }
+      ],
       "type": "module",
       "displayName": "Crypto"
     },
@@ -4984,10 +4987,10 @@
           ]
         },
         {
-          "textRaw": "tls.connect(options, [secureConnectListener])",
+          "textRaw": "tls.connect(options, [callback])",
           "type": "method",
           "name": "connect",
-          "desc": "<p>Creates a new client connection to the given <code>port</code> and <code>host</code> (old API) or\n<code>options.port</code> and <code>options.host</code>. (If <code>host</code> is omitted, it defaults to\n<code>localhost</code>.) <code>options</code> should be an object which specifies:\n\n</p>\n<ul>\n<li><p><code>host</code>: Host the client should connect to</p>\n</li>\n<li><p><code>port</code>: Port the client should connect to</p>\n</li>\n<li><p><code>socket</code>: Establish secure connection on a given socket rather than\ncreating a new socket. If this option is specified, <code>host</code> and <code>port</code>\nare ignored.</p>\n</li>\n<li><p><code>pfx</code>: A string or <code>Buffer</code> containing the private key, certificate and\nCA certs of the server in PFX or PKCS12 format.</p>\n</li>\n<li><p><code>key</code>: A string or <code>Buffer</code> containing the private key of the client in\nPEM format.</p>\n</li>\n<li><p><code>passphrase</code>: A string of passphrase for the private key or pfx.</p>\n</li>\n<li><p><code>cert</code>: A string or <code>Buffer</code> containing the certificate key of the client in\nPEM format.</p>\n</li>\n<li><p><code>ca</code>: An array of strings or <code>Buffer</code>s of trusted certificates. If this is\nomitted several well known &quot;root&quot; CAs will be used, like VeriSign.\nThese are used to authorize connections.</p>\n</li>\n<li><p><code>rejectUnauthorized</code>: If <code>true</code>, the server certificate is verified against\nthe list of supplied CAs. An <code>&#39;error&#39;</code> event is emitted if verification\nfails. Default: <code>false</code>.</p>\n</li>\n<li><p><code>NPNProtocols</code>: An array of string or <code>Buffer</code> containing supported NPN\nprotocols. <code>Buffer</code> should have following format: <code>0x05hello0x05world</code>,\nwhere first byte is next protocol name&#39;s length. (Passing array should\nusually be much simpler: <code>[&#39;hello&#39;, &#39;world&#39;]</code>.)</p>\n</li>\n<li><p><code>servername</code>: Servername for SNI (Server Name Indication) TLS extension.</p>\n</li>\n</ul>\n<p>The <code>secureConnectListener</code> parameter will be added as a listener for the\n[&#39;secureConnect&#39;][] event.\n\n</p>\n<p><code>tls.connect()</code> returns a [CleartextStream][] object.\n\n</p>\n<p>Here is an example of a client of echo server as described previously:\n\n</p>\n<pre><code>var tls = require(&#39;tls&#39;);\nvar fs = require(&#39;fs&#39;);\n\nvar options = {\n  // These are necessary only if using the client certificate authentication\n  key: fs.readFileSync(&#39;client-key.pem&#39;),\n  cert: fs.readFileSync(&#39;client-cert.pem&#39;),\n\n  // This is necessary only if the server uses the self-signed certificate\n  ca: [ fs.readFileSync(&#39;server-cert.pem&#39;) ]\n};\n\nvar cleartextStream = tls.connect(8000, options, function() {\n  console.log(&#39;client connected&#39;,\n              cleartextStream.authorized ? &#39;authorized&#39; : &#39;unauthorized&#39;);\n  process.stdin.pipe(cleartextStream);\n  process.stdin.resume();\n});\ncleartextStream.setEncoding(&#39;utf8&#39;);\ncleartextStream.on(&#39;data&#39;, function(data) {\n  console.log(data);\n});\ncleartextStream.on(&#39;end&#39;, function() {\n  server.close();\n});</code></pre>\n<p>Or\n\n</p>\n<pre><code>var tls = require(&#39;tls&#39;);\nvar fs = require(&#39;fs&#39;);\n\nvar options = {\n  pfx: fs.readFileSync(&#39;client.pfx&#39;)\n};\n\nvar cleartextStream = tls.connect(8000, options, function() {\n  console.log(&#39;client connected&#39;,\n              cleartextStream.authorized ? &#39;authorized&#39; : &#39;unauthorized&#39;);\n  process.stdin.pipe(cleartextStream);\n  process.stdin.resume();\n});\ncleartextStream.setEncoding(&#39;utf8&#39;);\ncleartextStream.on(&#39;data&#39;, function(data) {\n  console.log(data);\n});\ncleartextStream.on(&#39;end&#39;, function() {\n  server.close();\n});</code></pre>\n",
+          "desc": "<p>Creates a new client connection to the given <code>port</code> and <code>host</code> (old API) or\n<code>options.port</code> and <code>options.host</code>. (If <code>host</code> is omitted, it defaults to\n<code>localhost</code>.) <code>options</code> should be an object which specifies:\n\n</p>\n<ul>\n<li><p><code>host</code>: Host the client should connect to</p>\n</li>\n<li><p><code>port</code>: Port the client should connect to</p>\n</li>\n<li><p><code>socket</code>: Establish secure connection on a given socket rather than\ncreating a new socket. If this option is specified, <code>host</code> and <code>port</code>\nare ignored.</p>\n</li>\n<li><p><code>pfx</code>: A string or <code>Buffer</code> containing the private key, certificate and\nCA certs of the server in PFX or PKCS12 format.</p>\n</li>\n<li><p><code>key</code>: A string or <code>Buffer</code> containing the private key of the client in\nPEM format.</p>\n</li>\n<li><p><code>passphrase</code>: A string of passphrase for the private key or pfx.</p>\n</li>\n<li><p><code>cert</code>: A string or <code>Buffer</code> containing the certificate key of the client in\nPEM format.</p>\n</li>\n<li><p><code>ca</code>: An array of strings or <code>Buffer</code>s of trusted certificates. If this is\nomitted several well known &quot;root&quot; CAs will be used, like VeriSign.\nThese are used to authorize connections.</p>\n</li>\n<li><p><code>rejectUnauthorized</code>: If <code>true</code>, the server certificate is verified against\nthe list of supplied CAs. An <code>&#39;error&#39;</code> event is emitted if verification\nfails. Default: <code>false</code>.</p>\n</li>\n<li><p><code>NPNProtocols</code>: An array of string or <code>Buffer</code> containing supported NPN\nprotocols. <code>Buffer</code> should have following format: <code>0x05hello0x05world</code>,\nwhere first byte is next protocol name&#39;s length. (Passing array should\nusually be much simpler: <code>[&#39;hello&#39;, &#39;world&#39;]</code>.)</p>\n</li>\n<li><p><code>servername</code>: Servername for SNI (Server Name Indication) TLS extension.</p>\n</li>\n</ul>\n<p>The <code>callback</code> parameter will be added as a listener for the\n[&#39;secureConnect&#39;][] event.\n\n</p>\n<p><code>tls.connect()</code> returns a [CleartextStream][] object.\n\n</p>\n<p>Here is an example of a client of echo server as described previously:\n\n</p>\n<pre><code>var tls = require(&#39;tls&#39;);\nvar fs = require(&#39;fs&#39;);\n\nvar options = {\n  // These are necessary only if using the client certificate authentication\n  key: fs.readFileSync(&#39;client-key.pem&#39;),\n  cert: fs.readFileSync(&#39;client-cert.pem&#39;),\n\n  // This is necessary only if the server uses the self-signed certificate\n  ca: [ fs.readFileSync(&#39;server-cert.pem&#39;) ]\n};\n\nvar cleartextStream = tls.connect(8000, options, function() {\n  console.log(&#39;client connected&#39;,\n              cleartextStream.authorized ? &#39;authorized&#39; : &#39;unauthorized&#39;);\n  process.stdin.pipe(cleartextStream);\n  process.stdin.resume();\n});\ncleartextStream.setEncoding(&#39;utf8&#39;);\ncleartextStream.on(&#39;data&#39;, function(data) {\n  console.log(data);\n});\ncleartextStream.on(&#39;end&#39;, function() {\n  server.close();\n});</code></pre>\n<p>Or\n\n</p>\n<pre><code>var tls = require(&#39;tls&#39;);\nvar fs = require(&#39;fs&#39;);\n\nvar options = {\n  pfx: fs.readFileSync(&#39;client.pfx&#39;)\n};\n\nvar cleartextStream = tls.connect(8000, options, function() {\n  console.log(&#39;client connected&#39;,\n              cleartextStream.authorized ? &#39;authorized&#39; : &#39;unauthorized&#39;);\n  process.stdin.pipe(cleartextStream);\n  process.stdin.resume();\n});\ncleartextStream.setEncoding(&#39;utf8&#39;);\ncleartextStream.on(&#39;data&#39;, function(data) {\n  console.log(data);\n});\ncleartextStream.on(&#39;end&#39;, function() {\n  server.close();\n});</code></pre>\n",
           "signatures": [
             {
               "params": [
@@ -5003,7 +5006,7 @@
                   "optional": true
                 },
                 {
-                  "name": "secureConnectListener",
+                  "name": "callback",
                   "optional": true
                 }
               ]
@@ -5014,7 +5017,7 @@
                   "name": "options"
                 },
                 {
-                  "name": "secureConnectListener",
+                  "name": "callback",
                   "optional": true
                 }
               ]
@@ -5022,10 +5025,10 @@
           ]
         },
         {
-          "textRaw": "tls.connect(port, [host], [options], [secureConnectListener])",
+          "textRaw": "tls.connect(port, [host], [options], [callback])",
           "type": "method",
           "name": "connect",
-          "desc": "<p>Creates a new client connection to the given <code>port</code> and <code>host</code> (old API) or\n<code>options.port</code> and <code>options.host</code>. (If <code>host</code> is omitted, it defaults to\n<code>localhost</code>.) <code>options</code> should be an object which specifies:\n\n</p>\n<ul>\n<li><p><code>host</code>: Host the client should connect to</p>\n</li>\n<li><p><code>port</code>: Port the client should connect to</p>\n</li>\n<li><p><code>socket</code>: Establish secure connection on a given socket rather than\ncreating a new socket. If this option is specified, <code>host</code> and <code>port</code>\nare ignored.</p>\n</li>\n<li><p><code>pfx</code>: A string or <code>Buffer</code> containing the private key, certificate and\nCA certs of the server in PFX or PKCS12 format.</p>\n</li>\n<li><p><code>key</code>: A string or <code>Buffer</code> containing the private key of the client in\nPEM format.</p>\n</li>\n<li><p><code>passphrase</code>: A string of passphrase for the private key or pfx.</p>\n</li>\n<li><p><code>cert</code>: A string or <code>Buffer</code> containing the certificate key of the client in\nPEM format.</p>\n</li>\n<li><p><code>ca</code>: An array of strings or <code>Buffer</code>s of trusted certificates. If this is\nomitted several well known &quot;root&quot; CAs will be used, like VeriSign.\nThese are used to authorize connections.</p>\n</li>\n<li><p><code>rejectUnauthorized</code>: If <code>true</code>, the server certificate is verified against\nthe list of supplied CAs. An <code>&#39;error&#39;</code> event is emitted if verification\nfails. Default: <code>false</code>.</p>\n</li>\n<li><p><code>NPNProtocols</code>: An array of string or <code>Buffer</code> containing supported NPN\nprotocols. <code>Buffer</code> should have following format: <code>0x05hello0x05world</code>,\nwhere first byte is next protocol name&#39;s length. (Passing array should\nusually be much simpler: <code>[&#39;hello&#39;, &#39;world&#39;]</code>.)</p>\n</li>\n<li><p><code>servername</code>: Servername for SNI (Server Name Indication) TLS extension.</p>\n</li>\n</ul>\n<p>The <code>secureConnectListener</code> parameter will be added as a listener for the\n[&#39;secureConnect&#39;][] event.\n\n</p>\n<p><code>tls.connect()</code> returns a [CleartextStream][] object.\n\n</p>\n<p>Here is an example of a client of echo server as described previously:\n\n</p>\n<pre><code>var tls = require(&#39;tls&#39;);\nvar fs = require(&#39;fs&#39;);\n\nvar options = {\n  // These are necessary only if using the client certificate authentication\n  key: fs.readFileSync(&#39;client-key.pem&#39;),\n  cert: fs.readFileSync(&#39;client-cert.pem&#39;),\n\n  // This is necessary only if the server uses the self-signed certificate\n  ca: [ fs.readFileSync(&#39;server-cert.pem&#39;) ]\n};\n\nvar cleartextStream = tls.connect(8000, options, function() {\n  console.log(&#39;client connected&#39;,\n              cleartextStream.authorized ? &#39;authorized&#39; : &#39;unauthorized&#39;);\n  process.stdin.pipe(cleartextStream);\n  process.stdin.resume();\n});\ncleartextStream.setEncoding(&#39;utf8&#39;);\ncleartextStream.on(&#39;data&#39;, function(data) {\n  console.log(data);\n});\ncleartextStream.on(&#39;end&#39;, function() {\n  server.close();\n});</code></pre>\n<p>Or\n\n</p>\n<pre><code>var tls = require(&#39;tls&#39;);\nvar fs = require(&#39;fs&#39;);\n\nvar options = {\n  pfx: fs.readFileSync(&#39;client.pfx&#39;)\n};\n\nvar cleartextStream = tls.connect(8000, options, function() {\n  console.log(&#39;client connected&#39;,\n              cleartextStream.authorized ? &#39;authorized&#39; : &#39;unauthorized&#39;);\n  process.stdin.pipe(cleartextStream);\n  process.stdin.resume();\n});\ncleartextStream.setEncoding(&#39;utf8&#39;);\ncleartextStream.on(&#39;data&#39;, function(data) {\n  console.log(data);\n});\ncleartextStream.on(&#39;end&#39;, function() {\n  server.close();\n});</code></pre>\n",
+          "desc": "<p>Creates a new client connection to the given <code>port</code> and <code>host</code> (old API) or\n<code>options.port</code> and <code>options.host</code>. (If <code>host</code> is omitted, it defaults to\n<code>localhost</code>.) <code>options</code> should be an object which specifies:\n\n</p>\n<ul>\n<li><p><code>host</code>: Host the client should connect to</p>\n</li>\n<li><p><code>port</code>: Port the client should connect to</p>\n</li>\n<li><p><code>socket</code>: Establish secure connection on a given socket rather than\ncreating a new socket. If this option is specified, <code>host</code> and <code>port</code>\nare ignored.</p>\n</li>\n<li><p><code>pfx</code>: A string or <code>Buffer</code> containing the private key, certificate and\nCA certs of the server in PFX or PKCS12 format.</p>\n</li>\n<li><p><code>key</code>: A string or <code>Buffer</code> containing the private key of the client in\nPEM format.</p>\n</li>\n<li><p><code>passphrase</code>: A string of passphrase for the private key or pfx.</p>\n</li>\n<li><p><code>cert</code>: A string or <code>Buffer</code> containing the certificate key of the client in\nPEM format.</p>\n</li>\n<li><p><code>ca</code>: An array of strings or <code>Buffer</code>s of trusted certificates. If this is\nomitted several well known &quot;root&quot; CAs will be used, like VeriSign.\nThese are used to authorize connections.</p>\n</li>\n<li><p><code>rejectUnauthorized</code>: If <code>true</code>, the server certificate is verified against\nthe list of supplied CAs. An <code>&#39;error&#39;</code> event is emitted if verification\nfails. Default: <code>false</code>.</p>\n</li>\n<li><p><code>NPNProtocols</code>: An array of string or <code>Buffer</code> containing supported NPN\nprotocols. <code>Buffer</code> should have following format: <code>0x05hello0x05world</code>,\nwhere first byte is next protocol name&#39;s length. (Passing array should\nusually be much simpler: <code>[&#39;hello&#39;, &#39;world&#39;]</code>.)</p>\n</li>\n<li><p><code>servername</code>: Servername for SNI (Server Name Indication) TLS extension.</p>\n</li>\n</ul>\n<p>The <code>callback</code> parameter will be added as a listener for the\n[&#39;secureConnect&#39;][] event.\n\n</p>\n<p><code>tls.connect()</code> returns a [CleartextStream][] object.\n\n</p>\n<p>Here is an example of a client of echo server as described previously:\n\n</p>\n<pre><code>var tls = require(&#39;tls&#39;);\nvar fs = require(&#39;fs&#39;);\n\nvar options = {\n  // These are necessary only if using the client certificate authentication\n  key: fs.readFileSync(&#39;client-key.pem&#39;),\n  cert: fs.readFileSync(&#39;client-cert.pem&#39;),\n\n  // This is necessary only if the server uses the self-signed certificate\n  ca: [ fs.readFileSync(&#39;server-cert.pem&#39;) ]\n};\n\nvar cleartextStream = tls.connect(8000, options, function() {\n  console.log(&#39;client connected&#39;,\n              cleartextStream.authorized ? &#39;authorized&#39; : &#39;unauthorized&#39;);\n  process.stdin.pipe(cleartextStream);\n  process.stdin.resume();\n});\ncleartextStream.setEncoding(&#39;utf8&#39;);\ncleartextStream.on(&#39;data&#39;, function(data) {\n  console.log(data);\n});\ncleartextStream.on(&#39;end&#39;, function() {\n  server.close();\n});</code></pre>\n<p>Or\n\n</p>\n<pre><code>var tls = require(&#39;tls&#39;);\nvar fs = require(&#39;fs&#39;);\n\nvar options = {\n  pfx: fs.readFileSync(&#39;client.pfx&#39;)\n};\n\nvar cleartextStream = tls.connect(8000, options, function() {\n  console.log(&#39;client connected&#39;,\n              cleartextStream.authorized ? &#39;authorized&#39; : &#39;unauthorized&#39;);\n  process.stdin.pipe(cleartextStream);\n  process.stdin.resume();\n});\ncleartextStream.setEncoding(&#39;utf8&#39;);\ncleartextStream.on(&#39;data&#39;, function(data) {\n  console.log(data);\n});\ncleartextStream.on(&#39;end&#39;, function() {\n  server.close();\n});</code></pre>\n",
           "signatures": [
             {
               "params": [
@@ -5041,7 +5044,7 @@
                   "optional": true
                 },
                 {
-                  "name": "secureConnectListener",
+                  "name": "callback",
                   "optional": true
                 }
               ]
@@ -6352,7 +6355,7 @@
           "textRaw": "fs.read(fd, buffer, offset, length, position, [callback])",
           "type": "method",
           "name": "read",
-          "desc": "<p>Read data from the file specified by <code>fd</code>.\n\n</p>\n<p><code>buffer</code> is the buffer that the data will be written to.\n\n</p>\n<p><code>offset</code> is offset within the buffer where writing will start.\n\n</p>\n<p><code>length</code> is an integer specifying the number of bytes to read.\n\n</p>\n<p><code>position</code> is an integer specifying where to begin reading from in the file.\nIf <code>position</code> is <code>null</code>, data will be read from the current file position.\n\n</p>\n<p>The callback is given the three arguments, <code>(err, bytesRead, buffer)</code>.\n\n</p>\n",
+          "desc": "<p>Read data from the file specified by <code>fd</code>.\n\n</p>\n<p><code>buffer</code> is the buffer that the data will be written to.\n\n</p>\n<p><code>offset</code> is offset within the buffer where reading will start.\n\n</p>\n<p><code>length</code> is an integer specifying the number of bytes to read.\n\n</p>\n<p><code>position</code> is an integer specifying where to begin reading from in the file.\nIf <code>position</code> is <code>null</code>, data will be read from the current file position.\n\n</p>\n<p>The callback is given the three arguments, <code>(err, bytesRead, buffer)</code>.\n\n</p>\n",
           "signatures": [
             {
               "params": [
@@ -7176,10 +7179,10 @@
           "desc": "<p>This class is used to create a TCP or UNIX server.\nA server is a <code>net.Socket</code> that can listen for new incoming connections.\n\n</p>\n",
           "methods": [
             {
-              "textRaw": "server.listen(port, [host], [backlog], [listeningListener])",
+              "textRaw": "server.listen(port, [host], [backlog], [callback])",
               "type": "method",
               "name": "listen",
-              "desc": "<p>Begin accepting connections on the specified <code>port</code> and <code>host</code>.  If the\n<code>host</code> is omitted, the server will accept connections directed to any\nIPv4 address (<code>INADDR_ANY</code>). A port value of zero will assign a random port.\n\n</p>\n<p>Backlog is the maximum length of the queue of pending connections.\nThe actual length will be determined by your OS through sysctl settings such as\n<code>tcp_max_syn_backlog</code> and <code>somaxconn</code> on linux. The default value of this\nparameter is 511 (not 512).\n\n</p>\n<p>This function is asynchronous.  When the server has been bound,\n[&#39;listening&#39;][] event will be emitted.  The last parameter <code>listeningListener</code>\nwill be added as an listener for the [&#39;listening&#39;][] event.\n\n</p>\n<p>One issue some users run into is getting <code>EADDRINUSE</code> errors. This means that\nanother server is already running on the requested port. One way of handling this\nwould be to wait a second and then try again. This can be done with\n\n</p>\n<pre><code>server.on(&#39;error&#39;, function (e) {\n  if (e.code == &#39;EADDRINUSE&#39;) {\n    console.log(&#39;Address in use, retrying...&#39;);\n    setTimeout(function () {\n      server.close();\n      server.listen(PORT, HOST);\n    }, 1000);\n  }\n});</code></pre>\n<p>(Note: All sockets in Node set <code>SO_REUSEADDR</code> already)\n\n\n</p>\n",
+              "desc": "<p>Begin accepting connections on the specified <code>port</code> and <code>host</code>.  If the\n<code>host</code> is omitted, the server will accept connections directed to any\nIPv4 address (<code>INADDR_ANY</code>). A port value of zero will assign a random port.\n\n</p>\n<p>Backlog is the maximum length of the queue of pending connections.\nThe actual length will be determined by your OS through sysctl settings such as\n<code>tcp_max_syn_backlog</code> and <code>somaxconn</code> on linux. The default value of this\nparameter is 511 (not 512).\n\n</p>\n<p>This function is asynchronous.  When the server has been bound,\n[&#39;listening&#39;][] event will be emitted.  The last parameter <code>callback</code>\nwill be added as an listener for the [&#39;listening&#39;][] event.\n\n</p>\n<p>One issue some users run into is getting <code>EADDRINUSE</code> errors. This means that\nanother server is already running on the requested port. One way of handling this\nwould be to wait a second and then try again. This can be done with\n\n</p>\n<pre><code>server.on(&#39;error&#39;, function (e) {\n  if (e.code == &#39;EADDRINUSE&#39;) {\n    console.log(&#39;Address in use, retrying...&#39;);\n    setTimeout(function () {\n      server.close();\n      server.listen(PORT, HOST);\n    }, 1000);\n  }\n});</code></pre>\n<p>(Note: All sockets in Node set <code>SO_REUSEADDR</code> already)\n\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -7195,7 +7198,7 @@
                       "optional": true
                     },
                     {
-                      "name": "listeningListener",
+                      "name": "callback",
                       "optional": true
                     }
                   ]
@@ -7203,10 +7206,10 @@
               ]
             },
             {
-              "textRaw": "server.listen(path, [listeningListener])",
+              "textRaw": "server.listen(path, [callback])",
               "type": "method",
               "name": "listen",
-              "desc": "<p>Start a UNIX socket server listening for connections on the given <code>path</code>.\n\n</p>\n<p>This function is asynchronous.  When the server has been bound,\n[&#39;listening&#39;][] event will be emitted.  The last parameter <code>listeningListener</code>\nwill be added as an listener for the [&#39;listening&#39;][] event.\n\n</p>\n",
+              "desc": "<p>Start a UNIX socket server listening for connections on the given <code>path</code>.\n\n</p>\n<p>This function is asynchronous.  When the server has been bound,\n[&#39;listening&#39;][] event will be emitted.  The last parameter <code>callback</code>\nwill be added as an listener for the [&#39;listening&#39;][] event.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -7214,7 +7217,7 @@
                       "name": "path"
                     },
                     {
-                      "name": "listeningListener",
+                      "name": "callback",
                       "optional": true
                     }
                   ]
@@ -7222,7 +7225,7 @@
               ]
             },
             {
-              "textRaw": "server.listen(handle, [listeningListener])",
+              "textRaw": "server.listen(handle, [callback])",
               "type": "method",
               "name": "listen",
               "signatures": [
@@ -7234,8 +7237,8 @@
                       "type": "Object"
                     },
                     {
-                      "textRaw": "`listeningListener` {Function} ",
-                      "name": "listeningListener",
+                      "textRaw": "`callback` {Function} ",
+                      "name": "callback",
                       "type": "Function",
                       "optional": true
                     }
@@ -7247,16 +7250,16 @@
                       "name": "handle"
                     },
                     {
-                      "name": "listeningListener",
+                      "name": "callback",
                       "optional": true
                     }
                   ]
                 }
               ],
-              "desc": "<p>The <code>handle</code> object can be set to either a server or socket (anything\nwith an underlying <code>_handle</code> member), or a <code>{fd: &lt;n&gt;}</code> object.\n\n</p>\n<p>This will cause the server to accept connections on the specified\nhandle, but it is presumed that the file descriptor or handle has\nalready been bound to a port or domain socket.\n\n</p>\n<p>Listening on a file descriptor is not supported on Windows.\n\n</p>\n<p>This function is asynchronous.  When the server has been bound,\n<a href=\"#event_listening_\">&#39;listening&#39;</a> event will be emitted.\nthe last parameter <code>listeningListener</code> will be added as an listener for the\n<a href=\"#event_listening_\">&#39;listening&#39;</a> event.\n\n</p>\n"
+              "desc": "<p>The <code>handle</code> object can be set to either a server or socket (anything\nwith an underlying <code>_handle</code> member), or a <code>{fd: &lt;n&gt;}</code> object.\n\n</p>\n<p>This will cause the server to accept connections on the specified\nhandle, but it is presumed that the file descriptor or handle has\nalready been bound to a port or domain socket.\n\n</p>\n<p>Listening on a file descriptor is not supported on Windows.\n\n</p>\n<p>This function is asynchronous.  When the server has been bound,\n<a href=\"#event_listening_\">&#39;listening&#39;</a> event will be emitted.\nthe last parameter <code>callback</code> will be added as an listener for the\n<a href=\"#event_listening_\">&#39;listening&#39;</a> event.\n\n</p>\n"
             },
             {
-              "textRaw": "server.close([cb])",
+              "textRaw": "server.close([callback])",
               "type": "method",
               "name": "close",
               "desc": "<p>Stops the server from accepting new connections and keeps existing\nconnections. This function is asynchronous, the server is finally\nclosed when all connections are ended and the server emits a <code>&#39;close&#39;</code>\nevent. Optionally, you can pass a callback to listen for the <code>&#39;close&#39;</code>\nevent.\n\n</p>\n",
@@ -7264,7 +7267,7 @@
                 {
                   "params": [
                     {
-                      "name": "cb",
+                      "name": "callback",
                       "optional": true
                     }
                   ]
@@ -8260,14 +8263,14 @@
               "textRaw": "Event: 'end'",
               "type": "event",
               "name": "end",
-              "desc": "<p><code>function () { }</code>\n\n</p>\n<p>Emitted exactly once for each message. No arguments. After\nemitted no other events will be emitted on the response.\n\n</p>\n",
+              "desc": "<p><code>function () { }</code>\n\n</p>\n<p>Emitted exactly once for each response. After that, no more <code>&#39;data&#39;</code> events\nwill be emitted on the response.\n\n\n</p>\n",
               "params": []
             },
             {
               "textRaw": "Event: 'close'",
               "type": "event",
               "name": "close",
-              "desc": "<p><code>function (err) { }</code>\n\n</p>\n<p>Indicates that the underlaying connection was terminated before\n<code>end</code> event was emitted.\nSee [http.ServerRequest][]&#39;s <code>&#39;close&#39;</code> event for more information.\n\n</p>\n",
+              "desc": "<p><code>function () { }</code>\n\n</p>\n<p>Indicates that the underlaying connection was terminated before\n<code>response.end()</code> was called or able to flush.\n\n</p>\n<p>Just like <code>&#39;end&#39;</code>, this event occurs only once per response, and no more\n<code>&#39;data&#39;</code> events will fire afterwards. See [http.ServerResponse][]&#39;s <code>&#39;close&#39;</code>\nevent for more information.\n\n</p>\n<p>Note: <code>&#39;close&#39;</code> can fire after <code>&#39;end&#39;</code>, but not vice versa.\n\n\n</p>\n",
               "params": []
             }
           ],
@@ -8376,7 +8379,7 @@
           "textRaw": "http.request(options, callback)",
           "type": "method",
           "name": "request",
-          "desc": "<p>Node maintains several connections per server to make HTTP requests.\nThis function allows one to transparently issue requests.\n\n</p>\n<p><code>options</code> can be an object or a string. If <code>options</code> is a string, it is\nautomatically parsed with [url.parse()][].\n\n</p>\n<p>Options:\n\n</p>\n<ul>\n<li><code>host</code>: A domain name or IP address of the server to issue the request to.\nDefaults to <code>&#39;localhost&#39;</code>.</li>\n<li><code>hostname</code>: To support <code>url.parse()</code> <code>hostname</code> is preferred over <code>host</code></li>\n<li><code>port</code>: Port of remote server. Defaults to 80.</li>\n<li><code>localAddress</code>: Local interface to bind for network connections.</li>\n<li><code>socketPath</code>: Unix Domain Socket (use one of host:port or socketPath)</li>\n<li><code>method</code>: A string specifying the HTTP request method. Defaults to <code>&#39;GET&#39;</code>.</li>\n<li><code>path</code>: Request path. Defaults to <code>&#39;/&#39;</code>. Should include query string if any.\nE.G. <code>&#39;/index.html?page=12&#39;</code></li>\n<li><code>headers</code>: An object containing request headers.</li>\n<li><code>auth</code>: Basic authentication i.e. <code>&#39;user:password&#39;</code> to compute an\nAuthorization header.</li>\n<li><code>agent</code>: Controls [Agent][] behavior. When an Agent is used request will\ndefault to <code>Connection: keep-alive</code>. Possible values:<ul>\n<li><code>undefined</code> (default): use [global Agent][] for this host and port.</li>\n<li><code>Agent</code> object: explicitly use the passed in <code>Agent</code>.</li>\n<li><code>false</code>: opts out of connection pooling with an Agent, defaults request to\n<code>Connection: close</code>.</li>\n</ul>\n</li>\n</ul>\n<p><code>http.request()</code> returns an instance of the <code>http.ClientRequest</code>\nclass. The <code>ClientRequest</code> instance is a writable stream. If one needs to\nupload a file with a POST request, then write to the <code>ClientRequest</code> object.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>var options = {\n  host: &#39;www.google.com&#39;,\n  port: 80,\n  path: &#39;/upload&#39;,\n  method: &#39;POST&#39;\n};\n\nvar req = http.request(options, function(res) {\n  console.log(&#39;STATUS: &#39; + res.statusCode);\n  console.log(&#39;HEADERS: &#39; + JSON.stringify(res.headers));\n  res.setEncoding(&#39;utf8&#39;);\n  res.on(&#39;data&#39;, function (chunk) {\n    console.log(&#39;BODY: &#39; + chunk);\n  });\n});\n\nreq.on(&#39;error&#39;, function(e) {\n  console.log(&#39;problem with request: &#39; + e.message);\n});\n\n// write data to request body\nreq.write(&#39;data\\n&#39;);\nreq.write(&#39;data\\n&#39;);\nreq.end();</code></pre>\n<p>Note that in the example <code>req.end()</code> was called. With <code>http.request()</code> one\nmust always call <code>req.end()</code> to signify that you&#39;re done with the request -\neven if there is no data being written to the request body.\n\n</p>\n<p>If any error is encountered during the request (be that with DNS resolution,\nTCP level errors, or actual HTTP parse errors) an <code>&#39;error&#39;</code> event is emitted\non the returned request object.\n\n</p>\n<p>There are a few special headers that should be noted.\n\n</p>\n<ul>\n<li><p>Sending a &#39;Connection: keep-alive&#39; will notify Node that the connection to\nthe server should be persisted until the next request.</p>\n</li>\n<li><p>Sending a &#39;Content-length&#39; header will disable the default chunked encoding.</p>\n</li>\n<li><p>Sending an &#39;Expect&#39; header will immediately send the request headers.\nUsually, when sending &#39;Expect: 100-continue&#39;, you should both set a timeout\nand listen for the <code>continue</code> event. See RFC2616 Section 8.2.3 for more\ninformation.</p>\n</li>\n<li><p>Sending an Authorization header will override using the <code>auth</code> option\nto compute basic authentication.</p>\n</li>\n</ul>\n",
+          "desc": "<p>Node maintains several connections per server to make HTTP requests.\nThis function allows one to transparently issue requests.\n\n</p>\n<p><code>options</code> can be an object or a string. If <code>options</code> is a string, it is\nautomatically parsed with [url.parse()][].\n\n</p>\n<p>Options:\n\n</p>\n<ul>\n<li><code>host</code>: A domain name or IP address of the server to issue the request to.\nDefaults to <code>&#39;localhost&#39;</code>.</li>\n<li><code>hostname</code>: To support <code>url.parse()</code> <code>hostname</code> is preferred over <code>host</code></li>\n<li><code>port</code>: Port of remote server. Defaults to 80.</li>\n<li><code>localAddress</code>: Local interface to bind for network connections.</li>\n<li><code>socketPath</code>: Unix Domain Socket (use one of host:port or socketPath)</li>\n<li><code>method</code>: A string specifying the HTTP request method. Defaults to <code>&#39;GET&#39;</code>.</li>\n<li><code>path</code>: Request path. Defaults to <code>&#39;/&#39;</code>. Should include query string if any.\nE.G. <code>&#39;/index.html?page=12&#39;</code></li>\n<li><code>headers</code>: An object containing request headers.</li>\n<li><code>auth</code>: Basic authentication i.e. <code>&#39;user:password&#39;</code> to compute an\nAuthorization header.</li>\n<li><code>agent</code>: Controls [Agent][] behavior. When an Agent is used request will\ndefault to <code>Connection: keep-alive</code>. Possible values:<ul>\n<li><code>undefined</code> (default): use [global Agent][] for this host and port.</li>\n<li><code>Agent</code> object: explicitly use the passed in <code>Agent</code>.</li>\n<li><code>false</code>: opts out of connection pooling with an Agent, defaults request to\n<code>Connection: close</code>.</li>\n</ul>\n</li>\n</ul>\n<p><code>http.request()</code> returns an instance of the <code>http.ClientRequest</code>\nclass. The <code>ClientRequest</code> instance is a writable stream. If one needs to\nupload a file with a POST request, then write to the <code>ClientRequest</code> object.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>var options = {\n  hostname: &#39;www.google.com&#39;,\n  port: 80,\n  path: &#39;/upload&#39;,\n  method: &#39;POST&#39;\n};\n\nvar req = http.request(options, function(res) {\n  console.log(&#39;STATUS: &#39; + res.statusCode);\n  console.log(&#39;HEADERS: &#39; + JSON.stringify(res.headers));\n  res.setEncoding(&#39;utf8&#39;);\n  res.on(&#39;data&#39;, function (chunk) {\n    console.log(&#39;BODY: &#39; + chunk);\n  });\n});\n\nreq.on(&#39;error&#39;, function(e) {\n  console.log(&#39;problem with request: &#39; + e.message);\n});\n\n// write data to request body\nreq.write(&#39;data\\n&#39;);\nreq.write(&#39;data\\n&#39;);\nreq.end();</code></pre>\n<p>Note that in the example <code>req.end()</code> was called. With <code>http.request()</code> one\nmust always call <code>req.end()</code> to signify that you&#39;re done with the request -\neven if there is no data being written to the request body.\n\n</p>\n<p>If any error is encountered during the request (be that with DNS resolution,\nTCP level errors, or actual HTTP parse errors) an <code>&#39;error&#39;</code> event is emitted\non the returned request object.\n\n</p>\n<p>There are a few special headers that should be noted.\n\n</p>\n<ul>\n<li><p>Sending a &#39;Connection: keep-alive&#39; will notify Node that the connection to\nthe server should be persisted until the next request.</p>\n</li>\n<li><p>Sending a &#39;Content-length&#39; header will disable the default chunked encoding.</p>\n</li>\n<li><p>Sending an &#39;Expect&#39; header will immediately send the request headers.\nUsually, when sending &#39;Expect: 100-continue&#39;, you should both set a timeout\nand listen for the <code>continue</code> event. See RFC2616 Section 8.2.3 for more\ninformation.</p>\n</li>\n<li><p>Sending an Authorization header will override using the <code>auth</code> option\nto compute basic authentication.</p>\n</li>\n</ul>\n",
           "signatures": [
             {
               "params": [
@@ -8514,7 +8517,7 @@
               ]
             },
             {
-              "textRaw": "server.listen(handle, [listeningListener])",
+              "textRaw": "server.listen(handle, [callback])",
               "type": "method",
               "name": "listen",
               "signatures": [
@@ -8526,8 +8529,8 @@
                       "type": "Object"
                     },
                     {
-                      "textRaw": "`listeningListener` {Function} ",
-                      "name": "listeningListener",
+                      "textRaw": "`callback` {Function} ",
+                      "name": "callback",
                       "type": "Function",
                       "optional": true
                     }
@@ -8539,16 +8542,16 @@
                       "name": "handle"
                     },
                     {
-                      "name": "listeningListener",
+                      "name": "callback",
                       "optional": true
                     }
                   ]
                 }
               ],
-              "desc": "<p>The <code>handle</code> object can be set to either a server or socket (anything\nwith an underlying <code>_handle</code> member), or a <code>{fd: &lt;n&gt;}</code> object.\n\n</p>\n<p>This will cause the server to accept connections on the specified\nhandle, but it is presumed that the file descriptor or handle has\nalready been bound to a port or domain socket.\n\n</p>\n<p>Listening on a file descriptor is not supported on Windows.\n\n</p>\n<p>This function is asynchronous. The last parameter <code>callback</code> will be added as\na listener for the <a href=\"net.html#event_listening_\">&#39;listening&#39;</a> event.\nSee also <a href=\"net.html#server.listen\">net.Server.listen()</a>.\n\n</p>\n"
+              "desc": "<p>The <code>handle</code> object can be set to either a server or socket (anything\nwith an underlying <code>_handle</code> member), or a <code>{fd: &lt;n&gt;}</code> object.\n\n</p>\n<p>This will cause the server to accept connections on the specified\nhandle, but it is presumed that the file descriptor or handle has\nalready been bound to a port or domain socket.\n\n</p>\n<p>Listening on a file descriptor is not supported on Windows.\n\n</p>\n<p>This function is asynchronous. The last parameter <code>callback</code> will be added as\na listener for the <a href=\"net.html#event_listening_\">&#39;listening&#39;</a> event.\nSee also <a href=\"net.html#net_server_listen_handle_callback\">net.Server.listen()</a>.\n\n</p>\n"
             },
             {
-              "textRaw": "server.close([cb])",
+              "textRaw": "server.close([callback])",
               "type": "method",
               "name": "close",
               "desc": "<p>Stops the server from accepting new connections.  See [net.Server.close()][].\n\n\n</p>\n",
@@ -8556,7 +8559,7 @@
                 {
                   "params": [
                     {
-                      "name": "cb",
+                      "name": "callback",
                       "optional": true
                     }
                   ]
@@ -8842,7 +8845,7 @@
           "textRaw": "Class: http.Agent",
           "type": "class",
           "name": "http.Agent",
-          "desc": "<p>In node 0.5.3+ there is a new implementation of the HTTP Agent which is used\nfor pooling sockets used in HTTP client requests.\n\n</p>\n<p>Previously, a single agent instance helped pool for a single host+port. The\ncurrent implementation now holds sockets for any number of hosts.\n\n</p>\n<p>The current HTTP Agent also defaults client requests to using\nConnection:keep-alive. If no pending HTTP requests are waiting on a socket\nto become free the socket is closed. This means that node&#39;s pool has the\nbenefit of keep-alive when under load but still does not require developers\nto manually close the HTTP clients using keep-alive.\n\n</p>\n<p>Sockets are removed from the agent&#39;s pool when the socket emits either a\n&quot;close&quot; event or a special &quot;agentRemove&quot; event. This means that if you intend\nto keep one HTTP request open for a long time and don&#39;t want it to stay in the\npool you can do something along the lines of:\n\n</p>\n<pre><code>http.get(options, function(res) {\n  // Do stuff\n}).on(&quot;socket&quot;, function (socket) {\n  socket.emit(&quot;agentRemove&quot;);\n});</code></pre>\n<p>Alternatively, you could just opt out of pooling entirely using <code>agent:false</code>:\n\n</p>\n<pre><code>http.get({host:&#39;localhost&#39;, port:80, path:&#39;/&#39;, agent:false}, function (res) {\n  // Do stuff\n})</code></pre>\n",
+          "desc": "<p>In node 0.5.3+ there is a new implementation of the HTTP Agent which is used\nfor pooling sockets used in HTTP client requests.\n\n</p>\n<p>Previously, a single agent instance helped pool for a single host+port. The\ncurrent implementation now holds sockets for any number of hosts.\n\n</p>\n<p>The current HTTP Agent also defaults client requests to using\nConnection:keep-alive. If no pending HTTP requests are waiting on a socket\nto become free the socket is closed. This means that node&#39;s pool has the\nbenefit of keep-alive when under load but still does not require developers\nto manually close the HTTP clients using keep-alive.\n\n</p>\n<p>Sockets are removed from the agent&#39;s pool when the socket emits either a\n&quot;close&quot; event or a special &quot;agentRemove&quot; event. This means that if you intend\nto keep one HTTP request open for a long time and don&#39;t want it to stay in the\npool you can do something along the lines of:\n\n</p>\n<pre><code>http.get(options, function(res) {\n  // Do stuff\n}).on(&quot;socket&quot;, function (socket) {\n  socket.emit(&quot;agentRemove&quot;);\n});</code></pre>\n<p>Alternatively, you could just opt out of pooling entirely using <code>agent:false</code>:\n\n</p>\n<pre><code>http.get({hostname:&#39;localhost&#39;, port:80, path:&#39;/&#39;, agent:false}, function (res) {\n  // Do stuff\n})</code></pre>\n",
           "properties": [
             {
               "textRaw": "agent.maxSockets",
@@ -8885,14 +8888,14 @@
               "textRaw": "Event: 'connect'",
               "type": "event",
               "name": "connect",
-              "desc": "<p><code>function (response, socket, head) { }</code>\n\n</p>\n<p>Emitted each time a server responds to a request with a CONNECT method. If this\nevent isn&#39;t being listened for, clients receiving a CONNECT method will have\ntheir connections closed.\n\n</p>\n<p>A client server pair that show you how to listen for the <code>connect</code> event.\n\n</p>\n<pre><code>var http = require(&#39;http&#39;);\nvar net = require(&#39;net&#39;);\nvar url = require(&#39;url&#39;);\n\n// Create an HTTP tunneling proxy\nvar proxy = http.createServer(function (req, res) {\n  res.writeHead(200, {&#39;Content-Type&#39;: &#39;text/plain&#39;});\n  res.end(&#39;okay&#39;);\n});\nproxy.on(&#39;connect&#39;, function(req, cltSocket, head) {\n  // connect to an origin server\n  var srvUrl = url.parse(&#39;http://&#39; + req.url);\n  var srvSocket = net.connect(srvUrl.port, srvUrl.hostname, function() {\n    cltSocket.write(&#39;HTTP/1.1 200 Connection Established\\r\\n&#39; +\n                    &#39;Proxy-agent: Node-Proxy\\r\\n&#39; +\n                    &#39;\\r\\n&#39;);\n    srvSocket.write(head);\n    srvSocket.pipe(cltSocket);\n    cltSocket.pipe(srvSocket);\n  });\n});\n\n// now that proxy is running\nproxy.listen(1337, &#39;127.0.0.1&#39;, function() {\n\n  // make a request to a tunneling proxy\n  var options = {\n    port: 1337,\n    host: &#39;127.0.0.1&#39;,\n    method: &#39;CONNECT&#39;,\n    path: &#39;www.google.com:80&#39;\n  };\n\n  var req = http.request(options);\n  req.end();\n\n  req.on(&#39;connect&#39;, function(res, socket, head) {\n    console.log(&#39;got connected!&#39;);\n\n    // make a request over an HTTP tunnel\n    socket.write(&#39;GET / HTTP/1.1\\r\\n&#39; +\n                 &#39;Host: www.google.com:80\\r\\n&#39; +\n                 &#39;Connection: close\\r\\n&#39; +\n                 &#39;\\r\\n&#39;);\n    socket.on(&#39;data&#39;, function(chunk) {\n      console.log(chunk.toString());\n    });\n    socket.on(&#39;end&#39;, function() {\n      proxy.close();\n    });\n  });\n});</code></pre>\n",
+              "desc": "<p><code>function (response, socket, head) { }</code>\n\n</p>\n<p>Emitted each time a server responds to a request with a CONNECT method. If this\nevent isn&#39;t being listened for, clients receiving a CONNECT method will have\ntheir connections closed.\n\n</p>\n<p>A client server pair that show you how to listen for the <code>connect</code> event.\n\n</p>\n<pre><code>var http = require(&#39;http&#39;);\nvar net = require(&#39;net&#39;);\nvar url = require(&#39;url&#39;);\n\n// Create an HTTP tunneling proxy\nvar proxy = http.createServer(function (req, res) {\n  res.writeHead(200, {&#39;Content-Type&#39;: &#39;text/plain&#39;});\n  res.end(&#39;okay&#39;);\n});\nproxy.on(&#39;connect&#39;, function(req, cltSocket, head) {\n  // connect to an origin server\n  var srvUrl = url.parse(&#39;http://&#39; + req.url);\n  var srvSocket = net.connect(srvUrl.port, srvUrl.hostname, function() {\n    cltSocket.write(&#39;HTTP/1.1 200 Connection Established\\r\\n&#39; +\n                    &#39;Proxy-agent: Node-Proxy\\r\\n&#39; +\n                    &#39;\\r\\n&#39;);\n    srvSocket.write(head);\n    srvSocket.pipe(cltSocket);\n    cltSocket.pipe(srvSocket);\n  });\n});\n\n// now that proxy is running\nproxy.listen(1337, &#39;127.0.0.1&#39;, function() {\n\n  // make a request to a tunneling proxy\n  var options = {\n    port: 1337,\n    hostname: &#39;127.0.0.1&#39;,\n    method: &#39;CONNECT&#39;,\n    path: &#39;www.google.com:80&#39;\n  };\n\n  var req = http.request(options);\n  req.end();\n\n  req.on(&#39;connect&#39;, function(res, socket, head) {\n    console.log(&#39;got connected!&#39;);\n\n    // make a request over an HTTP tunnel\n    socket.write(&#39;GET / HTTP/1.1\\r\\n&#39; +\n                 &#39;Host: www.google.com:80\\r\\n&#39; +\n                 &#39;Connection: close\\r\\n&#39; +\n                 &#39;\\r\\n&#39;);\n    socket.on(&#39;data&#39;, function(chunk) {\n      console.log(chunk.toString());\n    });\n    socket.on(&#39;end&#39;, function() {\n      proxy.close();\n    });\n  });\n});</code></pre>\n",
               "params": []
             },
             {
               "textRaw": "Event: 'upgrade'",
               "type": "event",
               "name": "upgrade",
-              "desc": "<p><code>function (response, socket, head) { }</code>\n\n</p>\n<p>Emitted each time a server responds to a request with an upgrade. If this\nevent isn&#39;t being listened for, clients receiving an upgrade header will have\ntheir connections closed.\n\n</p>\n<p>A client server pair that show you how to listen for the <code>upgrade</code> event.\n\n</p>\n<pre><code>var http = require(&#39;http&#39;);\n\n// Create an HTTP server\nvar srv = http.createServer(function (req, res) {\n  res.writeHead(200, {&#39;Content-Type&#39;: &#39;text/plain&#39;});\n  res.end(&#39;okay&#39;);\n});\nsrv.on(&#39;upgrade&#39;, function(req, socket, head) {\n  socket.write(&#39;HTTP/1.1 101 Web Socket Protocol Handshake\\r\\n&#39; +\n               &#39;Upgrade: WebSocket\\r\\n&#39; +\n               &#39;Connection: Upgrade\\r\\n&#39; +\n               &#39;\\r\\n&#39;);\n\n  socket.pipe(socket); // echo back\n});\n\n// now that server is running\nsrv.listen(1337, &#39;127.0.0.1&#39;, function() {\n\n  // make a request\n  var options = {\n    port: 1337,\n    host: &#39;127.0.0.1&#39;,\n    headers: {\n      &#39;Connection&#39;: &#39;Upgrade&#39;,\n      &#39;Upgrade&#39;: &#39;websocket&#39;\n    }\n  };\n\n  var req = http.request(options);\n  req.end();\n\n  req.on(&#39;upgrade&#39;, function(res, socket, upgradeHead) {\n    console.log(&#39;got upgraded!&#39;);\n    socket.end();\n    process.exit(0);\n  });\n});</code></pre>\n",
+              "desc": "<p><code>function (response, socket, head) { }</code>\n\n</p>\n<p>Emitted each time a server responds to a request with an upgrade. If this\nevent isn&#39;t being listened for, clients receiving an upgrade header will have\ntheir connections closed.\n\n</p>\n<p>A client server pair that show you how to listen for the <code>upgrade</code> event.\n\n</p>\n<pre><code>var http = require(&#39;http&#39;);\n\n// Create an HTTP server\nvar srv = http.createServer(function (req, res) {\n  res.writeHead(200, {&#39;Content-Type&#39;: &#39;text/plain&#39;});\n  res.end(&#39;okay&#39;);\n});\nsrv.on(&#39;upgrade&#39;, function(req, socket, head) {\n  socket.write(&#39;HTTP/1.1 101 Web Socket Protocol Handshake\\r\\n&#39; +\n               &#39;Upgrade: WebSocket\\r\\n&#39; +\n               &#39;Connection: Upgrade\\r\\n&#39; +\n               &#39;\\r\\n&#39;);\n\n  socket.pipe(socket); // echo back\n});\n\n// now that server is running\nsrv.listen(1337, &#39;127.0.0.1&#39;, function() {\n\n  // make a request\n  var options = {\n    port: 1337,\n    hostname: &#39;127.0.0.1&#39;,\n    headers: {\n      &#39;Connection&#39;: &#39;Upgrade&#39;,\n      &#39;Upgrade&#39;: &#39;websocket&#39;\n    }\n  };\n\n  var req = http.request(options);\n  req.end();\n\n  req.on(&#39;upgrade&#39;, function(res, socket, upgradeHead) {\n    console.log(&#39;got upgraded!&#39;);\n    socket.end();\n    process.exit(0);\n  });\n});</code></pre>\n",
               "params": []
             },
             {
@@ -9041,6 +9044,73 @@
           "type": "method",
           "name": "createServer",
           "desc": "<p>Returns a new HTTPS web server object. The <code>options</code> is similar to\n[tls.createServer()][].  The <code>requestListener</code> is a function which is\nautomatically added to the <code>&#39;request&#39;</code> event.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>// curl -k https://localhost:8000/\nvar https = require(&#39;https&#39;);\nvar fs = require(&#39;fs&#39;);\n\nvar options = {\n  key: fs.readFileSync(&#39;test/fixtures/keys/agent2-key.pem&#39;),\n  cert: fs.readFileSync(&#39;test/fixtures/keys/agent2-cert.pem&#39;)\n};\n\nhttps.createServer(options, function (req, res) {\n  res.writeHead(200);\n  res.end(&quot;hello world\\n&quot;);\n}).listen(8000);</code></pre>\n<p>Or\n\n</p>\n<pre><code>var https = require(&#39;https&#39;);\nvar fs = require(&#39;fs&#39;);\n\nvar options = {\n  pfx: fs.readFileSync(&#39;server.pfx&#39;)\n};\n\nhttps.createServer(options, function (req, res) {\n  res.writeHead(200);\n  res.end(&quot;hello world\\n&quot;);\n}).listen(8000);</code></pre>\n",
+          "methods": [
+            {
+              "textRaw": "server.listen(path, [callback])",
+              "type": "method",
+              "name": "listen",
+              "desc": "<p>See [http.listen()][] for details.\n\n</p>\n",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "name": "handle"
+                    },
+                    {
+                      "name": "callback",
+                      "optional": true
+                    }
+                  ]
+                },
+                {
+                  "params": [
+                    {
+                      "name": "path"
+                    },
+                    {
+                      "name": "callback",
+                      "optional": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "textRaw": "server.listen(handle, [callback])",
+              "type": "method",
+              "name": "listen",
+              "desc": "<p>See [http.listen()][] for details.\n\n</p>\n",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "name": "handle"
+                    },
+                    {
+                      "name": "callback",
+                      "optional": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "textRaw": "server.close([callback])",
+              "type": "method",
+              "name": "close",
+              "desc": "<p>See [http.close()][] for details.\n\n</p>\n",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "name": "callback",
+                      "optional": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
           "signatures": [
             {
               "params": [
@@ -9059,7 +9129,7 @@
           "textRaw": "https.request(options, callback)",
           "type": "method",
           "name": "request",
-          "desc": "<p>Makes a request to a secure web server.\n\n</p>\n<p><code>options</code> can be an object or a string. If <code>options</code> is a string, it is\nautomatically parsed with <a href=\"url.html#url.parse\">url.parse()</a>.\n\n</p>\n<p>All options from [http.request()][] are valid.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>var https = require(&#39;https&#39;);\n\nvar options = {\n  host: &#39;encrypted.google.com&#39;,\n  port: 443,\n  path: &#39;/&#39;,\n  method: &#39;GET&#39;\n};\n\nvar req = https.request(options, function(res) {\n  console.log(&quot;statusCode: &quot;, res.statusCode);\n  console.log(&quot;headers: &quot;, res.headers);\n\n  res.on(&#39;data&#39;, function(d) {\n    process.stdout.write(d);\n  });\n});\nreq.end();\n\nreq.on(&#39;error&#39;, function(e) {\n  console.error(e);\n});</code></pre>\n<p>The options argument has the following options\n\n</p>\n<ul>\n<li>host: IP or domain of host to make request to. Defaults to <code>&#39;localhost&#39;</code>.</li>\n<li>port: port of host to request to. Defaults to 443.</li>\n<li>path: Path to request. Default <code>&#39;/&#39;</code>.</li>\n<li><p>method: HTTP request method. Default <code>&#39;GET&#39;</code>.</p>\n</li>\n<li><p><code>host</code>: A domain name or IP address of the server to issue the request to.\nDefaults to <code>&#39;localhost&#39;</code>.</p>\n</li>\n<li><code>hostname</code>: To support <code>url.parse()</code> <code>hostname</code> is preferred over <code>host</code></li>\n<li><code>port</code>: Port of remote server. Defaults to 443.</li>\n<li><code>method</code>: A string specifying the HTTP request method. Defaults to <code>&#39;GET&#39;</code>.</li>\n<li><code>path</code>: Request path. Defaults to <code>&#39;/&#39;</code>. Should include query string if any.\nE.G. <code>&#39;/index.html?page=12&#39;</code></li>\n<li><code>headers</code>: An object containing request headers.</li>\n<li><code>auth</code>: Basic authentication i.e. <code>&#39;user:password&#39;</code> to compute an\nAuthorization header.</li>\n<li><code>agent</code>: Controls [Agent][] behavior. When an Agent is used request will\ndefault to <code>Connection: keep-alive</code>. Possible values:<ul>\n<li><code>undefined</code> (default): use [globalAgent][] for this host and port.</li>\n<li><code>Agent</code> object: explicitly use the passed in <code>Agent</code>.</li>\n<li><code>false</code>: opts out of connection pooling with an Agent, defaults request to\n<code>Connection: close</code>.</li>\n</ul>\n</li>\n</ul>\n<p>The following options from [tls.connect()][] can also be specified. However, a\n[globalAgent][] silently ignores these.\n\n</p>\n<ul>\n<li><code>pfx</code>: Certificate, Private key and CA certificates to use for SSL. Default <code>null</code>.</li>\n<li><code>key</code>: Private key to use for SSL. Default <code>null</code>.</li>\n<li><code>passphrase</code>: A string of passphrase for the private key or pfx. Default <code>null</code>.</li>\n<li><code>cert</code>: Public x509 certificate to use. Default <code>null</code>.</li>\n<li><code>ca</code>: An authority certificate or array of authority certificates to check\nthe remote host against.</li>\n<li><code>ciphers</code>: A string describing the ciphers to use or exclude. Consult\n<a href=\"http://www.openssl.org/docs/apps/ciphers.html#CIPHER_LIST_FORMAT\">http://www.openssl.org/docs/apps/ciphers.html#CIPHER_LIST_FORMAT</a> for\ndetails on the format.</li>\n<li><code>rejectUnauthorized</code>: If <code>true</code>, the server certificate is verified against\nthe list of supplied CAs. An <code>&#39;error&#39;</code> event is emitted if verification\nfails. Verification happens at the connection level, <em>before</em> the HTTP\nrequest is sent. Default <code>false</code>.</li>\n</ul>\n<p>In order to specify these options, use a custom <code>Agent</code>.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>var options = {\n  host: &#39;encrypted.google.com&#39;,\n  port: 443,\n  path: &#39;/&#39;,\n  method: &#39;GET&#39;,\n  key: fs.readFileSync(&#39;test/fixtures/keys/agent2-key.pem&#39;),\n  cert: fs.readFileSync(&#39;test/fixtures/keys/agent2-cert.pem&#39;)\n};\noptions.agent = new https.Agent(options);\n\nvar req = https.request(options, function(res) {\n  ...\n}</code></pre>\n<p>Or does not use an <code>Agent</code>.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>var options = {\n  host: &#39;encrypted.google.com&#39;,\n  port: 443,\n  path: &#39;/&#39;,\n  method: &#39;GET&#39;,\n  key: fs.readFileSync(&#39;test/fixtures/keys/agent2-key.pem&#39;),\n  cert: fs.readFileSync(&#39;test/fixtures/keys/agent2-cert.pem&#39;),\n  agent: false\n};\n\nvar req = https.request(options, function(res) {\n  ...\n}</code></pre>\n",
+          "desc": "<p>Makes a request to a secure web server.\n\n</p>\n<p><code>options</code> can be an object or a string. If <code>options</code> is a string, it is\nautomatically parsed with <a href=\"url.html#url.parse\">url.parse()</a>.\n\n</p>\n<p>All options from [http.request()][] are valid.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>var https = require(&#39;https&#39;);\n\nvar options = {\n  hostname: &#39;encrypted.google.com&#39;,\n  port: 443,\n  path: &#39;/&#39;,\n  method: &#39;GET&#39;\n};\n\nvar req = https.request(options, function(res) {\n  console.log(&quot;statusCode: &quot;, res.statusCode);\n  console.log(&quot;headers: &quot;, res.headers);\n\n  res.on(&#39;data&#39;, function(d) {\n    process.stdout.write(d);\n  });\n});\nreq.end();\n\nreq.on(&#39;error&#39;, function(e) {\n  console.error(e);\n});</code></pre>\n<p>The options argument has the following options\n\n</p>\n<ul>\n<li><code>host</code>: A domain name or IP address of the server to issue the request to.\nDefaults to <code>&#39;localhost&#39;</code>.</li>\n<li><code>hostname</code>: To support <code>url.parse()</code> <code>hostname</code> is preferred over <code>host</code></li>\n<li><code>port</code>: Port of remote server. Defaults to 443.</li>\n<li><code>method</code>: A string specifying the HTTP request method. Defaults to <code>&#39;GET&#39;</code>.</li>\n<li><code>path</code>: Request path. Defaults to <code>&#39;/&#39;</code>. Should include query string if any.\nE.G. <code>&#39;/index.html?page=12&#39;</code></li>\n<li><code>headers</code>: An object containing request headers.</li>\n<li><code>auth</code>: Basic authentication i.e. <code>&#39;user:password&#39;</code> to compute an\nAuthorization header.</li>\n<li><code>agent</code>: Controls [Agent][] behavior. When an Agent is used request will\ndefault to <code>Connection: keep-alive</code>. Possible values:<ul>\n<li><code>undefined</code> (default): use [globalAgent][] for this host and port.</li>\n<li><code>Agent</code> object: explicitly use the passed in <code>Agent</code>.</li>\n<li><code>false</code>: opts out of connection pooling with an Agent, defaults request to\n<code>Connection: close</code>.</li>\n</ul>\n</li>\n</ul>\n<p>The following options from [tls.connect()][] can also be specified. However, a\n[globalAgent][] silently ignores these.\n\n</p>\n<ul>\n<li><code>pfx</code>: Certificate, Private key and CA certificates to use for SSL. Default <code>null</code>.</li>\n<li><code>key</code>: Private key to use for SSL. Default <code>null</code>.</li>\n<li><code>passphrase</code>: A string of passphrase for the private key or pfx. Default <code>null</code>.</li>\n<li><code>cert</code>: Public x509 certificate to use. Default <code>null</code>.</li>\n<li><code>ca</code>: An authority certificate or array of authority certificates to check\nthe remote host against.</li>\n<li><code>ciphers</code>: A string describing the ciphers to use or exclude. Consult\n<a href=\"http://www.openssl.org/docs/apps/ciphers.html#CIPHER_LIST_FORMAT\">http://www.openssl.org/docs/apps/ciphers.html#CIPHER_LIST_FORMAT</a> for\ndetails on the format.</li>\n<li><code>rejectUnauthorized</code>: If <code>true</code>, the server certificate is verified against\nthe list of supplied CAs. An <code>&#39;error&#39;</code> event is emitted if verification\nfails. Verification happens at the connection level, <em>before</em> the HTTP\nrequest is sent. Default <code>false</code>.</li>\n</ul>\n<p>In order to specify these options, use a custom <code>Agent</code>.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>var options = {\n  hostname: &#39;encrypted.google.com&#39;,\n  port: 443,\n  path: &#39;/&#39;,\n  method: &#39;GET&#39;,\n  key: fs.readFileSync(&#39;test/fixtures/keys/agent2-key.pem&#39;),\n  cert: fs.readFileSync(&#39;test/fixtures/keys/agent2-cert.pem&#39;)\n};\noptions.agent = new https.Agent(options);\n\nvar req = https.request(options, function(res) {\n  ...\n}</code></pre>\n<p>Or does not use an <code>Agent</code>.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>var options = {\n  hostname: &#39;encrypted.google.com&#39;,\n  port: 443,\n  path: &#39;/&#39;,\n  method: &#39;GET&#39;,\n  key: fs.readFileSync(&#39;test/fixtures/keys/agent2-key.pem&#39;),\n  cert: fs.readFileSync(&#39;test/fixtures/keys/agent2-cert.pem&#39;),\n  agent: false\n};\n\nvar req = https.request(options, function(res) {\n  ...\n}</code></pre>\n",
           "signatures": [
             {
               "params": [
@@ -9949,6 +10019,18 @@
                       "name": "detached",
                       "type": "Boolean",
                       "desc": "The child will be a process group leader.  (See below)"
+                    },
+                    {
+                      "textRaw": "`uid` {Number} Sets the user identity of the process. (See setuid(2).) ",
+                      "name": "uid",
+                      "type": "Number",
+                      "desc": "Sets the user identity of the process. (See setuid(2).)"
+                    },
+                    {
+                      "textRaw": "`gid` {Number} Sets the group identity of the process. (See setgid(2).) ",
+                      "name": "gid",
+                      "type": "Number",
+                      "desc": "Sets the group identity of the process. (See setgid(2).)"
                     }
                   ],
                   "name": "options",

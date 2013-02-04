@@ -131,7 +131,7 @@
               "textRaw": "Event: 'drain'",
               "type": "event",
               "name": "drain",
-              "desc": "<p><code>function () { }</code>\n\n</p>\n<p>After a <code>write()</code> method returned <code>false</code>, this event is emitted to\nindicate that it is safe to write again.\n\n</p>\n",
+              "desc": "<p><code>function () { }</code>\n\n</p>\n<p>Emitted when the stream&#39;s write queue empties and it&#39;s safe to write without\nbuffering again. Listen for it when <code>stream.write()</code> returns <code>false</code>.\n\n</p>\n<p>The <code>&#39;drain&#39;</code> event can happen at <em>any</em> time, regardless of whether or not\n<code>stream.write()</code> has previously returned <code>false</code>. To avoid receiving unwanted\n<code>&#39;drain&#39;</code> events, listen using <code>stream.once()</code>.\n\n</p>\n",
               "params": []
             },
             {
@@ -165,10 +165,10 @@
           ],
           "methods": [
             {
-              "textRaw": "stream.write(string, [encoding], [fd])",
+              "textRaw": "stream.write(string, [encoding])",
               "type": "method",
               "name": "write",
-              "desc": "<p>Writes <code>string</code> with the given <code>encoding</code> to the stream.  Returns <code>true</code>\nif the string has been flushed to the kernel buffer.  Returns <code>false</code> to\nindicate that the kernel buffer is full, and the data will be sent out\nin the future. The <code>&#39;drain&#39;</code> event will indicate when the kernel buffer\nis empty again. The <code>encoding</code> defaults to <code>&#39;utf8&#39;</code>.\n\n</p>\n<p>If the optional <code>fd</code> parameter is specified, it is interpreted as an\nintegral file descriptor to be sent over the stream. This is only\nsupported for UNIX streams, and is silently ignored otherwise. When\nwriting a file descriptor in this manner, closing the descriptor before\nthe stream drains risks sending an invalid (closed) FD.\n\n</p>\n",
+              "desc": "<p>Writes <code>string</code> with the given <code>encoding</code> to the stream.  Returns <code>true</code>\nif the string has been flushed to the kernel buffer.  Returns <code>false</code> to\nindicate that the kernel buffer is full, and the data will be sent out\nin the future. The <code>&#39;drain&#39;</code> event will indicate when the kernel buffer\nis empty again. The <code>encoding</code> defaults to <code>&#39;utf8&#39;</code>.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -177,10 +177,6 @@
                     },
                     {
                       "name": "encoding",
-                      "optional": true
-                    },
-                    {
-                      "name": "fd",
                       "optional": true
                     }
                   ]

@@ -174,3 +174,21 @@ uint8c.set(1, 260);
 
 assert.equal(uint8c[0], 0);
 assert.equal(uint8c[1], 255);
+
+(function() {
+  var numbers = [];
+  for (var i = 128; i <= 255; ++i) numbers.push(i);
+  var array = new Uint8Array(numbers);
+  var view = new DataView(array.buffer);
+  for (var i = 128; i <= 255; ++i) assert.equal(view.getInt8(i - 128), i - 256);
+})();
+
+assert.throws(function() {
+  var buf = new DataView(new ArrayBuffer(8));
+  buf.getFloat64(0xffffffff, true);
+}, /Index out of range/);
+
+assert.throws(function() {
+  var buf = new DataView(new ArrayBuffer(8));
+  buf.setFloat64(0xffffffff, 0.0, true);
+}, /Index out of range/);

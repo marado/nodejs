@@ -24,6 +24,7 @@
 #include "node_buffer.h"
 
 #include "v8.h"
+#include "v8-profiler.h"
 
 #include <assert.h>
 #include <stdlib.h> // malloc, free
@@ -33,8 +34,9 @@
 # include <arpa/inet.h> // htons, htonl
 #endif
 
-
 #define MIN(a,b) ((a) < (b) ? (a) : (b))
+
+#define BUFFER_CLASS_ID (0xBABE)
 
 namespace node {
 
@@ -188,6 +190,7 @@ Buffer::Buffer(Handle<Object> wrapper, size_t length) : ObjectWrap() {
 
   length_ = 0;
   callback_ = NULL;
+  handle_.SetWrapperClassId(BUFFER_CLASS_ID);
 
   Replace(NULL, length, NULL, NULL);
 }
@@ -705,6 +708,19 @@ Handle<Value> Buffer::MakeFastBuffer(const Arguments &args) {
   uint32_t offset = args[2]->Uint32Value();
   uint32_t length = args[3]->Uint32Value();
 
+  if (offset > buffer->length_) {
+    return ThrowRangeError("offset out of range");
+  }
+
+  if (offset + length > buffer->length_) {
+    return ThrowRangeError("length out of range");
+  }
+
+  // Check for wraparound. Safe because offset and length are unsigned.
+  if (offset + length < offset) {
+    return ThrowRangeError("offset or length out of range");
+  }
+
   fast_buffer->SetIndexedPropertiesToExternalArrayData(buffer->data_ + offset,
                                                        kExternalUnsignedByteArray,
                                                        length);
@@ -725,6 +741,61 @@ bool Buffer::HasInstance(v8::Handle<v8::Value> val) {
     return true;
 
   return false;
+}
+
+
+class RetainedBufferInfo: public v8::RetainedObjectInfo {
+public:
+  RetainedBufferInfo(Buffer* buffer);
+  virtual void Dispose();
+  virtual bool IsEquivalent(RetainedObjectInfo* other);
+  virtual intptr_t GetHash();
+  virtual const char* GetLabel();
+  virtual intptr_t GetSizeInBytes();
+private:
+  Buffer* buffer_;
+  static const char label[];
+};
+
+const char RetainedBufferInfo::label[] = "Buffer";
+
+
+RetainedBufferInfo::RetainedBufferInfo(Buffer* buffer): buffer_(buffer) {
+}
+
+
+void RetainedBufferInfo::Dispose() {
+  buffer_ = NULL;
+  delete this;
+}
+
+
+bool RetainedBufferInfo::IsEquivalent(RetainedObjectInfo* other) {
+  return label == other->GetLabel() &&
+         buffer_ == static_cast<RetainedBufferInfo*>(other)->buffer_;
+}
+
+
+intptr_t RetainedBufferInfo::GetHash() {
+  return reinterpret_cast<intptr_t>(buffer_);
+}
+
+
+const char* RetainedBufferInfo::GetLabel() {
+  return label;
+}
+
+
+intptr_t RetainedBufferInfo::GetSizeInBytes() {
+  return Buffer::Length(buffer_);
+}
+
+
+RetainedObjectInfo* WrapperInfo(uint16_t class_id, Handle<Value> wrapper) {
+  assert(class_id == BUFFER_CLASS_ID);
+  assert(Buffer::HasInstance(wrapper));
+  Buffer* buffer = Buffer::Unwrap<Buffer>(wrapper.As<Object>());
+  return new RetainedBufferInfo(buffer);
 }
 
 
@@ -775,6 +846,8 @@ void Buffer::Initialize(Handle<Object> target) {
                   Buffer::MakeFastBuffer);
 
   target->Set(String::NewSymbol("SlowBuffer"), constructor_template->GetFunction());
+
+  HeapProfiler::DefineWrapperClass(BUFFER_CLASS_ID, WrapperInfo);
 }
 
 

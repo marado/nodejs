@@ -74,6 +74,7 @@ uv_err_code uv_translate_sys_error(int sys_errno) {
     case ERROR_DISK_CORRUPT:                return UV_EIO;
     case ERROR_EOM_OVERFLOW:                return UV_EIO;
     case ERROR_FILEMARK_DETECTED:           return UV_EIO;
+    case ERROR_GEN_FAILURE:                 return UV_EIO;
     case ERROR_INVALID_BLOCK_LENGTH:        return UV_EIO;
     case ERROR_IO_DEVICE:                   return UV_EIO;
     case ERROR_NO_DATA_DETECTED:            return UV_EIO;
@@ -107,6 +108,7 @@ uv_err_code uv_translate_sys_error(int sys_errno) {
     case WSAECONNRESET:                     return UV_ECONNRESET;
     case ERROR_ALREADY_EXISTS:              return UV_EEXIST;
     case ERROR_FILE_EXISTS:                 return UV_EEXIST;
+    case ERROR_BUFFER_OVERFLOW:             return UV_EFAULT;
     case WSAEFAULT:                         return UV_EFAULT;
     case ERROR_HOST_UNREACHABLE:            return UV_EHOSTUNREACH;
     case WSAEHOSTUNREACH:                   return UV_EHOSTUNREACH;
@@ -123,6 +125,7 @@ uv_err_code uv_translate_sys_error(int sys_errno) {
     case ERROR_NETWORK_UNREACHABLE:         return UV_ENETUNREACH;
     case WSAENETUNREACH:                    return UV_ENETUNREACH;
     case WSAENOBUFS:                        return UV_ENOBUFS;
+    case ERROR_NOT_ENOUGH_MEMORY:           return UV_ENOMEM;
     case ERROR_OUTOFMEMORY:                 return UV_ENOMEM;
     case ERROR_CANNOT_MAKE:                 return UV_ENOSPC;
     case ERROR_DISK_FULL:                   return UV_ENOSPC;
@@ -143,6 +146,7 @@ uv_err_code uv_translate_sys_error(int sys_errno) {
     case ERROR_BAD_PIPE:                    return UV_EPIPE;
     case ERROR_NO_DATA:                     return UV_EPIPE;
     case ERROR_PIPE_NOT_CONNECTED:          return UV_EPIPE;
+    case WSAESHUTDOWN:                      return UV_EPIPE;
     case ERROR_PIPE_BUSY:                   return UV_EBUSY;
     case ERROR_SEM_TIMEOUT:                 return UV_ETIMEDOUT;
     case WSAETIMEDOUT:                      return UV_ETIMEDOUT;

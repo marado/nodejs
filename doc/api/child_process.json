@@ -198,6 +198,18 @@
                       "name": "detached",
                       "type": "Boolean",
                       "desc": "The child will be a process group leader.  (See below)"
+                    },
+                    {
+                      "textRaw": "`uid` {Number} Sets the user identity of the process. (See setuid(2).) ",
+                      "name": "uid",
+                      "type": "Number",
+                      "desc": "Sets the user identity of the process. (See setuid(2).)"
+                    },
+                    {
+                      "textRaw": "`gid` {Number} Sets the group identity of the process. (See setgid(2).) ",
+                      "name": "gid",
+                      "type": "Number",
+                      "desc": "Sets the group identity of the process. (See setgid(2).)"
                     }
                   ],
                   "name": "options",

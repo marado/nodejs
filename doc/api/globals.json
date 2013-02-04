@@ -60,7 +60,7 @@
         {
           "textRaw": "`extensions` {Array} ",
           "name": "extensions",
-          "desc": "<p>Instruct <code>require</code> on how to handle certain file extensions.\n\n</p>\n<p>Process files with the extension <code>.sjs</code> as <code>.js</code>:\n\n</p>\n<pre><code>require.extensions[&#39;.sjs&#39;] = require.extensions[&#39;.js&#39;];</code></pre>\n<p>Write your own extension handler:\n\n</p>\n<pre><code>require.extensions[&#39;.sjs&#39;] = function(module, filename) {\n  var content = fs.readFileSync(filename, &#39;utf8&#39;);\n  // Parse the file content and give to module.exports\n  module.exports = content;\n};</code></pre>\n"
+          "desc": "<p>Instruct <code>require</code> on how to handle certain file extensions.\n\n</p>\n<p>Process files with the extension <code>.sjs</code> as <code>.js</code>:\n\n</p>\n<pre><code>require.extensions[&#39;.sjs&#39;] = require.extensions[&#39;.js&#39;];</code></pre>\n"
         }
       ]
     },
@@ -208,7 +208,7 @@
             {
               "textRaw": "`extensions` {Array} ",
               "name": "extensions",
-              "desc": "<p>Instruct <code>require</code> on how to handle certain file extensions.\n\n</p>\n<p>Process files with the extension <code>.sjs</code> as <code>.js</code>:\n\n</p>\n<pre><code>require.extensions[&#39;.sjs&#39;] = require.extensions[&#39;.js&#39;];</code></pre>\n<p>Write your own extension handler:\n\n</p>\n<pre><code>require.extensions[&#39;.sjs&#39;] = function(module, filename) {\n  var content = fs.readFileSync(filename, &#39;utf8&#39;);\n  // Parse the file content and give to module.exports\n  module.exports = content;\n};</code></pre>\n"
+              "desc": "<p>Instruct <code>require</code> on how to handle certain file extensions.\n\n</p>\n<p>Process files with the extension <code>.sjs</code> as <code>.js</code>:\n\n</p>\n<pre><code>require.extensions[&#39;.sjs&#39;] = require.extensions[&#39;.js&#39;];</code></pre>\n"
             }
           ]
         },

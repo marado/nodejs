@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Crypto Node.js v0.8.11 Manual &amp; Documentation</title>
+  <title>Crypto Node.js v0.8.18 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/crypto.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.8.11 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.8.18 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -103,6 +103,7 @@
 <li><a href="#crypto_crypto_getdiffiehellman_group_name">crypto.getDiffieHellman(group_name)</a></li>
 <li><a href="#crypto_crypto_pbkdf2_password_salt_iterations_keylen_callback">crypto.pbkdf2(password, salt, iterations, keylen, callback)</a></li>
 <li><a href="#crypto_crypto_randombytes_size_callback">crypto.randomBytes(size, [callback])</a></li>
+<li><a href="#crypto_proposed_api_changes_in_future_versions_of_node">Proposed API Changes in Future Versions of Node</a></li>
 </ul>
 </li>
 </ul>
@@ -111,7 +112,8 @@
 
           <div id="apicontent">
             <h1>Crypto<span><a class="mark" href="#crypto_crypto" id="crypto_crypto">#</a></span></h1>
-<pre><code>Stability: 3 - Stable</code></pre>
+<pre><code>Stability: 2 - Unstable; API changes are being discussed for
+future versions.  Breaking changes will be minimized.  See below.</code></pre>
 <p>Use <code>require(&#39;crypto&#39;)</code> to access this module.
 
 </p>
@@ -504,6 +506,42 @@ try {
 } catch (ex) {
   // handle error
 }</code></pre>
+<h2>Proposed API Changes in Future Versions of Node<span><a class="mark" href="#crypto_proposed_api_changes_in_future_versions_of_node" id="crypto_proposed_api_changes_in_future_versions_of_node">#</a></span></h2>
+<p>The Crypto module was added to Node before there was the concept of a
+unified Stream API, and before there were Buffer objects for handling
+binary data.
+
+</p>
+<p>As such, the streaming classes don&#39;t have the typical methods found on
+other Node classes, and many methods accept and return Binary-encoded
+strings by default rather than Buffers.
+
+</p>
+<p>A future version of node will make Buffers the default data type.
+This will be a breaking change for some use cases, but not all.
+
+</p>
+<p>For example, if you currently use the default arguments to the Sign
+class, and then pass the results to the Verify class, without ever
+inspecting the data, then it will continue to work as before.  Where
+you now get a binary string and then present the binary string to the
+Verify object, you&#39;ll get a Buffer, and present the Buffer to the
+Verify object.
+
+</p>
+<p>However, if you are doing things with the string data that will not
+work properly on Buffers (such as, concatenating them, storing in
+databases, etc.), or you are passing binary strings to the crypto
+functions without an encoding argument, then you will need to start
+providing encoding arguments to specify which encoding you&#39;d like to
+use.
+
+</p>
+<p>Also, a Streaming API will be provided, but this will be done in such
+a way as to preserve the legacy API surface.
+
+
+</p>
 
           </div>
         </div>
@@ -522,7 +560,7 @@ try {
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.8.11/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.8.18/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

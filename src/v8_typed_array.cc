@@ -21,6 +21,7 @@
 
 #include <stdlib.h>  // calloc, etc
 #include <string.h>  // memmove
+#include <stdint.h>
 
 #include "v8_typed_array.h"
 #include "node_buffer.h"
@@ -497,7 +498,7 @@ v8::Handle<v8::Value> cTypeToValue(unsigned char val) {
 }
 
 template <>
-v8::Handle<v8::Value> cTypeToValue(char val) {
+v8::Handle<v8::Value> cTypeToValue(signed char val) {
   return v8::Integer::New(val);
 }
 
@@ -543,7 +544,7 @@ unsigned char valueToCType(v8::Handle<v8::Value> value) {
 }
 
 template <>
-char valueToCType(v8::Handle<v8::Value> value) {
+signed char valueToCType(v8::Handle<v8::Value> value) {
   return value->Int32Value();
 }
 
@@ -722,11 +723,14 @@ class DataView {
     // TODO(deanm): All of these things should be cacheable.
     int element_size = SizeOfArrayElementForType(
         args.This()->GetIndexedPropertiesExternalArrayDataType());
-    int size = args.This()->GetIndexedPropertiesExternalArrayDataLength() *
-               element_size;
+    assert(element_size > 0);
+    int size = args.This()->GetIndexedPropertiesExternalArrayDataLength();
+    assert(size >= 0);
 
-    if (index + sizeof(T) > (unsigned)size)  // TODO(deanm): integer overflow.
+    if (static_cast<uint64_t>(index) + sizeof(T) >
+        static_cast<uint64_t>(size) * element_size) {
       return ThrowError("Index out of range.");
+    }
 
     void* ptr = args.This()->GetIndexedPropertiesExternalArrayData();
     return cTypeToValue<T>(getValue<T>(ptr, index, !little_endian));
@@ -742,11 +746,14 @@ class DataView {
     // TODO(deanm): All of these things should be cacheable.
     int element_size = SizeOfArrayElementForType(
         args.This()->GetIndexedPropertiesExternalArrayDataType());
-    int size = args.This()->GetIndexedPropertiesExternalArrayDataLength() *
-               element_size;
+    assert(element_size > 0);
+    int size = args.This()->GetIndexedPropertiesExternalArrayDataLength();
+    assert(size >= 0);
 
-    if (index + sizeof(T) > (unsigned)size)  // TODO(deanm): integer overflow.
+    if (static_cast<uint64_t>(index) + sizeof(T) >
+        static_cast<uint64_t>(size) * element_size) {
       return ThrowError("Index out of range.");
+    }
 
     void* ptr = args.This()->GetIndexedPropertiesExternalArrayData();
     setValue<T>(ptr, index, valueToCType<T>(args[1]), !little_endian);
@@ -758,7 +765,7 @@ class DataView {
   }
 
   static v8::Handle<v8::Value> getInt8(const v8::Arguments& args) {
-    return getGeneric<char>(args);
+    return getGeneric<signed char>(args);
   }
 
   static v8::Handle<v8::Value> getUint16(const v8::Arguments& args) {
@@ -790,7 +797,7 @@ class DataView {
   }
 
   static v8::Handle<v8::Value> setInt8(const v8::Arguments& args) {
-    return setGeneric<char>(args);
+    return setGeneric<signed char>(args);
   }
 
   static v8::Handle<v8::Value> setUint16(const v8::Arguments& args) {

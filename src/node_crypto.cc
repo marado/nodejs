@@ -1339,6 +1339,15 @@ Handle<Value> Connection::GetPeerCertificate(const Arguments& args) {
         (void) BIO_reset(bio);
     }
 
+    if (pkey != NULL) {
+      EVP_PKEY_free(pkey);
+      pkey = NULL;
+    }
+    if (rsa != NULL) {
+      RSA_free(rsa);
+      rsa = NULL;
+    }
+
     ASN1_TIME_print(bio, X509_get_notBefore(peer_cert));
     BIO_get_mem_ptr(bio, &mem);
     info->Set(valid_from_symbol, String::New(mem->data, mem->length));
@@ -3958,22 +3967,16 @@ class DiffieHellman : public ObjectWrap {
 
     int size = DH_compute_key(reinterpret_cast<unsigned char*>(data),
       key, diffieHellman->dh);
-    BN_free(key);
-
-    Local<Value> outString;
-
-    // DH_size returns number of bytes in a prime number
-    // DH_compute_key returns number of bytes in a remainder of exponent, which
-    // may have less bytes than a prime number. Therefore add 0-padding to the
-    // allocated buffer.
-    if (size != dataSize) {
-      assert(dataSize > size);
-      memset(data + size, 0, dataSize - size);
-    }
 
     if (size == -1) {
       int checkResult;
-      if (!DH_check_pub_key(diffieHellman->dh, key, &checkResult)) {
+      int checked;
+
+      checked = DH_check_pub_key(diffieHellman->dh, key, &checkResult);
+      BN_free(key);
+      delete[] data;
+
+      if (!checked) {
         return ThrowException(Exception::Error(String::New("Invalid key")));
       } else if (checkResult) {
         if (checkResult & DH_CHECK_PUBKEY_TOO_SMALL) {
@@ -3988,14 +3991,28 @@ class DiffieHellman : public ObjectWrap {
       } else {
         return ThrowException(Exception::Error(String::New("Invalid key")));
       }
+    }
+
+    BN_free(key);
+    assert(size >= 0);
+
+    // DH_size returns number of bytes in a prime number
+    // DH_compute_key returns number of bytes in a remainder of exponent, which
+    // may have less bytes than a prime number. Therefore add 0-padding to the
+    // allocated buffer.
+    if (size != dataSize) {
+      assert(dataSize > size);
+      memset(data + size, 0, dataSize - size);
+    }
+
+    Local<Value> outString;
+
+    if (args.Length() > 2 && args[2]->IsString()) {
+      outString = EncodeWithEncoding(args[2], data, dataSize);
+    } else if (args.Length() > 1 && args[1]->IsString()) {
+      outString = EncodeWithEncoding(args[1], data, dataSize);
     } else {
-      if (args.Length() > 2 && args[2]->IsString()) {
-        outString = EncodeWithEncoding(args[2], data, dataSize);
-      } else if (args.Length() > 1 && args[1]->IsString()) {
-        outString = EncodeWithEncoding(args[1], data, dataSize);
-      } else {
-        outString = Encode(data, dataSize, BINARY);
-      }
+      outString = Encode(data, dataSize, BINARY);
     }
 
     delete[] data;
@@ -4346,8 +4363,6 @@ err:
 }
 
 
-typedef int (*RandomBytesGenerator)(unsigned char* buf, int size);
-
 struct RandomBytesRequest {
   ~RandomBytesRequest();
   Persistent<Object> obj_;
@@ -4370,26 +4385,26 @@ void RandomBytesFree(char* data, void* hint) {
 }
 
 
-template <RandomBytesGenerator generator>
+template <bool pseudoRandom>
 void RandomBytesWork(uv_work_t* work_req) {
-  RandomBytesRequest* req =
-      container_of(work_req, RandomBytesRequest, work_req_);
+  RandomBytesRequest* req = container_of(work_req,
+                                         RandomBytesRequest,
+                                         work_req_);
+  int r;
 
-  int r = generator(reinterpret_cast<unsigned char*>(req->data_), req->size_);
+  if (pseudoRandom == true) {
+    r = RAND_pseudo_bytes(reinterpret_cast<unsigned char*>(req->data_),
+                          req->size_);
+  } else {
+    r = RAND_bytes(reinterpret_cast<unsigned char*>(req->data_), req->size_);
+  }
 
-  switch (r) {
-  case 0:
-    // RAND_bytes() returns 0 on error, RAND_pseudo_bytes() returns 0
-    // when the result is not cryptographically strong - the latter
-    // sucks but is not an error
-    if (generator == RAND_bytes)
-      req->error_ = ERR_get_error();
-    break;
-
-  case -1:
-    // not supported - can this actually happen?
-    req->error_ = (unsigned long) -1;
-    break;
+  // RAND_bytes() returns 0 on error. RAND_pseudo_bytes() returns 0 when the
+  // result is not cryptographically strong - but that's not an error.
+  if (r == 0 && pseudoRandom == false) {
+    req->error_ = ERR_get_error();
+  } else if (r == -1) {
+    req->error_ = static_cast<unsigned long>(-1);
   }
 }
 
@@ -4414,10 +4429,10 @@ void RandomBytesCheck(RandomBytesRequest* req, Local<Value> argv[2]) {
 }
 
 
-template <RandomBytesGenerator generator>
 void RandomBytesAfter(uv_work_t* work_req) {
-  RandomBytesRequest* req =
-      container_of(work_req, RandomBytesRequest, work_req_);
+  RandomBytesRequest* req = container_of(work_req,
+                                         RandomBytesRequest,
+                                         work_req_);
 
   HandleScope scope;
   Local<Value> argv[2];
@@ -4428,7 +4443,7 @@ void RandomBytesAfter(uv_work_t* work_req) {
 }
 
 
-template <RandomBytesGenerator generator>
+template <bool pseudoRandom>
 Handle<Value> RandomBytes(const Arguments& args) {
   HandleScope scope;
 
@@ -4452,14 +4467,14 @@ Handle<Value> RandomBytes(const Arguments& args) {
 
     uv_queue_work(uv_default_loop(),
                   &req->work_req_,
-                  RandomBytesWork<generator>,
-                  RandomBytesAfter<generator>);
+                  RandomBytesWork<pseudoRandom>,
+                  RandomBytesAfter);
 
     return req->obj_;
   }
   else {
     Local<Value> argv[2];
-    RandomBytesWork<generator>(&req->work_req_);
+    RandomBytesWork<pseudoRandom>(&req->work_req_);
     RandomBytesCheck(req, argv);
     delete req;
 
@@ -4508,8 +4523,8 @@ void InitCrypto(Handle<Object> target) {
   Verify::Initialize(target);
 
   NODE_SET_METHOD(target, "PBKDF2", PBKDF2);
-  NODE_SET_METHOD(target, "randomBytes", RandomBytes<RAND_bytes>);
-  NODE_SET_METHOD(target, "pseudoRandomBytes", RandomBytes<RAND_pseudo_bytes>);
+  NODE_SET_METHOD(target, "randomBytes", RandomBytes<false>);
+  NODE_SET_METHOD(target, "pseudoRandomBytes", RandomBytes<true>);
 
   subject_symbol    = NODE_PSYMBOL("subject");
   issuer_symbol     = NODE_PSYMBOL("issuer");
