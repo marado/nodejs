@@ -1,4 +1,4 @@
-nodejs (0.8.11~dfsg1-1) UNRELEASED; urgency=low
+nodejs (0.8.18~dfsg1-1) UNRELEASED; urgency=low
 
   * Upstream update.
   * Build-Depends: libv8-dev >= 3.11.
