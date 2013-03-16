@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>File System Node.js v0.8.18 Manual &amp; Documentation</title>
+  <title>File System Node.js v0.10.0 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/fs.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.8.18 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.0 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -48,8 +48,10 @@
 <li><a href="#fs_file_system">File System</a><ul>
 <li><a href="#fs_fs_rename_oldpath_newpath_callback">fs.rename(oldPath, newPath, [callback])</a></li>
 <li><a href="#fs_fs_renamesync_oldpath_newpath">fs.renameSync(oldPath, newPath)</a></li>
-<li><a href="#fs_fs_truncate_fd_len_callback">fs.truncate(fd, len, [callback])</a></li>
-<li><a href="#fs_fs_truncatesync_fd_len">fs.truncateSync(fd, len)</a></li>
+<li><a href="#fs_fs_ftruncate_fd_len_callback">fs.ftruncate(fd, len, [callback])</a></li>
+<li><a href="#fs_fs_ftruncatesync_fd_len">fs.ftruncateSync(fd, len)</a></li>
+<li><a href="#fs_fs_truncate_path_len_callback">fs.truncate(path, len, [callback])</a></li>
+<li><a href="#fs_fs_truncatesync_path_len">fs.truncateSync(path, len)</a></li>
 <li><a href="#fs_fs_chown_path_uid_gid_callback">fs.chown(path, uid, gid, [callback])</a></li>
 <li><a href="#fs_fs_chownsync_path_uid_gid">fs.chownSync(path, uid, gid)</a></li>
 <li><a href="#fs_fs_fchown_fd_uid_gid_callback">fs.fchown(fd, uid, gid, [callback])</a></li>
@@ -98,12 +100,12 @@
 <li><a href="#fs_fs_writesync_fd_buffer_offset_length_position">fs.writeSync(fd, buffer, offset, length, position)</a></li>
 <li><a href="#fs_fs_read_fd_buffer_offset_length_position_callback">fs.read(fd, buffer, offset, length, position, [callback])</a></li>
 <li><a href="#fs_fs_readsync_fd_buffer_offset_length_position">fs.readSync(fd, buffer, offset, length, position)</a></li>
-<li><a href="#fs_fs_readfile_filename_encoding_callback">fs.readFile(filename, [encoding], [callback])</a></li>
-<li><a href="#fs_fs_readfilesync_filename_encoding">fs.readFileSync(filename, [encoding])</a></li>
-<li><a href="#fs_fs_writefile_filename_data_encoding_callback">fs.writeFile(filename, data, [encoding], [callback])</a></li>
-<li><a href="#fs_fs_writefilesync_filename_data_encoding">fs.writeFileSync(filename, data, [encoding])</a></li>
-<li><a href="#fs_fs_appendfile_filename_data_encoding_utf8_callback">fs.appendFile(filename, data, encoding=&#39;utf8&#39;, [callback])</a></li>
-<li><a href="#fs_fs_appendfilesync_filename_data_encoding_utf8">fs.appendFileSync(filename, data, encoding=&#39;utf8&#39;)</a></li>
+<li><a href="#fs_fs_readfile_filename_options_callback">fs.readFile(filename, [options], [callback])</a></li>
+<li><a href="#fs_fs_readfilesync_filename_options">fs.readFileSync(filename, [options])</a></li>
+<li><a href="#fs_fs_writefile_filename_data_options_callback">fs.writeFile(filename, data, [options], [callback])</a></li>
+<li><a href="#fs_fs_writefilesync_filename_data_options">fs.writeFileSync(filename, data, [options])</a></li>
+<li><a href="#fs_fs_appendfile_filename_data_options_callback">fs.appendFile(filename, data, [options], [callback])</a></li>
+<li><a href="#fs_fs_appendfilesync_filename_data_options">fs.appendFileSync(filename, data, [options])</a></li>
 <li><a href="#fs_fs_watchfile_filename_options_listener">fs.watchFile(filename, [options], listener)</a></li>
 <li><a href="#fs_fs_unwatchfile_filename_listener">fs.unwatchFile(filename, [listener])</a></li>
 <li><a href="#fs_fs_watch_filename_options_listener">fs.watch(filename, [options], [listener])</a><ul>
@@ -142,8 +144,7 @@
 
           <div id="apicontent">
             <h1>File System<span><a class="mark" href="#fs_file_system" id="fs_file_system">#</a></span></h1>
-<pre><code>Stability: 3 - Stable</code></pre>
-<!--name=fs-->
+<pre class="api_stability_3">Stability: 3 - Stable</pre><!--name=fs-->
 
 <p>File I/O is provided by simple wrappers around standard POSIX functions.  To
 use this module do <code>require(&#39;fs&#39;)</code>. All the methods have asynchronous and
@@ -204,10 +205,32 @@ asynchronous versions of these calls. The synchronous versions will block
 the entire process until they complete--halting all connections.
 
 </p>
-<p>Relative path to filename can be used, remember however that this path will be relative
-to <code>process.cwd()</code>.
+<p>Relative path to filename can be used, remember however that this path will be
+relative to <code>process.cwd()</code>.
 
 </p>
+<p>Most fs functions let you omit the callback argument. If you do, a default
+callback is used that rethrows errors. To get a trace to the original call
+site, set the NODE_DEBUG environment variable:
+
+</p>
+<pre><code>$ cat script.js
+function bad() {
+  require(&#39;fs&#39;).readFile(&#39;/&#39;);
+}
+bad();
+
+$ env NODE_DEBUG=fs node script.js
+fs.js:66
+        throw err;
+              ^
+Error: EISDIR, read
+    at rethrow (fs.js:61:21)
+    at maybeCallback (fs.js:79:42)
+    at Object.fs.readFile (fs.js:153:18)
+    at bad (/path/to/script.js:2:17)
+    at Object.&lt;anonymous&gt; (/path/to/script.js:5:1)
+    &lt;etc.&gt;</code></pre>
 <h2>fs.rename(oldPath, newPath, [callback])<span><a class="mark" href="#fs_fs_rename_oldpath_newpath_callback" id="fs_fs_rename_oldpath_newpath_callback">#</a></span></h2>
 <p>Asynchronous rename(2). No arguments other than a possible exception are given
 to the completion callback.
@@ -217,13 +240,22 @@ to the completion callback.
 <p>Synchronous rename(2).
 
 </p>
-<h2>fs.truncate(fd, len, [callback])<span><a class="mark" href="#fs_fs_truncate_fd_len_callback" id="fs_fs_truncate_fd_len_callback">#</a></span></h2>
+<h2>fs.ftruncate(fd, len, [callback])<span><a class="mark" href="#fs_fs_ftruncate_fd_len_callback" id="fs_fs_ftruncate_fd_len_callback">#</a></span></h2>
 <p>Asynchronous ftruncate(2). No arguments other than a possible exception are
 given to the completion callback.
 
 </p>
-<h2>fs.truncateSync(fd, len)<span><a class="mark" href="#fs_fs_truncatesync_fd_len" id="fs_fs_truncatesync_fd_len">#</a></span></h2>
+<h2>fs.ftruncateSync(fd, len)<span><a class="mark" href="#fs_fs_ftruncatesync_fd_len" id="fs_fs_ftruncatesync_fd_len">#</a></span></h2>
 <p>Synchronous ftruncate(2).
+
+</p>
+<h2>fs.truncate(path, len, [callback])<span><a class="mark" href="#fs_fs_truncate_path_len_callback" id="fs_fs_truncate_path_len_callback">#</a></span></h2>
+<p>Asynchronous truncate(2). No arguments other than a possible exception are
+given to the completion callback.
+
+</p>
+<h2>fs.truncateSync(path, len)<span><a class="mark" href="#fs_fs_truncatesync_path_len" id="fs_fs_truncatesync_path_len">#</a></span></h2>
+<p>Synchronous truncate(2).
 
 </p>
 <h2>fs.chown(path, uid, gid, [callback])<span><a class="mark" href="#fs_fs_chown_path_uid_gid_callback" id="fs_fs_chown_path_uid_gid_callback">#</a></span></h2>
@@ -536,7 +568,15 @@ If <code>position</code> is <code>null</code>, data will be read from the curren
 <p>Synchronous version of <code>fs.read</code>. Returns the number of <code>bytesRead</code>.
 
 </p>
-<h2>fs.readFile(filename, [encoding], [callback])<span><a class="mark" href="#fs_fs_readfile_filename_encoding_callback" id="fs_fs_readfile_filename_encoding_callback">#</a></span></h2>
+<h2>fs.readFile(filename, [options], [callback])<span><a class="mark" href="#fs_fs_readfile_filename_options_callback" id="fs_fs_readfile_filename_options_callback">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>filename</code> <span class="type">String</span></li>
+<li><code>options</code> <span class="type">Object</span><ul>
+<li><code>encoding</code> <span class="type">String | Null</span> default = <code>null</code></li>
+<li><code>flag</code> <span class="type">String</span> default = <code>&#39;r&#39;</code></li>
+</ul>
+</li>
+</div></ul>
 <p>Asynchronously reads the entire contents of a file. Example:
 
 </p>
@@ -552,19 +592,32 @@ contents of the file.
 
 
 </p>
-<h2>fs.readFileSync(filename, [encoding])<span><a class="mark" href="#fs_fs_readfilesync_filename_encoding" id="fs_fs_readfilesync_filename_encoding">#</a></span></h2>
+<h2>fs.readFileSync(filename, [options])<span><a class="mark" href="#fs_fs_readfilesync_filename_options" id="fs_fs_readfilesync_filename_options">#</a></span></h2>
 <p>Synchronous version of <code>fs.readFile</code>. Returns the contents of the <code>filename</code>.
 
 </p>
-<p>If <code>encoding</code> is specified then this function returns a string. Otherwise it
-returns a buffer.
+<p>If the <code>encoding</code> option is specified then this function returns a
+string. Otherwise it returns a buffer.
 
 
 </p>
-<h2>fs.writeFile(filename, data, [encoding], [callback])<span><a class="mark" href="#fs_fs_writefile_filename_data_encoding_callback" id="fs_fs_writefile_filename_data_encoding_callback">#</a></span></h2>
+<h2>fs.writeFile(filename, data, [options], [callback])<span><a class="mark" href="#fs_fs_writefile_filename_data_options_callback" id="fs_fs_writefile_filename_data_options_callback">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>filename</code> <span class="type">String</span></li>
+<li><code>data</code> <span class="type">String | Buffer</span></li>
+<li><code>options</code> <span class="type">Object</span><ul>
+<li><code>encoding</code> <span class="type">String | Null</span> default = <code>&#39;utf8&#39;</code></li>
+<li><code>mode</code> <span class="type">Number</span> default = <code>438</code> (aka <code>0666</code> in Octal)</li>
+<li><code>flag</code> <span class="type">String</span> default = <code>&#39;w&#39;</code></li>
+</ul>
+</li>
+</div></ul>
 <p>Asynchronously writes data to a file, replacing the file if it already exists.
-<code>data</code> can be a string or a buffer. The <code>encoding</code> argument is ignored if
-<code>data</code> is a buffer. It defaults to <code>&#39;utf8&#39;</code>.
+<code>data</code> can be a string or a buffer.
+
+</p>
+<p>The <code>encoding</code> option is ignored if <code>data</code> is a buffer. It defaults
+to <code>&#39;utf8&#39;</code>.
 
 </p>
 <p>Example:
@@ -574,14 +627,23 @@ returns a buffer.
   if (err) throw err;
   console.log(&#39;It\&#39;s saved!&#39;);
 });</code></pre>
-<h2>fs.writeFileSync(filename, data, [encoding])<span><a class="mark" href="#fs_fs_writefilesync_filename_data_encoding" id="fs_fs_writefilesync_filename_data_encoding">#</a></span></h2>
+<h2>fs.writeFileSync(filename, data, [options])<span><a class="mark" href="#fs_fs_writefilesync_filename_data_options" id="fs_fs_writefilesync_filename_data_options">#</a></span></h2>
 <p>The synchronous version of <code>fs.writeFile</code>.
 
 </p>
-<h2>fs.appendFile(filename, data, encoding=&#39;utf8&#39;, [callback])<span><a class="mark" href="#fs_fs_appendfile_filename_data_encoding_utf8_callback" id="fs_fs_appendfile_filename_data_encoding_utf8_callback">#</a></span></h2>
+<h2>fs.appendFile(filename, data, [options], [callback])<span><a class="mark" href="#fs_fs_appendfile_filename_data_options_callback" id="fs_fs_appendfile_filename_data_options_callback">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>filename</code> <span class="type">String</span></li>
+<li><code>data</code> <span class="type">String | Buffer</span></li>
+<li><code>options</code> <span class="type">Object</span><ul>
+<li><code>encoding</code> <span class="type">String | Null</span> default = <code>&#39;utf8&#39;</code></li>
+<li><code>mode</code> <span class="type">Number</span> default = <code>438</code> (aka <code>0666</code> in Octal)</li>
+<li><code>flag</code> <span class="type">String</span> default = <code>&#39;a&#39;</code></li>
+</ul>
+</li>
+</div></ul>
 <p>Asynchronously append data to a file, creating the file if it not yet exists.
-<code>data</code> can be a string or a buffer. The <code>encoding</code> argument is ignored if
-<code>data</code> is a buffer.
+<code>data</code> can be a string or a buffer.
 
 </p>
 <p>Example:
@@ -591,13 +653,12 @@ returns a buffer.
   if (err) throw err;
   console.log(&#39;The &quot;data to append&quot; was appended to file!&#39;);
 });</code></pre>
-<h2>fs.appendFileSync(filename, data, encoding=&#39;utf8&#39;)<span><a class="mark" href="#fs_fs_appendfilesync_filename_data_encoding_utf8" id="fs_fs_appendfilesync_filename_data_encoding_utf8">#</a></span></h2>
+<h2>fs.appendFileSync(filename, data, [options])<span><a class="mark" href="#fs_fs_appendfilesync_filename_data_options" id="fs_fs_appendfilesync_filename_data_options">#</a></span></h2>
 <p>The synchronous version of <code>fs.appendFile</code>.
 
 </p>
 <h2>fs.watchFile(filename, [options], listener)<span><a class="mark" href="#fs_fs_watchfile_filename_options_listener" id="fs_fs_watchfile_filename_options_listener">#</a></span></h2>
-<pre><code>Stability: 2 - Unstable.  Use fs.watch instead, if possible.</code></pre>
-<p>Watch for changes on <code>filename</code>. The callback <code>listener</code> will be called each
+<pre class="api_stability_2">Stability: 2 - Unstable.  Use fs.watch instead, if possible.</pre><p>Watch for changes on <code>filename</code>. The callback <code>listener</code> will be called each
 time the file is accessed.
 
 </p>
@@ -624,8 +685,7 @@ you need to compare <code>curr.mtime</code> and <code>prev.mtime</code>.
 
 </p>
 <h2>fs.unwatchFile(filename, [listener])<span><a class="mark" href="#fs_fs_unwatchfile_filename_listener" id="fs_fs_unwatchfile_filename_listener">#</a></span></h2>
-<pre><code>Stability: 2 - Unstable.  Use fs.watch instead, if available.</code></pre>
-<p>Stop watching for changes on <code>filename</code>. If <code>listener</code> is specified, only that
+<pre class="api_stability_2">Stability: 2 - Unstable.  Use fs.watch instead, if available.</pre><p>Stop watching for changes on <code>filename</code>. If <code>listener</code> is specified, only that
 particular listener is removed. Otherwise, <em>all</em> listeners are removed and you
 have effectively stopped watching <code>filename</code>.
 
@@ -635,8 +695,7 @@ no-op, not an error.
 
 </p>
 <h2>fs.watch(filename, [options], [listener])<span><a class="mark" href="#fs_fs_watch_filename_options_listener" id="fs_fs_watch_filename_options_listener">#</a></span></h2>
-<pre><code>Stability: 2 - Unstable.</code></pre>
-<p>Watch for changes on <code>filename</code>, where <code>filename</code> is either a file or a
+<pre class="api_stability_2">Stability: 2 - Unstable.</pre><p>Watch for changes on <code>filename</code>, where <code>filename</code> is either a file or a
 directory.  The returned object is a <a href="#fs_class_fs_fswatcher">fs.FSWatcher</a>.
 
 </p>
@@ -764,11 +823,19 @@ be found in the <a href="https://developer.mozilla.org/en/JavaScript/Reference/G
   encoding: null,
   fd: null,
   mode: 0666,
-  bufferSize: 64 * 1024
+  bufferSize: 64 * 1024,
+  autoClose: true
 }</code></pre>
 <p><code>options</code> can include <code>start</code> and <code>end</code> values to read a range of bytes from
 the file instead of the entire file.  Both <code>start</code> and <code>end</code> are inclusive and
 start at 0. The <code>encoding</code> can be <code>&#39;utf8&#39;</code>, <code>&#39;ascii&#39;</code>, or <code>&#39;base64&#39;</code>.
+
+</p>
+<p>If <code>autoClose</code> is false, then the file descriptor won&#39;t be closed, even if
+there&#39;s an error.  It is your responsiblity to close it and make sure
+there&#39;s no file descriptor leak.  If <code>autoClose</code> is set to true (default
+behavior), on <code>error</code> or <code>end</code> the file descriptor will be closed
+automatically.
 
 </p>
 <p>An example to read the last 10 bytes of a file which is 100 bytes long:
@@ -860,7 +927,7 @@ See more details in <a href="#fs_fs_watch_filename_options_listener">fs.watch</a
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.8.18/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.0/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

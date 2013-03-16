@@ -213,7 +213,7 @@
           ]
         },
         {
-          "textRaw": "assert.doesNotThrow(block, [error], [message])",
+          "textRaw": "assert.doesNotThrow(block, [message])",
           "type": "method",
           "name": "doesNotThrow",
           "desc": "<p>Expects <code>block</code> not to throw an error, see assert.throws for details.\n\n</p>\n",
@@ -222,10 +222,6 @@
               "params": [
                 {
                   "name": "block"
-                },
-                {
-                  "name": "error",
-                  "optional": true
                 },
                 {
                   "name": "message",

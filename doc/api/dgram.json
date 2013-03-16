@@ -6,7 +6,7 @@
       "name": "dgram",
       "stability": 3,
       "stabilityText": "Stable",
-      "desc": "<p>Datagram sockets are available through <code>require(&#39;dgram&#39;)</code>.\n\n</p>\n",
+      "desc": "<p>Datagram sockets are available through <code>require(&#39;dgram&#39;)</code>.\n\n</p>\n<p>Important note: the behavior of <code>dgram.Socket#bind()</code> has changed in v0.10\nand is always asynchronous now.  If you have code that looks like this:\n\n</p>\n<pre><code>var s = dgram.createSocket(&#39;udp4&#39;);\ns.bind(1234);\ns.addMembership(&#39;224.0.0.114&#39;);</code></pre>\n<p>You have to change it to this:\n\n</p>\n<pre><code>var s = dgram.createSocket(&#39;udp4&#39;);\ns.bind(1234, function() {\n  s.addMembership(&#39;224.0.0.114&#39;);\n});</code></pre>\n",
       "methods": [
         {
           "textRaw": "dgram.createSocket(type, [callback])",
@@ -152,7 +152,7 @@
               "desc": "<p>For UDP sockets, the destination port and IP address must be specified.  A string\nmay be supplied for the <code>address</code> parameter, and it will be resolved with DNS.  An\noptional callback may be specified to detect any DNS errors and when <code>buf</code> may be\nre-used.  Note that DNS lookups will delay the time that a send takes place, at\nleast until the next tick.  The only way to know for sure that a send has taken place\nis to use the callback.\n\n</p>\n<p>If the socket has not been previously bound with a call to <code>bind</code>, it&#39;s\nassigned a random port number and bound to the &quot;all interfaces&quot; address\n(0.0.0.0 for <code>udp4</code> sockets, ::0 for <code>udp6</code> sockets).\n\n</p>\n<p>Example of sending a UDP packet to a random port on <code>localhost</code>;\n\n</p>\n<pre><code>var dgram = require(&#39;dgram&#39;);\nvar message = new Buffer(&quot;Some bytes&quot;);\nvar client = dgram.createSocket(&quot;udp4&quot;);\nclient.send(message, 0, message.length, 41234, &quot;localhost&quot;, function(err, bytes) {\n  client.close();\n});</code></pre>\n<p><strong>A Note about UDP datagram size</strong>\n\n</p>\n<p>The maximum size of an <code>IPv4/v6</code> datagram depends on the <code>MTU</code> (<em>Maximum Transmission Unit</em>)\nand on the <code>Payload Length</code> field size.\n\n</p>\n<ul>\n<li><p>The <code>Payload Length</code> field is <code>16 bits</code> wide, which means that a normal payload\ncannot be larger than 64K octets including internet header and data\n(65,507 bytes = 65,535 − 8 bytes UDP header − 20 bytes IP header);\nthis is generally true for loopback interfaces, but such long datagrams\nare impractical for most hosts and networks.</p>\n</li>\n<li><p>The <code>MTU</code> is the largest size a given link layer technology can support for datagrams.\nFor any link, <code>IPv4</code> mandates a minimum <code>MTU</code> of <code>68</code> octets, while the recommended <code>MTU</code>\nfor IPv4 is <code>576</code> (typically recommended as the <code>MTU</code> for dial-up type applications),\nwhether they arrive whole or in fragments.</p>\n<p>For <code>IPv6</code>, the minimum <code>MTU</code> is <code>1280</code> octets, however, the mandatory minimum\nfragment reassembly buffer size is <code>1500</code> octets.\nThe value of <code>68</code> octets is very small, since most current link layer technologies have\na minimum <code>MTU</code> of <code>1500</code> (like Ethernet).</p>\n</li>\n</ul>\n<p>Note that it&#39;s impossible to know in advance the MTU of each link through which\na packet might travel, and that generally sending a datagram greater than\nthe (receiver) <code>MTU</code> won&#39;t work (the packet gets silently dropped, without\ninforming the source that the data did not reach its intended recipient).\n\n</p>\n"
             },
             {
-              "textRaw": "dgram.bind(port, [address])",
+              "textRaw": "dgram.bind(port, [address], [callback])",
               "type": "method",
               "name": "bind",
               "signatures": [
@@ -168,6 +168,12 @@
                       "name": "address",
                       "optional": true,
                       "desc": "String"
+                    },
+                    {
+                      "textRaw": "`callback` Function, Optional ",
+                      "name": "callback",
+                      "optional": true,
+                      "desc": "Function"
                     }
                   ]
                 },
@@ -179,11 +185,15 @@
                     {
                       "name": "address",
                       "optional": true
+                    },
+                    {
+                      "name": "callback",
+                      "optional": true
                     }
                   ]
                 }
               ],
-              "desc": "<p>For UDP sockets, listen for datagrams on a named <code>port</code> and optional <code>address</code>. If\n<code>address</code> is not specified, the OS will try to listen on all addresses.\n\n</p>\n<p>Example of a UDP server listening on port 41234:\n\n</p>\n<pre><code>var dgram = require(&quot;dgram&quot;);\n\nvar server = dgram.createSocket(&quot;udp4&quot;);\n\nserver.on(&quot;message&quot;, function (msg, rinfo) {\n  console.log(&quot;server got: &quot; + msg + &quot; from &quot; +\n    rinfo.address + &quot;:&quot; + rinfo.port);\n});\n\nserver.on(&quot;listening&quot;, function () {\n  var address = server.address();\n  console.log(&quot;server listening &quot; +\n      address.address + &quot;:&quot; + address.port);\n});\n\nserver.bind(41234);\n// server listening 0.0.0.0:41234</code></pre>\n"
+              "desc": "<p>For UDP sockets, listen for datagrams on a named <code>port</code> and optional <code>address</code>.\nIf <code>address</code> is not specified, the OS will try to listen on all addresses.\n\n</p>\n<p>The <code>callback</code> argument, if provided, is added as a one-shot <code>&#39;listening&#39;</code>\nevent listener.\n\n</p>\n<p>Example of a UDP server listening on port 41234:\n\n</p>\n<pre><code>var dgram = require(&quot;dgram&quot;);\n\nvar server = dgram.createSocket(&quot;udp4&quot;);\n\nserver.on(&quot;message&quot;, function (msg, rinfo) {\n  console.log(&quot;server got: &quot; + msg + &quot; from &quot; +\n    rinfo.address + &quot;:&quot; + rinfo.port);\n});\n\nserver.on(&quot;listening&quot;, function () {\n  var address = server.address();\n  console.log(&quot;server listening &quot; +\n      address.address + &quot;:&quot; + address.port);\n});\n\nserver.bind(41234);\n// server listening 0.0.0.0:41234</code></pre>\n"
             },
             {
               "textRaw": "dgram.close()",
@@ -369,7 +379,29 @@
                   ]
                 }
               ],
-              "desc": "<p>Opposite of <code>addMembership</code> - tells the kernel to leave a multicast group with\n<code>IP_DROP_MEMBERSHIP</code> socket option. This is automatically called by the kernel\nwhen the socket is closed or process terminates, so most apps will never need to call\nthis.\n\n</p>\n<p>If <code>multicastInterface</code> is not specified, the OS will try to drop membership to all valid\ninterfaces.\n</p>\n"
+              "desc": "<p>Opposite of <code>addMembership</code> - tells the kernel to leave a multicast group with\n<code>IP_DROP_MEMBERSHIP</code> socket option. This is automatically called by the kernel\nwhen the socket is closed or process terminates, so most apps will never need to call\nthis.\n\n</p>\n<p>If <code>multicastInterface</code> is not specified, the OS will try to drop membership to all valid\ninterfaces.\n\n</p>\n"
+            },
+            {
+              "textRaw": "dgram.unref()",
+              "type": "method",
+              "name": "unref",
+              "desc": "<p>Calling <code>unref</code> on a socket will allow the program to exit if this is the only\nactive socket in the event system. If the socket is already <code>unref</code>d calling\n<code>unref</code> again will have no effect.\n\n</p>\n",
+              "signatures": [
+                {
+                  "params": []
+                }
+              ]
+            },
+            {
+              "textRaw": "dgram.ref()",
+              "type": "method",
+              "name": "ref",
+              "desc": "<p>Opposite of <code>unref</code>, calling <code>ref</code> on a previously <code>unref</code>d socket will <em>not</em>\nlet the program exit if it&#39;s the only socket left (the default behavior). If\nthe socket is <code>ref</code>d calling <code>ref</code> again will have no effect.\n</p>\n",
+              "signatures": [
+                {
+                  "params": []
+                }
+              ]
             }
           ]
         }

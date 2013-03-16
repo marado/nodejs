@@ -19,60 +19,107 @@
           "desc": "<p>Global instance of Agent which is used as the default for all http client\nrequests.\n\n\n</p>\n"
         },
         {
-          "textRaw": "http.ClientResponse",
-          "name": "ClientResponse",
-          "desc": "<p>This object is created when making a request with <code>http.request()</code>. It is\npassed to the <code>&#39;response&#39;</code> event of the request object.\n\n</p>\n<p>The response implements the [Readable Stream][] interface. This is an\n[EventEmitter][] with the following events:\n\n\n</p>\n",
+          "textRaw": "http.IncomingMessage",
+          "name": "IncomingMessage",
+          "desc": "<p>An <code>IncomingMessage</code> object is created by <code>http.Server</code> or <code>http.ClientRequest</code>\nand passed as the first argument to the <code>&#39;request&#39;</code> and <code>&#39;response&#39;</code> event\nrespectively. It may be used to access response status, headers and data.\n\n</p>\n<p>It implements the [Readable Stream][] interface. <code>http.IncomingMessage</code> is an\n[EventEmitter][] with the following events:\n\n</p>\n",
           "events": [
             {
               "textRaw": "Event: 'data'",
               "type": "event",
               "name": "data",
-              "desc": "<p><code>function (chunk) { }</code>\n\n</p>\n<p>Emitted when a piece of the message body is received.\n\n</p>\n<p>Note that the <strong>data will be lost</strong> if there is no listener when a\n<code>ClientResponse</code> emits a <code>&#39;data&#39;</code> event.\n\n\n</p>\n",
+              "desc": "<p><code>function (chunk) { }</code>\n\n</p>\n<p>Emitted when a piece of the message body is received. The chunk is a string if\nan encoding has been set with <code>message.setEncoding()</code>, otherwise it&#39;s\na [Buffer][].\n\n</p>\n<p>Note that the <strong>data will be lost</strong> if there is no listener when a\n<code>IncomingMessage</code> emits a <code>&#39;data&#39;</code> event.\n\n</p>\n",
               "params": []
             },
             {
               "textRaw": "Event: 'end'",
               "type": "event",
               "name": "end",
-              "desc": "<p><code>function () { }</code>\n\n</p>\n<p>Emitted exactly once for each response. After that, no more <code>&#39;data&#39;</code> events\nwill be emitted on the response.\n\n\n</p>\n",
+              "desc": "<p><code>function () { }</code>\n\n</p>\n<p>Emitted exactly once for each response. After that, no more <code>&#39;data&#39;</code> events\nwill be emitted on the response.\n\n</p>\n",
               "params": []
             },
             {
               "textRaw": "Event: 'close'",
               "type": "event",
               "name": "close",
-              "desc": "<p><code>function () { }</code>\n\n</p>\n<p>Indicates that the underlaying connection was terminated before\n<code>response.end()</code> was called or able to flush.\n\n</p>\n<p>Just like <code>&#39;end&#39;</code>, this event occurs only once per response, and no more\n<code>&#39;data&#39;</code> events will fire afterwards. See [http.ServerResponse][]&#39;s <code>&#39;close&#39;</code>\nevent for more information.\n\n</p>\n<p>Note: <code>&#39;close&#39;</code> can fire after <code>&#39;end&#39;</code>, but not vice versa.\n\n\n</p>\n",
+              "desc": "<p><code>function () { }</code>\n\n</p>\n<p>Indicates that the underlaying connection was terminated before\n<code>response.end()</code> was called or able to flush.\n\n</p>\n<p>Just like <code>&#39;end&#39;</code>, this event occurs only once per response, and no more\n<code>&#39;data&#39;</code> events will fire afterwards. See [http.ServerResponse][]&#39;s <code>&#39;close&#39;</code>\nevent for more information.\n\n</p>\n",
               "params": []
             }
           ],
           "properties": [
             {
-              "textRaw": "response.statusCode",
-              "name": "statusCode",
-              "desc": "<p>The 3-digit HTTP response status code. E.G. <code>404</code>.\n\n</p>\n"
-            },
-            {
-              "textRaw": "response.httpVersion",
+              "textRaw": "message.httpVersion",
               "name": "httpVersion",
-              "desc": "<p>The HTTP version of the connected-to server. Probably either\n<code>&#39;1.1&#39;</code> or <code>&#39;1.0&#39;</code>.\nAlso <code>response.httpVersionMajor</code> is the first integer and\n<code>response.httpVersionMinor</code> is the second.\n\n</p>\n"
+              "desc": "<p>In case of server request, the HTTP version sent by the client. In the case of\nclient response, the HTTP version of the connected-to server.\nProbably either <code>&#39;1.1&#39;</code> or <code>&#39;1.0&#39;</code>.\n\n</p>\n<p>Also <code>response.httpVersionMajor</code> is the first integer and\n<code>response.httpVersionMinor</code> is the second.\n\n</p>\n"
             },
             {
-              "textRaw": "response.headers",
+              "textRaw": "message.headers",
               "name": "headers",
-              "desc": "<p>The response headers object.\n\n</p>\n"
+              "desc": "<p>The request/response headers object.\n\n</p>\n<p>Read only map of header names and values. Header names are lower-cased.\nExample:\n\n</p>\n<pre><code>// Prints something like:\n//\n// { &#39;user-agent&#39;: &#39;curl/7.22.0&#39;,\n//   host: &#39;127.0.0.1:8000&#39;,\n//   accept: &#39;*/*&#39; }\nconsole.log(request.headers);</code></pre>\n"
             },
             {
-              "textRaw": "response.trailers",
+              "textRaw": "message.trailers",
               "name": "trailers",
-              "desc": "<p>The response trailers object. Only populated after the &#39;end&#39; event.\n\n</p>\n"
+              "desc": "<p>The request/response trailers object. Only populated after the &#39;end&#39; event.\n\n</p>\n"
+            },
+            {
+              "textRaw": "message.method",
+              "name": "method",
+              "desc": "<p><strong>Only valid for request obtained from <code>http.Server</code>.</strong>\n\n</p>\n<p>The request method as a string. Read only. Example:\n<code>&#39;GET&#39;</code>, <code>&#39;DELETE&#39;</code>.\n\n</p>\n"
+            },
+            {
+              "textRaw": "message.url",
+              "name": "url",
+              "desc": "<p><strong>Only valid for request obtained from <code>http.Server</code>.</strong>\n\n</p>\n<p>Request URL string. This contains only the URL that is\npresent in the actual HTTP request. If the request is:\n\n</p>\n<pre><code>GET /status?name=ryan HTTP/1.1\\r\\n\nAccept: text/plain\\r\\n\n\\r\\n</code></pre>\n<p>Then <code>request.url</code> will be:\n\n</p>\n<pre><code>&#39;/status?name=ryan&#39;</code></pre>\n<p>If you would like to parse the URL into its parts, you can use\n<code>require(&#39;url&#39;).parse(request.url)</code>.  Example:\n\n</p>\n<pre><code>node&gt; require(&#39;url&#39;).parse(&#39;/status?name=ryan&#39;)\n{ href: &#39;/status?name=ryan&#39;,\n  search: &#39;?name=ryan&#39;,\n  query: &#39;name=ryan&#39;,\n  pathname: &#39;/status&#39; }</code></pre>\n<p>If you would like to extract the params from the query string,\nyou can use the <code>require(&#39;querystring&#39;).parse</code> function, or pass\n<code>true</code> as the second argument to <code>require(&#39;url&#39;).parse</code>.  Example:\n\n</p>\n<pre><code>node&gt; require(&#39;url&#39;).parse(&#39;/status?name=ryan&#39;, true)\n{ href: &#39;/status?name=ryan&#39;,\n  search: &#39;?name=ryan&#39;,\n  query: { name: &#39;ryan&#39; },\n  pathname: &#39;/status&#39; }</code></pre>\n"
+            },
+            {
+              "textRaw": "message.statusCode",
+              "name": "statusCode",
+              "desc": "<p><strong>Only valid for response obtained from <code>http.ClientRequest</code>.</strong>\n\n</p>\n<p>The 3-digit HTTP response status code. E.G. <code>404</code>.\n\n</p>\n"
+            },
+            {
+              "textRaw": "message.socket",
+              "name": "socket",
+              "desc": "<p>The <code>net.Socket</code> object associated with the connection.\n\n</p>\n<p>With HTTPS support, use request.connection.verifyPeer() and\nrequest.connection.getPeerCertificate() to obtain the client&#39;s\nauthentication details.\n\n\n</p>\n"
             }
           ],
           "methods": [
             {
-              "textRaw": "response.setEncoding([encoding])",
+              "textRaw": "message.setTimeout(msecs, callback)",
+              "type": "method",
+              "name": "setTimeout",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`msecs` {Number} ",
+                      "name": "msecs",
+                      "type": "Number"
+                    },
+                    {
+                      "textRaw": "`callback` {Function} ",
+                      "name": "callback",
+                      "type": "Function"
+                    }
+                  ]
+                },
+                {
+                  "params": [
+                    {
+                      "name": "msecs"
+                    },
+                    {
+                      "name": "callback"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Calls <code>message.connection.setTimeout(msecs, callback)</code>.\n\n</p>\n"
+            },
+            {
+              "textRaw": "message.setEncoding([encoding])",
               "type": "method",
               "name": "setEncoding",
-              "desc": "<p>Set the encoding for the response body. See [stream.setEncoding()][] for more\ninformation.\n\n</p>\n",
+              "desc": "<p>Set the encoding for data emitted by the <code>&#39;data&#39;</code> event. See [stream.setEncoding()][] for more\ninformation.\n\n</p>\n<p>Should be set before any <code>&#39;data&#39;</code> events have been emitted.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -85,10 +132,10 @@
               ]
             },
             {
-              "textRaw": "response.pause()",
+              "textRaw": "message.pause()",
               "type": "method",
               "name": "pause",
-              "desc": "<p>Pauses response from emitting events.  Useful to throttle back a download.\n\n</p>\n",
+              "desc": "<p>Pauses request/response from emitting events.  Useful to throttle back a download.\n\n</p>\n",
               "signatures": [
                 {
                   "params": []
@@ -96,10 +143,10 @@
               ]
             },
             {
-              "textRaw": "response.resume()",
+              "textRaw": "message.resume()",
               "type": "method",
               "name": "resume",
-              "desc": "<p>Resumes a paused response.\n\n</p>\n",
+              "desc": "<p>Resumes a paused request/response.\n\n</p>\n",
               "signatures": [
                 {
                   "params": []
@@ -194,7 +241,7 @@
               "textRaw": "Event: 'request'",
               "type": "event",
               "name": "request",
-              "desc": "<p><code>function (request, response) { }</code>\n\n</p>\n<p>Emitted each time there is a request. Note that there may be multiple requests\nper connection (in the case of keep-alive connections).\n <code>request</code> is an instance of <code>http.ServerRequest</code> and <code>response</code> is\n an instance of <code>http.ServerResponse</code>\n\n</p>\n",
+              "desc": "<p><code>function (request, response) { }</code>\n\n</p>\n<p>Emitted each time there is a request. Note that there may be multiple requests\nper connection (in the case of keep-alive connections).\n <code>request</code> is an instance of <code>http.IncomingMessage</code> and <code>response</code> is\n an instance of <code>http.ServerResponse</code>\n\n</p>\n",
               "params": []
             },
             {
@@ -236,7 +283,7 @@
               "textRaw": "Event: 'clientError'",
               "type": "event",
               "name": "clientError",
-              "desc": "<p><code>function (exception) { }</code>\n\n</p>\n<p>If a client connection emits an &#39;error&#39; event - it will forwarded here.\n\n</p>\n",
+              "desc": "<p><code>function (exception, socket) { }</code>\n\n</p>\n<p>If a client connection emits an &#39;error&#39; event - it will forwarded here.\n\n</p>\n<p><code>socket</code> is the <code>net.Socket</code> object that the error originated from.\n\n\n</p>\n",
               "params": []
             }
           ],
@@ -336,114 +383,51 @@
                   ]
                 }
               ]
+            },
+            {
+              "textRaw": "server.setTimeout(msecs, callback)",
+              "type": "method",
+              "name": "setTimeout",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`msecs` {Number} ",
+                      "name": "msecs",
+                      "type": "Number"
+                    },
+                    {
+                      "textRaw": "`callback` {Function} ",
+                      "name": "callback",
+                      "type": "Function"
+                    }
+                  ]
+                },
+                {
+                  "params": [
+                    {
+                      "name": "msecs"
+                    },
+                    {
+                      "name": "callback"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Sets the timeout value for sockets, and emits a <code>&#39;timeout&#39;</code> event on\nthe Server object, passing the socket as an argument, if a timeout\noccurs.\n\n</p>\n<p>If there is a <code>&#39;timeout&#39;</code> event listener on the Server object, then it\nwill be called with the timed-out socket as an argument.\n\n</p>\n<p>By default, the Server&#39;s timeout value is 2 minutes, and sockets are\ndestroyed automatically if they time out.  However, if you assign a\ncallback to the Server&#39;s <code>&#39;timeout&#39;</code> event, then you are responsible\nfor handling socket timeouts.\n\n</p>\n"
             }
           ],
           "properties": [
             {
               "textRaw": "server.maxHeadersCount",
               "name": "maxHeadersCount",
-              "desc": "<p>Limits maximum incoming headers count, equal to 1000 by default. If set to 0 -\nno limit will be applied.\n\n\n</p>\n"
-            }
-          ]
-        },
-        {
-          "textRaw": "Class: http.ServerRequest",
-          "type": "class",
-          "name": "http.ServerRequest",
-          "desc": "<p>This object is created internally by a HTTP server -- not by\nthe user -- and passed as the first argument to a <code>&#39;request&#39;</code> listener.\n\n</p>\n<p>The request implements the [Readable Stream][] interface. This is an\n[EventEmitter][] with the following events:\n\n</p>\n",
-          "events": [
-            {
-              "textRaw": "Event: 'data'",
-              "type": "event",
-              "name": "data",
-              "desc": "<p><code>function (chunk) { }</code>\n\n</p>\n<p>Emitted when a piece of the message body is received. The chunk is a string if\nan encoding has been set with <code>request.setEncoding()</code>, otherwise it&#39;s a\n[Buffer][].\n\n</p>\n<p>Note that the <strong>data will be lost</strong> if there is no listener when a\n<code>ServerRequest</code> emits a <code>&#39;data&#39;</code> event.\n\n</p>\n",
-              "params": []
+              "desc": "<p>Limits maximum incoming headers count, equal to 1000 by default. If set to 0 -\nno limit will be applied.\n\n</p>\n"
             },
             {
-              "textRaw": "Event: 'end'",
-              "type": "event",
-              "name": "end",
-              "desc": "<p><code>function () { }</code>\n\n</p>\n<p>Emitted exactly once for each request. After that, no more <code>&#39;data&#39;</code> events\nwill be emitted on the request.\n\n</p>\n",
-              "params": []
-            },
-            {
-              "textRaw": "Event: 'close'",
-              "type": "event",
-              "name": "close",
-              "desc": "<p><code>function () { }</code>\n\n</p>\n<p>Indicates that the underlaying connection was terminated before\n<code>response.end()</code> was called or able to flush.\n\n</p>\n<p>Just like <code>&#39;end&#39;</code>, this event occurs only once per request, and no more <code>&#39;data&#39;</code>\nevents will fire afterwards.\n\n</p>\n<p>Note: <code>&#39;close&#39;</code> can fire after <code>&#39;end&#39;</code>, but not vice versa.\n\n</p>\n",
-              "params": []
-            }
-          ],
-          "properties": [
-            {
-              "textRaw": "request.method",
-              "name": "method",
-              "desc": "<p>The request method as a string. Read only. Example:\n<code>&#39;GET&#39;</code>, <code>&#39;DELETE&#39;</code>.\n\n\n</p>\n"
-            },
-            {
-              "textRaw": "request.url",
-              "name": "url",
-              "desc": "<p>Request URL string. This contains only the URL that is\npresent in the actual HTTP request. If the request is:\n\n</p>\n<pre><code>GET /status?name=ryan HTTP/1.1\\r\\n\nAccept: text/plain\\r\\n\n\\r\\n</code></pre>\n<p>Then <code>request.url</code> will be:\n\n</p>\n<pre><code>&#39;/status?name=ryan&#39;</code></pre>\n<p>If you would like to parse the URL into its parts, you can use\n<code>require(&#39;url&#39;).parse(request.url)</code>.  Example:\n\n</p>\n<pre><code>node&gt; require(&#39;url&#39;).parse(&#39;/status?name=ryan&#39;)\n{ href: &#39;/status?name=ryan&#39;,\n  search: &#39;?name=ryan&#39;,\n  query: &#39;name=ryan&#39;,\n  pathname: &#39;/status&#39; }</code></pre>\n<p>If you would like to extract the params from the query string,\nyou can use the <code>require(&#39;querystring&#39;).parse</code> function, or pass\n<code>true</code> as the second argument to <code>require(&#39;url&#39;).parse</code>.  Example:\n\n</p>\n<pre><code>node&gt; require(&#39;url&#39;).parse(&#39;/status?name=ryan&#39;, true)\n{ href: &#39;/status?name=ryan&#39;,\n  search: &#39;?name=ryan&#39;,\n  query: { name: &#39;ryan&#39; },\n  pathname: &#39;/status&#39; }</code></pre>\n"
-            },
-            {
-              "textRaw": "request.headers",
-              "name": "headers",
-              "desc": "<p>Read only map of header names and values. Header names are lower-cased.\nExample:\n\n</p>\n<pre><code>// Prints something like:\n//\n// { &#39;user-agent&#39;: &#39;curl/7.22.0&#39;,\n//   host: &#39;127.0.0.1:8000&#39;,\n//   accept: &#39;*/*&#39; }\nconsole.log(request.headers);</code></pre>\n"
-            },
-            {
-              "textRaw": "request.trailers",
-              "name": "trailers",
-              "desc": "<p>Read only; HTTP trailers (if present). Only populated after the &#39;end&#39; event.\n\n</p>\n"
-            },
-            {
-              "textRaw": "request.httpVersion",
-              "name": "httpVersion",
-              "desc": "<p>The HTTP protocol version as a string. Read only. Examples:\n<code>&#39;1.1&#39;</code>, <code>&#39;1.0&#39;</code>.\nAlso <code>request.httpVersionMajor</code> is the first integer and\n<code>request.httpVersionMinor</code> is the second.\n\n\n</p>\n"
-            },
-            {
-              "textRaw": "request.connection",
-              "name": "connection",
-              "desc": "<p>The <code>net.Socket</code> object associated with the connection.\n\n\n</p>\n<p>With HTTPS support, use request.connection.verifyPeer() and\nrequest.connection.getPeerCertificate() to obtain the client&#39;s\nauthentication details.\n\n\n\n</p>\n"
-            }
-          ],
-          "methods": [
-            {
-              "textRaw": "request.setEncoding([encoding])",
-              "type": "method",
-              "name": "setEncoding",
-              "desc": "<p>Set the encoding for the request body. See [stream.setEncoding()][] for more\ninformation.\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": [
-                    {
-                      "name": "encoding",
-                      "optional": true
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "textRaw": "request.pause()",
-              "type": "method",
-              "name": "pause",
-              "desc": "<p>Pauses request from emitting events.  Useful to throttle back an upload.\n\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": []
-                }
-              ]
-            },
-            {
-              "textRaw": "request.resume()",
-              "type": "method",
-              "name": "resume",
-              "desc": "<p>Resumes a paused request.\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": []
-                }
-              ]
+              "textRaw": "`timeout` {Number} Default = 120000 (2 minutes) ",
+              "name": "timeout",
+              "desc": "<p>The number of milliseconds of inactivity before a socket is presumed\nto have timed out.\n\n</p>\n<p>Note that the socket timeout logic is set up on connection, so\nchanging this value only affects <em>new</em> connections to the server, not\nany existing connections.\n\n</p>\n<p>Set to 0 to disable any kind of automatic timeout behavior on incoming\nconnections.\n\n</p>\n",
+              "shortDesc": "Default = 120000 (2 minutes)"
             }
           ]
         },
@@ -495,6 +479,38 @@
                   ]
                 }
               ]
+            },
+            {
+              "textRaw": "response.setTimeout(msecs, callback)",
+              "type": "method",
+              "name": "setTimeout",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`msecs` {Number} ",
+                      "name": "msecs",
+                      "type": "Number"
+                    },
+                    {
+                      "textRaw": "`callback` {Function} ",
+                      "name": "callback",
+                      "type": "Function"
+                    }
+                  ]
+                },
+                {
+                  "params": [
+                    {
+                      "name": "msecs"
+                    },
+                    {
+                      "name": "callback"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Sets the Socket&#39;s timeout value to <code>msecs</code>.  If a callback is\nprovided, then it is added as a listener on the <code>&#39;timeout&#39;</code> event on\nthe response object.\n\n</p>\n<p>If no <code>&#39;timeout&#39;</code> listener is added to the request, the response, or\nthe server, then sockets are destroyed when they time out.  If you\nassign a handler on the request, the response, or the server&#39;s\n<code>&#39;timeout&#39;</code> events, then it is your responsibility to handle timed out\nsockets.\n\n</p>\n"
             },
             {
               "textRaw": "response.setHeader(name, value)",
@@ -606,6 +622,11 @@
               "desc": "<p>When using implicit headers (not calling <code>response.writeHead()</code> explicitly), this property\ncontrols the status code that will be sent to the client when the headers get\nflushed.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>response.statusCode = 404;</code></pre>\n<p>After response header was sent to the client, this property indicates the\nstatus code which was sent out.\n\n</p>\n"
             },
             {
+              "textRaw": "response.headersSent",
+              "name": "headersSent",
+              "desc": "<p>Boolean (read-only). True if headers were sent, false otherwise.\n\n</p>\n"
+            },
+            {
               "textRaw": "response.sendDate",
               "name": "sendDate",
               "desc": "<p>When true, the Date header will be automatically generated and sent in \nthe response if it is not already present in the headers. Defaults to true.\n\n</p>\n<p>This should only be disabled for testing; HTTP requires the Date header\nin responses.\n\n</p>\n"
@@ -639,13 +660,13 @@
           "textRaw": "Class: http.ClientRequest",
           "type": "class",
           "name": "http.ClientRequest",
-          "desc": "<p>This object is created internally and returned from <code>http.request()</code>.  It\nrepresents an <em>in-progress</em> request whose header has already been queued.  The\nheader is still mutable using the <code>setHeader(name, value)</code>, <code>getHeader(name)</code>,\n<code>removeHeader(name)</code> API.  The actual header will be sent along with the first\ndata chunk or when closing the connection.\n\n</p>\n<p>To get the response, add a listener for <code>&#39;response&#39;</code> to the request object.\n<code>&#39;response&#39;</code> will be emitted from the request object when the response\nheaders have been received.  The <code>&#39;response&#39;</code> event is executed with one\nargument which is an instance of <code>http.ClientResponse</code>.\n\n</p>\n<p>During the <code>&#39;response&#39;</code> event, one can add listeners to the\nresponse object; particularly to listen for the <code>&#39;data&#39;</code> event. Note that\nthe <code>&#39;response&#39;</code> event is called before any part of the response body is received,\nso there is no need to worry about racing to catch the first part of the\nbody. As long as a listener for <code>&#39;data&#39;</code> is added during the <code>&#39;response&#39;</code>\nevent, the entire body will be caught.\n\n\n</p>\n<pre><code>// Good\nrequest.on(&#39;response&#39;, function (response) {\n  response.on(&#39;data&#39;, function (chunk) {\n    console.log(&#39;BODY: &#39; + chunk);\n  });\n});\n\n// Bad - misses all or part of the body\nrequest.on(&#39;response&#39;, function (response) {\n  setTimeout(function () {\n    response.on(&#39;data&#39;, function (chunk) {\n      console.log(&#39;BODY: &#39; + chunk);\n    });\n  }, 10);\n});</code></pre>\n<p>Note: Node does not check whether Content-Length and the length of the body\nwhich has been transmitted are equal or not.\n\n</p>\n<p>The request implements the [Writable Stream][] interface. This is an\n[EventEmitter][] with the following events:\n\n</p>\n",
+          "desc": "<p>This object is created internally and returned from <code>http.request()</code>.  It\nrepresents an <em>in-progress</em> request whose header has already been queued.  The\nheader is still mutable using the <code>setHeader(name, value)</code>, <code>getHeader(name)</code>,\n<code>removeHeader(name)</code> API.  The actual header will be sent along with the first\ndata chunk or when closing the connection.\n\n</p>\n<p>To get the response, add a listener for <code>&#39;response&#39;</code> to the request object.\n<code>&#39;response&#39;</code> will be emitted from the request object when the response\nheaders have been received.  The <code>&#39;response&#39;</code> event is executed with one\nargument which is an instance of <code>http.IncomingMessage</code>.\n\n</p>\n<p>During the <code>&#39;response&#39;</code> event, one can add listeners to the\nresponse object; particularly to listen for the <code>&#39;data&#39;</code> event. Note that\nthe <code>&#39;response&#39;</code> event is called before any part of the response body is received,\nso there is no need to worry about racing to catch the first part of the\nbody. As long as a listener for <code>&#39;data&#39;</code> is added during the <code>&#39;response&#39;</code>\nevent, the entire body will be caught.\n\n\n</p>\n<pre><code>// Good\nrequest.on(&#39;response&#39;, function (response) {\n  response.on(&#39;data&#39;, function (chunk) {\n    console.log(&#39;BODY: &#39; + chunk);\n  });\n});\n\n// Bad - misses all or part of the body\nrequest.on(&#39;response&#39;, function (response) {\n  setTimeout(function () {\n    response.on(&#39;data&#39;, function (chunk) {\n      console.log(&#39;BODY: &#39; + chunk);\n    });\n  }, 10);\n});</code></pre>\n<p>Note: Node does not check whether Content-Length and the length of the body\nwhich has been transmitted are equal or not.\n\n</p>\n<p>The request implements the [Writable Stream][] interface. This is an\n[EventEmitter][] with the following events:\n\n</p>\n",
           "events": [
             {
               "textRaw": "Event 'response'",
               "type": "event",
               "name": "response",
-              "desc": "<p><code>function (response) { }</code>\n\n</p>\n<p>Emitted when a response is received to this request. This event is emitted only\nonce. The <code>response</code> argument will be an instance of <code>http.ClientResponse</code>.\n\n</p>\n<p>Options:\n\n</p>\n<ul>\n<li><code>host</code>: A domain name or IP address of the server to issue the request to.</li>\n<li><code>port</code>: Port of remote server.</li>\n<li><code>socketPath</code>: Unix Domain Socket (use one of host:port or socketPath)</li>\n</ul>\n",
+              "desc": "<p><code>function (response) { }</code>\n\n</p>\n<p>Emitted when a response is received to this request. This event is emitted only\nonce. The <code>response</code> argument will be an instance of <code>http.IncomingMessage</code>.\n\n</p>\n<p>Options:\n\n</p>\n<ul>\n<li><code>host</code>: A domain name or IP address of the server to issue the request to.</li>\n<li><code>port</code>: Port of remote server.</li>\n<li><code>socketPath</code>: Unix Domain Socket (use one of host:port or socketPath)</li>\n</ul>\n",
               "params": []
             },
             {
@@ -767,7 +788,7 @@
               "textRaw": "request.setSocketKeepAlive([enable], [initialDelay])",
               "type": "method",
               "name": "setSocketKeepAlive",
-              "desc": "<p>Once a socket is assigned to this request and is connected\n[socket.setKeepAlive()][] will be called.\n\n</p>\n",
+              "desc": "<p>Once a socket is assigned to this request and is connected\n[socket.setKeepAlive()][] will be called.\n\n\n</p>\n",
               "signatures": [
                 {
                   "params": [

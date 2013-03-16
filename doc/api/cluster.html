@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Cluster Node.js v0.8.18 Manual &amp; Documentation</title>
+  <title>Cluster Node.js v0.10.0 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/cluster.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.8.18 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.0 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -66,7 +66,7 @@
 <li><a href="#cluster_worker_process">worker.process</a></li>
 <li><a href="#cluster_worker_suicide">worker.suicide</a></li>
 <li><a href="#cluster_worker_send_message_sendhandle">worker.send(message, [sendHandle])</a></li>
-<li><a href="#cluster_worker_destroy">worker.destroy()</a></li>
+<li><a href="#cluster_worker_kill_signal_sigterm">worker.kill([signal=&#39;SIGTERM&#39;])</a></li>
 <li><a href="#cluster_worker_disconnect">worker.disconnect()</a></li>
 <li><a href="#cluster_event_message">Event: &#39;message&#39;</a></li>
 <li><a href="#cluster_event_online_1">Event: &#39;online&#39;</a></li>
@@ -83,8 +83,7 @@
 
           <div id="apicontent">
             <h1>Cluster<span><a class="mark" href="#cluster_cluster" id="cluster_cluster">#</a></span></h1>
-<pre><code>Stability: 1 - Experimental</code></pre>
-<p>A single instance of Node runs in a single thread. To take advantage of
+<pre class="api_stability_1">Stability: 1 - Experimental</pre><p>A single instance of Node runs in a single thread. To take advantage of
 multi-core systems the user will sometimes want to launch a cluster of Node
 processes to handle the load.
 
@@ -117,9 +116,11 @@ if (cluster.isMaster) {
 <p>Running node will now share port 8000 between the workers:
 
 </p>
-<pre><code>% node server.js
-Worker 2438 online
-Worker 2437 online</code></pre>
+<pre><code>% NODE_DEBUG=cluster node server.js
+23521,Master Worker 23524 online
+23521,Master Worker 23526 online
+23521,Master Worker 23523 online
+23521,Master Worker 23528 online</code></pre>
 <p>This feature was introduced recently, and may change in future versions.
 Please try it out and provide feedback.
 
@@ -191,7 +192,7 @@ the worker pool for your application&#39;s needs.
 </li>
 </div></ul>
 <p>All settings set by the <code>.setupMaster</code> is stored in this settings object.
-This object is not supposed to be change or set manually, by you.
+This object is not supposed to be changed or set manually, by you.
 
 </p>
 <h2>cluster.isMaster<span><a class="mark" href="#cluster_cluster_ismaster" id="cluster_cluster_ismaster">#</a></span></h2>
@@ -272,8 +273,9 @@ on more than one address.
 <div class="signature"><ul>
 <li><code>worker</code> <span class="type">Worker object</span></li>
 </div></ul>
-<p>When a workers IPC channel has disconnected this event is emitted. This will happen
-when the worker dies, usually after calling <code>.destroy()</code>.
+<p>When a workers IPC channel has disconnected this event is emitted.
+This will happen when the worker dies, usually after calling
+<code>.kill()</code>.
 
 </p>
 <p>When calling <code>.disconnect()</code>, there may be a delay between the
@@ -429,8 +431,9 @@ from this function is stored in process.
 <div class="signature"><ul>
 <li><span class="type">Boolean</span></li>
 </div></ul>
-<p>This property is a boolean. It is set when a worker dies after calling <code>.destroy()</code>
-or immediately after calling the <code>.disconnect()</code> method. Until then it is <code>undefined</code>.
+<p>This property is a boolean. It is set when a worker dies after calling
+<code>.kill()</code> or immediately after calling the <code>.disconnect()</code> method.
+Until then it is <code>undefined</code>.
 
 </p>
 <h3>worker.send(message, [sendHandle])<span><a class="mark" href="#cluster_worker_send_message_sendhandle" id="cluster_worker_send_message_sendhandle">#</a></span></h3>
@@ -456,7 +459,11 @@ send a message to a specific worker.  However in a worker you can also use
     process.send(msg);
   });
 }</code></pre>
-<h3>worker.destroy()<span><a class="mark" href="#cluster_worker_destroy" id="cluster_worker_destroy">#</a></span></h3>
+<h3>worker.kill([signal=&#39;SIGTERM&#39;])<span><a class="mark" href="#cluster_worker_kill_signal_sigterm" id="cluster_worker_kill_signal_sigterm">#</a></span></h3>
+<div class="signature"><ul>
+<li><code>signal</code> <span class="type">String</span> Name of the kill signal to send to the worker
+process.</li>
+</div></ul>
 <p>This function will kill the worker, and inform the master to not spawn a
 new worker.  The boolean <code>suicide</code> lets you distinguish between voluntary
 and accidental exit.
@@ -468,8 +475,12 @@ and accidental exit.
   }
 });
 
-// destroy worker
-worker.destroy();</code></pre>
+// kill worker
+worker.kill();</code></pre>
+<p>This method is aliased as <code>worker.destroy()</code> for backwards
+compatibility.
+
+</p>
 <h3>worker.disconnect()<span><a class="mark" href="#cluster_worker_disconnect" id="cluster_worker_disconnect">#</a></span></h3>
 <p>When calling this function the worker will no longer accept new connections, but
 they will be handled by any other listening worker. Existing connection will be
@@ -481,7 +492,7 @@ the worker finally die.
 </p>
 <p>Because there might be long living connections, it is useful to implement a timeout.
 This example ask the worker to disconnect and after 2 seconds it will destroy the
-server. An alternative would be to execute <code>worker.destroy()</code> after 2 seconds, but
+server. An alternative would be to execute <code>worker.kill()</code> after 2 seconds, but
 that would normally not allow the worker to do any cleanup if needed.
 
 </p>
@@ -577,7 +588,7 @@ on the specified worker.
 </p>
 <pre><code>cluster.fork().on(&#39;online&#39;, function() {
   // Worker is online
-};</code></pre>
+});</code></pre>
 <h3>Event: &#39;listening&#39;<span><a class="mark" href="#cluster_event_listening_1" id="cluster_event_listening_1">#</a></span></h3>
 <div class="signature"><ul>
 <li><code>address</code> <span class="type">Object</span></li>
@@ -588,7 +599,7 @@ on the specified worker.
 </p>
 <pre><code>cluster.fork().on(&#39;listening&#39;, function(address) {
   // Worker is listening
-};</code></pre>
+});</code></pre>
 <h3>Event: &#39;disconnect&#39;<span><a class="mark" href="#cluster_event_disconnect_1" id="cluster_event_disconnect_1">#</a></span></h3>
 <p>Same as the <code>cluster.on(&#39;disconnect&#39;)</code> event, but emits only when the state change
 on the specified worker.
@@ -596,7 +607,7 @@ on the specified worker.
 </p>
 <pre><code>cluster.fork().on(&#39;disconnect&#39;, function() {
   // Worker has disconnected
-};</code></pre>
+});</code></pre>
 <h3>Event: &#39;exit&#39;<span><a class="mark" href="#cluster_event_exit_1" id="cluster_event_exit_1">#</a></span></h3>
 <div class="signature"><ul>
 <li><code>code</code> <span class="type">Number</span> the exit code, if it exited normally.</li>
@@ -616,7 +627,7 @@ worker.on(&#39;exit&#39;, function(code, signal) {
   } else {
     console.log(&quot;worker success!&quot;);
   }
-};</code></pre>
+});</code></pre>
 
           </div>
         </div>
@@ -635,7 +646,7 @@ worker.on(&#39;exit&#39;, function(code, signal) {
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.8.18/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.0/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

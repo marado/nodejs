@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>UDP / Datagram Sockets Node.js v0.8.18 Manual &amp; Documentation</title>
+  <title>UDP / Datagram Sockets Node.js v0.10.0 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/dgram.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.8.18 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.0 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -53,7 +53,7 @@
 <li><a href="#dgram_event_close">Event: &#39;close&#39;</a></li>
 <li><a href="#dgram_event_error">Event: &#39;error&#39;</a></li>
 <li><a href="#dgram_dgram_send_buf_offset_length_port_address_callback">dgram.send(buf, offset, length, port, address, [callback])</a></li>
-<li><a href="#dgram_dgram_bind_port_address">dgram.bind(port, [address])</a></li>
+<li><a href="#dgram_dgram_bind_port_address_callback">dgram.bind(port, [address], [callback])</a></li>
 <li><a href="#dgram_dgram_close">dgram.close()</a></li>
 <li><a href="#dgram_dgram_address">dgram.address()</a></li>
 <li><a href="#dgram_dgram_setbroadcast_flag">dgram.setBroadcast(flag)</a></li>
@@ -62,6 +62,8 @@
 <li><a href="#dgram_dgram_setmulticastloopback_flag">dgram.setMulticastLoopback(flag)</a></li>
 <li><a href="#dgram_dgram_addmembership_multicastaddress_multicastinterface">dgram.addMembership(multicastAddress, [multicastInterface])</a></li>
 <li><a href="#dgram_dgram_dropmembership_multicastaddress_multicastinterface">dgram.dropMembership(multicastAddress, [multicastInterface])</a></li>
+<li><a href="#dgram_dgram_unref">dgram.unref()</a></li>
+<li><a href="#dgram_dgram_ref">dgram.ref()</a></li>
 </ul>
 </li>
 </ul>
@@ -72,12 +74,25 @@
 
           <div id="apicontent">
             <h1>UDP / Datagram Sockets<span><a class="mark" href="#dgram_udp_datagram_sockets" id="dgram_udp_datagram_sockets">#</a></span></h1>
-<pre><code>Stability: 3 - Stable</code></pre>
-<!-- name=dgram -->
+<pre class="api_stability_3">Stability: 3 - Stable</pre><!-- name=dgram -->
 
 <p>Datagram sockets are available through <code>require(&#39;dgram&#39;)</code>.
 
 </p>
+<p>Important note: the behavior of <code>dgram.Socket#bind()</code> has changed in v0.10
+and is always asynchronous now.  If you have code that looks like this:
+
+</p>
+<pre><code>var s = dgram.createSocket(&#39;udp4&#39;);
+s.bind(1234);
+s.addMembership(&#39;224.0.0.114&#39;);</code></pre>
+<p>You have to change it to this:
+
+</p>
+<pre><code>var s = dgram.createSocket(&#39;udp4&#39;);
+s.bind(1234, function() {
+  s.addMembership(&#39;224.0.0.114&#39;);
+});</code></pre>
 <h2>dgram.createSocket(type, [callback])<span><a class="mark" href="#dgram_dgram_createsocket_type_callback" id="dgram_dgram_createsocket_type_callback">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>type</code> String. Either &#39;udp4&#39; or &#39;udp6&#39;</li>
@@ -191,13 +206,18 @@ the (receiver) <code>MTU</code> won&#39;t work (the packet gets silently dropped
 informing the source that the data did not reach its intended recipient).
 
 </p>
-<h3>dgram.bind(port, [address])<span><a class="mark" href="#dgram_dgram_bind_port_address" id="dgram_dgram_bind_port_address">#</a></span></h3>
+<h3>dgram.bind(port, [address], [callback])<span><a class="mark" href="#dgram_dgram_bind_port_address_callback" id="dgram_dgram_bind_port_address_callback">#</a></span></h3>
 <div class="signature"><ul>
 <li><code>port</code> Integer</li>
 <li><code>address</code> String, Optional</li>
+<li><code>callback</code> Function, Optional</li>
 </div></ul>
-<p>For UDP sockets, listen for datagrams on a named <code>port</code> and optional <code>address</code>. If
-<code>address</code> is not specified, the OS will try to listen on all addresses.
+<p>For UDP sockets, listen for datagrams on a named <code>port</code> and optional <code>address</code>.
+If <code>address</code> is not specified, the OS will try to listen on all addresses.
+
+</p>
+<p>The <code>callback</code> argument, if provided, is added as a one-shot <code>&#39;listening&#39;</code>
+event listener.
 
 </p>
 <p>Example of a UDP server listening on port 41234:
@@ -299,6 +319,18 @@ this.
 </p>
 <p>If <code>multicastInterface</code> is not specified, the OS will try to drop membership to all valid
 interfaces.
+
+</p>
+<h3>dgram.unref()<span><a class="mark" href="#dgram_dgram_unref" id="dgram_dgram_unref">#</a></span></h3>
+<p>Calling <code>unref</code> on a socket will allow the program to exit if this is the only
+active socket in the event system. If the socket is already <code>unref</code>d calling
+<code>unref</code> again will have no effect.
+
+</p>
+<h3>dgram.ref()<span><a class="mark" href="#dgram_dgram_ref" id="dgram_dgram_ref">#</a></span></h3>
+<p>Opposite of <code>unref</code>, calling <code>ref</code> on a previously <code>unref</code>d socket will <em>not</em>
+let the program exit if it&#39;s the only socket left (the default behavior). If
+the socket is <code>ref</code>d calling <code>ref</code> again will have no effect.
 </p>
 
           </div>
@@ -318,7 +350,7 @@ interfaces.
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.8.18/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.0/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Events Node.js v0.8.18 Manual &amp; Documentation</title>
+  <title>Events Node.js v0.10.0 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/events.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.8.18 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.0 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -55,6 +55,7 @@
 <li><a href="#events_emitter_setmaxlisteners_n">emitter.setMaxListeners(n)</a></li>
 <li><a href="#events_emitter_listeners_event">emitter.listeners(event)</a></li>
 <li><a href="#events_emitter_emit_event_arg1_arg2">emitter.emit(event, [arg1], [arg2], [...])</a></li>
+<li><a href="#events_class_method_eventemitter_listenercount_emitter_event">Class Method: EventEmitter.listenerCount(emitter, event)</a></li>
 <li><a href="#events_event_newlistener">Event: &#39;newListener&#39;</a></li>
 </ul>
 </li>
@@ -66,8 +67,7 @@
 
           <div id="apicontent">
             <h1>Events<span><a class="mark" href="#events_events" id="events_events">#</a></span></h1>
-<pre><code>Stability: 4 - API Frozen</code></pre>
-<!--type=module-->
+<pre class="api_stability_4">Stability: 4 - API Frozen</pre><!--type=module-->
 
 <p>Many objects in Node emit events: a <code>net.Server</code> emits an event each time
 a peer connects to it, a <code>fs.readStream</code> emits an event when the file is
@@ -95,7 +95,7 @@ trace and exit the program.
 
 </p>
 <p>All EventEmitters emit the event <code>&#39;newListener&#39;</code> when new listeners are
-added.
+added and <code>&#39;removeListener&#39;</code> when a listener is removed.
 
 </p>
 <h3>emitter.addListener(event, listener)<span><a class="mark" href="#events_emitter_addlistener_event_listener" id="events_emitter_addlistener_event_listener">#</a></span></h3>
@@ -129,10 +129,6 @@ server.removeListener(&#39;connection&#39;, callback);</code></pre>
 <h3>emitter.removeAllListeners([event])<span><a class="mark" href="#events_emitter_removealllisteners_event" id="events_emitter_removealllisteners_event">#</a></span></h3>
 <p>Removes all listeners, or those of the specified event.
 
-</p>
-<p>Note that this will <strong>invalidate</strong> any arrays that have previously been
-returned by <code>emitter.listeners(event)</code>.
-
 
 </p>
 <h3>emitter.setMaxListeners(n)<span><a class="mark" href="#events_emitter_setmaxlisteners_n" id="events_emitter_setmaxlisteners_n">#</a></span></h3>
@@ -151,25 +147,14 @@ that to be increased. Set to zero for unlimited.
   console.log(&#39;someone connected!&#39;);
 });
 console.log(util.inspect(server.listeners(&#39;connection&#39;))); // [ [Function] ]</code></pre>
-<p>This array <strong>may</strong> be a mutable reference to the same underlying list of
-listeners that is used by the event subsystem.  However, certain
-actions (specifically, removeAllListeners) will invalidate this
-reference.
-
-</p>
-<p>If you would like to get a copy of the listeners at a specific point in
-time that is guaranteed not to change, make a copy, for example by doing
-<code>emitter.listeners(event).slice(0)</code>.
-
-</p>
-<p>In a future release of node, this behavior <strong>may</strong> change to always
-return a copy, for consistency.  In your programs, please do not rely on
-being able to modify the EventEmitter listeners using array methods.
-Always use the &#39;on&#39; method to add new listeners.
-
-</p>
 <h3>emitter.emit(event, [arg1], [arg2], [...])<span><a class="mark" href="#events_emitter_emit_event_arg1_arg2" id="events_emitter_emit_event_arg1_arg2">#</a></span></h3>
 <p>Execute each of the listeners in order with the supplied arguments.
+
+
+</p>
+<h3>Class Method: EventEmitter.listenerCount(emitter, event)<span><a class="mark" href="#events_class_method_eventemitter_listenercount_emitter_event" id="events_class_method_eventemitter_listenercount_emitter_event">#</a></span></h3>
+<p>Return the number of listeners for a given event.
+
 
 </p>
 <h3>Event: &#39;newListener&#39;<span><a class="mark" href="#events_event_newlistener" id="events_event_newlistener">#</a></span></h3>
@@ -197,7 +182,7 @@ Always use the &#39;on&#39; method to add new listeners.
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.8.18/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.0/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>
