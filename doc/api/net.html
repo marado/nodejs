@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>net Node.js v0.8.18 Manual &amp; Documentation</title>
+  <title>net Node.js v0.10.0 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/net.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.8.18 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.0 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -59,8 +59,11 @@
 <li><a href="#net_server_listen_handle_callback">server.listen(handle, [callback])</a></li>
 <li><a href="#net_server_close_callback">server.close([callback])</a></li>
 <li><a href="#net_server_address">server.address()</a></li>
+<li><a href="#net_server_unref">server.unref()</a></li>
+<li><a href="#net_server_ref">server.ref()</a></li>
 <li><a href="#net_server_maxconnections">server.maxConnections</a></li>
 <li><a href="#net_server_connections">server.connections</a></li>
+<li><a href="#net_server_getconnections_callback">server.getConnections(callback)</a></li>
 <li><a href="#net_event_listening">Event: &#39;listening&#39;</a></li>
 <li><a href="#net_event_connection">Event: &#39;connection&#39;</a></li>
 <li><a href="#net_event_close">Event: &#39;close&#39;</a></li>
@@ -82,8 +85,12 @@
 <li><a href="#net_socket_setnodelay_nodelay">socket.setNoDelay([noDelay])</a></li>
 <li><a href="#net_socket_setkeepalive_enable_initialdelay">socket.setKeepAlive([enable], [initialDelay])</a></li>
 <li><a href="#net_socket_address">socket.address()</a></li>
+<li><a href="#net_socket_unref">socket.unref()</a></li>
+<li><a href="#net_socket_ref">socket.ref()</a></li>
 <li><a href="#net_socket_remoteaddress">socket.remoteAddress</a></li>
 <li><a href="#net_socket_remoteport">socket.remotePort</a></li>
+<li><a href="#net_socket_localaddress">socket.localAddress</a></li>
+<li><a href="#net_socket_localport">socket.localPort</a></li>
 <li><a href="#net_socket_bytesread">socket.bytesRead</a></li>
 <li><a href="#net_socket_byteswritten">socket.bytesWritten</a></li>
 <li><a href="#net_event_connect">Event: &#39;connect&#39;</a></li>
@@ -106,8 +113,7 @@
 
           <div id="apicontent">
             <h1>net<span><a class="mark" href="#net_net" id="net_net">#</a></span></h1>
-<pre><code>Stability: 3 - Stable</code></pre>
-<p>The <code>net</code> module provides you with an asynchronous network wrapper. It contains
+<pre class="api_stability_3">Stability: 3 - Stable</pre><p>The <code>net</code> module provides you with an asynchronous network wrapper. It contains
 methods for creating both servers and clients (called streams). You can include
 this module with <code>require(&#39;net&#39;);</code>
 
@@ -331,6 +337,18 @@ server.listen(function() {
 <p>Don&#39;t call <code>server.address()</code> until the <code>&#39;listening&#39;</code> event has been emitted.
 
 </p>
+<h3>server.unref()<span><a class="mark" href="#net_server_unref" id="net_server_unref">#</a></span></h3>
+<p>Calling <code>unref</code> on a server will allow the program to exit if this is the only
+active server in the event system. If the server is already <code>unref</code>d calling
+<code>unref</code> again will have no effect.
+
+</p>
+<h3>server.ref()<span><a class="mark" href="#net_server_ref" id="net_server_ref">#</a></span></h3>
+<p>Opposite of <code>unref</code>, calling <code>ref</code> on a previously <code>unref</code>d server will <em>not</em>
+let the program exit if it&#39;s the only server left (the default behavior). If
+the server is <code>ref</code>d calling <code>ref</code> again will have no effect.
+
+</p>
 <h3>server.maxConnections<span><a class="mark" href="#net_server_maxconnections" id="net_server_maxconnections">#</a></span></h3>
 <p>Set this property to reject connections when the server&#39;s connection count gets
 high.
@@ -341,13 +359,24 @@ with <code>child_process.fork()</code>.
 
 </p>
 <h3>server.connections<span><a class="mark" href="#net_server_connections" id="net_server_connections">#</a></span></h3>
-<p>The number of concurrent connections on the server.
+<p>This function is <strong>deprecated</strong>; please use [server.getConnections()][] instead.
+The number of concurrent connections on the server.
 
 </p>
-<p>This becomes <code>null</code> when sending a socket to a child with <code>child_process.fork()</code>.
+<p>This becomes <code>null</code> when sending a socket to a child with
+<code>child_process.fork()</code>. To poll forks and get current number of active
+connections use asynchronous <code>server.getConnections</code> instead.
 
 </p>
 <p><code>net.Server</code> is an <a href="events.html#events_class_events_eventemitter">EventEmitter</a> with the following events:
+
+</p>
+<h3>server.getConnections(callback)<span><a class="mark" href="#net_server_getconnections_callback" id="net_server_getconnections_callback">#</a></span></h3>
+<p>Asynchronously get the number of concurrent connections on the server. Works
+when sockets were sent to forks.
+
+</p>
+<p>Callback should take two arguments <code>err</code> and <code>count</code>.
 
 </p>
 <h3>Event: &#39;listening&#39;<span><a class="mark" href="#net_event_listening" id="net_event_listening">#</a></span></h3>
@@ -407,8 +436,7 @@ opened as a unix socket to that path.
 
 </p>
 <p>Normally this method is not needed, as <code>net.createConnection</code> opens the
-socket. Use this only if you are implementing a custom Socket or if a
-Socket is closed and you want to reuse it to connect to another server.
+socket. Use this only if you are implementing a custom Socket.
 
 </p>
 <p>This function is asynchronous. When the <a href="#net_event_connect">&#39;connect&#39;</a> event is emitted the
@@ -527,6 +555,18 @@ three properties, e.g.
 <code>{ port: 12346, family: &#39;IPv4&#39;, address: &#39;127.0.0.1&#39; }</code>
 
 </p>
+<h3>socket.unref()<span><a class="mark" href="#net_socket_unref" id="net_socket_unref">#</a></span></h3>
+<p>Calling <code>unref</code> on a socket will allow the program to exit if this is the only
+active socket in the event system. If the socket is already <code>unref</code>d calling
+<code>unref</code> again will have no effect.
+
+</p>
+<h3>socket.ref()<span><a class="mark" href="#net_socket_ref" id="net_socket_ref">#</a></span></h3>
+<p>Opposite of <code>unref</code>, calling <code>ref</code> on a previously <code>unref</code>d socket will <em>not</em>
+let the program exit if it&#39;s the only socket left (the default behavior). If
+the socket is <code>ref</code>d calling <code>ref</code> again will have no effect.
+
+</p>
 <h3>socket.remoteAddress<span><a class="mark" href="#net_socket_remoteaddress" id="net_socket_remoteaddress">#</a></span></h3>
 <p>The string representation of the remote IP address. For example,
 <code>&#39;74.125.127.100&#39;</code> or <code>&#39;2001:4860:a005::68&#39;</code>.
@@ -534,6 +574,17 @@ three properties, e.g.
 </p>
 <h3>socket.remotePort<span><a class="mark" href="#net_socket_remoteport" id="net_socket_remoteport">#</a></span></h3>
 <p>The numeric representation of the remote port. For example,
+<code>80</code> or <code>21</code>.
+
+</p>
+<h3>socket.localAddress<span><a class="mark" href="#net_socket_localaddress" id="net_socket_localaddress">#</a></span></h3>
+<p>The string representation of the local IP address the remote client is
+connecting on. For example, if you are listening on <code>&#39;0.0.0.0&#39;</code> and the
+client connects on <code>&#39;192.168.1.1&#39;</code>, the value would be <code>&#39;192.168.1.1&#39;</code>.
+
+</p>
+<h3>socket.localPort<span><a class="mark" href="#net_socket_localport" id="net_socket_localport">#</a></span></h3>
+<p>The numeric representation of the local port. For example,
 <code>80</code> or <code>21</code>.
 
 </p>
@@ -644,7 +695,7 @@ returns 4 for IP version 4 addresses, and returns 6 for IP version 6 addresses.
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.8.18/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.0/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

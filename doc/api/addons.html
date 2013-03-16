@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Addons Node.js v0.8.18 Manual &amp; Documentation</title>
+  <title>Addons Node.js v0.10.0 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/addons.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.8.18 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.0 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -73,13 +73,15 @@ knowledge of several libraries:
 <ul>
 <li><p>V8 JavaScript, a C++ library. Used for interfacing with JavaScript:
 creating objects, calling functions, etc.  Documented mostly in the
-<code>v8.h</code> header file (<code>deps/v8/include/v8.h</code> in the Node source tree),
-which is also available <a href="http://izs.me/v8-docs/main.html">online</a>.</p>
+<code>v8.h</code> header file (<code>deps/v8/include/v8.h</code> in the Node source
+tree), which is also available
+<a href="http://izs.me/v8-docs/main.html">online</a>.</p>
 </li>
-<li><p><a href="https://github.com/joyent/libuv">libuv</a>, C event loop library. Anytime one
-needs to wait for a file descriptor to become readable, wait for a timer, or
-wait for a signal to received one will need to interface with libuv. That is,
-if you perform any I/O, libuv will need to be used.</p>
+<li><p><a href="https://github.com/joyent/libuv">libuv</a>, C event loop library.
+Anytime one needs to wait for a file descriptor to become readable,
+wait for a timer, or wait for a signal to received one will need to
+interface with libuv. That is, if you perform any I/O, libuv will
+need to be used.</p>
 </li>
 <li><p>Internal Node libraries. Most importantly is the <code>node::ObjectWrap</code>
 class which you will likely want to derive from.</p>
@@ -87,10 +89,14 @@ class which you will likely want to derive from.</p>
 <li><p>Others. Look in <code>deps/</code> for what else is available.</p>
 </li>
 </ul>
-<p>Node statically compiles all its dependencies into the executable. When
-compiling your module, you don&#39;t need to worry about linking to any of these
-libraries.
+<p>Node statically compiles all its dependencies into the executable.
+When compiling your module, you don&#39;t need to worry about linking to
+any of these libraries.
 
+</p>
+<p>All of the following examples are available for
+<a href="https://github.com/rvagg/node-addon-examples">download</a> and may be
+used as a starting-point for your own Addon.
 
 </p>
 <h2>Hello world<span><a class="mark" href="#addons_hello_world" id="addons_hello_world">#</a></span></h2>
@@ -98,7 +104,7 @@ libraries.
 the following JavaScript code:
 
 </p>
-<pre><code>exports.hello = function() { return &#39;world&#39;; };</code></pre>
+<pre><code>module.exports.hello = function() { return &#39;world&#39;; };</code></pre>
 <p>First we create a file <code>hello.cc</code>:
 
 </p>
@@ -112,15 +118,16 @@ Handle&lt;Value&gt; Method(const Arguments&amp; args) {
   return scope.Close(String::New(&quot;world&quot;));
 }
 
-void init(Handle&lt;Object&gt; target) {
-  target-&gt;Set(String::NewSymbol(&quot;hello&quot;),
+void init(Handle&lt;Object&gt; exports) {
+  exports-&gt;Set(String::NewSymbol(&quot;hello&quot;),
       FunctionTemplate::New(Method)-&gt;GetFunction());
 }
+
 NODE_MODULE(hello, init)</code></pre>
 <p>Note that all Node addons must export an initialization function:
 
 </p>
-<pre><code>void Initialize (Handle&lt;Object&gt; target);
+<pre><code>void Initialize (Handle&lt;Object&gt; exports);
 NODE_MODULE(module_name, Initialize)</code></pre>
 <p>There is no semi-colon after <code>NODE_MODULE</code> as it&#39;s not a function (see <code>node.h</code>).
 
@@ -228,8 +235,8 @@ Handle&lt;Value&gt; Add(const Arguments&amp; args) {
   return scope.Close(num);
 }
 
-void Init(Handle&lt;Object&gt; target) {
-  target-&gt;Set(String::NewSymbol(&quot;add&quot;),
+void Init(Handle&lt;Object&gt; exports) {
+  exports-&gt;Set(String::NewSymbol(&quot;add&quot;),
       FunctionTemplate::New(Add)-&gt;GetFunction());
 }
 
@@ -261,18 +268,24 @@ Handle&lt;Value&gt; RunCallback(const Arguments&amp; args) {
   return scope.Close(Undefined());
 }
 
-void Init(Handle&lt;Object&gt; target) {
-  target-&gt;Set(String::NewSymbol(&quot;runCallback&quot;),
+void Init(Handle&lt;Object&gt; exports, Handle&lt;Object&gt; module) {
+  module-&gt;Set(String::NewSymbol(&quot;exports&quot;),
       FunctionTemplate::New(RunCallback)-&gt;GetFunction());
 }
 
 NODE_MODULE(addon, Init)</code></pre>
+<p>Note that this example uses a two-argument form of <code>Init()</code> that receives
+the full <code>module</code> object as the second argument. This allows the addon
+to completely overwrite <code>exports</code> with a single function instead of
+adding the function as a property of <code>exports</code>.
+
+</p>
 <p>To test it run the following JavaScript snippet:
 
 </p>
 <pre><code>var addon = require(&#39;./build/Release/addon&#39;);
 
-addon.runCallback(function(msg){
+addon(function(msg){
   console.log(msg); // &#39;hello world&#39;
 });</code></pre>
 <h3>Object factory<span><a class="mark" href="#addons_object_factory" id="addons_object_factory">#</a></span></h3>
@@ -295,8 +308,8 @@ Handle&lt;Value&gt; CreateObject(const Arguments&amp; args) {
   return scope.Close(obj);
 }
 
-void Init(Handle&lt;Object&gt; target) {
-  target-&gt;Set(String::NewSymbol(&quot;createObject&quot;),
+void Init(Handle&lt;Object&gt; exports, Handle&lt;Object&gt; module) {
+  module-&gt;Set(String::NewSymbol(&quot;exports&quot;),
       FunctionTemplate::New(CreateObject)-&gt;GetFunction());
 }
 
@@ -306,8 +319,8 @@ NODE_MODULE(addon, Init)</code></pre>
 </p>
 <pre><code>var addon = require(&#39;./build/Release/addon&#39;);
 
-var obj1 = addon.createObject(&#39;hello&#39;);
-var obj2 = addon.createObject(&#39;world&#39;);
+var obj1 = addon(&#39;hello&#39;);
+var obj2 = addon(&#39;world&#39;);
 console.log(obj1.msg+&#39; &#39;+obj2.msg); // &#39;hello world&#39;</code></pre>
 <h3>Function factory<span><a class="mark" href="#addons_function_factory" id="addons_function_factory">#</a></span></h3>
 <p>This pattern illustrates how to create and return a JavaScript function that
@@ -334,8 +347,8 @@ Handle&lt;Value&gt; CreateFunction(const Arguments&amp; args) {
   return scope.Close(fn);
 }
 
-void Init(Handle&lt;Object&gt; target) {
-  target-&gt;Set(String::NewSymbol(&quot;createFunction&quot;),
+void Init(Handle&lt;Object&gt; exports, Handle&lt;Object&gt; module) {
+  module-&gt;Set(String::NewSymbol(&quot;exports&quot;),
       FunctionTemplate::New(CreateFunction)-&gt;GetFunction());
 }
 
@@ -345,7 +358,7 @@ NODE_MODULE(addon, Init)</code></pre>
 </p>
 <pre><code>var addon = require(&#39;./build/Release/addon&#39;);
 
-var fn = addon.createFunction();
+var fn = addon();
 console.log(fn()); // &#39;hello world&#39;</code></pre>
 <h3>Wrapping C++ objects<span><a class="mark" href="#addons_wrapping_c_objects" id="addons_wrapping_c_objects">#</a></span></h3>
 <p>Here we will create a wrapper for a C++ object/class <code>MyObject</code> that can be
@@ -359,8 +372,8 @@ module <code>addon.cc</code>:
 
 using namespace v8;
 
-void InitAll(Handle&lt;Object&gt; target) {
-  MyObject::Init(target);
+void InitAll(Handle&lt;Object&gt; exports) {
+  MyObject::Init(exports);
 }
 
 NODE_MODULE(addon, InitAll)</code></pre>
@@ -374,7 +387,7 @@ NODE_MODULE(addon, InitAll)</code></pre>
 
 class MyObject : public node::ObjectWrap {
  public:
-  static void Init(v8::Handle&lt;v8::Object&gt; target);
+  static void Init(v8::Handle&lt;v8::Object&gt; exports);
 
  private:
   MyObject();
@@ -400,7 +413,7 @@ using namespace v8;
 MyObject::MyObject() {};
 MyObject::~MyObject() {};
 
-void MyObject::Init(Handle&lt;Object&gt; target) {
+void MyObject::Init(Handle&lt;Object&gt; exports) {
   // Prepare constructor template
   Local&lt;FunctionTemplate&gt; tpl = FunctionTemplate::New(New);
   tpl-&gt;SetClassName(String::NewSymbol(&quot;MyObject&quot;));
@@ -410,7 +423,7 @@ void MyObject::Init(Handle&lt;Object&gt; target) {
       FunctionTemplate::New(PlusOne)-&gt;GetFunction());
 
   Persistent&lt;Function&gt; constructor = Persistent&lt;Function&gt;::New(tpl-&gt;GetFunction());
-  target-&gt;Set(String::NewSymbol(&quot;MyObject&quot;), constructor);
+  exports-&gt;Set(String::NewSymbol(&quot;MyObject&quot;), constructor);
 }
 
 Handle&lt;Value&gt; MyObject::New(const Arguments&amp; args) {
@@ -462,10 +475,10 @@ Handle&lt;Value&gt; CreateObject(const Arguments&amp; args) {
   return scope.Close(MyObject::NewInstance(args));
 }
 
-void InitAll(Handle&lt;Object&gt; target) {
+void InitAll(Handle&lt;Object&gt; exports, Handle&lt;Object&gt; module) {
   MyObject::Init();
 
-  target-&gt;Set(String::NewSymbol(&quot;createObject&quot;),
+  module-&gt;Set(String::NewSymbol(&quot;exports&quot;),
       FunctionTemplate::New(CreateObject)-&gt;GetFunction());
 }
 
@@ -553,14 +566,14 @@ Handle&lt;Value&gt; MyObject::PlusOne(const Arguments&amp; args) {
 <p>Test it with:
 
 </p>
-<pre><code>var addon = require(&#39;./build/Release/addon&#39;);
+<pre><code>var createObject = require(&#39;./build/Release/addon&#39;);
 
-var obj = addon.createObject(10);
+var obj = createObject(10);
 console.log( obj.plusOne() ); // 11
 console.log( obj.plusOne() ); // 12
 console.log( obj.plusOne() ); // 13
 
-var obj2 = addon.createObject(20);
+var obj2 = createObject(20);
 console.log( obj2.plusOne() ); // 21
 console.log( obj2.plusOne() ); // 22
 console.log( obj2.plusOne() ); // 23</code></pre>
@@ -594,13 +607,13 @@ Handle&lt;Value&gt; Add(const Arguments&amp; args) {
   return scope.Close(Number::New(sum));
 }
 
-void InitAll(Handle&lt;Object&gt; target) {
+void InitAll(Handle&lt;Object&gt; exports) {
   MyObject::Init();
 
-  target-&gt;Set(String::NewSymbol(&quot;createObject&quot;),
+  exports-&gt;Set(String::NewSymbol(&quot;createObject&quot;),
       FunctionTemplate::New(CreateObject)-&gt;GetFunction());
 
-  target-&gt;Set(String::NewSymbol(&quot;add&quot;),
+  exports-&gt;Set(String::NewSymbol(&quot;add&quot;),
       FunctionTemplate::New(Add)-&gt;GetFunction());
 }
 
@@ -701,7 +714,7 @@ console.log(result); // 30</code></pre>
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.8.18/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.0/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

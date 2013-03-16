@@ -346,6 +346,43 @@
                   "params": []
                 }
               ]
+            },
+            {
+              "textRaw": "server.unref()",
+              "type": "method",
+              "name": "unref",
+              "desc": "<p>Calling <code>unref</code> on a server will allow the program to exit if this is the only\nactive server in the event system. If the server is already <code>unref</code>d calling\n<code>unref</code> again will have no effect.\n\n</p>\n",
+              "signatures": [
+                {
+                  "params": []
+                }
+              ]
+            },
+            {
+              "textRaw": "server.ref()",
+              "type": "method",
+              "name": "ref",
+              "desc": "<p>Opposite of <code>unref</code>, calling <code>ref</code> on a previously <code>unref</code>d server will <em>not</em>\nlet the program exit if it&#39;s the only server left (the default behavior). If\nthe server is <code>ref</code>d calling <code>ref</code> again will have no effect.\n\n</p>\n",
+              "signatures": [
+                {
+                  "params": []
+                }
+              ]
+            },
+            {
+              "textRaw": "server.getConnections(callback)",
+              "type": "method",
+              "name": "getConnections",
+              "desc": "<p>Asynchronously get the number of concurrent connections on the server. Works\nwhen sockets were sent to forks.\n\n</p>\n<p>Callback should take two arguments <code>err</code> and <code>count</code>.\n\n</p>\n",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "name": "callback"
+                    }
+                  ]
+                }
+              ]
             }
           ],
           "properties": [
@@ -357,7 +394,7 @@
             {
               "textRaw": "server.connections",
               "name": "connections",
-              "desc": "<p>The number of concurrent connections on the server.\n\n</p>\n<p>This becomes <code>null</code> when sending a socket to a child with <code>child_process.fork()</code>.\n\n</p>\n<p><code>net.Server</code> is an [EventEmitter][] with the following events:\n\n</p>\n"
+              "desc": "<p>This function is <strong>deprecated</strong>; please use [server.getConnections()][] instead.\nThe number of concurrent connections on the server.\n\n</p>\n<p>This becomes <code>null</code> when sending a socket to a child with\n<code>child_process.fork()</code>. To poll forks and get current number of active\nconnections use asynchronous <code>server.getConnections</code> instead.\n\n</p>\n<p><code>net.Server</code> is an [EventEmitter][] with the following events:\n\n</p>\n"
             }
           ],
           "events": [
@@ -417,7 +454,7 @@
               "textRaw": "socket.connect(port, [host], [connectListener])",
               "type": "method",
               "name": "connect",
-              "desc": "<p>Opens the connection for a given socket. If <code>port</code> and <code>host</code> are given,\nthen the socket will be opened as a TCP socket, if <code>host</code> is omitted,\n<code>localhost</code> will be assumed. If a <code>path</code> is given, the socket will be\nopened as a unix socket to that path.\n\n</p>\n<p>Normally this method is not needed, as <code>net.createConnection</code> opens the\nsocket. Use this only if you are implementing a custom Socket or if a\nSocket is closed and you want to reuse it to connect to another server.\n\n</p>\n<p>This function is asynchronous. When the [&#39;connect&#39;][] event is emitted the\nsocket is established. If there is a problem connecting, the <code>&#39;connect&#39;</code> event\nwill not be emitted, the <code>&#39;error&#39;</code> event will be emitted with the exception.\n\n</p>\n<p>The <code>connectListener</code> parameter will be added as an listener for the\n[&#39;connect&#39;][] event.\n\n\n</p>\n",
+              "desc": "<p>Opens the connection for a given socket. If <code>port</code> and <code>host</code> are given,\nthen the socket will be opened as a TCP socket, if <code>host</code> is omitted,\n<code>localhost</code> will be assumed. If a <code>path</code> is given, the socket will be\nopened as a unix socket to that path.\n\n</p>\n<p>Normally this method is not needed, as <code>net.createConnection</code> opens the\nsocket. Use this only if you are implementing a custom Socket.\n\n</p>\n<p>This function is asynchronous. When the [&#39;connect&#39;][] event is emitted the\nsocket is established. If there is a problem connecting, the <code>&#39;connect&#39;</code> event\nwill not be emitted, the <code>&#39;error&#39;</code> event will be emitted with the exception.\n\n</p>\n<p>The <code>connectListener</code> parameter will be added as an listener for the\n[&#39;connect&#39;][] event.\n\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -451,7 +488,7 @@
               "textRaw": "socket.connect(path, [connectListener])",
               "type": "method",
               "name": "connect",
-              "desc": "<p>Opens the connection for a given socket. If <code>port</code> and <code>host</code> are given,\nthen the socket will be opened as a TCP socket, if <code>host</code> is omitted,\n<code>localhost</code> will be assumed. If a <code>path</code> is given, the socket will be\nopened as a unix socket to that path.\n\n</p>\n<p>Normally this method is not needed, as <code>net.createConnection</code> opens the\nsocket. Use this only if you are implementing a custom Socket or if a\nSocket is closed and you want to reuse it to connect to another server.\n\n</p>\n<p>This function is asynchronous. When the [&#39;connect&#39;][] event is emitted the\nsocket is established. If there is a problem connecting, the <code>&#39;connect&#39;</code> event\nwill not be emitted, the <code>&#39;error&#39;</code> event will be emitted with the exception.\n\n</p>\n<p>The <code>connectListener</code> parameter will be added as an listener for the\n[&#39;connect&#39;][] event.\n\n\n</p>\n",
+              "desc": "<p>Opens the connection for a given socket. If <code>port</code> and <code>host</code> are given,\nthen the socket will be opened as a TCP socket, if <code>host</code> is omitted,\n<code>localhost</code> will be assumed. If a <code>path</code> is given, the socket will be\nopened as a unix socket to that path.\n\n</p>\n<p>Normally this method is not needed, as <code>net.createConnection</code> opens the\nsocket. Use this only if you are implementing a custom Socket.\n\n</p>\n<p>This function is asynchronous. When the [&#39;connect&#39;][] event is emitted the\nsocket is established. If there is a problem connecting, the <code>&#39;connect&#39;</code> event\nwill not be emitted, the <code>&#39;error&#39;</code> event will be emitted with the exception.\n\n</p>\n<p>The <code>connectListener</code> parameter will be added as an listener for the\n[&#39;connect&#39;][] event.\n\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -623,6 +660,28 @@
                   "params": []
                 }
               ]
+            },
+            {
+              "textRaw": "socket.unref()",
+              "type": "method",
+              "name": "unref",
+              "desc": "<p>Calling <code>unref</code> on a socket will allow the program to exit if this is the only\nactive socket in the event system. If the socket is already <code>unref</code>d calling\n<code>unref</code> again will have no effect.\n\n</p>\n",
+              "signatures": [
+                {
+                  "params": []
+                }
+              ]
+            },
+            {
+              "textRaw": "socket.ref()",
+              "type": "method",
+              "name": "ref",
+              "desc": "<p>Opposite of <code>unref</code>, calling <code>ref</code> on a previously <code>unref</code>d socket will <em>not</em>\nlet the program exit if it&#39;s the only socket left (the default behavior). If\nthe socket is <code>ref</code>d calling <code>ref</code> again will have no effect.\n\n</p>\n",
+              "signatures": [
+                {
+                  "params": []
+                }
+              ]
             }
           ],
           "properties": [
@@ -640,6 +699,16 @@
               "textRaw": "socket.remotePort",
               "name": "remotePort",
               "desc": "<p>The numeric representation of the remote port. For example,\n<code>80</code> or <code>21</code>.\n\n</p>\n"
+            },
+            {
+              "textRaw": "socket.localAddress",
+              "name": "localAddress",
+              "desc": "<p>The string representation of the local IP address the remote client is\nconnecting on. For example, if you are listening on <code>&#39;0.0.0.0&#39;</code> and the\nclient connects on <code>&#39;192.168.1.1&#39;</code>, the value would be <code>&#39;192.168.1.1&#39;</code>.\n\n</p>\n"
+            },
+            {
+              "textRaw": "socket.localPort",
+              "name": "localPort",
+              "desc": "<p>The numeric representation of the local port. For example,\n<code>80</code> or <code>21</code>.\n\n</p>\n"
             },
             {
               "textRaw": "socket.bytesRead",

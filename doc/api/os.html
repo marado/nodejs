@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>os Node.js v0.8.18 Manual &amp; Documentation</title>
+  <title>os Node.js v0.10.0 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/os.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.8.18 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.0 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -46,7 +46,8 @@
             <h2>Table of Contents</h2>
             <ul>
 <li><a href="#os_os">os</a><ul>
-<li><a href="#os_os_tmpdir">os.tmpDir()</a></li>
+<li><a href="#os_os_tmpdir">os.tmpdir()</a></li>
+<li><a href="#os_os_endianness">os.endianness()</a></li>
 <li><a href="#os_os_hostname">os.hostname()</a></li>
 <li><a href="#os_os_type">os.type()</a></li>
 <li><a href="#os_os_platform">os.platform()</a></li>
@@ -67,15 +68,18 @@
 
           <div id="apicontent">
             <h1>os<span><a class="mark" href="#os_os" id="os_os">#</a></span></h1>
-<pre><code>Stability: 4 - API Frozen</code></pre>
-<p>Provides a few basic operating-system related utility functions.
+<pre class="api_stability_4">Stability: 4 - API Frozen</pre><p>Provides a few basic operating-system related utility functions.
 
 </p>
 <p>Use <code>require(&#39;os&#39;)</code> to access this module.
 
 </p>
-<h2>os.tmpDir()<span><a class="mark" href="#os_os_tmpdir" id="os_os_tmpdir">#</a></span></h2>
+<h2>os.tmpdir()<span><a class="mark" href="#os_os_tmpdir" id="os_os_tmpdir">#</a></span></h2>
 <p>Returns the operating system&#39;s default directory for temp files.
+
+</p>
+<h2>os.endianness()<span><a class="mark" href="#os_os_endianness" id="os_os_endianness">#</a></span></h2>
+<p>Returns the endianness of the CPU. Possible values are <code>&quot;BE&quot;</code> or <code>&quot;LE&quot;</code>.
 
 </p>
 <h2>os.hostname()<span><a class="mark" href="#os_os_hostname" id="os_os_hostname">#</a></span></h2>
@@ -115,7 +119,9 @@
 
 </p>
 <h2>os.cpus()<span><a class="mark" href="#os_os_cpus" id="os_os_cpus">#</a></span></h2>
-<p>Returns an array of objects containing information about each CPU/core installed: model, speed (in MHz), and times (an object containing the number of CPU ticks spent in: user, nice, sys, idle, and irq).
+<p>Returns an array of objects containing information about each CPU/core
+installed: model, speed (in MHz), and times (an object containing the number of
+milliseconds the CPU/core spent in: user, nice, sys, idle, and irq).
 
 </p>
 <p>Example inspection of os.cpus:
@@ -221,7 +227,7 @@
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.8.18/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.0/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

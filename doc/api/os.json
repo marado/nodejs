@@ -9,10 +9,21 @@
       "desc": "<p>Provides a few basic operating-system related utility functions.\n\n</p>\n<p>Use <code>require(&#39;os&#39;)</code> to access this module.\n\n</p>\n",
       "methods": [
         {
-          "textRaw": "os.tmpDir()",
+          "textRaw": "os.tmpdir()",
           "type": "method",
-          "name": "tmpDir",
+          "name": "tmpdir",
           "desc": "<p>Returns the operating system&#39;s default directory for temp files.\n\n</p>\n",
+          "signatures": [
+            {
+              "params": []
+            }
+          ]
+        },
+        {
+          "textRaw": "os.endianness()",
+          "type": "method",
+          "name": "endianness",
+          "desc": "<p>Returns the endianness of the CPU. Possible values are <code>&quot;BE&quot;</code> or <code>&quot;LE&quot;</code>.\n\n</p>\n",
           "signatures": [
             {
               "params": []
@@ -122,7 +133,7 @@
           "textRaw": "os.cpus()",
           "type": "method",
           "name": "cpus",
-          "desc": "<p>Returns an array of objects containing information about each CPU/core installed: model, speed (in MHz), and times (an object containing the number of CPU ticks spent in: user, nice, sys, idle, and irq).\n\n</p>\n<p>Example inspection of os.cpus:\n\n</p>\n<pre><code>[ { model: &#39;Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz&#39;,\n    speed: 2926,\n    times:\n     { user: 252020,\n       nice: 0,\n       sys: 30340,\n       idle: 1070356870,\n       irq: 0 } },\n  { model: &#39;Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz&#39;,\n    speed: 2926,\n    times:\n     { user: 306960,\n       nice: 0,\n       sys: 26980,\n       idle: 1071569080,\n       irq: 0 } },\n  { model: &#39;Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz&#39;,\n    speed: 2926,\n    times:\n     { user: 248450,\n       nice: 0,\n       sys: 21750,\n       idle: 1070919370,\n       irq: 0 } },\n  { model: &#39;Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz&#39;,\n    speed: 2926,\n    times:\n     { user: 256880,\n       nice: 0,\n       sys: 19430,\n       idle: 1070905480,\n       irq: 20 } },\n  { model: &#39;Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz&#39;,\n    speed: 2926,\n    times:\n     { user: 511580,\n       nice: 20,\n       sys: 40900,\n       idle: 1070842510,\n       irq: 0 } },\n  { model: &#39;Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz&#39;,\n    speed: 2926,\n    times:\n     { user: 291660,\n       nice: 0,\n       sys: 34360,\n       idle: 1070888000,\n       irq: 10 } },\n  { model: &#39;Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz&#39;,\n    speed: 2926,\n    times:\n     { user: 308260,\n       nice: 0,\n       sys: 55410,\n       idle: 1071129970,\n       irq: 880 } },\n  { model: &#39;Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz&#39;,\n    speed: 2926,\n    times:\n     { user: 266450,\n       nice: 1480,\n       sys: 34920,\n       idle: 1072572010,\n       irq: 30 } } ]</code></pre>\n",
+          "desc": "<p>Returns an array of objects containing information about each CPU/core\ninstalled: model, speed (in MHz), and times (an object containing the number of\nmilliseconds the CPU/core spent in: user, nice, sys, idle, and irq).\n\n</p>\n<p>Example inspection of os.cpus:\n\n</p>\n<pre><code>[ { model: &#39;Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz&#39;,\n    speed: 2926,\n    times:\n     { user: 252020,\n       nice: 0,\n       sys: 30340,\n       idle: 1070356870,\n       irq: 0 } },\n  { model: &#39;Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz&#39;,\n    speed: 2926,\n    times:\n     { user: 306960,\n       nice: 0,\n       sys: 26980,\n       idle: 1071569080,\n       irq: 0 } },\n  { model: &#39;Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz&#39;,\n    speed: 2926,\n    times:\n     { user: 248450,\n       nice: 0,\n       sys: 21750,\n       idle: 1070919370,\n       irq: 0 } },\n  { model: &#39;Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz&#39;,\n    speed: 2926,\n    times:\n     { user: 256880,\n       nice: 0,\n       sys: 19430,\n       idle: 1070905480,\n       irq: 20 } },\n  { model: &#39;Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz&#39;,\n    speed: 2926,\n    times:\n     { user: 511580,\n       nice: 20,\n       sys: 40900,\n       idle: 1070842510,\n       irq: 0 } },\n  { model: &#39;Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz&#39;,\n    speed: 2926,\n    times:\n     { user: 291660,\n       nice: 0,\n       sys: 34360,\n       idle: 1070888000,\n       irq: 10 } },\n  { model: &#39;Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz&#39;,\n    speed: 2926,\n    times:\n     { user: 308260,\n       nice: 0,\n       sys: 55410,\n       idle: 1071129970,\n       irq: 880 } },\n  { model: &#39;Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz&#39;,\n    speed: 2926,\n    times:\n     { user: 266450,\n       nice: 1480,\n       sys: 34920,\n       idle: 1072572010,\n       irq: 30 } } ]</code></pre>\n",
           "signatures": [
             {
               "params": []

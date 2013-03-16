@@ -50,7 +50,7 @@
           "textRaw": "url.resolve(from, to)",
           "type": "method",
           "name": "resolve",
-          "desc": "<p>Take a base URL, and a href URL, and resolve them as a browser would for\nan anchor tag.\n</p>\n",
+          "desc": "<p>Take a base URL, and a href URL, and resolve them as a browser would for\nan anchor tag.  Examples:\n\n</p>\n<pre><code>url.resolve(&#39;/one/two/three&#39;, &#39;four&#39;)         // &#39;/one/two/four&#39;\nurl.resolve(&#39;http://example.com/&#39;, &#39;/one&#39;)    // &#39;http://example.com/one&#39;\nurl.resolve(&#39;http://example.com/one&#39;, &#39;/two&#39;) // &#39;http://example.com/two&#39;</code></pre>\n",
           "signatures": [
             {
               "params": [

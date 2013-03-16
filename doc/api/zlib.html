@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Zlib Node.js v0.8.18 Manual &amp; Documentation</title>
+  <title>Zlib Node.js v0.10.0 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/zlib.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.8.18 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.0 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -54,6 +54,11 @@
 <li><a href="#zlib_zlib_createdeflateraw_options">zlib.createDeflateRaw([options])</a></li>
 <li><a href="#zlib_zlib_createinflateraw_options">zlib.createInflateRaw([options])</a></li>
 <li><a href="#zlib_zlib_createunzip_options">zlib.createUnzip([options])</a></li>
+<li><a href="#zlib_class_zlib_zlib">Class: zlib.Zlib</a><ul>
+<li><a href="#zlib_zlib_flush_callback">zlib.flush(callback)</a></li>
+<li><a href="#zlib_zlib_reset">zlib.reset()</a></li>
+</ul>
+</li>
 <li><a href="#zlib_class_zlib_gzip">Class: zlib.Gzip</a></li>
 <li><a href="#zlib_class_zlib_gunzip">Class: zlib.Gunzip</a></li>
 <li><a href="#zlib_class_zlib_deflate">Class: zlib.Deflate</a></li>
@@ -80,8 +85,7 @@
 
           <div id="apicontent">
             <h1>Zlib<span><a class="mark" href="#zlib_zlib" id="zlib_zlib">#</a></span></h1>
-<pre><code>Stability: 3 - Stable</code></pre>
-<p>You can access this module with:
+<pre class="api_stability_3">Stability: 3 - Stable</pre><p>You can access this module with:
 
 </p>
 <pre><code>var zlib = require(&#39;zlib&#39;);</code></pre>
@@ -219,6 +223,21 @@ http.createServer(function(request, response) {
 
 
 </p>
+<h2>Class: zlib.Zlib<span><a class="mark" href="#zlib_class_zlib_zlib" id="zlib_class_zlib_zlib">#</a></span></h2>
+<p>Not exported by the <code>zlib</code> module. It is documented here because it is the base
+class of the compressor/decompressor classes.
+
+</p>
+<h3>zlib.flush(callback)<span><a class="mark" href="#zlib_zlib_flush_callback" id="zlib_zlib_flush_callback">#</a></span></h3>
+<p>Flush pending data. Don&#39;t call this frivolously, premature flushes negatively
+impact the effectiveness of the compression algorithm.
+
+</p>
+<h3>zlib.reset()<span><a class="mark" href="#zlib_zlib_reset" id="zlib_zlib_reset">#</a></span></h3>
+<p>Reset the compressor/decompressor to factory defaults. Only applicable to
+the inflate and deflate algorithms.
+
+</p>
 <h2>Class: zlib.Gzip<span><a class="mark" href="#zlib_class_zlib_gzip" id="zlib_class_zlib_gzip">#</a></span></h2>
 <p>Compress data using gzip.
 
@@ -293,11 +312,12 @@ zlib classes directly.
 convenience methods use the default settings for all options.)
 
 </p>
-<p>Note that some options are only
-relevant when compressing, and are ignored by the decompression classes.
+<p>Note that some options are only relevant when compressing, and are
+ignored by the decompression classes.
 
 </p>
 <ul>
+<li>flush (default: <code>zlib.Z_NO_FLUSH</code>)</li>
 <li>chunkSize (default: 16*1024)</li>
 <li>windowBits</li>
 <li>level (compression only)</li>
@@ -305,8 +325,9 @@ relevant when compressing, and are ignored by the decompression classes.
 <li>strategy (compression only)</li>
 <li>dictionary (deflate/inflate only, empty dictionary by default)</li>
 </ul>
-<p>See the description of <code>deflateInit2</code> and <code>inflateInit2</code>
-at <a href="http://zlib.net/manual.html#Advanced">http://zlib.net/manual.html#Advanced</a> for more information on these.
+<p>See the description of <code>deflateInit2</code> and <code>inflateInit2</code> at
+</p>
+<p><a href="http://zlib.net/manual.html#Advanced">http://zlib.net/manual.html#Advanced</a> for more information on these.
 
 </p>
 <h2>Memory Usage Tuning<span><a class="mark" href="#zlib_memory_usage_tuning" id="zlib_memory_usage_tuning">#</a></span></h2>
@@ -454,7 +475,7 @@ events.
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.8.18/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.0/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>
