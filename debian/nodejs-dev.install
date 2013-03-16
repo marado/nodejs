@@ -1,6 +1,3 @@
-debian/tmp/usr/bin/node-waf
-debian/tmp/usr/include/node/uv.h usr/include/nodejs
-debian/tmp/usr/include/node/*-emul.h usr/include/nodejs
-debian/tmp/usr/include/node/node*.h usr/include/nodejs
-debian/tmp/usr/include/node/uv-private/*.h usr/include/nodejs/uv-private
-debian/tmp/usr/lib/node/wafadmin usr/share/nodejs
+deps/uv/include/uv.h usr/include/nodejs
+deps/uv/include/uv-private/*.h usr/include/nodejs/uv-private
+src/*.h usr/include/nodejs
