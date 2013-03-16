@@ -17,7 +17,8 @@ Copyright: 2002-2012, Igor Sysoev
  2011-2012, Nginx Inc.
 License: BSD-2-clause~author
 
-Files: deps/uv/include/uv-private/tree.h
+Files: src/tree.h
+ deps/uv/include/uv-private/tree.h
 Copyright: 2002, Niels Provos <provos@citi.umich.edu>
 License: BSD-2-clause~author
 
