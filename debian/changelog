@@ -1,12 +1,17 @@
 nodejs (0.10.0~dfsg1-1) UNRELEASED; urgency=low
 
   * Upstream update.
-  * Build-Depends: libv8-dev >= 3.11.
+  * node-waf is replaced by node-gyp, packaged independently.
+  * Build-Depends: libv8-dev >= 3.14.5.
 
   * Repackaging
-    + do not exclude deps/uv/include/uv-private/tree.h.
     + exclude test/gc/node_modules.
     + exclude tools/blog.
+    + exclude tools/wrk, a benchmark tool.
+    + exclude tools/msvs/genfiles, it should be generated instead. It
+      also contains binaries and a meaningless copyright statement.
+    + exclude deps/cares.
+    + update exclusions to match already removed files.
 
   * Documentation building
     + remove workaround from 0.6.19~dfsg1-3.
@@ -14,43 +19,51 @@ nodejs (0.10.0~dfsg1-1) UNRELEASED; urgency=low
     + remove script tags calling external assets from html files.
 
   * debian/patches
+    + remove all patches regarding waf.
+    + remove patches involving eio or ev since those libs have been
+      rewritten inside uv.
+    + remove 2008_fix_use_shared_cares.patch, no longer needed.
+    + 2005_expected_failing_tests.patch: reenable some tests.
     + merge path, binary renames into 2001_FHS_paths_for_nodejs.patch.
-    + remove 2002_build_without_libv8_debug.patch, unneeded.
-    + reactivate some tests in 2005_expected_failing_tests.patch.
+    + remove unneeded 2002_build_without_libv8_debug.patch.
     + remove 2007_fix_use_shared_zlib.patch, replaced by --shared-zlib,
       but 2010 patch is needed to shut up Makefile.
-    + 2008_fix_use_shared_cares.patch disables local build and install.
-    + 2009_fix_shared_ev.patch disables local build and install.
     + remove 1001_align_fast_buffers_8byte_boundary.patch, applied.
     + remove 2014_v8_38_compat.patch, unneeded.
-    + 2015_uv_backported_to_system_ev.patch brings libev compatibility.
     + 2011_enable_mipsel_build disabled until libv8 builds on mipsel.
 
   * rules
+    + remove all lines regarding waf.
     + remove --no-ssl2 flag, it builds fine without it now, and
       test-tls-server-verify fails in both cases.
     + use --without-snapshot since nodejs is using system libv8.
-    + remove --shared-cares and --shared-ev, the use of system libs is
-      provided by the 2008 and 2009 patches.
+    + remove unneeded --shared-ev.
     + hardening gyp: append CPPFLAGS to CXXFLAGS, export CXXFLAGS,
-      LDFLAGS. Might be needed because of bug#689754.
+      LDFLAGS. Works around bug#689754.
     + update DEB_COPYRIGHT_CHECK_IGNORE_REGEX to match all binary files.
+    + remove trailing slash in DEB_UPSTREAM_URL.
+    + update DEB_UPSTREAM_REPACKAGE_EXCLUDES, see Repackaging above.
 
   * nodejs-dev
-    + do not install headers from system libraries.
-    + include node-waf. To be replaced by node-gyp package when ready.
+    + install only, but all, headers from src/*.h and deps/uv/include.
+    + node-waf completely removed.
 
   * copyright
-    + remove src/platform_darwin_proctitle.cc.
+    + remove paragraphs no longer needed: eio, waf, buffer_ieee754.js,
+      src/platform_darwin_proctitle.cc.
     + add 'Nginx Inc' copyright to ngx-queue.h, as given by upstream
       LICENSE file, and list the second copy of ngx-queue.h.
-    + add license for deps/uv/include/uv-private/tree.h.
+    + add license for deps/uv/include/uv-private/tree.h and the copy in
+      src/tree.h.
+    + add ISC licenses for deps/uv/checksparse.sh, deps/uv/src/inet.c.
+    + add deps/uv/include/uv-private/stdint-msvc2008.h BSD-3-clause.
+    + add src/v8_typed_array* Expat license.
     + update licenses for bundled deps/v8 copy, taken from libv8
-      debian package. Remove unneeded OpenBSD~Lucent license, add
-      MIT~Prototype license.
+      debian package. Note deps/v8/tools/testrunner/server/daemon.py is
+      Public-Domain.
     + list all copies of sh.css.
 
- -- Jérémy Lal <kapouer@melix.org>  Sun, 30 Sep 2012 10:59:13 +0200
+ -- Jérémy Lal <kapouer@melix.org>  Sat, 16 Mar 2013 20:08:28 +0100
 
 nodejs (0.6.19~dfsg1-6) UNRELEASED; urgency=low
 
