@@ -9,7 +9,7 @@ Description: Expected failing tests
  to see what happens.
 Forwarded: not-needed
 Author: Jérémy Lal <kapouer@melix.org>
-Last-Update: 2012-10-07
+Last-Update: 2013-03-16
 --- a/test/simple/simple.status
 +++ b/test/simple/simple.status
 @@ -1 +1,24 @@
@@ -22,8 +22,8 @@ Last-Update: 2012-10-07
 +test-dgram-broadcast-multi-process: PASS || FAIL
 +
 +# sometimes these tests TIMEOUT or FAIL
-+test-dgram-pingpong: PASS || FAIL || TIMEOUT
-+test-stream-pipe-multi: PASS || TIMEOUT
++# test-dgram-pingpong: PASS || FAIL || TIMEOUT
++# test-stream-pipe-multi: PASS || TIMEOUT
 +
 +# http://bugs.debian.org/660802
 +# test-cluster-kill-workers: PASS || FAIL
