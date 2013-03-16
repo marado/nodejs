@@ -21,6 +21,7 @@ DEB_UPSTREAM_REPACKAGE_EXCLUDES += \
 ./tools/blog/ \
 ./tools/gyp/ \
 ./tools/closure_linter/ \
+./tools/msvs/genfiles/ \
 ./tools/wrk/
 
 DEB_UPSTREAM_REPACKAGE_TAG = $(shell echo $(DEB_UPSTREAM_VERSION) | egrep -o "dfsg[0-9]+")
