@@ -28,6 +28,19 @@ Files: src/tree.h
 Copyright: 2002, Niels Provos <provos@citi.umich.edu>
 License: BSD-2-clause~author
 
+Files: deps/uv/checksparse.sh
+Copyright: 2013, Ben Noordhuis <info@bnoordhuis.nl>
+License: ISC
+
+Files: deps/uv/src/inet.c
+Copyright: 1996-1999, Internet Software Consortium
+ 2004, Internet Systems Consortium, Inc.
+License: ISC
+
+Files: deps/uv/include/uv-private/stdint-msvc2008.h
+Copyright: 2006-2008, Alexander Chemeris
+License: BSD-3-clause~author
+
 Files: deps/v8/*
  tools/test.py
  tools/js2c.py
@@ -318,3 +331,16 @@ License: GPL-3
  (at your option) any later version.
  On Debian GNU/Linux systems, the complete text of the GNU General
  Public License can be found in `/usr/share/common-licenses/GPL-3'
+
+License: ISC
+ Permission to use, copy, modify, and/or distribute this software for any
+ purpose with or without fee is hereby granted, provided that the above
+ copyright notice and this permission notice appear in all copies.
+ .
+ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
