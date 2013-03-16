@@ -16,9 +16,7 @@ DEB_UPSTREAM_REPACKAGE_EXCLUDES += \
 ./deps/openssl/ \
 ./deps/zlib/ \
 ./deps/uv/src/ares/ \
-./deps/uv/src/unix/ev/ \
 ./deps/uv/include/ares*.h \
-./deps/uv/include/uv-private/ev.h \
 ./test/gc/node_modules/ \
 ./tools/blog/ \
 ./tools/gyp/ \
