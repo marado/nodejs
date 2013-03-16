@@ -49,7 +49,7 @@ Files: deps/v8/*
  test/message/testcfg.py
  test/internet/testcfg.py
  test/gc/testcfg.py
-Copyright: 2006-2011, the V8 Project Authors <v8-dev@googlegroups.com>
+Copyright: 2006-2013, the V8 Project Authors <v8-dev@googlegroups.com>
 License: BSD-3-clause~Google
 
 Files: deps/v8/benchmark/deltablue.js
@@ -91,6 +91,17 @@ License: BSD-3-clause~Sun
 Files: deps/v8/src/third-party/valgrind/valgrind.h
 Copyright: 2000-2010, Julian Seward
 License: BSD-4-clause~author
+
+Files: deps/v8/tools/testrunner/server/daemon.py
+Copyright: none
+License: public-domain
+ This code has been written by Sander Marechal and published at:
+ http://www.jejik.com/articles/2007/02/a_simple_unix_linux_daemon_in_python/
+ where the author has placed it in the public domain (see comment #6 at
+ http://www.jejik.com/articles/2007/02/a_simple_unix_linux_daemon_in_python/#c6
+ ).
+ Some minor modifications have been made by the V8 authors. The work
+ remains in the public domain.
 
 Files: doc/sh_main.js
  doc/sh_javascript.min.js
