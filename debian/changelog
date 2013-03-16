@@ -23,7 +23,7 @@ nodejs (0.10.0~dfsg1-1) UNRELEASED; urgency=low
     + remove patches involving eio or ev since those libs have been
       rewritten inside uv.
     + remove 2008_fix_use_shared_cares.patch, no longer needed.
-    + 2005_expected_failing_tests.patch: reenable some tests.
+    + 2005_expected_failing_tests.patch: re-enable some tests.
     + merge path, binary renames into 2001_FHS_paths_for_nodejs.patch.
     + remove unneeded 2002_build_without_libv8_debug.patch.
     + remove 2007_fix_use_shared_zlib.patch, replaced by --shared-zlib,
@@ -62,6 +62,9 @@ nodejs (0.10.0~dfsg1-1) UNRELEASED; urgency=low
       debian package. Note deps/v8/tools/testrunner/server/daemon.py is
       Public-Domain.
     + list all copies of sh.css.
+
+   * nodejs.lintian-overrides possible-gpl-code-linked-with-openssl,
+     it is a false positive.
 
  -- Jérémy Lal <kapouer@melix.org>  Sat, 16 Mar 2013 20:08:28 +0100
 
