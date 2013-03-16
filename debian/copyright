@@ -17,6 +17,12 @@ Copyright: 2002-2012, Igor Sysoev
  2011-2012, Nginx Inc.
 License: BSD-2-clause~author
 
+Files: src/v8_typed_array.cc
+ src/v8_typed_array.h
+ src/v8_typed_array_bswap.h
+Copyright: 2011-2012, Dean McNamee <dean@gmail.com>
+License: Expat
+
 Files: src/tree.h
  deps/uv/include/uv-private/tree.h
 Copyright: 2002, Niels Provos <provos@citi.umich.edu>
