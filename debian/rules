@@ -20,7 +20,8 @@ DEB_UPSTREAM_REPACKAGE_EXCLUDES += \
 ./test/gc/node_modules/ \
 ./tools/blog/ \
 ./tools/gyp/ \
-./tools/closure_linter/
+./tools/closure_linter/ \
+./tools/wrk/
 
 DEB_UPSTREAM_REPACKAGE_TAG = $(shell echo $(DEB_UPSTREAM_VERSION) | egrep -o "dfsg[0-9]+")
 
