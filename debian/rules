@@ -41,7 +41,7 @@ CXXFLAGS+=$(CPPFLAGS)
 export CXXFLAGS
 export LDFLAGS
 
-# properly clean files from build, waf, test, python
+# properly clean files from build, test, python
 clean::
 	rm -f config.gypi
 	rm -f config.mk
