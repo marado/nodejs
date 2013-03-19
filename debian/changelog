@@ -1,72 +1,82 @@
-nodejs (0.10.0~dfsg1-1) UNRELEASED; urgency=low
+nodejs (0.10.0~dfsg1-1) experimental; urgency=low
 
-  * Upstream update.
-  * node-waf is replaced by node-gyp, packaged independently.
-  * Build-Depends: libv8-dev >= 3.14.5.
+  [ upstream ]
+  * New release.
+    + Node-waf dropped: Replaced by node-gyp (packaged independently).
 
-  * Repackaging
-    + exclude test/gc/node_modules.
-    + exclude tools/blog.
-    + exclude tools/wrk, a benchmark tool.
-    + exclude tools/msvs/genfiles, it should be generated instead. It
+  [ Jérémy Lal ]
+  * Build-depend unversioned on cdbs: Needed version satisfied in stable
+    and oldstable no longer supported.
+  * Upstream tarball repackaging:
+    + Exclude test/gc/node_modules.
+    + Exclude tools/blog.
+    + Exclude tools/wrk, a benchmark tool.
+    + Exclude tools/msvs/genfiles, it should be generated instead. It
       also contains binaries and a meaningless copyright statement.
-    + exclude deps/cares.
-    + update exclusions to match already removed files.
-
-  * Documentation building
-    + remove workaround from 0.6.19~dfsg1-3.
-    + delete already unapplied 1002_upstream_forgot_to_build_doc.patch.
-    + remove script tags calling external assets from html files.
-
-  * debian/patches
-    + remove all patches regarding waf.
-    + remove patches involving eio or ev since those libs have been
+    + Exclude deps/cares.
+    + Update exclusions to match already removed files.
+  * Documentation building:
+    + Remove workaround from 0.6.19~dfsg1-3.
+    + Delete already unapplied 1002_upstream_forgot_to_build_doc.patch.
+    + Remove script tags calling external assets from html files.
+  * Patches:
+    + Remove all patches regarding WAF.
+    + Remove patches involving eio or ev since those libs have been
       rewritten inside uv.
-    + remove 2008_fix_use_shared_cares.patch, no longer needed.
-    + 2005_expected_failing_tests.patch: re-enable some tests.
-    + merge path, binary renames into 2001_FHS_paths_for_nodejs.patch.
-    + remove unneeded 2002_build_without_libv8_debug.patch.
-    + remove 2007_fix_use_shared_zlib.patch, replaced by --shared-zlib,
+    + Remove 2008_fix_use_shared_cares.patch, no longer needed.
+    + Adjust 2005_expected_failing_tests.patch: re-enable some tests.
+    + Merge path, binary renames into 2001_FHS_paths_for_nodejs.patch.
+    + Remove unneeded 2002_build_without_libv8_debug.patch.
+    + Remove 2007_fix_use_shared_zlib.patch, replaced by --shared-zlib,
       but 2010 patch is needed to shut up Makefile.
-    + remove 1001_align_fast_buffers_8byte_boundary.patch, applied.
-    + remove 2014_v8_38_compat.patch, unneeded.
-    + 2011_enable_mipsel_build disabled until libv8 builds on mipsel.
-
-  * rules
-    + remove all lines regarding waf.
-    + remove --no-ssl2 flag, it builds fine without it now, and
-      test-tls-server-verify fails in both cases.
-    + use --without-snapshot since nodejs is using system libv8.
-    + remove unneeded --shared-ev.
-    + hardening gyp: append CPPFLAGS to CXXFLAGS, export CXXFLAGS,
-      LDFLAGS. Works around bug#689754.
-    + update DEB_COPYRIGHT_CHECK_IGNORE_REGEX to match all binary files.
-    + remove trailing slash in DEB_UPSTREAM_URL.
-    + update DEB_UPSTREAM_REPACKAGE_EXCLUDES, see Repackaging above.
-
-  * nodejs-dev
-    + install only, but all, headers from src/*.h and deps/uv/include.
-    + node-waf completely removed.
-
-  * copyright
-    + remove paragraphs no longer needed: eio, waf, buffer_ieee754.js,
+    + Remove 1001_align_fast_buffers_8byte_boundary.patch, applied.
+    + Remove 2014_v8_38_compat.patch, unneeded.
+    + Disable 2011_enable_mipsel_build: libv8 fails to build on mipsel.
+  * Drop WAF quirks.
+  * Remove --no-ssl2 flag, it builds fine without it now, and
+    test-tls-server-verify fails in both cases.
+  * Use --without-snapshot since nodejs is using system libv8.
+  * Remove unneeded --shared-ev.
+  * Harden gyp: append CPPFLAGS to CXXFLAGS, export CXXFLAGS and
+    LDFLAGS.
+    Works around bug#689754.
+  * Update DEB_COPYRIGHT_CHECK_IGNORE_REGEX to match all binary files.
+  * Remove trailing slash in DEB_UPSTREAM_URL.
+  * Ship all headers from src and uv/include in nodejs-dev: node-gyp
+    expects them.
+  * Update copyright file:
+    + Drop obsolete paragraphs: eio, waf, buffer_ieee754.js,
       src/platform_darwin_proctitle.cc.
-    + add 'Nginx Inc' copyright to ngx-queue.h, as given by upstream
+    + Add 'Nginx Inc' copyright to ngx-queue.h, as given by upstream
       LICENSE file, and list the second copy of ngx-queue.h.
-    + add license for deps/uv/include/uv-private/tree.h and the copy in
+    + Add license for deps/uv/include/uv-private/tree.h and the copy in
       src/tree.h.
-    + add ISC licenses for deps/uv/checksparse.sh, deps/uv/src/inet.c.
-    + add deps/uv/include/uv-private/stdint-msvc2008.h BSD-3-clause.
-    + add src/v8_typed_array* Expat license.
-    + update licenses for bundled deps/v8 copy, taken from libv8
+    + Add ISC licenses for deps/uv/checksparse.sh, deps/uv/src/inet.c.
+    + Add deps/uv/include/uv-private/stdint-msvc2008.h BSD-3-clause.
+    + Add src/v8_typed_array* Expat license.
+    + Update licenses for bundled deps/v8 copy, taken from libv8
       debian package. Note deps/v8/tools/testrunner/server/daemon.py is
       Public-Domain.
-    + list all copies of sh.css.
+    + List all copies of sh.css.
+  * Suppress lintian OpenSSL warning: false positive.
 
-   * nodejs.lintian-overrides possible-gpl-code-linked-with-openssl,
-     it is a false positive.
+  [ Jonas Smedegaard ]
+  * Update copyright file:
+    + Fix GPL licensing to separate verbatim custom reference, verbatim
+      generic boilerplate, and packaging comments.
+    + Explicitly mention Public Domain file as such in Copyright field.
+  * Update package relations:
+    + Build-depend on, and have nodejs-dev depend on, libv8-3.14-dev
+      (not versioned on libv8-dev).
+    + Have nodejs-dbg recommend (not suggest) libv8-3.14-dbg (not
+      libv8-dbg).
+  * Bump dephelper compatibility level to 8.
+  * Drop obsolete "DM-Upload-Allowed" field.
+  * Rewrite README.source:
+    + Refer to common CDBS+git-buildpackage praxis.
+    + Emphasize explicitly that NMUs can totally ignore control.in file.
 
- -- Jérémy Lal <kapouer@melix.org>  Sat, 16 Mar 2013 20:08:28 +0100
+ -- Jonas Smedegaard <dr@jones.dk>  Tue, 19 Mar 2013 04:38:57 +0100
 
 nodejs (0.6.19~dfsg1-6) UNRELEASED; urgency=low
 

@@ -1427,6 +1427,7 @@ Files: AUTHORS
  debian/nodejs.doc-base
  debian/nodejs.docs
  debian/nodejs.install
+ debian/nodejs.lintian-overrides
  debian/nodejs.manpages
  debian/nodejs.postinst
  debian/nodejs.prerm
