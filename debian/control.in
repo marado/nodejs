@@ -8,7 +8,7 @@ DM-Upload-Allowed: yes
 Build-Depends: @cdbs@,
  gyp,
  python,
- libv8-dev (>= 3.14.5),
+ libv8-3.14-dev,
  binutils,
  libssl-dev (>= 1.0.0g),
  libc-ares-dev (>= 1.7.5),
@@ -29,7 +29,7 @@ Architecture: any
 Depends: nodejs (= ${binary:Version}),
  ${misc:Depends},
  python,
- libv8-dev (>= 3.14.5),
+ libv8--3.14dev,
  libssl-dev (>= 1.0.0g),
  libc-ares-dev (>= 1.7.5)
 Description: Development files for Node.js
@@ -81,7 +81,7 @@ Section: debug
 Architecture: any
 Depends: ${misc:Depends},
  nodejs (= ${binary:Version})
-Suggests: libv8-dbg
+Recommends: libv8-3.14-dbg
 Description: Node.js event-based server-side javascript engine (debug)
  Node.js is similar in design to and influenced by systems like
  Ruby's Event Machine or Python's Twisted.
