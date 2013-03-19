@@ -111,6 +111,10 @@ Files: doc/sh_main.js
  doc/sh_vim-dark.css
 Copyright: 2007, 2008 gnombat@users.sourceforge.net
 License: GPL-3
+Comment:
+ License:
+ .
+ License: http://shjs.sourceforge.net/doc/gplv3.html
 
 Files: lib/assert.js
 Copyright: 2009 Thomas Robinson <280north.com>
@@ -330,16 +334,22 @@ License: BSD-4-clause~author
 License: GPL-2+
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2, or (at your option)
- any later version.
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ Comment:
+ .
  On Debian GNU/Linux systems, the complete text of the GNU General
  Public License can be found in `/usr/share/common-licenses/GPL-2'
 
 License: GPL-3
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
+ Comment:
+ .
  On Debian GNU/Linux systems, the complete text of the GNU General
  Public License can be found in `/usr/share/common-licenses/GPL-3'
 
