@@ -4,7 +4,6 @@ Priority: extra
 Maintainer: Debian Javascript Maintainers <pkg-javascript-devel@lists.alioth.debian.org>
 Uploaders: Jérémy Lal <kapouer@melix.org>,
  Jonas Smedegaard <dr@jones.dk>
-DM-Upload-Allowed: yes
 Build-Depends: @cdbs@,
  gyp,
  python,
