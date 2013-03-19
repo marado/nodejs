@@ -1,3 +1,10 @@
+nodejs (0.10.0~dfsg1-2) experimental; urgency=low
+
+  * Fix have nodejs-dev depend on libv8-3.14-dev (not bogus
+    libv8-3--14dev).
+
+ -- Jonas Smedegaard <dr@jones.dk>  Tue, 19 Mar 2013 05:07:15 +0100
+
 nodejs (0.10.0~dfsg1-1) experimental; urgency=low
 
   [ upstream ]

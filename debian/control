@@ -31,7 +31,7 @@ Architecture: any
 Depends: nodejs (= ${binary:Version}),
  ${misc:Depends},
  python,
- libv8--3.14dev,
+ libv8-3.14-dev,
  libssl-dev (>= 1.0.0g),
  libc-ares-dev (>= 1.7.5)
 Description: Development files for Node.js
