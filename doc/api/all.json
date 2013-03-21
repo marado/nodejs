@@ -317,7 +317,7 @@
             {
               "textRaw": "process.title",
               "name": "title",
-              "desc": "<p>Getter/setter to set what is displayed in &#39;ps&#39;.\n\n\n</p>\n"
+              "desc": "<p>Getter/setter to set what is displayed in &#39;ps&#39;.\n\n</p>\n<p>When used as a setter, the maximum length is platform-specific and probably\nshort.\n\n</p>\n<p>On Linux and OS X, it&#39;s limited to the size of the binary name plus the\nlength of the command line arguments because it overwrites the argv memory.\n\n</p>\n<p>v0.8 allowed for longer process title strings by also overwriting the environ\nmemory but that was potentially insecure/confusing in some (rather obscure)\ncases.\n\n\n</p>\n"
             },
             {
               "textRaw": "process.arch",
@@ -1010,7 +1010,7 @@
         {
           "textRaw": "process.title",
           "name": "title",
-          "desc": "<p>Getter/setter to set what is displayed in &#39;ps&#39;.\n\n\n</p>\n"
+          "desc": "<p>Getter/setter to set what is displayed in &#39;ps&#39;.\n\n</p>\n<p>When used as a setter, the maximum length is platform-specific and probably\nshort.\n\n</p>\n<p>On Linux and OS X, it&#39;s limited to the size of the binary name plus the\nlength of the command line arguments because it overwrites the argv memory.\n\n</p>\n<p>v0.8 allowed for longer process title strings by also overwriting the environ\nmemory but that was potentially insecure/confusing in some (rather obscure)\ncases.\n\n\n</p>\n"
         },
         {
           "textRaw": "process.arch",
@@ -2188,7 +2188,14 @@
               "type": "event",
               "name": "newListener",
               "params": [],
-              "desc": "<p>This event is emitted any time someone adds a new listener.\n\n</p>\n"
+              "desc": "<p>This event is emitted any time someone adds a new listener.\n\n\n</p>\n"
+            },
+            {
+              "textRaw": "Event: 'removeListener'",
+              "type": "event",
+              "name": "removeListener",
+              "params": [],
+              "desc": "<p>This event is emitted any time someone removes a listener.\n\n</p>\n"
             }
           ]
         }
@@ -4904,7 +4911,7 @@
                   ]
                 }
               ],
-              "desc": "<p>Note: <strong>This function MUST NOT be called directly.</strong>  It MAY be implemented\nby child classes, and if so, will be called by the internal Transform\nclass methods only.\n\n</p>\n<p>In some cases, your transform operation may need to emit a bit more\ndata at the end of the stream.  For example, a <code>Zlib</code> compression\nstream will store up some internal state so that it can optimally\ncompress the output.  At the end, however, it needs to do the best it\ncan with what is left, so that the data will be complete.\n\n</p>\n<p>In those cases, you can implement a <code>_flush</code> method, which will be\ncalled at the very end, after all the written data is consumed, but\nbefore emitting <code>end</code> to signal the end of the readable side.  Just\nlike with <code>_transform</code>, call <code>transform.push(chunk)</code> zero or more\ntimes, as appropriate, and call <code>callback</code> when the flush operation is\ncomplete.\n\n</p>\n<p>This method is prefixed with an underscore because it is internal to\nthe class that defines it, and should not be called directly by user\nprograms.  However, you <strong>are</strong> expected to override this method in\nyour own extension classes.\n\n</p>\n<h3>Example: <code>SimpleProtocol</code> parser</h3>\n<p>The example above of a simple protocol parser can be implemented much\nmore simply by using the higher level <code>Transform</code> stream class.\n\n</p>\n<p>In this example, rather than providing the input as an argument, it\nwould be piped into the parser, which is a more idiomatic Node stream\napproach.\n\n</p>\n<pre><code class=\"javascript\">function SimpleProtocol(options) {\n  if (!(this instanceof SimpleProtocol))\n    return new SimpleProtocol(options);\n\n  Transform.call(this, options);\n  this._inBody = false;\n  this._sawFirstCr = false;\n  this._rawHeader = [];\n  this.header = null;\n}\n\nSimpleProtocol.prototype = Object.create(\n  Transform.prototype, { constructor: { value: SimpleProtocol }});\n\nSimpleProtocol.prototype._transform = function(chunk, encoding, done) {\n  if (!this._inBody) {\n    // check if the chunk has a \\n\\n\n    var split = -1;\n    for (var i = 0; i &lt; chunk.length; i++) {\n      if (chunk[i] === 10) { // &#39;\\n&#39;\n        if (this._sawFirstCr) {\n          split = i;\n          break;\n        } else {\n          this._sawFirstCr = true;\n        }\n      } else {\n        this._sawFirstCr = false;\n      }\n    }\n\n    if (split === -1) {\n      // still waiting for the \\n\\n\n      // stash the chunk, and try again.\n      this._rawHeader.push(chunk);\n    } else {\n      this._inBody = true;\n      var h = chunk.slice(0, split);\n      this._rawHeader.push(h);\n      var header = Buffer.concat(this._rawHeader).toString();\n      try {\n        this.header = JSON.parse(header);\n      } catch (er) {\n        this.emit(&#39;error&#39;, new Error(&#39;invalid simple protocol data&#39;));\n        return;\n      }\n      // and let them know that we are done parsing the header.\n      this.emit(&#39;header&#39;, this.header);\n\n      // now, because we got some extra data, emit this first.\n      this.push(b);\n    }\n  } else {\n    // from there on, just provide the data to our consumer as-is.\n    this.push(b);\n  }\n  done();\n};\n\nvar parser = new SimpleProtocol();\nsource.pipe(parser)\n\n// Now parser is a readable stream that will emit &#39;header&#39;\n// with the parsed header data.</code></pre>\n"
+              "desc": "<p>Note: <strong>This function MUST NOT be called directly.</strong>  It MAY be implemented\nby child classes, and if so, will be called by the internal Transform\nclass methods only.\n\n</p>\n<p>In some cases, your transform operation may need to emit a bit more\ndata at the end of the stream.  For example, a <code>Zlib</code> compression\nstream will store up some internal state so that it can optimally\ncompress the output.  At the end, however, it needs to do the best it\ncan with what is left, so that the data will be complete.\n\n</p>\n<p>In those cases, you can implement a <code>_flush</code> method, which will be\ncalled at the very end, after all the written data is consumed, but\nbefore emitting <code>end</code> to signal the end of the readable side.  Just\nlike with <code>_transform</code>, call <code>transform.push(chunk)</code> zero or more\ntimes, as appropriate, and call <code>callback</code> when the flush operation is\ncomplete.\n\n</p>\n<p>This method is prefixed with an underscore because it is internal to\nthe class that defines it, and should not be called directly by user\nprograms.  However, you <strong>are</strong> expected to override this method in\nyour own extension classes.\n\n</p>\n<h3>Example: <code>SimpleProtocol</code> parser</h3>\n<p>The example above of a simple protocol parser can be implemented much\nmore simply by using the higher level <code>Transform</code> stream class.\n\n</p>\n<p>In this example, rather than providing the input as an argument, it\nwould be piped into the parser, which is a more idiomatic Node stream\napproach.\n\n</p>\n<pre><code class=\"javascript\">function SimpleProtocol(options) {\n  if (!(this instanceof SimpleProtocol))\n    return new SimpleProtocol(options);\n\n  Transform.call(this, options);\n  this._inBody = false;\n  this._sawFirstCr = false;\n  this._rawHeader = [];\n  this.header = null;\n}\n\nSimpleProtocol.prototype = Object.create(\n  Transform.prototype, { constructor: { value: SimpleProtocol }});\n\nSimpleProtocol.prototype._transform = function(chunk, encoding, done) {\n  if (!this._inBody) {\n    // check if the chunk has a \\n\\n\n    var split = -1;\n    for (var i = 0; i &lt; chunk.length; i++) {\n      if (chunk[i] === 10) { // &#39;\\n&#39;\n        if (this._sawFirstCr) {\n          split = i;\n          break;\n        } else {\n          this._sawFirstCr = true;\n        }\n      } else {\n        this._sawFirstCr = false;\n      }\n    }\n\n    if (split === -1) {\n      // still waiting for the \\n\\n\n      // stash the chunk, and try again.\n      this._rawHeader.push(chunk);\n    } else {\n      this._inBody = true;\n      var h = chunk.slice(0, split);\n      this._rawHeader.push(h);\n      var header = Buffer.concat(this._rawHeader).toString();\n      try {\n        this.header = JSON.parse(header);\n      } catch (er) {\n        this.emit(&#39;error&#39;, new Error(&#39;invalid simple protocol data&#39;));\n        return;\n      }\n      // and let them know that we are done parsing the header.\n      this.emit(&#39;header&#39;, this.header);\n\n      // now, because we got some extra data, emit this first.\n      this.push(chunk.slice(split));\n    }\n  } else {\n    // from there on, just provide the data to our consumer as-is.\n    this.push(chunk);\n  }\n  done();\n};\n\nvar parser = new SimpleProtocol();\nsource.pipe(parser)\n\n// Now parser is a readable stream that will emit &#39;header&#39;\n// with the parsed header data.</code></pre>\n"
             }
           ]
         },
@@ -5270,7 +5277,7 @@
               "textRaw": "hash.digest([encoding])",
               "type": "method",
               "name": "digest",
-              "desc": "<p>Calculates the digest of all of the passed data to be hashed.  The\n<code>encoding</code> can be <code>&#39;hex&#39;</code>, <code>&#39;binary&#39;</code> or <code>&#39;base64&#39;</code>.  If no encoding\nis provided, then a buffer is returned.\n\n</p>\n<p>Note: <code>hash</code> object can not be used after <code>digest()</code> method been\ncalled.\n\n\n</p>\n",
+              "desc": "<p>Calculates the digest of all of the passed data to be hashed.  The\n<code>encoding</code> can be <code>&#39;hex&#39;</code>, <code>&#39;binary&#39;</code> or <code>&#39;base64&#39;</code>.  If no encoding\nis provided, then a buffer is returned.\n\n</p>\n<p>Note: <code>hash</code> object can not be used after <code>digest()</code> method has been\ncalled.\n\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -5309,7 +5316,7 @@
               "textRaw": "hmac.digest([encoding])",
               "type": "method",
               "name": "digest",
-              "desc": "<p>Calculates the digest of all of the passed data to the hmac.  The\n<code>encoding</code> can be <code>&#39;hex&#39;</code>, <code>&#39;binary&#39;</code> or <code>&#39;base64&#39;</code>.  If no encoding\nis provided, then a buffer is returned.\n\n</p>\n<p>Note: <code>hmac</code> object can not be used after <code>digest()</code> method been\ncalled.\n\n\n</p>\n",
+              "desc": "<p>Calculates the digest of all of the passed data to the hmac.  The\n<code>encoding</code> can be <code>&#39;hex&#39;</code>, <code>&#39;binary&#39;</code> or <code>&#39;base64&#39;</code>.  If no encoding\nis provided, then a buffer is returned.\n\n</p>\n<p>Note: <code>hmac</code> object can not be used after <code>digest()</code> method has been\ncalled.\n\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -5333,7 +5340,7 @@
               "textRaw": "cipher.update(data, [input_encoding], [output_encoding])",
               "type": "method",
               "name": "update",
-              "desc": "<p>Updates the cipher with <code>data</code>, the encoding of which is given in\n<code>input_encoding</code> and can be <code>&#39;utf8&#39;</code>, <code>&#39;ascii&#39;</code> or <code>&#39;binary&#39;</code>.  If no\nencoding is provided, then a buffer is expected.\n\n</p>\n<p>The <code>output_encoding</code> specifies the output format of the enciphered\ndata, and can be <code>&#39;binary&#39;</code>, <code>&#39;base64&#39;</code> or <code>&#39;hex&#39;</code>.  If no encoding is\nprovided, then a buffer iis returned.\n\n</p>\n<p>Returns the enciphered contents, and can be called many times with new\ndata as it is streamed.\n\n</p>\n",
+              "desc": "<p>Updates the cipher with <code>data</code>, the encoding of which is given in\n<code>input_encoding</code> and can be <code>&#39;utf8&#39;</code>, <code>&#39;ascii&#39;</code> or <code>&#39;binary&#39;</code>.  If no\nencoding is provided, then a buffer is expected.\n\n</p>\n<p>The <code>output_encoding</code> specifies the output format of the enciphered\ndata, and can be <code>&#39;binary&#39;</code>, <code>&#39;base64&#39;</code> or <code>&#39;hex&#39;</code>.  If no encoding is\nprovided, then a buffer is returned.\n\n</p>\n<p>Returns the enciphered contents, and can be called many times with new\ndata as it is streamed.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -5356,7 +5363,7 @@
               "textRaw": "cipher.final([output_encoding])",
               "type": "method",
               "name": "final",
-              "desc": "<p>Returns any remaining enciphered contents, with <code>output_encoding</code>\nbeing one of: <code>&#39;binary&#39;</code>, <code>&#39;base64&#39;</code> or <code>&#39;hex&#39;</code>.  If no encoding is\nprovided, then a buffer is returned.\n\n</p>\n<p>Note: <code>cipher</code> object can not be used after <code>final()</code> method been\ncalled.\n\n</p>\n",
+              "desc": "<p>Returns any remaining enciphered contents, with <code>output_encoding</code>\nbeing one of: <code>&#39;binary&#39;</code>, <code>&#39;base64&#39;</code> or <code>&#39;hex&#39;</code>.  If no encoding is\nprovided, then a buffer is returned.\n\n</p>\n<p>Note: <code>cipher</code> object can not be used after <code>final()</code> method has been\ncalled.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -5419,7 +5426,7 @@
               "textRaw": "decipher.final([output_encoding])",
               "type": "method",
               "name": "final",
-              "desc": "<p>Returns any remaining plaintext which is deciphered, with\n<code>output_encoding</code> being one of: <code>&#39;binary&#39;</code>, <code>&#39;ascii&#39;</code> or <code>&#39;utf8&#39;</code>.  If\nno encoding is provided, then a buffer is returned.\n\n</p>\n<p>Note: <code>decipher</code> object can not be used after <code>final()</code> method been\ncalled.\n\n</p>\n",
+              "desc": "<p>Returns any remaining plaintext which is deciphered, with\n<code>output_encoding</code> being one of: <code>&#39;binary&#39;</code>, <code>&#39;ascii&#39;</code> or <code>&#39;utf8&#39;</code>.  If\nno encoding is provided, then a buffer is returned.\n\n</p>\n<p>Note: <code>decipher</code> object can not be used after <code>final()</code> method has been\ncalled.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -5474,7 +5481,7 @@
               "textRaw": "sign.sign(private_key, [output_format])",
               "type": "method",
               "name": "sign",
-              "desc": "<p>Calculates the signature on all the updated data passed through the\nsign.  <code>private_key</code> is a string containing the PEM encoded private\nkey for signing.\n\n</p>\n<p>Returns the signature in <code>output_format</code> which can be <code>&#39;binary&#39;</code>,\n<code>&#39;hex&#39;</code> or <code>&#39;base64&#39;</code>. If no encoding is provided, then a buffer is\nreturned.\n\n</p>\n<p>Note: <code>sign</code> object can not be used after <code>sign()</code> method been\ncalled.\n\n</p>\n",
+              "desc": "<p>Calculates the signature on all the updated data passed through the\nsign.  <code>private_key</code> is a string containing the PEM encoded private\nkey for signing.\n\n</p>\n<p>Returns the signature in <code>output_format</code> which can be <code>&#39;binary&#39;</code>,\n<code>&#39;hex&#39;</code> or <code>&#39;base64&#39;</code>. If no encoding is provided, then a buffer is\nreturned.\n\n</p>\n<p>Note: <code>sign</code> object can not be used after <code>sign()</code> method has been\ncalled.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -5516,7 +5523,7 @@
               "textRaw": "verifier.verify(object, signature, [signature_format])",
               "type": "method",
               "name": "verify",
-              "desc": "<p>Verifies the signed data by using the <code>object</code> and <code>signature</code>.\n<code>object</code> is  a string containing a PEM encoded object, which can be\none of RSA public key, DSA public key, or X.509 certificate.\n<code>signature</code> is the previously calculated signature for the data, in\nthe <code>signature_format</code> which can be <code>&#39;binary&#39;</code>, <code>&#39;hex&#39;</code> or <code>&#39;base64&#39;</code>.\nIf no encoding is specified, then a buffer is expected.\n\n</p>\n<p>Returns true or false depending on the validity of the signature for\nthe data and public key.\n\n</p>\n<p>Note: <code>verifier</code> object can not be used after <code>verify()</code> method been\ncalled.\n\n</p>\n",
+              "desc": "<p>Verifies the signed data by using the <code>object</code> and <code>signature</code>.\n<code>object</code> is  a string containing a PEM encoded object, which can be\none of RSA public key, DSA public key, or X.509 certificate.\n<code>signature</code> is the previously calculated signature for the data, in\nthe <code>signature_format</code> which can be <code>&#39;binary&#39;</code>, <code>&#39;hex&#39;</code> or <code>&#39;base64&#39;</code>.\nIf no encoding is specified, then a buffer is expected.\n\n</p>\n<p>Returns true or false depending on the validity of the signature for\nthe data and public key.\n\n</p>\n<p>Note: <code>verifier</code> object can not be used after <code>verify()</code> method has been\ncalled.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -6114,10 +6121,10 @@
       "name": "fs",
       "stability": 3,
       "stabilityText": "Stable",
-      "desc": "<p>File I/O is provided by simple wrappers around standard POSIX functions.  To\nuse this module do <code>require(&#39;fs&#39;)</code>. All the methods have asynchronous and\nsynchronous forms.\n\n</p>\n<p>The asynchronous form always take a completion callback as its last argument.\nThe arguments passed to the completion callback depend on the method, but the\nfirst argument is always reserved for an exception. If the operation was\ncompleted successfully, then the first argument will be <code>null</code> or <code>undefined</code>.\n\n</p>\n<p>When using the synchronous form any exceptions are immediately thrown.\nYou can use try/catch to handle exceptions or allow them to bubble up.\n\n</p>\n<p>Here is an example of the asynchronous version:\n\n</p>\n<pre><code>var fs = require(&#39;fs&#39;);\n\nfs.unlink(&#39;/tmp/hello&#39;, function (err) {\n  if (err) throw err;\n  console.log(&#39;successfully deleted /tmp/hello&#39;);\n});</code></pre>\n<p>Here is the synchronous version:\n\n</p>\n<pre><code>var fs = require(&#39;fs&#39;);\n\nfs.unlinkSync(&#39;/tmp/hello&#39;)\nconsole.log(&#39;successfully deleted /tmp/hello&#39;);</code></pre>\n<p>With the asynchronous methods there is no guaranteed ordering. So the\nfollowing is prone to error:\n\n</p>\n<pre><code>fs.rename(&#39;/tmp/hello&#39;, &#39;/tmp/world&#39;, function (err) {\n  if (err) throw err;\n  console.log(&#39;renamed complete&#39;);\n});\nfs.stat(&#39;/tmp/world&#39;, function (err, stats) {\n  if (err) throw err;\n  console.log(&#39;stats: &#39; + JSON.stringify(stats));\n});</code></pre>\n<p>It could be that <code>fs.stat</code> is executed before <code>fs.rename</code>.\nThe correct way to do this is to chain the callbacks.\n\n</p>\n<pre><code>fs.rename(&#39;/tmp/hello&#39;, &#39;/tmp/world&#39;, function (err) {\n  if (err) throw err;\n  fs.stat(&#39;/tmp/world&#39;, function (err, stats) {\n    if (err) throw err;\n    console.log(&#39;stats: &#39; + JSON.stringify(stats));\n  });\n});</code></pre>\n<p>In busy processes, the programmer is <em>strongly encouraged</em> to use the\nasynchronous versions of these calls. The synchronous versions will block\nthe entire process until they complete--halting all connections.\n\n</p>\n<p>Relative path to filename can be used, remember however that this path will be\nrelative to <code>process.cwd()</code>.\n\n</p>\n<p>Most fs functions let you omit the callback argument. If you do, a default\ncallback is used that rethrows errors. To get a trace to the original call\nsite, set the NODE_DEBUG environment variable:\n\n</p>\n<pre><code>$ cat script.js\nfunction bad() {\n  require(&#39;fs&#39;).readFile(&#39;/&#39;);\n}\nbad();\n\n$ env NODE_DEBUG=fs node script.js\nfs.js:66\n        throw err;\n              ^\nError: EISDIR, read\n    at rethrow (fs.js:61:21)\n    at maybeCallback (fs.js:79:42)\n    at Object.fs.readFile (fs.js:153:18)\n    at bad (/path/to/script.js:2:17)\n    at Object.&lt;anonymous&gt; (/path/to/script.js:5:1)\n    &lt;etc.&gt;</code></pre>\n",
+      "desc": "<p>File I/O is provided by simple wrappers around standard POSIX functions.  To\nuse this module do <code>require(&#39;fs&#39;)</code>. All the methods have asynchronous and\nsynchronous forms.\n\n</p>\n<p>The asynchronous form always take a completion callback as its last argument.\nThe arguments passed to the completion callback depend on the method, but the\nfirst argument is always reserved for an exception. If the operation was\ncompleted successfully, then the first argument will be <code>null</code> or <code>undefined</code>.\n\n</p>\n<p>When using the synchronous form any exceptions are immediately thrown.\nYou can use try/catch to handle exceptions or allow them to bubble up.\n\n</p>\n<p>Here is an example of the asynchronous version:\n\n</p>\n<pre><code>var fs = require(&#39;fs&#39;);\n\nfs.unlink(&#39;/tmp/hello&#39;, function (err) {\n  if (err) throw err;\n  console.log(&#39;successfully deleted /tmp/hello&#39;);\n});</code></pre>\n<p>Here is the synchronous version:\n\n</p>\n<pre><code>var fs = require(&#39;fs&#39;);\n\nfs.unlinkSync(&#39;/tmp/hello&#39;)\nconsole.log(&#39;successfully deleted /tmp/hello&#39;);</code></pre>\n<p>With the asynchronous methods there is no guaranteed ordering. So the\nfollowing is prone to error:\n\n</p>\n<pre><code>fs.rename(&#39;/tmp/hello&#39;, &#39;/tmp/world&#39;, function (err) {\n  if (err) throw err;\n  console.log(&#39;renamed complete&#39;);\n});\nfs.stat(&#39;/tmp/world&#39;, function (err, stats) {\n  if (err) throw err;\n  console.log(&#39;stats: &#39; + JSON.stringify(stats));\n});</code></pre>\n<p>It could be that <code>fs.stat</code> is executed before <code>fs.rename</code>.\nThe correct way to do this is to chain the callbacks.\n\n</p>\n<pre><code>fs.rename(&#39;/tmp/hello&#39;, &#39;/tmp/world&#39;, function (err) {\n  if (err) throw err;\n  fs.stat(&#39;/tmp/world&#39;, function (err, stats) {\n    if (err) throw err;\n    console.log(&#39;stats: &#39; + JSON.stringify(stats));\n  });\n});</code></pre>\n<p>In busy processes, the programmer is <em>strongly encouraged</em> to use the\nasynchronous versions of these calls. The synchronous versions will block\nthe entire process until they complete--halting all connections.\n\n</p>\n<p>Relative path to filename can be used, remember however that this path will be\nrelative to <code>process.cwd()</code>.\n\n</p>\n<p>Most fs functions let you omit the callback argument. If you do, a default\ncallback is used that ignores errors, but prints a deprecation\nwarning.\n\n</p>\n<p><strong>IMPORTANT</strong>: Omitting the callback is deprecated.  v0.12 will throw the\nerrors as exceptions.\n\n\n</p>\n",
       "methods": [
         {
-          "textRaw": "fs.rename(oldPath, newPath, [callback])",
+          "textRaw": "fs.rename(oldPath, newPath, callback)",
           "type": "method",
           "name": "rename",
           "desc": "<p>Asynchronous rename(2). No arguments other than a possible exception are given\nto the completion callback.\n\n</p>\n",
@@ -6131,8 +6138,7 @@
                   "name": "newPath"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -6157,7 +6163,7 @@
           ]
         },
         {
-          "textRaw": "fs.ftruncate(fd, len, [callback])",
+          "textRaw": "fs.ftruncate(fd, len, callback)",
           "type": "method",
           "name": "ftruncate",
           "desc": "<p>Asynchronous ftruncate(2). No arguments other than a possible exception are\ngiven to the completion callback.\n\n</p>\n",
@@ -6171,8 +6177,7 @@
                   "name": "len"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -6197,7 +6202,7 @@
           ]
         },
         {
-          "textRaw": "fs.truncate(path, len, [callback])",
+          "textRaw": "fs.truncate(path, len, callback)",
           "type": "method",
           "name": "truncate",
           "desc": "<p>Asynchronous truncate(2). No arguments other than a possible exception are\ngiven to the completion callback.\n\n</p>\n",
@@ -6211,8 +6216,7 @@
                   "name": "len"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -6237,7 +6241,7 @@
           ]
         },
         {
-          "textRaw": "fs.chown(path, uid, gid, [callback])",
+          "textRaw": "fs.chown(path, uid, gid, callback)",
           "type": "method",
           "name": "chown",
           "desc": "<p>Asynchronous chown(2). No arguments other than a possible exception are given\nto the completion callback.\n\n</p>\n",
@@ -6254,8 +6258,7 @@
                   "name": "gid"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -6283,7 +6286,7 @@
           ]
         },
         {
-          "textRaw": "fs.fchown(fd, uid, gid, [callback])",
+          "textRaw": "fs.fchown(fd, uid, gid, callback)",
           "type": "method",
           "name": "fchown",
           "desc": "<p>Asynchronous fchown(2). No arguments other than a possible exception are given\nto the completion callback.\n\n</p>\n",
@@ -6300,8 +6303,7 @@
                   "name": "gid"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -6329,7 +6331,7 @@
           ]
         },
         {
-          "textRaw": "fs.lchown(path, uid, gid, [callback])",
+          "textRaw": "fs.lchown(path, uid, gid, callback)",
           "type": "method",
           "name": "lchown",
           "desc": "<p>Asynchronous lchown(2). No arguments other than a possible exception are given\nto the completion callback.\n\n</p>\n",
@@ -6346,8 +6348,7 @@
                   "name": "gid"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -6375,7 +6376,7 @@
           ]
         },
         {
-          "textRaw": "fs.chmod(path, mode, [callback])",
+          "textRaw": "fs.chmod(path, mode, callback)",
           "type": "method",
           "name": "chmod",
           "desc": "<p>Asynchronous chmod(2). No arguments other than a possible exception are given\nto the completion callback.\n\n</p>\n",
@@ -6389,8 +6390,7 @@
                   "name": "mode"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -6415,7 +6415,7 @@
           ]
         },
         {
-          "textRaw": "fs.fchmod(fd, mode, [callback])",
+          "textRaw": "fs.fchmod(fd, mode, callback)",
           "type": "method",
           "name": "fchmod",
           "desc": "<p>Asynchronous fchmod(2). No arguments other than a possible exception\nare given to the completion callback.\n\n</p>\n",
@@ -6429,8 +6429,7 @@
                   "name": "mode"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -6455,7 +6454,7 @@
           ]
         },
         {
-          "textRaw": "fs.lchmod(path, mode, [callback])",
+          "textRaw": "fs.lchmod(path, mode, callback)",
           "type": "method",
           "name": "lchmod",
           "desc": "<p>Asynchronous lchmod(2). No arguments other than a possible exception\nare given to the completion callback.\n\n</p>\n<p>Only available on Mac OS X.\n\n</p>\n",
@@ -6469,8 +6468,7 @@
                   "name": "mode"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -6495,7 +6493,7 @@
           ]
         },
         {
-          "textRaw": "fs.stat(path, [callback])",
+          "textRaw": "fs.stat(path, callback)",
           "type": "method",
           "name": "stat",
           "desc": "<p>Asynchronous stat(2). The callback gets two arguments <code>(err, stats)</code> where\n<code>stats</code> is a <a href=\"#fs_class_fs_stats\">fs.Stats</a> object.  See the <a href=\"#fs_class_fs_stats\">fs.Stats</a>\nsection below for more information.\n\n</p>\n",
@@ -6506,15 +6504,14 @@
                   "name": "path"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
           ]
         },
         {
-          "textRaw": "fs.lstat(path, [callback])",
+          "textRaw": "fs.lstat(path, callback)",
           "type": "method",
           "name": "lstat",
           "desc": "<p>Asynchronous lstat(2). The callback gets two arguments <code>(err, stats)</code> where\n<code>stats</code> is a <code>fs.Stats</code> object. <code>lstat()</code> is identical to <code>stat()</code>, except that if\n<code>path</code> is a symbolic link, then the link itself is stat-ed, not the file that it\nrefers to.\n\n</p>\n",
@@ -6525,15 +6522,14 @@
                   "name": "path"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
           ]
         },
         {
-          "textRaw": "fs.fstat(fd, [callback])",
+          "textRaw": "fs.fstat(fd, callback)",
           "type": "method",
           "name": "fstat",
           "desc": "<p>Asynchronous fstat(2). The callback gets two arguments <code>(err, stats)</code> where\n<code>stats</code> is a <code>fs.Stats</code> object. <code>fstat()</code> is identical to <code>stat()</code>, except that\nthe file to be stat-ed is specified by the file descriptor <code>fd</code>.\n\n</p>\n",
@@ -6544,8 +6540,7 @@
                   "name": "fd"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -6597,7 +6592,7 @@
           ]
         },
         {
-          "textRaw": "fs.link(srcpath, dstpath, [callback])",
+          "textRaw": "fs.link(srcpath, dstpath, callback)",
           "type": "method",
           "name": "link",
           "desc": "<p>Asynchronous link(2). No arguments other than a possible exception are given to\nthe completion callback.\n\n</p>\n",
@@ -6611,8 +6606,7 @@
                   "name": "dstpath"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -6637,7 +6631,7 @@
           ]
         },
         {
-          "textRaw": "fs.symlink(srcpath, dstpath, [type], [callback])",
+          "textRaw": "fs.symlink(srcpath, dstpath, [type], callback)",
           "type": "method",
           "name": "symlink",
           "desc": "<p>Asynchronous symlink(2). No arguments other than a possible exception are given\nto the completion callback.\n<code>type</code> argument can be either <code>&#39;dir&#39;</code>, <code>&#39;file&#39;</code>, or <code>&#39;junction&#39;</code> (default is <code>&#39;file&#39;</code>).  It is only \nused on Windows (ignored on other platforms).\nNote that Windows junction points require the destination path to be absolute.  When using\n<code>&#39;junction&#39;</code>, the <code>destination</code> argument will automatically be normalized to absolute path.\n\n</p>\n",
@@ -6655,8 +6649,7 @@
                   "optional": true
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -6685,7 +6678,7 @@
           ]
         },
         {
-          "textRaw": "fs.readlink(path, [callback])",
+          "textRaw": "fs.readlink(path, callback)",
           "type": "method",
           "name": "readlink",
           "desc": "<p>Asynchronous readlink(2). The callback gets two arguments <code>(err,\nlinkString)</code>.\n\n</p>\n",
@@ -6696,8 +6689,7 @@
                   "name": "path"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -6760,7 +6752,7 @@
           ]
         },
         {
-          "textRaw": "fs.unlink(path, [callback])",
+          "textRaw": "fs.unlink(path, callback)",
           "type": "method",
           "name": "unlink",
           "desc": "<p>Asynchronous unlink(2). No arguments other than a possible exception are given\nto the completion callback.\n\n</p>\n",
@@ -6771,8 +6763,7 @@
                   "name": "path"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -6794,7 +6785,7 @@
           ]
         },
         {
-          "textRaw": "fs.rmdir(path, [callback])",
+          "textRaw": "fs.rmdir(path, callback)",
           "type": "method",
           "name": "rmdir",
           "desc": "<p>Asynchronous rmdir(2). No arguments other than a possible exception are given\nto the completion callback.\n\n</p>\n",
@@ -6805,8 +6796,7 @@
                   "name": "path"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -6828,7 +6818,7 @@
           ]
         },
         {
-          "textRaw": "fs.mkdir(path, [mode], [callback])",
+          "textRaw": "fs.mkdir(path, [mode], callback)",
           "type": "method",
           "name": "mkdir",
           "desc": "<p>Asynchronous mkdir(2). No arguments other than a possible exception are given\nto the completion callback. <code>mode</code> defaults to <code>0777</code>.\n\n</p>\n",
@@ -6843,8 +6833,7 @@
                   "optional": true
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -6870,7 +6859,7 @@
           ]
         },
         {
-          "textRaw": "fs.readdir(path, [callback])",
+          "textRaw": "fs.readdir(path, callback)",
           "type": "method",
           "name": "readdir",
           "desc": "<p>Asynchronous readdir(3).  Reads the contents of a directory.\nThe callback gets two arguments <code>(err, files)</code> where <code>files</code> is an array of\nthe names of the files in the directory excluding <code>&#39;.&#39;</code> and <code>&#39;..&#39;</code>.\n\n</p>\n",
@@ -6881,8 +6870,7 @@
                   "name": "path"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -6904,7 +6892,7 @@
           ]
         },
         {
-          "textRaw": "fs.close(fd, [callback])",
+          "textRaw": "fs.close(fd, callback)",
           "type": "method",
           "name": "close",
           "desc": "<p>Asynchronous close(2).  No arguments other than a possible exception are given\nto the completion callback.\n\n</p>\n",
@@ -6915,8 +6903,7 @@
                   "name": "fd"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -6938,7 +6925,7 @@
           ]
         },
         {
-          "textRaw": "fs.open(path, flags, [mode], [callback])",
+          "textRaw": "fs.open(path, flags, [mode], callback)",
           "type": "method",
           "name": "open",
           "desc": "<p>Asynchronous file open. See open(2). <code>flags</code> can be:\n\n</p>\n<ul>\n<li><p><code>&#39;r&#39;</code> - Open file for reading.\nAn exception occurs if the file does not exist.</p>\n</li>\n<li><p><code>&#39;r+&#39;</code> - Open file for reading and writing.\nAn exception occurs if the file does not exist.</p>\n</li>\n<li><p><code>&#39;rs&#39;</code> - Open file for reading in synchronous mode. Instructs the operating\nsystem to bypass the local file system cache.</p>\n<p>This is primarily useful for opening files on NFS mounts as it allows you to\nskip the potentially stale local cache. It has a very real impact on I/O\nperformance so don&#39;t use this mode unless you need it.</p>\n<p>Note that this doesn&#39;t turn <code>fs.open()</code> into a synchronous blocking call.\nIf that&#39;s what you want then you should be using <code>fs.openSync()</code></p>\n</li>\n<li><p><code>&#39;rs+&#39;</code> - Open file for reading and writing, telling the OS to open it\nsynchronously. See notes for <code>&#39;rs&#39;</code> about using this with caution.</p>\n</li>\n<li><p><code>&#39;w&#39;</code> - Open file for writing.\nThe file is created (if it does not exist) or truncated (if it exists).</p>\n</li>\n<li><p><code>&#39;wx&#39;</code> - Like <code>&#39;w&#39;</code> but opens the file in exclusive mode.</p>\n</li>\n<li><p><code>&#39;w+&#39;</code> - Open file for reading and writing.\nThe file is created (if it does not exist) or truncated (if it exists).</p>\n</li>\n<li><p><code>&#39;wx+&#39;</code> - Like <code>&#39;w+&#39;</code> but opens the file in exclusive mode.</p>\n</li>\n<li><p><code>&#39;a&#39;</code> - Open file for appending.\nThe file is created if it does not exist.</p>\n</li>\n<li><p><code>&#39;ax&#39;</code> - Like <code>&#39;a&#39;</code> but opens the file in exclusive mode.</p>\n</li>\n<li><p><code>&#39;a+&#39;</code> - Open file for reading and appending.\nThe file is created if it does not exist.</p>\n</li>\n<li><p><code>&#39;ax+&#39;</code> - Like <code>&#39;a+&#39;</code> but opens the file in exclusive mode.</p>\n</li>\n</ul>\n<p><code>mode</code> defaults to <code>0666</code>. The callback gets two arguments <code>(err, fd)</code>.\n\n</p>\n<p>Exclusive mode (<code>O_EXCL</code>) ensures that <code>path</code> is newly created. <code>fs.open()</code>\nfails if a file by that name already exists. On POSIX systems, symlinks are\nnot followed. Exclusive mode may or may not work with network file systems.\n\n</p>\n",
@@ -6956,8 +6943,7 @@
                   "optional": true
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -6986,7 +6972,7 @@
           ]
         },
         {
-          "textRaw": "fs.utimes(path, atime, mtime, [callback])",
+          "textRaw": "fs.utimes(path, atime, mtime, callback)",
           "type": "method",
           "name": "utimes",
           "desc": "<p>Change file timestamps of the file referenced by the supplied path.\n\n</p>\n",
@@ -7016,8 +7002,7 @@
                   "name": "mtime"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -7045,7 +7030,7 @@
           ]
         },
         {
-          "textRaw": "fs.futimes(fd, atime, mtime, [callback])",
+          "textRaw": "fs.futimes(fd, atime, mtime, callback)",
           "type": "method",
           "name": "futimes",
           "desc": "<p>Change the file timestamps of a file referenced by the supplied file\ndescriptor.\n\n</p>\n",
@@ -7075,8 +7060,7 @@
                   "name": "mtime"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -7104,7 +7088,7 @@
           ]
         },
         {
-          "textRaw": "fs.fsync(fd, [callback])",
+          "textRaw": "fs.fsync(fd, callback)",
           "type": "method",
           "name": "fsync",
           "desc": "<p>Asynchronous fsync(2). No arguments other than a possible exception are given\nto the completion callback.\n\n</p>\n",
@@ -7115,8 +7099,7 @@
                   "name": "fd"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -7138,7 +7121,7 @@
           ]
         },
         {
-          "textRaw": "fs.write(fd, buffer, offset, length, position, [callback])",
+          "textRaw": "fs.write(fd, buffer, offset, length, position, callback)",
           "type": "method",
           "name": "write",
           "desc": "<p>Write <code>buffer</code> to the file specified by <code>fd</code>.\n\n</p>\n<p><code>offset</code> and <code>length</code> determine the part of the buffer to be written.\n\n</p>\n<p><code>position</code> refers to the offset from the beginning of the file where this data\nshould be written. If <code>position</code> is <code>null</code>, the data will be written at the\ncurrent position.\nSee pwrite(2).\n\n</p>\n<p>The callback will be given three arguments <code>(err, written, buffer)</code> where <code>written</code>\nspecifies how many <em>bytes</em> were written from <code>buffer</code>.\n\n</p>\n<p>Note that it is unsafe to use <code>fs.write</code> multiple times on the same file\nwithout waiting for the callback. For this scenario,\n<code>fs.createWriteStream</code> is strongly recommended.\n\n</p>\n",
@@ -7161,8 +7144,7 @@
                   "name": "position"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -7196,7 +7178,7 @@
           ]
         },
         {
-          "textRaw": "fs.read(fd, buffer, offset, length, position, [callback])",
+          "textRaw": "fs.read(fd, buffer, offset, length, position, callback)",
           "type": "method",
           "name": "read",
           "desc": "<p>Read data from the file specified by <code>fd</code>.\n\n</p>\n<p><code>buffer</code> is the buffer that the data will be written to.\n\n</p>\n<p><code>offset</code> is offset within the buffer where reading will start.\n\n</p>\n<p><code>length</code> is an integer specifying the number of bytes to read.\n\n</p>\n<p><code>position</code> is an integer specifying where to begin reading from in the file.\nIf <code>position</code> is <code>null</code>, data will be read from the current file position.\n\n</p>\n<p>The callback is given the three arguments, <code>(err, bytesRead, buffer)</code>.\n\n</p>\n",
@@ -7219,8 +7201,7 @@
                   "name": "position"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -7254,7 +7235,7 @@
           ]
         },
         {
-          "textRaw": "fs.readFile(filename, [options], [callback])",
+          "textRaw": "fs.readFile(filename, [options], callback)",
           "type": "method",
           "name": "readFile",
           "signatures": [
@@ -7286,8 +7267,9 @@
                   "optional": true
                 },
                 {
+                  "textRaw": "`callback` {Function} ",
                   "name": "callback",
-                  "optional": true
+                  "type": "Function"
                 }
               ]
             },
@@ -7301,8 +7283,7 @@
                   "optional": true
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -7329,7 +7310,7 @@
           ]
         },
         {
-          "textRaw": "fs.writeFile(filename, data, [options], [callback])",
+          "textRaw": "fs.writeFile(filename, data, [options], callback)",
           "type": "method",
           "name": "writeFile",
           "signatures": [
@@ -7372,8 +7353,9 @@
                   "optional": true
                 },
                 {
+                  "textRaw": "`callback` {Function} ",
                   "name": "callback",
-                  "optional": true
+                  "type": "Function"
                 }
               ]
             },
@@ -7390,8 +7372,7 @@
                   "optional": true
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -7421,7 +7402,7 @@
           ]
         },
         {
-          "textRaw": "fs.appendFile(filename, data, [options], [callback])",
+          "textRaw": "fs.appendFile(filename, data, [options], callback)",
           "type": "method",
           "name": "appendFile",
           "signatures": [
@@ -7464,8 +7445,9 @@
                   "optional": true
                 },
                 {
+                  "textRaw": "`callback` {Function} ",
                   "name": "callback",
-                  "optional": true
+                  "type": "Function"
                 }
               ]
             },
@@ -7482,8 +7464,7 @@
                   "optional": true
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -7605,7 +7586,7 @@
           ]
         },
         {
-          "textRaw": "fs.exists(path, [callback])",
+          "textRaw": "fs.exists(path, callback)",
           "type": "method",
           "name": "exists",
           "desc": "<p>Test whether or not the given path exists by checking with the file system.\nThen call the <code>callback</code> argument with either true or false.  Example:\n\n</p>\n<pre><code>fs.exists(&#39;/etc/passwd&#39;, function (exists) {\n  util.debug(exists ? &quot;it&#39;s there&quot; : &quot;no passwd!&quot;);\n});</code></pre>\n",
@@ -7616,8 +7597,7 @@
                   "name": "path"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -7787,7 +7767,7 @@
           "textRaw": "path.join([path1], [path2], [...])",
           "type": "method",
           "name": "join",
-          "desc": "<p>Join all arguments together and normalize the resulting path.\nNon-string arguments are ignored.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>path.join(&#39;/foo&#39;, &#39;bar&#39;, &#39;baz/asdf&#39;, &#39;quux&#39;, &#39;..&#39;)\n// returns\n&#39;/foo/bar/baz/asdf&#39;\n\npath.join(&#39;foo&#39;, {}, &#39;bar&#39;)\n// returns\n&#39;foo/bar&#39;</code></pre>\n",
+          "desc": "<p>Join all arguments together and normalize the resulting path.\n\n</p>\n<p>Arguments must be strings.  In v0.8, non-string arguments were\nsilently ignored.  In v0.10 and up, an exception is thrown.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>path.join(&#39;/foo&#39;, &#39;bar&#39;, &#39;baz/asdf&#39;, &#39;quux&#39;, &#39;..&#39;)\n// returns\n&#39;/foo/bar/baz/asdf&#39;\n\npath.join(&#39;foo&#39;, {}, &#39;bar&#39;)\n// returns\n&#39;foo/bar&#39;</code></pre>\n",
           "signatures": [
             {
               "params": [
@@ -8734,9 +8714,9 @@
       ],
       "classes": [
         {
-          "textRaw": "Class: Socket",
+          "textRaw": "Class: dgram.Socket",
           "type": "class",
-          "name": "Socket",
+          "name": "dgram.Socket",
           "desc": "<p>The dgram Socket class encapsulates the datagram functionality.  It\nshould be created via <code>dgram.createSocket(type, [callback])</code>.\n\n</p>\n",
           "events": [
             {
@@ -8770,7 +8750,7 @@
           ],
           "methods": [
             {
-              "textRaw": "dgram.send(buf, offset, length, port, address, [callback])",
+              "textRaw": "socket.send(buf, offset, length, port, address, [callback])",
               "type": "method",
               "name": "send",
               "signatures": [
@@ -8836,7 +8816,7 @@
               "desc": "<p>For UDP sockets, the destination port and IP address must be specified.  A string\nmay be supplied for the <code>address</code> parameter, and it will be resolved with DNS.  An\noptional callback may be specified to detect any DNS errors and when <code>buf</code> may be\nre-used.  Note that DNS lookups will delay the time that a send takes place, at\nleast until the next tick.  The only way to know for sure that a send has taken place\nis to use the callback.\n\n</p>\n<p>If the socket has not been previously bound with a call to <code>bind</code>, it&#39;s\nassigned a random port number and bound to the &quot;all interfaces&quot; address\n(0.0.0.0 for <code>udp4</code> sockets, ::0 for <code>udp6</code> sockets).\n\n</p>\n<p>Example of sending a UDP packet to a random port on <code>localhost</code>;\n\n</p>\n<pre><code>var dgram = require(&#39;dgram&#39;);\nvar message = new Buffer(&quot;Some bytes&quot;);\nvar client = dgram.createSocket(&quot;udp4&quot;);\nclient.send(message, 0, message.length, 41234, &quot;localhost&quot;, function(err, bytes) {\n  client.close();\n});</code></pre>\n<p><strong>A Note about UDP datagram size</strong>\n\n</p>\n<p>The maximum size of an <code>IPv4/v6</code> datagram depends on the <code>MTU</code> (<em>Maximum Transmission Unit</em>)\nand on the <code>Payload Length</code> field size.\n\n</p>\n<ul>\n<li><p>The <code>Payload Length</code> field is <code>16 bits</code> wide, which means that a normal payload\ncannot be larger than 64K octets including internet header and data\n(65,507 bytes = 65,535 − 8 bytes UDP header − 20 bytes IP header);\nthis is generally true for loopback interfaces, but such long datagrams\nare impractical for most hosts and networks.</p>\n</li>\n<li><p>The <code>MTU</code> is the largest size a given link layer technology can support for datagrams.\nFor any link, <code>IPv4</code> mandates a minimum <code>MTU</code> of <code>68</code> octets, while the recommended <code>MTU</code>\nfor IPv4 is <code>576</code> (typically recommended as the <code>MTU</code> for dial-up type applications),\nwhether they arrive whole or in fragments.</p>\n<p>For <code>IPv6</code>, the minimum <code>MTU</code> is <code>1280</code> octets, however, the mandatory minimum\nfragment reassembly buffer size is <code>1500</code> octets.\nThe value of <code>68</code> octets is very small, since most current link layer technologies have\na minimum <code>MTU</code> of <code>1500</code> (like Ethernet).</p>\n</li>\n</ul>\n<p>Note that it&#39;s impossible to know in advance the MTU of each link through which\na packet might travel, and that generally sending a datagram greater than\nthe (receiver) <code>MTU</code> won&#39;t work (the packet gets silently dropped, without\ninforming the source that the data did not reach its intended recipient).\n\n</p>\n"
             },
             {
-              "textRaw": "dgram.bind(port, [address], [callback])",
+              "textRaw": "socket.bind(port, [address], [callback])",
               "type": "method",
               "name": "bind",
               "signatures": [
@@ -8880,7 +8860,7 @@
               "desc": "<p>For UDP sockets, listen for datagrams on a named <code>port</code> and optional <code>address</code>.\nIf <code>address</code> is not specified, the OS will try to listen on all addresses.\n\n</p>\n<p>The <code>callback</code> argument, if provided, is added as a one-shot <code>&#39;listening&#39;</code>\nevent listener.\n\n</p>\n<p>Example of a UDP server listening on port 41234:\n\n</p>\n<pre><code>var dgram = require(&quot;dgram&quot;);\n\nvar server = dgram.createSocket(&quot;udp4&quot;);\n\nserver.on(&quot;message&quot;, function (msg, rinfo) {\n  console.log(&quot;server got: &quot; + msg + &quot; from &quot; +\n    rinfo.address + &quot;:&quot; + rinfo.port);\n});\n\nserver.on(&quot;listening&quot;, function () {\n  var address = server.address();\n  console.log(&quot;server listening &quot; +\n      address.address + &quot;:&quot; + address.port);\n});\n\nserver.bind(41234);\n// server listening 0.0.0.0:41234</code></pre>\n"
             },
             {
-              "textRaw": "dgram.close()",
+              "textRaw": "socket.close()",
               "type": "method",
               "name": "close",
               "desc": "<p>Close the underlying socket and stop listening for data on it.\n\n</p>\n",
@@ -8891,7 +8871,7 @@
               ]
             },
             {
-              "textRaw": "dgram.address()",
+              "textRaw": "socket.address()",
               "type": "method",
               "name": "address",
               "desc": "<p>Returns an object containing the address information for a socket.  For UDP sockets,\nthis object will contain <code>address</code> , <code>family</code> and <code>port</code>.\n\n</p>\n",
@@ -8902,7 +8882,7 @@
               ]
             },
             {
-              "textRaw": "dgram.setBroadcast(flag)",
+              "textRaw": "socket.setBroadcast(flag)",
               "type": "method",
               "name": "setBroadcast",
               "signatures": [
@@ -8926,7 +8906,7 @@
               "desc": "<p>Sets or clears the <code>SO_BROADCAST</code> socket option.  When this option is set, UDP packets\nmay be sent to a local interface&#39;s broadcast address.\n\n</p>\n"
             },
             {
-              "textRaw": "dgram.setTTL(ttl)",
+              "textRaw": "socket.setTTL(ttl)",
               "type": "method",
               "name": "setTTL",
               "signatures": [
@@ -8950,7 +8930,7 @@
               "desc": "<p>Sets the <code>IP_TTL</code> socket option.  TTL stands for &quot;Time to Live,&quot; but in this context it\nspecifies the number of IP hops that a packet is allowed to go through.  Each router or\ngateway that forwards a packet decrements the TTL.  If the TTL is decremented to 0 by a\nrouter, it will not be forwarded.  Changing TTL values is typically done for network\nprobes or when multicasting.\n\n</p>\n<p>The argument to <code>setTTL()</code> is a number of hops between 1 and 255.  The default on most\nsystems is 64.\n\n</p>\n"
             },
             {
-              "textRaw": "dgram.setMulticastTTL(ttl)",
+              "textRaw": "socket.setMulticastTTL(ttl)",
               "type": "method",
               "name": "setMulticastTTL",
               "signatures": [
@@ -8974,7 +8954,7 @@
               "desc": "<p>Sets the <code>IP_MULTICAST_TTL</code> socket option.  TTL stands for &quot;Time to Live,&quot; but in this\ncontext it specifies the number of IP hops that a packet is allowed to go through,\nspecifically for multicast traffic.  Each router or gateway that forwards a packet\ndecrements the TTL. If the TTL is decremented to 0 by a router, it will not be forwarded.\n\n</p>\n<p>The argument to <code>setMulticastTTL()</code> is a number of hops between 0 and 255.  The default on most\nsystems is 1.\n\n</p>\n"
             },
             {
-              "textRaw": "dgram.setMulticastLoopback(flag)",
+              "textRaw": "socket.setMulticastLoopback(flag)",
               "type": "method",
               "name": "setMulticastLoopback",
               "signatures": [
@@ -8998,7 +8978,7 @@
               "desc": "<p>Sets or clears the <code>IP_MULTICAST_LOOP</code> socket option.  When this option is set, multicast\npackets will also be received on the local interface.\n\n</p>\n"
             },
             {
-              "textRaw": "dgram.addMembership(multicastAddress, [multicastInterface])",
+              "textRaw": "socket.addMembership(multicastAddress, [multicastInterface])",
               "type": "method",
               "name": "addMembership",
               "signatures": [
@@ -9032,7 +9012,7 @@
               "desc": "<p>Tells the kernel to join a multicast group with <code>IP_ADD_MEMBERSHIP</code> socket option.\n\n</p>\n<p>If <code>multicastInterface</code> is not specified, the OS will try to add membership to all valid\ninterfaces.\n\n</p>\n"
             },
             {
-              "textRaw": "dgram.dropMembership(multicastAddress, [multicastInterface])",
+              "textRaw": "socket.dropMembership(multicastAddress, [multicastInterface])",
               "type": "method",
               "name": "dropMembership",
               "signatures": [
@@ -9066,7 +9046,7 @@
               "desc": "<p>Opposite of <code>addMembership</code> - tells the kernel to leave a multicast group with\n<code>IP_DROP_MEMBERSHIP</code> socket option. This is automatically called by the kernel\nwhen the socket is closed or process terminates, so most apps will never need to call\nthis.\n\n</p>\n<p>If <code>multicastInterface</code> is not specified, the OS will try to drop membership to all valid\ninterfaces.\n\n</p>\n"
             },
             {
-              "textRaw": "dgram.unref()",
+              "textRaw": "socket.unref()",
               "type": "method",
               "name": "unref",
               "desc": "<p>Calling <code>unref</code> on a socket will allow the program to exit if this is the only\nactive socket in the event system. If the socket is already <code>unref</code>d calling\n<code>unref</code> again will have no effect.\n\n</p>\n",
@@ -9077,7 +9057,7 @@
               ]
             },
             {
-              "textRaw": "dgram.ref()",
+              "textRaw": "socket.ref()",
               "type": "method",
               "name": "ref",
               "desc": "<p>Opposite of <code>unref</code>, calling <code>ref</code> on a previously <code>unref</code>d socket will <em>not</em>\nlet the program exit if it&#39;s the only socket left (the default behavior). If\nthe socket is <code>ref</code>d calling <code>ref</code> again will have no effect.\n\n</p>\n",

@@ -6,10 +6,10 @@
       "name": "fs",
       "stability": 3,
       "stabilityText": "Stable",
-      "desc": "<p>File I/O is provided by simple wrappers around standard POSIX functions.  To\nuse this module do <code>require(&#39;fs&#39;)</code>. All the methods have asynchronous and\nsynchronous forms.\n\n</p>\n<p>The asynchronous form always take a completion callback as its last argument.\nThe arguments passed to the completion callback depend on the method, but the\nfirst argument is always reserved for an exception. If the operation was\ncompleted successfully, then the first argument will be <code>null</code> or <code>undefined</code>.\n\n</p>\n<p>When using the synchronous form any exceptions are immediately thrown.\nYou can use try/catch to handle exceptions or allow them to bubble up.\n\n</p>\n<p>Here is an example of the asynchronous version:\n\n</p>\n<pre><code>var fs = require(&#39;fs&#39;);\n\nfs.unlink(&#39;/tmp/hello&#39;, function (err) {\n  if (err) throw err;\n  console.log(&#39;successfully deleted /tmp/hello&#39;);\n});</code></pre>\n<p>Here is the synchronous version:\n\n</p>\n<pre><code>var fs = require(&#39;fs&#39;);\n\nfs.unlinkSync(&#39;/tmp/hello&#39;)\nconsole.log(&#39;successfully deleted /tmp/hello&#39;);</code></pre>\n<p>With the asynchronous methods there is no guaranteed ordering. So the\nfollowing is prone to error:\n\n</p>\n<pre><code>fs.rename(&#39;/tmp/hello&#39;, &#39;/tmp/world&#39;, function (err) {\n  if (err) throw err;\n  console.log(&#39;renamed complete&#39;);\n});\nfs.stat(&#39;/tmp/world&#39;, function (err, stats) {\n  if (err) throw err;\n  console.log(&#39;stats: &#39; + JSON.stringify(stats));\n});</code></pre>\n<p>It could be that <code>fs.stat</code> is executed before <code>fs.rename</code>.\nThe correct way to do this is to chain the callbacks.\n\n</p>\n<pre><code>fs.rename(&#39;/tmp/hello&#39;, &#39;/tmp/world&#39;, function (err) {\n  if (err) throw err;\n  fs.stat(&#39;/tmp/world&#39;, function (err, stats) {\n    if (err) throw err;\n    console.log(&#39;stats: &#39; + JSON.stringify(stats));\n  });\n});</code></pre>\n<p>In busy processes, the programmer is <em>strongly encouraged</em> to use the\nasynchronous versions of these calls. The synchronous versions will block\nthe entire process until they complete--halting all connections.\n\n</p>\n<p>Relative path to filename can be used, remember however that this path will be\nrelative to <code>process.cwd()</code>.\n\n</p>\n<p>Most fs functions let you omit the callback argument. If you do, a default\ncallback is used that rethrows errors. To get a trace to the original call\nsite, set the NODE_DEBUG environment variable:\n\n</p>\n<pre><code>$ cat script.js\nfunction bad() {\n  require(&#39;fs&#39;).readFile(&#39;/&#39;);\n}\nbad();\n\n$ env NODE_DEBUG=fs node script.js\nfs.js:66\n        throw err;\n              ^\nError: EISDIR, read\n    at rethrow (fs.js:61:21)\n    at maybeCallback (fs.js:79:42)\n    at Object.fs.readFile (fs.js:153:18)\n    at bad (/path/to/script.js:2:17)\n    at Object.&lt;anonymous&gt; (/path/to/script.js:5:1)\n    &lt;etc.&gt;</code></pre>\n",
+      "desc": "<p>File I/O is provided by simple wrappers around standard POSIX functions.  To\nuse this module do <code>require(&#39;fs&#39;)</code>. All the methods have asynchronous and\nsynchronous forms.\n\n</p>\n<p>The asynchronous form always take a completion callback as its last argument.\nThe arguments passed to the completion callback depend on the method, but the\nfirst argument is always reserved for an exception. If the operation was\ncompleted successfully, then the first argument will be <code>null</code> or <code>undefined</code>.\n\n</p>\n<p>When using the synchronous form any exceptions are immediately thrown.\nYou can use try/catch to handle exceptions or allow them to bubble up.\n\n</p>\n<p>Here is an example of the asynchronous version:\n\n</p>\n<pre><code>var fs = require(&#39;fs&#39;);\n\nfs.unlink(&#39;/tmp/hello&#39;, function (err) {\n  if (err) throw err;\n  console.log(&#39;successfully deleted /tmp/hello&#39;);\n});</code></pre>\n<p>Here is the synchronous version:\n\n</p>\n<pre><code>var fs = require(&#39;fs&#39;);\n\nfs.unlinkSync(&#39;/tmp/hello&#39;)\nconsole.log(&#39;successfully deleted /tmp/hello&#39;);</code></pre>\n<p>With the asynchronous methods there is no guaranteed ordering. So the\nfollowing is prone to error:\n\n</p>\n<pre><code>fs.rename(&#39;/tmp/hello&#39;, &#39;/tmp/world&#39;, function (err) {\n  if (err) throw err;\n  console.log(&#39;renamed complete&#39;);\n});\nfs.stat(&#39;/tmp/world&#39;, function (err, stats) {\n  if (err) throw err;\n  console.log(&#39;stats: &#39; + JSON.stringify(stats));\n});</code></pre>\n<p>It could be that <code>fs.stat</code> is executed before <code>fs.rename</code>.\nThe correct way to do this is to chain the callbacks.\n\n</p>\n<pre><code>fs.rename(&#39;/tmp/hello&#39;, &#39;/tmp/world&#39;, function (err) {\n  if (err) throw err;\n  fs.stat(&#39;/tmp/world&#39;, function (err, stats) {\n    if (err) throw err;\n    console.log(&#39;stats: &#39; + JSON.stringify(stats));\n  });\n});</code></pre>\n<p>In busy processes, the programmer is <em>strongly encouraged</em> to use the\nasynchronous versions of these calls. The synchronous versions will block\nthe entire process until they complete--halting all connections.\n\n</p>\n<p>Relative path to filename can be used, remember however that this path will be\nrelative to <code>process.cwd()</code>.\n\n</p>\n<p>Most fs functions let you omit the callback argument. If you do, a default\ncallback is used that ignores errors, but prints a deprecation\nwarning.\n\n</p>\n<p><strong>IMPORTANT</strong>: Omitting the callback is deprecated.  v0.12 will throw the\nerrors as exceptions.\n\n\n</p>\n",
       "methods": [
         {
-          "textRaw": "fs.rename(oldPath, newPath, [callback])",
+          "textRaw": "fs.rename(oldPath, newPath, callback)",
           "type": "method",
           "name": "rename",
           "desc": "<p>Asynchronous rename(2). No arguments other than a possible exception are given\nto the completion callback.\n\n</p>\n",
@@ -23,8 +23,7 @@
                   "name": "newPath"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -49,7 +48,7 @@
           ]
         },
         {
-          "textRaw": "fs.ftruncate(fd, len, [callback])",
+          "textRaw": "fs.ftruncate(fd, len, callback)",
           "type": "method",
           "name": "ftruncate",
           "desc": "<p>Asynchronous ftruncate(2). No arguments other than a possible exception are\ngiven to the completion callback.\n\n</p>\n",
@@ -63,8 +62,7 @@
                   "name": "len"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -89,7 +87,7 @@
           ]
         },
         {
-          "textRaw": "fs.truncate(path, len, [callback])",
+          "textRaw": "fs.truncate(path, len, callback)",
           "type": "method",
           "name": "truncate",
           "desc": "<p>Asynchronous truncate(2). No arguments other than a possible exception are\ngiven to the completion callback.\n\n</p>\n",
@@ -103,8 +101,7 @@
                   "name": "len"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -129,7 +126,7 @@
           ]
         },
         {
-          "textRaw": "fs.chown(path, uid, gid, [callback])",
+          "textRaw": "fs.chown(path, uid, gid, callback)",
           "type": "method",
           "name": "chown",
           "desc": "<p>Asynchronous chown(2). No arguments other than a possible exception are given\nto the completion callback.\n\n</p>\n",
@@ -146,8 +143,7 @@
                   "name": "gid"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -175,7 +171,7 @@
           ]
         },
         {
-          "textRaw": "fs.fchown(fd, uid, gid, [callback])",
+          "textRaw": "fs.fchown(fd, uid, gid, callback)",
           "type": "method",
           "name": "fchown",
           "desc": "<p>Asynchronous fchown(2). No arguments other than a possible exception are given\nto the completion callback.\n\n</p>\n",
@@ -192,8 +188,7 @@
                   "name": "gid"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -221,7 +216,7 @@
           ]
         },
         {
-          "textRaw": "fs.lchown(path, uid, gid, [callback])",
+          "textRaw": "fs.lchown(path, uid, gid, callback)",
           "type": "method",
           "name": "lchown",
           "desc": "<p>Asynchronous lchown(2). No arguments other than a possible exception are given\nto the completion callback.\n\n</p>\n",
@@ -238,8 +233,7 @@
                   "name": "gid"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -267,7 +261,7 @@
           ]
         },
         {
-          "textRaw": "fs.chmod(path, mode, [callback])",
+          "textRaw": "fs.chmod(path, mode, callback)",
           "type": "method",
           "name": "chmod",
           "desc": "<p>Asynchronous chmod(2). No arguments other than a possible exception are given\nto the completion callback.\n\n</p>\n",
@@ -281,8 +275,7 @@
                   "name": "mode"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -307,7 +300,7 @@
           ]
         },
         {
-          "textRaw": "fs.fchmod(fd, mode, [callback])",
+          "textRaw": "fs.fchmod(fd, mode, callback)",
           "type": "method",
           "name": "fchmod",
           "desc": "<p>Asynchronous fchmod(2). No arguments other than a possible exception\nare given to the completion callback.\n\n</p>\n",
@@ -321,8 +314,7 @@
                   "name": "mode"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -347,7 +339,7 @@
           ]
         },
         {
-          "textRaw": "fs.lchmod(path, mode, [callback])",
+          "textRaw": "fs.lchmod(path, mode, callback)",
           "type": "method",
           "name": "lchmod",
           "desc": "<p>Asynchronous lchmod(2). No arguments other than a possible exception\nare given to the completion callback.\n\n</p>\n<p>Only available on Mac OS X.\n\n</p>\n",
@@ -361,8 +353,7 @@
                   "name": "mode"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -387,7 +378,7 @@
           ]
         },
         {
-          "textRaw": "fs.stat(path, [callback])",
+          "textRaw": "fs.stat(path, callback)",
           "type": "method",
           "name": "stat",
           "desc": "<p>Asynchronous stat(2). The callback gets two arguments <code>(err, stats)</code> where\n<code>stats</code> is a <a href=\"#fs_class_fs_stats\">fs.Stats</a> object.  See the <a href=\"#fs_class_fs_stats\">fs.Stats</a>\nsection below for more information.\n\n</p>\n",
@@ -398,15 +389,14 @@
                   "name": "path"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
           ]
         },
         {
-          "textRaw": "fs.lstat(path, [callback])",
+          "textRaw": "fs.lstat(path, callback)",
           "type": "method",
           "name": "lstat",
           "desc": "<p>Asynchronous lstat(2). The callback gets two arguments <code>(err, stats)</code> where\n<code>stats</code> is a <code>fs.Stats</code> object. <code>lstat()</code> is identical to <code>stat()</code>, except that if\n<code>path</code> is a symbolic link, then the link itself is stat-ed, not the file that it\nrefers to.\n\n</p>\n",
@@ -417,15 +407,14 @@
                   "name": "path"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
           ]
         },
         {
-          "textRaw": "fs.fstat(fd, [callback])",
+          "textRaw": "fs.fstat(fd, callback)",
           "type": "method",
           "name": "fstat",
           "desc": "<p>Asynchronous fstat(2). The callback gets two arguments <code>(err, stats)</code> where\n<code>stats</code> is a <code>fs.Stats</code> object. <code>fstat()</code> is identical to <code>stat()</code>, except that\nthe file to be stat-ed is specified by the file descriptor <code>fd</code>.\n\n</p>\n",
@@ -436,8 +425,7 @@
                   "name": "fd"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -489,7 +477,7 @@
           ]
         },
         {
-          "textRaw": "fs.link(srcpath, dstpath, [callback])",
+          "textRaw": "fs.link(srcpath, dstpath, callback)",
           "type": "method",
           "name": "link",
           "desc": "<p>Asynchronous link(2). No arguments other than a possible exception are given to\nthe completion callback.\n\n</p>\n",
@@ -503,8 +491,7 @@
                   "name": "dstpath"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -529,7 +516,7 @@
           ]
         },
         {
-          "textRaw": "fs.symlink(srcpath, dstpath, [type], [callback])",
+          "textRaw": "fs.symlink(srcpath, dstpath, [type], callback)",
           "type": "method",
           "name": "symlink",
           "desc": "<p>Asynchronous symlink(2). No arguments other than a possible exception are given\nto the completion callback.\n<code>type</code> argument can be either <code>&#39;dir&#39;</code>, <code>&#39;file&#39;</code>, or <code>&#39;junction&#39;</code> (default is <code>&#39;file&#39;</code>).  It is only \nused on Windows (ignored on other platforms).\nNote that Windows junction points require the destination path to be absolute.  When using\n<code>&#39;junction&#39;</code>, the <code>destination</code> argument will automatically be normalized to absolute path.\n\n</p>\n",
@@ -547,8 +534,7 @@
                   "optional": true
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -577,7 +563,7 @@
           ]
         },
         {
-          "textRaw": "fs.readlink(path, [callback])",
+          "textRaw": "fs.readlink(path, callback)",
           "type": "method",
           "name": "readlink",
           "desc": "<p>Asynchronous readlink(2). The callback gets two arguments <code>(err,\nlinkString)</code>.\n\n</p>\n",
@@ -588,8 +574,7 @@
                   "name": "path"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -652,7 +637,7 @@
           ]
         },
         {
-          "textRaw": "fs.unlink(path, [callback])",
+          "textRaw": "fs.unlink(path, callback)",
           "type": "method",
           "name": "unlink",
           "desc": "<p>Asynchronous unlink(2). No arguments other than a possible exception are given\nto the completion callback.\n\n</p>\n",
@@ -663,8 +648,7 @@
                   "name": "path"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -686,7 +670,7 @@
           ]
         },
         {
-          "textRaw": "fs.rmdir(path, [callback])",
+          "textRaw": "fs.rmdir(path, callback)",
           "type": "method",
           "name": "rmdir",
           "desc": "<p>Asynchronous rmdir(2). No arguments other than a possible exception are given\nto the completion callback.\n\n</p>\n",
@@ -697,8 +681,7 @@
                   "name": "path"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -720,7 +703,7 @@
           ]
         },
         {
-          "textRaw": "fs.mkdir(path, [mode], [callback])",
+          "textRaw": "fs.mkdir(path, [mode], callback)",
           "type": "method",
           "name": "mkdir",
           "desc": "<p>Asynchronous mkdir(2). No arguments other than a possible exception are given\nto the completion callback. <code>mode</code> defaults to <code>0777</code>.\n\n</p>\n",
@@ -735,8 +718,7 @@
                   "optional": true
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -762,7 +744,7 @@
           ]
         },
         {
-          "textRaw": "fs.readdir(path, [callback])",
+          "textRaw": "fs.readdir(path, callback)",
           "type": "method",
           "name": "readdir",
           "desc": "<p>Asynchronous readdir(3).  Reads the contents of a directory.\nThe callback gets two arguments <code>(err, files)</code> where <code>files</code> is an array of\nthe names of the files in the directory excluding <code>&#39;.&#39;</code> and <code>&#39;..&#39;</code>.\n\n</p>\n",
@@ -773,8 +755,7 @@
                   "name": "path"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -796,7 +777,7 @@
           ]
         },
         {
-          "textRaw": "fs.close(fd, [callback])",
+          "textRaw": "fs.close(fd, callback)",
           "type": "method",
           "name": "close",
           "desc": "<p>Asynchronous close(2).  No arguments other than a possible exception are given\nto the completion callback.\n\n</p>\n",
@@ -807,8 +788,7 @@
                   "name": "fd"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -830,7 +810,7 @@
           ]
         },
         {
-          "textRaw": "fs.open(path, flags, [mode], [callback])",
+          "textRaw": "fs.open(path, flags, [mode], callback)",
           "type": "method",
           "name": "open",
           "desc": "<p>Asynchronous file open. See open(2). <code>flags</code> can be:\n\n</p>\n<ul>\n<li><p><code>&#39;r&#39;</code> - Open file for reading.\nAn exception occurs if the file does not exist.</p>\n</li>\n<li><p><code>&#39;r+&#39;</code> - Open file for reading and writing.\nAn exception occurs if the file does not exist.</p>\n</li>\n<li><p><code>&#39;rs&#39;</code> - Open file for reading in synchronous mode. Instructs the operating\nsystem to bypass the local file system cache.</p>\n<p>This is primarily useful for opening files on NFS mounts as it allows you to\nskip the potentially stale local cache. It has a very real impact on I/O\nperformance so don&#39;t use this mode unless you need it.</p>\n<p>Note that this doesn&#39;t turn <code>fs.open()</code> into a synchronous blocking call.\nIf that&#39;s what you want then you should be using <code>fs.openSync()</code></p>\n</li>\n<li><p><code>&#39;rs+&#39;</code> - Open file for reading and writing, telling the OS to open it\nsynchronously. See notes for <code>&#39;rs&#39;</code> about using this with caution.</p>\n</li>\n<li><p><code>&#39;w&#39;</code> - Open file for writing.\nThe file is created (if it does not exist) or truncated (if it exists).</p>\n</li>\n<li><p><code>&#39;wx&#39;</code> - Like <code>&#39;w&#39;</code> but opens the file in exclusive mode.</p>\n</li>\n<li><p><code>&#39;w+&#39;</code> - Open file for reading and writing.\nThe file is created (if it does not exist) or truncated (if it exists).</p>\n</li>\n<li><p><code>&#39;wx+&#39;</code> - Like <code>&#39;w+&#39;</code> but opens the file in exclusive mode.</p>\n</li>\n<li><p><code>&#39;a&#39;</code> - Open file for appending.\nThe file is created if it does not exist.</p>\n</li>\n<li><p><code>&#39;ax&#39;</code> - Like <code>&#39;a&#39;</code> but opens the file in exclusive mode.</p>\n</li>\n<li><p><code>&#39;a+&#39;</code> - Open file for reading and appending.\nThe file is created if it does not exist.</p>\n</li>\n<li><p><code>&#39;ax+&#39;</code> - Like <code>&#39;a+&#39;</code> but opens the file in exclusive mode.</p>\n</li>\n</ul>\n<p><code>mode</code> defaults to <code>0666</code>. The callback gets two arguments <code>(err, fd)</code>.\n\n</p>\n<p>Exclusive mode (<code>O_EXCL</code>) ensures that <code>path</code> is newly created. <code>fs.open()</code>\nfails if a file by that name already exists. On POSIX systems, symlinks are\nnot followed. Exclusive mode may or may not work with network file systems.\n\n</p>\n",
@@ -848,8 +828,7 @@
                   "optional": true
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -878,7 +857,7 @@
           ]
         },
         {
-          "textRaw": "fs.utimes(path, atime, mtime, [callback])",
+          "textRaw": "fs.utimes(path, atime, mtime, callback)",
           "type": "method",
           "name": "utimes",
           "desc": "<p>Change file timestamps of the file referenced by the supplied path.\n\n</p>\n",
@@ -908,8 +887,7 @@
                   "name": "mtime"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -937,7 +915,7 @@
           ]
         },
         {
-          "textRaw": "fs.futimes(fd, atime, mtime, [callback])",
+          "textRaw": "fs.futimes(fd, atime, mtime, callback)",
           "type": "method",
           "name": "futimes",
           "desc": "<p>Change the file timestamps of a file referenced by the supplied file\ndescriptor.\n\n</p>\n",
@@ -967,8 +945,7 @@
                   "name": "mtime"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -996,7 +973,7 @@
           ]
         },
         {
-          "textRaw": "fs.fsync(fd, [callback])",
+          "textRaw": "fs.fsync(fd, callback)",
           "type": "method",
           "name": "fsync",
           "desc": "<p>Asynchronous fsync(2). No arguments other than a possible exception are given\nto the completion callback.\n\n</p>\n",
@@ -1007,8 +984,7 @@
                   "name": "fd"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -1030,7 +1006,7 @@
           ]
         },
         {
-          "textRaw": "fs.write(fd, buffer, offset, length, position, [callback])",
+          "textRaw": "fs.write(fd, buffer, offset, length, position, callback)",
           "type": "method",
           "name": "write",
           "desc": "<p>Write <code>buffer</code> to the file specified by <code>fd</code>.\n\n</p>\n<p><code>offset</code> and <code>length</code> determine the part of the buffer to be written.\n\n</p>\n<p><code>position</code> refers to the offset from the beginning of the file where this data\nshould be written. If <code>position</code> is <code>null</code>, the data will be written at the\ncurrent position.\nSee pwrite(2).\n\n</p>\n<p>The callback will be given three arguments <code>(err, written, buffer)</code> where <code>written</code>\nspecifies how many <em>bytes</em> were written from <code>buffer</code>.\n\n</p>\n<p>Note that it is unsafe to use <code>fs.write</code> multiple times on the same file\nwithout waiting for the callback. For this scenario,\n<code>fs.createWriteStream</code> is strongly recommended.\n\n</p>\n",
@@ -1053,8 +1029,7 @@
                   "name": "position"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -1088,7 +1063,7 @@
           ]
         },
         {
-          "textRaw": "fs.read(fd, buffer, offset, length, position, [callback])",
+          "textRaw": "fs.read(fd, buffer, offset, length, position, callback)",
           "type": "method",
           "name": "read",
           "desc": "<p>Read data from the file specified by <code>fd</code>.\n\n</p>\n<p><code>buffer</code> is the buffer that the data will be written to.\n\n</p>\n<p><code>offset</code> is offset within the buffer where reading will start.\n\n</p>\n<p><code>length</code> is an integer specifying the number of bytes to read.\n\n</p>\n<p><code>position</code> is an integer specifying where to begin reading from in the file.\nIf <code>position</code> is <code>null</code>, data will be read from the current file position.\n\n</p>\n<p>The callback is given the three arguments, <code>(err, bytesRead, buffer)</code>.\n\n</p>\n",
@@ -1111,8 +1086,7 @@
                   "name": "position"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -1146,7 +1120,7 @@
           ]
         },
         {
-          "textRaw": "fs.readFile(filename, [options], [callback])",
+          "textRaw": "fs.readFile(filename, [options], callback)",
           "type": "method",
           "name": "readFile",
           "signatures": [
@@ -1178,8 +1152,9 @@
                   "optional": true
                 },
                 {
+                  "textRaw": "`callback` {Function} ",
                   "name": "callback",
-                  "optional": true
+                  "type": "Function"
                 }
               ]
             },
@@ -1193,8 +1168,7 @@
                   "optional": true
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -1221,7 +1195,7 @@
           ]
         },
         {
-          "textRaw": "fs.writeFile(filename, data, [options], [callback])",
+          "textRaw": "fs.writeFile(filename, data, [options], callback)",
           "type": "method",
           "name": "writeFile",
           "signatures": [
@@ -1264,8 +1238,9 @@
                   "optional": true
                 },
                 {
+                  "textRaw": "`callback` {Function} ",
                   "name": "callback",
-                  "optional": true
+                  "type": "Function"
                 }
               ]
             },
@@ -1282,8 +1257,7 @@
                   "optional": true
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -1313,7 +1287,7 @@
           ]
         },
         {
-          "textRaw": "fs.appendFile(filename, data, [options], [callback])",
+          "textRaw": "fs.appendFile(filename, data, [options], callback)",
           "type": "method",
           "name": "appendFile",
           "signatures": [
@@ -1356,8 +1330,9 @@
                   "optional": true
                 },
                 {
+                  "textRaw": "`callback` {Function} ",
                   "name": "callback",
-                  "optional": true
+                  "type": "Function"
                 }
               ]
             },
@@ -1374,8 +1349,7 @@
                   "optional": true
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
@@ -1497,7 +1471,7 @@
           ]
         },
         {
-          "textRaw": "fs.exists(path, [callback])",
+          "textRaw": "fs.exists(path, callback)",
           "type": "method",
           "name": "exists",
           "desc": "<p>Test whether or not the given path exists by checking with the file system.\nThen call the <code>callback</code> argument with either true or false.  Example:\n\n</p>\n<pre><code>fs.exists(&#39;/etc/passwd&#39;, function (exists) {\n  util.debug(exists ? &quot;it&#39;s there&quot; : &quot;no passwd!&quot;);\n});</code></pre>\n",
@@ -1508,8 +1482,7 @@
                   "name": "path"
                 },
                 {
-                  "name": "callback",
-                  "optional": true
+                  "name": "callback"
                 }
               ]
             }
