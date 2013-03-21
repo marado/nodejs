@@ -1,8 +1,8 @@
-nodejs (0.10.1~dfsg1-1) UNRELEASED; urgency=low
+nodejs (0.10.1~dfsg1-1) experimental; urgency=low
 
   * New upstream release. 
 
- -- Jérémy Lal <kapouer@melix.org>  Thu, 21 Mar 2013 22:45:44 +0100
+ -- Jérémy Lal <kapouer@melix.org>  Fri, 22 Mar 2013 00:11:25 +0100
 
 nodejs (0.10.0~dfsg1-2) experimental; urgency=low
 
