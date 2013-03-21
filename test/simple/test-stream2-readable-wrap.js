@@ -21,44 +21,74 @@
 
 var common = require('../common');
 var assert = require('assert');
-var exec = require('child_process').exec;
-var path = require('path');
 
-var callbacks = 0;
+var Readable = require('_stream_readable');
+var Writable = require('_stream_writable');
+var EE = require('events').EventEmitter;
 
-function test(env, cb) {
-  var filename = path.join(common.fixturesDir, 'test-fs-readfile-error.js');
-  var execPath = process.execPath + ' --throw-deprecation ' + filename;
-  var options = { env: env || {} };
-  exec(execPath, options, function(err, stdout, stderr) {
-    assert(err);
-    assert.equal(stdout, '');
-    assert.notEqual(stderr, '');
-    cb('' + stderr);
-  });
+var old = new EE;
+var r = new Readable({ highWaterMark: 10 });
+assert.equal(r, r.wrap(old));
+
+var ended = false;
+r.on('end', function() {
+  ended = true;
+});
+
+var pauses = 0;
+var resumes = 0;
+
+old.pause = function() {
+  pauses++;
+  old.emit('pause');
+  flowing = false;
+};
+
+old.resume = function() {
+  resumes++;
+  old.emit('resume');
+  flow();
+};
+
+var flowing;
+var chunks = 10;
+var oldEnded = false;
+function flow() {
+  flowing = true;
+  while (flowing && chunks-- > 0) {
+    old.emit('data', new Buffer('xxxxxxxxxx'));
+  }
+  if (chunks <= 0) {
+    oldEnded = true;
+    old.emit('end');
+  }
 }
 
-test({ NODE_DEBUG: '' }, function(data) {
-  assert(/EISDIR/.test(data));
-  assert(!/test-fs-readfile-error/.test(data));
-  callbacks++;
+var w = new Writable({ highWaterMark: 20 });
+var written = [];
+w._write = function(chunk, encoding, cb) {
+  written.push(chunk.toString());
+  setTimeout(cb);
+};
+
+var finished = false;
+w.on('finish', function() {
+  finished = true;
 });
 
-test({ NODE_DEBUG: 'fs' }, function(data) {
-  assert(/EISDIR/.test(data));
-  assert(/test-fs-readfile-error/.test(data));
-  callbacks++;
-});
+
+var expect = new Array(11).join('xxxxxxxxxx');
+
+r.pipe(w);
+
+flow();
 
 process.on('exit', function() {
-  assert.equal(callbacks, 2);
+  assert.equal(pauses, 10);
+  assert.equal(resumes, 9);
+  assert(ended);
+  assert(finished);
+  assert(oldEnded);
+  assert.equal(written.join(''), expect);
+  console.log('ok');
 });
-
-(function() {
-  console.error('the warnings are normal here.');
-  // just make sure that this doesn't crash the process.
-  var fs = require('fs');
-  fs.readFile(__dirname);
-  fs.readdir(__filename);
-  fs.unlink('gee-i-sure-hope-this-file-isnt-important-or-existing');
-})();

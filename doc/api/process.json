@@ -83,7 +83,7 @@
         {
           "textRaw": "process.title",
           "name": "title",
-          "desc": "<p>Getter/setter to set what is displayed in &#39;ps&#39;.\n\n\n</p>\n"
+          "desc": "<p>Getter/setter to set what is displayed in &#39;ps&#39;.\n\n</p>\n<p>When used as a setter, the maximum length is platform-specific and probably\nshort.\n\n</p>\n<p>On Linux and OS X, it&#39;s limited to the size of the binary name plus the\nlength of the command line arguments because it overwrites the argv memory.\n\n</p>\n<p>v0.8 allowed for longer process title strings by also overwriting the environ\nmemory but that was potentially insecure/confusing in some (rather obscure)\ncases.\n\n\n</p>\n"
         },
         {
           "textRaw": "process.arch",

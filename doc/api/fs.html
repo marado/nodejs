@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>File System Node.js v0.10.0 Manual &amp; Documentation</title>
+  <title>File System Node.js v0.10.1 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/fs.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.0 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.1 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -46,65 +46,65 @@
             <h2>Table of Contents</h2>
             <ul>
 <li><a href="#fs_file_system">File System</a><ul>
-<li><a href="#fs_fs_rename_oldpath_newpath_callback">fs.rename(oldPath, newPath, [callback])</a></li>
+<li><a href="#fs_fs_rename_oldpath_newpath_callback">fs.rename(oldPath, newPath, callback)</a></li>
 <li><a href="#fs_fs_renamesync_oldpath_newpath">fs.renameSync(oldPath, newPath)</a></li>
-<li><a href="#fs_fs_ftruncate_fd_len_callback">fs.ftruncate(fd, len, [callback])</a></li>
+<li><a href="#fs_fs_ftruncate_fd_len_callback">fs.ftruncate(fd, len, callback)</a></li>
 <li><a href="#fs_fs_ftruncatesync_fd_len">fs.ftruncateSync(fd, len)</a></li>
-<li><a href="#fs_fs_truncate_path_len_callback">fs.truncate(path, len, [callback])</a></li>
+<li><a href="#fs_fs_truncate_path_len_callback">fs.truncate(path, len, callback)</a></li>
 <li><a href="#fs_fs_truncatesync_path_len">fs.truncateSync(path, len)</a></li>
-<li><a href="#fs_fs_chown_path_uid_gid_callback">fs.chown(path, uid, gid, [callback])</a></li>
+<li><a href="#fs_fs_chown_path_uid_gid_callback">fs.chown(path, uid, gid, callback)</a></li>
 <li><a href="#fs_fs_chownsync_path_uid_gid">fs.chownSync(path, uid, gid)</a></li>
-<li><a href="#fs_fs_fchown_fd_uid_gid_callback">fs.fchown(fd, uid, gid, [callback])</a></li>
+<li><a href="#fs_fs_fchown_fd_uid_gid_callback">fs.fchown(fd, uid, gid, callback)</a></li>
 <li><a href="#fs_fs_fchownsync_fd_uid_gid">fs.fchownSync(fd, uid, gid)</a></li>
-<li><a href="#fs_fs_lchown_path_uid_gid_callback">fs.lchown(path, uid, gid, [callback])</a></li>
+<li><a href="#fs_fs_lchown_path_uid_gid_callback">fs.lchown(path, uid, gid, callback)</a></li>
 <li><a href="#fs_fs_lchownsync_path_uid_gid">fs.lchownSync(path, uid, gid)</a></li>
-<li><a href="#fs_fs_chmod_path_mode_callback">fs.chmod(path, mode, [callback])</a></li>
+<li><a href="#fs_fs_chmod_path_mode_callback">fs.chmod(path, mode, callback)</a></li>
 <li><a href="#fs_fs_chmodsync_path_mode">fs.chmodSync(path, mode)</a></li>
-<li><a href="#fs_fs_fchmod_fd_mode_callback">fs.fchmod(fd, mode, [callback])</a></li>
+<li><a href="#fs_fs_fchmod_fd_mode_callback">fs.fchmod(fd, mode, callback)</a></li>
 <li><a href="#fs_fs_fchmodsync_fd_mode">fs.fchmodSync(fd, mode)</a></li>
-<li><a href="#fs_fs_lchmod_path_mode_callback">fs.lchmod(path, mode, [callback])</a></li>
+<li><a href="#fs_fs_lchmod_path_mode_callback">fs.lchmod(path, mode, callback)</a></li>
 <li><a href="#fs_fs_lchmodsync_path_mode">fs.lchmodSync(path, mode)</a></li>
-<li><a href="#fs_fs_stat_path_callback">fs.stat(path, [callback])</a></li>
-<li><a href="#fs_fs_lstat_path_callback">fs.lstat(path, [callback])</a></li>
-<li><a href="#fs_fs_fstat_fd_callback">fs.fstat(fd, [callback])</a></li>
+<li><a href="#fs_fs_stat_path_callback">fs.stat(path, callback)</a></li>
+<li><a href="#fs_fs_lstat_path_callback">fs.lstat(path, callback)</a></li>
+<li><a href="#fs_fs_fstat_fd_callback">fs.fstat(fd, callback)</a></li>
 <li><a href="#fs_fs_statsync_path">fs.statSync(path)</a></li>
 <li><a href="#fs_fs_lstatsync_path">fs.lstatSync(path)</a></li>
 <li><a href="#fs_fs_fstatsync_fd">fs.fstatSync(fd)</a></li>
-<li><a href="#fs_fs_link_srcpath_dstpath_callback">fs.link(srcpath, dstpath, [callback])</a></li>
+<li><a href="#fs_fs_link_srcpath_dstpath_callback">fs.link(srcpath, dstpath, callback)</a></li>
 <li><a href="#fs_fs_linksync_srcpath_dstpath">fs.linkSync(srcpath, dstpath)</a></li>
-<li><a href="#fs_fs_symlink_srcpath_dstpath_type_callback">fs.symlink(srcpath, dstpath, [type], [callback])</a></li>
+<li><a href="#fs_fs_symlink_srcpath_dstpath_type_callback">fs.symlink(srcpath, dstpath, [type], callback)</a></li>
 <li><a href="#fs_fs_symlinksync_srcpath_dstpath_type">fs.symlinkSync(srcpath, dstpath, [type])</a></li>
-<li><a href="#fs_fs_readlink_path_callback">fs.readlink(path, [callback])</a></li>
+<li><a href="#fs_fs_readlink_path_callback">fs.readlink(path, callback)</a></li>
 <li><a href="#fs_fs_readlinksync_path">fs.readlinkSync(path)</a></li>
 <li><a href="#fs_fs_realpath_path_cache_callback">fs.realpath(path, [cache], callback)</a></li>
 <li><a href="#fs_fs_realpathsync_path_cache">fs.realpathSync(path, [cache])</a></li>
-<li><a href="#fs_fs_unlink_path_callback">fs.unlink(path, [callback])</a></li>
+<li><a href="#fs_fs_unlink_path_callback">fs.unlink(path, callback)</a></li>
 <li><a href="#fs_fs_unlinksync_path">fs.unlinkSync(path)</a></li>
-<li><a href="#fs_fs_rmdir_path_callback">fs.rmdir(path, [callback])</a></li>
+<li><a href="#fs_fs_rmdir_path_callback">fs.rmdir(path, callback)</a></li>
 <li><a href="#fs_fs_rmdirsync_path">fs.rmdirSync(path)</a></li>
-<li><a href="#fs_fs_mkdir_path_mode_callback">fs.mkdir(path, [mode], [callback])</a></li>
+<li><a href="#fs_fs_mkdir_path_mode_callback">fs.mkdir(path, [mode], callback)</a></li>
 <li><a href="#fs_fs_mkdirsync_path_mode">fs.mkdirSync(path, [mode])</a></li>
-<li><a href="#fs_fs_readdir_path_callback">fs.readdir(path, [callback])</a></li>
+<li><a href="#fs_fs_readdir_path_callback">fs.readdir(path, callback)</a></li>
 <li><a href="#fs_fs_readdirsync_path">fs.readdirSync(path)</a></li>
-<li><a href="#fs_fs_close_fd_callback">fs.close(fd, [callback])</a></li>
+<li><a href="#fs_fs_close_fd_callback">fs.close(fd, callback)</a></li>
 <li><a href="#fs_fs_closesync_fd">fs.closeSync(fd)</a></li>
-<li><a href="#fs_fs_open_path_flags_mode_callback">fs.open(path, flags, [mode], [callback])</a></li>
+<li><a href="#fs_fs_open_path_flags_mode_callback">fs.open(path, flags, [mode], callback)</a></li>
 <li><a href="#fs_fs_opensync_path_flags_mode">fs.openSync(path, flags, [mode])</a></li>
-<li><a href="#fs_fs_utimes_path_atime_mtime_callback">fs.utimes(path, atime, mtime, [callback])</a></li>
+<li><a href="#fs_fs_utimes_path_atime_mtime_callback">fs.utimes(path, atime, mtime, callback)</a></li>
 <li><a href="#fs_fs_utimessync_path_atime_mtime">fs.utimesSync(path, atime, mtime)</a></li>
-<li><a href="#fs_fs_futimes_fd_atime_mtime_callback">fs.futimes(fd, atime, mtime, [callback])</a></li>
+<li><a href="#fs_fs_futimes_fd_atime_mtime_callback">fs.futimes(fd, atime, mtime, callback)</a></li>
 <li><a href="#fs_fs_futimessync_fd_atime_mtime">fs.futimesSync(fd, atime, mtime)</a></li>
-<li><a href="#fs_fs_fsync_fd_callback">fs.fsync(fd, [callback])</a></li>
+<li><a href="#fs_fs_fsync_fd_callback">fs.fsync(fd, callback)</a></li>
 <li><a href="#fs_fs_fsyncsync_fd">fs.fsyncSync(fd)</a></li>
-<li><a href="#fs_fs_write_fd_buffer_offset_length_position_callback">fs.write(fd, buffer, offset, length, position, [callback])</a></li>
+<li><a href="#fs_fs_write_fd_buffer_offset_length_position_callback">fs.write(fd, buffer, offset, length, position, callback)</a></li>
 <li><a href="#fs_fs_writesync_fd_buffer_offset_length_position">fs.writeSync(fd, buffer, offset, length, position)</a></li>
-<li><a href="#fs_fs_read_fd_buffer_offset_length_position_callback">fs.read(fd, buffer, offset, length, position, [callback])</a></li>
+<li><a href="#fs_fs_read_fd_buffer_offset_length_position_callback">fs.read(fd, buffer, offset, length, position, callback)</a></li>
 <li><a href="#fs_fs_readsync_fd_buffer_offset_length_position">fs.readSync(fd, buffer, offset, length, position)</a></li>
-<li><a href="#fs_fs_readfile_filename_options_callback">fs.readFile(filename, [options], [callback])</a></li>
+<li><a href="#fs_fs_readfile_filename_options_callback">fs.readFile(filename, [options], callback)</a></li>
 <li><a href="#fs_fs_readfilesync_filename_options">fs.readFileSync(filename, [options])</a></li>
-<li><a href="#fs_fs_writefile_filename_data_options_callback">fs.writeFile(filename, data, [options], [callback])</a></li>
+<li><a href="#fs_fs_writefile_filename_data_options_callback">fs.writeFile(filename, data, [options], callback)</a></li>
 <li><a href="#fs_fs_writefilesync_filename_data_options">fs.writeFileSync(filename, data, [options])</a></li>
-<li><a href="#fs_fs_appendfile_filename_data_options_callback">fs.appendFile(filename, data, [options], [callback])</a></li>
+<li><a href="#fs_fs_appendfile_filename_data_options_callback">fs.appendFile(filename, data, [options], callback)</a></li>
 <li><a href="#fs_fs_appendfilesync_filename_data_options">fs.appendFileSync(filename, data, [options])</a></li>
 <li><a href="#fs_fs_watchfile_filename_options_listener">fs.watchFile(filename, [options], listener)</a></li>
 <li><a href="#fs_fs_unwatchfile_filename_listener">fs.unwatchFile(filename, [listener])</a></li>
@@ -116,7 +116,7 @@
 </li>
 </ul>
 </li>
-<li><a href="#fs_fs_exists_path_callback">fs.exists(path, [callback])</a></li>
+<li><a href="#fs_fs_exists_path_callback">fs.exists(path, callback)</a></li>
 <li><a href="#fs_fs_existssync_path">fs.existsSync(path)</a></li>
 <li><a href="#fs_class_fs_stats">Class: fs.Stats</a></li>
 <li><a href="#fs_fs_createreadstream_path_options">fs.createReadStream(path, [options])</a></li>
@@ -210,28 +210,16 @@ relative to <code>process.cwd()</code>.
 
 </p>
 <p>Most fs functions let you omit the callback argument. If you do, a default
-callback is used that rethrows errors. To get a trace to the original call
-site, set the NODE_DEBUG environment variable:
+callback is used that ignores errors, but prints a deprecation
+warning.
 
 </p>
-<pre><code>$ cat script.js
-function bad() {
-  require(&#39;fs&#39;).readFile(&#39;/&#39;);
-}
-bad();
+<p><strong>IMPORTANT</strong>: Omitting the callback is deprecated.  v0.12 will throw the
+errors as exceptions.
 
-$ env NODE_DEBUG=fs node script.js
-fs.js:66
-        throw err;
-              ^
-Error: EISDIR, read
-    at rethrow (fs.js:61:21)
-    at maybeCallback (fs.js:79:42)
-    at Object.fs.readFile (fs.js:153:18)
-    at bad (/path/to/script.js:2:17)
-    at Object.&lt;anonymous&gt; (/path/to/script.js:5:1)
-    &lt;etc.&gt;</code></pre>
-<h2>fs.rename(oldPath, newPath, [callback])<span><a class="mark" href="#fs_fs_rename_oldpath_newpath_callback" id="fs_fs_rename_oldpath_newpath_callback">#</a></span></h2>
+
+</p>
+<h2>fs.rename(oldPath, newPath, callback)<span><a class="mark" href="#fs_fs_rename_oldpath_newpath_callback" id="fs_fs_rename_oldpath_newpath_callback">#</a></span></h2>
 <p>Asynchronous rename(2). No arguments other than a possible exception are given
 to the completion callback.
 
@@ -240,7 +228,7 @@ to the completion callback.
 <p>Synchronous rename(2).
 
 </p>
-<h2>fs.ftruncate(fd, len, [callback])<span><a class="mark" href="#fs_fs_ftruncate_fd_len_callback" id="fs_fs_ftruncate_fd_len_callback">#</a></span></h2>
+<h2>fs.ftruncate(fd, len, callback)<span><a class="mark" href="#fs_fs_ftruncate_fd_len_callback" id="fs_fs_ftruncate_fd_len_callback">#</a></span></h2>
 <p>Asynchronous ftruncate(2). No arguments other than a possible exception are
 given to the completion callback.
 
@@ -249,7 +237,7 @@ given to the completion callback.
 <p>Synchronous ftruncate(2).
 
 </p>
-<h2>fs.truncate(path, len, [callback])<span><a class="mark" href="#fs_fs_truncate_path_len_callback" id="fs_fs_truncate_path_len_callback">#</a></span></h2>
+<h2>fs.truncate(path, len, callback)<span><a class="mark" href="#fs_fs_truncate_path_len_callback" id="fs_fs_truncate_path_len_callback">#</a></span></h2>
 <p>Asynchronous truncate(2). No arguments other than a possible exception are
 given to the completion callback.
 
@@ -258,7 +246,7 @@ given to the completion callback.
 <p>Synchronous truncate(2).
 
 </p>
-<h2>fs.chown(path, uid, gid, [callback])<span><a class="mark" href="#fs_fs_chown_path_uid_gid_callback" id="fs_fs_chown_path_uid_gid_callback">#</a></span></h2>
+<h2>fs.chown(path, uid, gid, callback)<span><a class="mark" href="#fs_fs_chown_path_uid_gid_callback" id="fs_fs_chown_path_uid_gid_callback">#</a></span></h2>
 <p>Asynchronous chown(2). No arguments other than a possible exception are given
 to the completion callback.
 
@@ -267,7 +255,7 @@ to the completion callback.
 <p>Synchronous chown(2).
 
 </p>
-<h2>fs.fchown(fd, uid, gid, [callback])<span><a class="mark" href="#fs_fs_fchown_fd_uid_gid_callback" id="fs_fs_fchown_fd_uid_gid_callback">#</a></span></h2>
+<h2>fs.fchown(fd, uid, gid, callback)<span><a class="mark" href="#fs_fs_fchown_fd_uid_gid_callback" id="fs_fs_fchown_fd_uid_gid_callback">#</a></span></h2>
 <p>Asynchronous fchown(2). No arguments other than a possible exception are given
 to the completion callback.
 
@@ -276,7 +264,7 @@ to the completion callback.
 <p>Synchronous fchown(2).
 
 </p>
-<h2>fs.lchown(path, uid, gid, [callback])<span><a class="mark" href="#fs_fs_lchown_path_uid_gid_callback" id="fs_fs_lchown_path_uid_gid_callback">#</a></span></h2>
+<h2>fs.lchown(path, uid, gid, callback)<span><a class="mark" href="#fs_fs_lchown_path_uid_gid_callback" id="fs_fs_lchown_path_uid_gid_callback">#</a></span></h2>
 <p>Asynchronous lchown(2). No arguments other than a possible exception are given
 to the completion callback.
 
@@ -285,7 +273,7 @@ to the completion callback.
 <p>Synchronous lchown(2).
 
 </p>
-<h2>fs.chmod(path, mode, [callback])<span><a class="mark" href="#fs_fs_chmod_path_mode_callback" id="fs_fs_chmod_path_mode_callback">#</a></span></h2>
+<h2>fs.chmod(path, mode, callback)<span><a class="mark" href="#fs_fs_chmod_path_mode_callback" id="fs_fs_chmod_path_mode_callback">#</a></span></h2>
 <p>Asynchronous chmod(2). No arguments other than a possible exception are given
 to the completion callback.
 
@@ -294,7 +282,7 @@ to the completion callback.
 <p>Synchronous chmod(2).
 
 </p>
-<h2>fs.fchmod(fd, mode, [callback])<span><a class="mark" href="#fs_fs_fchmod_fd_mode_callback" id="fs_fs_fchmod_fd_mode_callback">#</a></span></h2>
+<h2>fs.fchmod(fd, mode, callback)<span><a class="mark" href="#fs_fs_fchmod_fd_mode_callback" id="fs_fs_fchmod_fd_mode_callback">#</a></span></h2>
 <p>Asynchronous fchmod(2). No arguments other than a possible exception
 are given to the completion callback.
 
@@ -303,7 +291,7 @@ are given to the completion callback.
 <p>Synchronous fchmod(2).
 
 </p>
-<h2>fs.lchmod(path, mode, [callback])<span><a class="mark" href="#fs_fs_lchmod_path_mode_callback" id="fs_fs_lchmod_path_mode_callback">#</a></span></h2>
+<h2>fs.lchmod(path, mode, callback)<span><a class="mark" href="#fs_fs_lchmod_path_mode_callback" id="fs_fs_lchmod_path_mode_callback">#</a></span></h2>
 <p>Asynchronous lchmod(2). No arguments other than a possible exception
 are given to the completion callback.
 
@@ -315,20 +303,20 @@ are given to the completion callback.
 <p>Synchronous lchmod(2).
 
 </p>
-<h2>fs.stat(path, [callback])<span><a class="mark" href="#fs_fs_stat_path_callback" id="fs_fs_stat_path_callback">#</a></span></h2>
+<h2>fs.stat(path, callback)<span><a class="mark" href="#fs_fs_stat_path_callback" id="fs_fs_stat_path_callback">#</a></span></h2>
 <p>Asynchronous stat(2). The callback gets two arguments <code>(err, stats)</code> where
 <code>stats</code> is a <a href="#fs_class_fs_stats">fs.Stats</a> object.  See the <a href="#fs_class_fs_stats">fs.Stats</a>
 section below for more information.
 
 </p>
-<h2>fs.lstat(path, [callback])<span><a class="mark" href="#fs_fs_lstat_path_callback" id="fs_fs_lstat_path_callback">#</a></span></h2>
+<h2>fs.lstat(path, callback)<span><a class="mark" href="#fs_fs_lstat_path_callback" id="fs_fs_lstat_path_callback">#</a></span></h2>
 <p>Asynchronous lstat(2). The callback gets two arguments <code>(err, stats)</code> where
 <code>stats</code> is a <code>fs.Stats</code> object. <code>lstat()</code> is identical to <code>stat()</code>, except that if
 <code>path</code> is a symbolic link, then the link itself is stat-ed, not the file that it
 refers to.
 
 </p>
-<h2>fs.fstat(fd, [callback])<span><a class="mark" href="#fs_fs_fstat_fd_callback" id="fs_fs_fstat_fd_callback">#</a></span></h2>
+<h2>fs.fstat(fd, callback)<span><a class="mark" href="#fs_fs_fstat_fd_callback" id="fs_fs_fstat_fd_callback">#</a></span></h2>
 <p>Asynchronous fstat(2). The callback gets two arguments <code>(err, stats)</code> where
 <code>stats</code> is a <code>fs.Stats</code> object. <code>fstat()</code> is identical to <code>stat()</code>, except that
 the file to be stat-ed is specified by the file descriptor <code>fd</code>.
@@ -346,7 +334,7 @@ the file to be stat-ed is specified by the file descriptor <code>fd</code>.
 <p>Synchronous fstat(2). Returns an instance of <code>fs.Stats</code>.
 
 </p>
-<h2>fs.link(srcpath, dstpath, [callback])<span><a class="mark" href="#fs_fs_link_srcpath_dstpath_callback" id="fs_fs_link_srcpath_dstpath_callback">#</a></span></h2>
+<h2>fs.link(srcpath, dstpath, callback)<span><a class="mark" href="#fs_fs_link_srcpath_dstpath_callback" id="fs_fs_link_srcpath_dstpath_callback">#</a></span></h2>
 <p>Asynchronous link(2). No arguments other than a possible exception are given to
 the completion callback.
 
@@ -355,7 +343,7 @@ the completion callback.
 <p>Synchronous link(2).
 
 </p>
-<h2>fs.symlink(srcpath, dstpath, [type], [callback])<span><a class="mark" href="#fs_fs_symlink_srcpath_dstpath_type_callback" id="fs_fs_symlink_srcpath_dstpath_type_callback">#</a></span></h2>
+<h2>fs.symlink(srcpath, dstpath, [type], callback)<span><a class="mark" href="#fs_fs_symlink_srcpath_dstpath_type_callback" id="fs_fs_symlink_srcpath_dstpath_type_callback">#</a></span></h2>
 <p>Asynchronous symlink(2). No arguments other than a possible exception are given
 to the completion callback.
 <code>type</code> argument can be either <code>&#39;dir&#39;</code>, <code>&#39;file&#39;</code>, or <code>&#39;junction&#39;</code> (default is <code>&#39;file&#39;</code>).  It is only 
@@ -368,7 +356,7 @@ Note that Windows junction points require the destination path to be absolute.  
 <p>Synchronous symlink(2).
 
 </p>
-<h2>fs.readlink(path, [callback])<span><a class="mark" href="#fs_fs_readlink_path_callback" id="fs_fs_readlink_path_callback">#</a></span></h2>
+<h2>fs.readlink(path, callback)<span><a class="mark" href="#fs_fs_readlink_path_callback" id="fs_fs_readlink_path_callback">#</a></span></h2>
 <p>Asynchronous readlink(2). The callback gets two arguments <code>(err,
 linkString)</code>.
 
@@ -396,7 +384,7 @@ fs.realpath(&#39;/etc/passwd&#39;, cache, function (err, resolvedPath) {
 <p>Synchronous realpath(2). Returns the resolved path.
 
 </p>
-<h2>fs.unlink(path, [callback])<span><a class="mark" href="#fs_fs_unlink_path_callback" id="fs_fs_unlink_path_callback">#</a></span></h2>
+<h2>fs.unlink(path, callback)<span><a class="mark" href="#fs_fs_unlink_path_callback" id="fs_fs_unlink_path_callback">#</a></span></h2>
 <p>Asynchronous unlink(2). No arguments other than a possible exception are given
 to the completion callback.
 
@@ -405,7 +393,7 @@ to the completion callback.
 <p>Synchronous unlink(2).
 
 </p>
-<h2>fs.rmdir(path, [callback])<span><a class="mark" href="#fs_fs_rmdir_path_callback" id="fs_fs_rmdir_path_callback">#</a></span></h2>
+<h2>fs.rmdir(path, callback)<span><a class="mark" href="#fs_fs_rmdir_path_callback" id="fs_fs_rmdir_path_callback">#</a></span></h2>
 <p>Asynchronous rmdir(2). No arguments other than a possible exception are given
 to the completion callback.
 
@@ -414,7 +402,7 @@ to the completion callback.
 <p>Synchronous rmdir(2).
 
 </p>
-<h2>fs.mkdir(path, [mode], [callback])<span><a class="mark" href="#fs_fs_mkdir_path_mode_callback" id="fs_fs_mkdir_path_mode_callback">#</a></span></h2>
+<h2>fs.mkdir(path, [mode], callback)<span><a class="mark" href="#fs_fs_mkdir_path_mode_callback" id="fs_fs_mkdir_path_mode_callback">#</a></span></h2>
 <p>Asynchronous mkdir(2). No arguments other than a possible exception are given
 to the completion callback. <code>mode</code> defaults to <code>0777</code>.
 
@@ -423,7 +411,7 @@ to the completion callback. <code>mode</code> defaults to <code>0777</code>.
 <p>Synchronous mkdir(2).
 
 </p>
-<h2>fs.readdir(path, [callback])<span><a class="mark" href="#fs_fs_readdir_path_callback" id="fs_fs_readdir_path_callback">#</a></span></h2>
+<h2>fs.readdir(path, callback)<span><a class="mark" href="#fs_fs_readdir_path_callback" id="fs_fs_readdir_path_callback">#</a></span></h2>
 <p>Asynchronous readdir(3).  Reads the contents of a directory.
 The callback gets two arguments <code>(err, files)</code> where <code>files</code> is an array of
 the names of the files in the directory excluding <code>&#39;.&#39;</code> and <code>&#39;..&#39;</code>.
@@ -434,7 +422,7 @@ the names of the files in the directory excluding <code>&#39;.&#39;</code> and <
 <code>&#39;..&#39;</code>.
 
 </p>
-<h2>fs.close(fd, [callback])<span><a class="mark" href="#fs_fs_close_fd_callback" id="fs_fs_close_fd_callback">#</a></span></h2>
+<h2>fs.close(fd, callback)<span><a class="mark" href="#fs_fs_close_fd_callback" id="fs_fs_close_fd_callback">#</a></span></h2>
 <p>Asynchronous close(2).  No arguments other than a possible exception are given
 to the completion callback.
 
@@ -443,7 +431,7 @@ to the completion callback.
 <p>Synchronous close(2).
 
 </p>
-<h2>fs.open(path, flags, [mode], [callback])<span><a class="mark" href="#fs_fs_open_path_flags_mode_callback" id="fs_fs_open_path_flags_mode_callback">#</a></span></h2>
+<h2>fs.open(path, flags, [mode], callback)<span><a class="mark" href="#fs_fs_open_path_flags_mode_callback" id="fs_fs_open_path_flags_mode_callback">#</a></span></h2>
 <p>Asynchronous file open. See open(2). <code>flags</code> can be:
 
 </p>
@@ -498,18 +486,18 @@ not followed. Exclusive mode may or may not work with network file systems.
 <p>Synchronous open(2).
 
 </p>
-<h2>fs.utimes(path, atime, mtime, [callback])<span><a class="mark" href="#fs_fs_utimes_path_atime_mtime_callback" id="fs_fs_utimes_path_atime_mtime_callback">#</a></span></h2>
+<h2>fs.utimes(path, atime, mtime, callback)<span><a class="mark" href="#fs_fs_utimes_path_atime_mtime_callback" id="fs_fs_utimes_path_atime_mtime_callback">#</a></span></h2>
 <h2>fs.utimesSync(path, atime, mtime)<span><a class="mark" href="#fs_fs_utimessync_path_atime_mtime" id="fs_fs_utimessync_path_atime_mtime">#</a></span></h2>
 <p>Change file timestamps of the file referenced by the supplied path.
 
 </p>
-<h2>fs.futimes(fd, atime, mtime, [callback])<span><a class="mark" href="#fs_fs_futimes_fd_atime_mtime_callback" id="fs_fs_futimes_fd_atime_mtime_callback">#</a></span></h2>
+<h2>fs.futimes(fd, atime, mtime, callback)<span><a class="mark" href="#fs_fs_futimes_fd_atime_mtime_callback" id="fs_fs_futimes_fd_atime_mtime_callback">#</a></span></h2>
 <h2>fs.futimesSync(fd, atime, mtime)<span><a class="mark" href="#fs_fs_futimessync_fd_atime_mtime" id="fs_fs_futimessync_fd_atime_mtime">#</a></span></h2>
 <p>Change the file timestamps of a file referenced by the supplied file
 descriptor.
 
 </p>
-<h2>fs.fsync(fd, [callback])<span><a class="mark" href="#fs_fs_fsync_fd_callback" id="fs_fs_fsync_fd_callback">#</a></span></h2>
+<h2>fs.fsync(fd, callback)<span><a class="mark" href="#fs_fs_fsync_fd_callback" id="fs_fs_fsync_fd_callback">#</a></span></h2>
 <p>Asynchronous fsync(2). No arguments other than a possible exception are given
 to the completion callback.
 
@@ -518,7 +506,7 @@ to the completion callback.
 <p>Synchronous fsync(2).
 
 </p>
-<h2>fs.write(fd, buffer, offset, length, position, [callback])<span><a class="mark" href="#fs_fs_write_fd_buffer_offset_length_position_callback" id="fs_fs_write_fd_buffer_offset_length_position_callback">#</a></span></h2>
+<h2>fs.write(fd, buffer, offset, length, position, callback)<span><a class="mark" href="#fs_fs_write_fd_buffer_offset_length_position_callback" id="fs_fs_write_fd_buffer_offset_length_position_callback">#</a></span></h2>
 <p>Write <code>buffer</code> to the file specified by <code>fd</code>.
 
 </p>
@@ -544,7 +532,7 @@ without waiting for the callback. For this scenario,
 <p>Synchronous version of <code>fs.write()</code>. Returns the number of bytes written.
 
 </p>
-<h2>fs.read(fd, buffer, offset, length, position, [callback])<span><a class="mark" href="#fs_fs_read_fd_buffer_offset_length_position_callback" id="fs_fs_read_fd_buffer_offset_length_position_callback">#</a></span></h2>
+<h2>fs.read(fd, buffer, offset, length, position, callback)<span><a class="mark" href="#fs_fs_read_fd_buffer_offset_length_position_callback" id="fs_fs_read_fd_buffer_offset_length_position_callback">#</a></span></h2>
 <p>Read data from the file specified by <code>fd</code>.
 
 </p>
@@ -568,7 +556,7 @@ If <code>position</code> is <code>null</code>, data will be read from the curren
 <p>Synchronous version of <code>fs.read</code>. Returns the number of <code>bytesRead</code>.
 
 </p>
-<h2>fs.readFile(filename, [options], [callback])<span><a class="mark" href="#fs_fs_readfile_filename_options_callback" id="fs_fs_readfile_filename_options_callback">#</a></span></h2>
+<h2>fs.readFile(filename, [options], callback)<span><a class="mark" href="#fs_fs_readfile_filename_options_callback" id="fs_fs_readfile_filename_options_callback">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>filename</code> <span class="type">String</span></li>
 <li><code>options</code> <span class="type">Object</span><ul>
@@ -576,6 +564,7 @@ If <code>position</code> is <code>null</code>, data will be read from the curren
 <li><code>flag</code> <span class="type">String</span> default = <code>&#39;r&#39;</code></li>
 </ul>
 </li>
+<li><code>callback</code> <span class="type">Function</span></li>
 </div></ul>
 <p>Asynchronously reads the entire contents of a file. Example:
 
@@ -601,7 +590,7 @@ string. Otherwise it returns a buffer.
 
 
 </p>
-<h2>fs.writeFile(filename, data, [options], [callback])<span><a class="mark" href="#fs_fs_writefile_filename_data_options_callback" id="fs_fs_writefile_filename_data_options_callback">#</a></span></h2>
+<h2>fs.writeFile(filename, data, [options], callback)<span><a class="mark" href="#fs_fs_writefile_filename_data_options_callback" id="fs_fs_writefile_filename_data_options_callback">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>filename</code> <span class="type">String</span></li>
 <li><code>data</code> <span class="type">String | Buffer</span></li>
@@ -611,6 +600,7 @@ string. Otherwise it returns a buffer.
 <li><code>flag</code> <span class="type">String</span> default = <code>&#39;w&#39;</code></li>
 </ul>
 </li>
+<li><code>callback</code> <span class="type">Function</span></li>
 </div></ul>
 <p>Asynchronously writes data to a file, replacing the file if it already exists.
 <code>data</code> can be a string or a buffer.
@@ -631,7 +621,7 @@ to <code>&#39;utf8&#39;</code>.
 <p>The synchronous version of <code>fs.writeFile</code>.
 
 </p>
-<h2>fs.appendFile(filename, data, [options], [callback])<span><a class="mark" href="#fs_fs_appendfile_filename_data_options_callback" id="fs_fs_appendfile_filename_data_options_callback">#</a></span></h2>
+<h2>fs.appendFile(filename, data, [options], callback)<span><a class="mark" href="#fs_fs_appendfile_filename_data_options_callback" id="fs_fs_appendfile_filename_data_options_callback">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>filename</code> <span class="type">String</span></li>
 <li><code>data</code> <span class="type">String | Buffer</span></li>
@@ -641,6 +631,7 @@ to <code>&#39;utf8&#39;</code>.
 <li><code>flag</code> <span class="type">String</span> default = <code>&#39;a&#39;</code></li>
 </ul>
 </li>
+<li><code>callback</code> <span class="type">Function</span></li>
 </div></ul>
 <p>Asynchronously append data to a file, creating the file if it not yet exists.
 <code>data</code> can be a string or a buffer.
@@ -758,7 +749,7 @@ callback, and have some fallback logic if it is null.
     console.log(&#39;filename not provided&#39;);
   }
 });</code></pre>
-<h2>fs.exists(path, [callback])<span><a class="mark" href="#fs_fs_exists_path_callback" id="fs_fs_exists_path_callback">#</a></span></h2>
+<h2>fs.exists(path, callback)<span><a class="mark" href="#fs_fs_exists_path_callback" id="fs_fs_exists_path_callback">#</a></span></h2>
 <p>Test whether or not the given path exists by checking with the file system.
 Then call the <code>callback</code> argument with either true or false.  Example:
 
@@ -927,7 +918,7 @@ See more details in <a href="#fs_fs_watch_filename_options_listener">fs.watch</a
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.0/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.1/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

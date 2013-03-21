@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>UDP / Datagram Sockets Node.js v0.10.0 Manual &amp; Documentation</title>
+  <title>UDP / Datagram Sockets Node.js v0.10.1 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/dgram.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.0 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.1 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -47,23 +47,23 @@
             <ul>
 <li><a href="#dgram_udp_datagram_sockets">UDP / Datagram Sockets</a><ul>
 <li><a href="#dgram_dgram_createsocket_type_callback">dgram.createSocket(type, [callback])</a></li>
-<li><a href="#dgram_class_socket">Class: Socket</a><ul>
+<li><a href="#dgram_class_dgram_socket">Class: dgram.Socket</a><ul>
 <li><a href="#dgram_event_message">Event: &#39;message&#39;</a></li>
 <li><a href="#dgram_event_listening">Event: &#39;listening&#39;</a></li>
 <li><a href="#dgram_event_close">Event: &#39;close&#39;</a></li>
 <li><a href="#dgram_event_error">Event: &#39;error&#39;</a></li>
-<li><a href="#dgram_dgram_send_buf_offset_length_port_address_callback">dgram.send(buf, offset, length, port, address, [callback])</a></li>
-<li><a href="#dgram_dgram_bind_port_address_callback">dgram.bind(port, [address], [callback])</a></li>
-<li><a href="#dgram_dgram_close">dgram.close()</a></li>
-<li><a href="#dgram_dgram_address">dgram.address()</a></li>
-<li><a href="#dgram_dgram_setbroadcast_flag">dgram.setBroadcast(flag)</a></li>
-<li><a href="#dgram_dgram_setttl_ttl">dgram.setTTL(ttl)</a></li>
-<li><a href="#dgram_dgram_setmulticastttl_ttl">dgram.setMulticastTTL(ttl)</a></li>
-<li><a href="#dgram_dgram_setmulticastloopback_flag">dgram.setMulticastLoopback(flag)</a></li>
-<li><a href="#dgram_dgram_addmembership_multicastaddress_multicastinterface">dgram.addMembership(multicastAddress, [multicastInterface])</a></li>
-<li><a href="#dgram_dgram_dropmembership_multicastaddress_multicastinterface">dgram.dropMembership(multicastAddress, [multicastInterface])</a></li>
-<li><a href="#dgram_dgram_unref">dgram.unref()</a></li>
-<li><a href="#dgram_dgram_ref">dgram.ref()</a></li>
+<li><a href="#dgram_socket_send_buf_offset_length_port_address_callback">socket.send(buf, offset, length, port, address, [callback])</a></li>
+<li><a href="#dgram_socket_bind_port_address_callback">socket.bind(port, [address], [callback])</a></li>
+<li><a href="#dgram_socket_close">socket.close()</a></li>
+<li><a href="#dgram_socket_address">socket.address()</a></li>
+<li><a href="#dgram_socket_setbroadcast_flag">socket.setBroadcast(flag)</a></li>
+<li><a href="#dgram_socket_setttl_ttl">socket.setTTL(ttl)</a></li>
+<li><a href="#dgram_socket_setmulticastttl_ttl">socket.setMulticastTTL(ttl)</a></li>
+<li><a href="#dgram_socket_setmulticastloopback_flag">socket.setMulticastLoopback(flag)</a></li>
+<li><a href="#dgram_socket_addmembership_multicastaddress_multicastinterface">socket.addMembership(multicastAddress, [multicastInterface])</a></li>
+<li><a href="#dgram_socket_dropmembership_multicastaddress_multicastinterface">socket.dropMembership(multicastAddress, [multicastInterface])</a></li>
+<li><a href="#dgram_socket_unref">socket.unref()</a></li>
+<li><a href="#dgram_socket_ref">socket.ref()</a></li>
 </ul>
 </li>
 </ul>
@@ -113,7 +113,7 @@ both <code>udp4</code> and <code>udp6</code> sockets). You can then retrieve the
 with <code>socket.address().address</code> and <code>socket.address().port</code>.
 
 </p>
-<h2>Class: Socket<span><a class="mark" href="#dgram_class_socket" id="dgram_class_socket">#</a></span></h2>
+<h2>Class: dgram.Socket<span><a class="mark" href="#dgram_class_dgram_socket" id="dgram_class_dgram_socket">#</a></span></h2>
 <p>The dgram Socket class encapsulates the datagram functionality.  It
 should be created via <code>dgram.createSocket(type, [callback])</code>.
 
@@ -144,7 +144,7 @@ on this socket.
 <p>Emitted when an error occurs.
 
 </p>
-<h3>dgram.send(buf, offset, length, port, address, [callback])<span><a class="mark" href="#dgram_dgram_send_buf_offset_length_port_address_callback" id="dgram_dgram_send_buf_offset_length_port_address_callback">#</a></span></h3>
+<h3>socket.send(buf, offset, length, port, address, [callback])<span><a class="mark" href="#dgram_socket_send_buf_offset_length_port_address_callback" id="dgram_socket_send_buf_offset_length_port_address_callback">#</a></span></h3>
 <div class="signature"><ul>
 <li><code>buf</code> Buffer object.  Message to be sent</li>
 <li><code>offset</code> Integer. Offset in the buffer where the message starts.</li>
@@ -206,7 +206,7 @@ the (receiver) <code>MTU</code> won&#39;t work (the packet gets silently dropped
 informing the source that the data did not reach its intended recipient).
 
 </p>
-<h3>dgram.bind(port, [address], [callback])<span><a class="mark" href="#dgram_dgram_bind_port_address_callback" id="dgram_dgram_bind_port_address_callback">#</a></span></h3>
+<h3>socket.bind(port, [address], [callback])<span><a class="mark" href="#dgram_socket_bind_port_address_callback" id="dgram_socket_bind_port_address_callback">#</a></span></h3>
 <div class="signature"><ul>
 <li><code>port</code> Integer</li>
 <li><code>address</code> String, Optional</li>
@@ -240,16 +240,16 @@ server.on(&quot;listening&quot;, function () {
 
 server.bind(41234);
 // server listening 0.0.0.0:41234</code></pre>
-<h3>dgram.close()<span><a class="mark" href="#dgram_dgram_close" id="dgram_dgram_close">#</a></span></h3>
+<h3>socket.close()<span><a class="mark" href="#dgram_socket_close" id="dgram_socket_close">#</a></span></h3>
 <p>Close the underlying socket and stop listening for data on it.
 
 </p>
-<h3>dgram.address()<span><a class="mark" href="#dgram_dgram_address" id="dgram_dgram_address">#</a></span></h3>
+<h3>socket.address()<span><a class="mark" href="#dgram_socket_address" id="dgram_socket_address">#</a></span></h3>
 <p>Returns an object containing the address information for a socket.  For UDP sockets,
 this object will contain <code>address</code> , <code>family</code> and <code>port</code>.
 
 </p>
-<h3>dgram.setBroadcast(flag)<span><a class="mark" href="#dgram_dgram_setbroadcast_flag" id="dgram_dgram_setbroadcast_flag">#</a></span></h3>
+<h3>socket.setBroadcast(flag)<span><a class="mark" href="#dgram_socket_setbroadcast_flag" id="dgram_socket_setbroadcast_flag">#</a></span></h3>
 <div class="signature"><ul>
 <li><code>flag</code> Boolean</li>
 </div></ul>
@@ -257,7 +257,7 @@ this object will contain <code>address</code> , <code>family</code> and <code>po
 may be sent to a local interface&#39;s broadcast address.
 
 </p>
-<h3>dgram.setTTL(ttl)<span><a class="mark" href="#dgram_dgram_setttl_ttl" id="dgram_dgram_setttl_ttl">#</a></span></h3>
+<h3>socket.setTTL(ttl)<span><a class="mark" href="#dgram_socket_setttl_ttl" id="dgram_socket_setttl_ttl">#</a></span></h3>
 <div class="signature"><ul>
 <li><code>ttl</code> Integer</li>
 </div></ul>
@@ -272,7 +272,7 @@ probes or when multicasting.
 systems is 64.
 
 </p>
-<h3>dgram.setMulticastTTL(ttl)<span><a class="mark" href="#dgram_dgram_setmulticastttl_ttl" id="dgram_dgram_setmulticastttl_ttl">#</a></span></h3>
+<h3>socket.setMulticastTTL(ttl)<span><a class="mark" href="#dgram_socket_setmulticastttl_ttl" id="dgram_socket_setmulticastttl_ttl">#</a></span></h3>
 <div class="signature"><ul>
 <li><code>ttl</code> Integer</li>
 </div></ul>
@@ -286,7 +286,7 @@ decrements the TTL. If the TTL is decremented to 0 by a router, it will not be f
 systems is 1.
 
 </p>
-<h3>dgram.setMulticastLoopback(flag)<span><a class="mark" href="#dgram_dgram_setmulticastloopback_flag" id="dgram_dgram_setmulticastloopback_flag">#</a></span></h3>
+<h3>socket.setMulticastLoopback(flag)<span><a class="mark" href="#dgram_socket_setmulticastloopback_flag" id="dgram_socket_setmulticastloopback_flag">#</a></span></h3>
 <div class="signature"><ul>
 <li><code>flag</code> Boolean</li>
 </div></ul>
@@ -294,7 +294,7 @@ systems is 1.
 packets will also be received on the local interface.
 
 </p>
-<h3>dgram.addMembership(multicastAddress, [multicastInterface])<span><a class="mark" href="#dgram_dgram_addmembership_multicastaddress_multicastinterface" id="dgram_dgram_addmembership_multicastaddress_multicastinterface">#</a></span></h3>
+<h3>socket.addMembership(multicastAddress, [multicastInterface])<span><a class="mark" href="#dgram_socket_addmembership_multicastaddress_multicastinterface" id="dgram_socket_addmembership_multicastaddress_multicastinterface">#</a></span></h3>
 <div class="signature"><ul>
 <li><code>multicastAddress</code> String</li>
 <li><code>multicastInterface</code> String, Optional</li>
@@ -306,7 +306,7 @@ packets will also be received on the local interface.
 interfaces.
 
 </p>
-<h3>dgram.dropMembership(multicastAddress, [multicastInterface])<span><a class="mark" href="#dgram_dgram_dropmembership_multicastaddress_multicastinterface" id="dgram_dgram_dropmembership_multicastaddress_multicastinterface">#</a></span></h3>
+<h3>socket.dropMembership(multicastAddress, [multicastInterface])<span><a class="mark" href="#dgram_socket_dropmembership_multicastaddress_multicastinterface" id="dgram_socket_dropmembership_multicastaddress_multicastinterface">#</a></span></h3>
 <div class="signature"><ul>
 <li><code>multicastAddress</code> String</li>
 <li><code>multicastInterface</code> String, Optional</li>
@@ -321,13 +321,13 @@ this.
 interfaces.
 
 </p>
-<h3>dgram.unref()<span><a class="mark" href="#dgram_dgram_unref" id="dgram_dgram_unref">#</a></span></h3>
+<h3>socket.unref()<span><a class="mark" href="#dgram_socket_unref" id="dgram_socket_unref">#</a></span></h3>
 <p>Calling <code>unref</code> on a socket will allow the program to exit if this is the only
 active socket in the event system. If the socket is already <code>unref</code>d calling
 <code>unref</code> again will have no effect.
 
 </p>
-<h3>dgram.ref()<span><a class="mark" href="#dgram_dgram_ref" id="dgram_dgram_ref">#</a></span></h3>
+<h3>socket.ref()<span><a class="mark" href="#dgram_socket_ref" id="dgram_socket_ref">#</a></span></h3>
 <p>Opposite of <code>unref</code>, calling <code>ref</code> on a previously <code>unref</code>d socket will <em>not</em>
 let the program exit if it&#39;s the only socket left (the default behavior). If
 the socket is <code>ref</code>d calling <code>ref</code> again will have no effect.
@@ -350,7 +350,7 @@ the socket is <code>ref</code>d calling <code>ref</code> again will have no effe
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.0/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.1/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

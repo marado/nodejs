@@ -197,7 +197,14 @@
               "type": "event",
               "name": "newListener",
               "params": [],
-              "desc": "<p>This event is emitted any time someone adds a new listener.\n</p>\n"
+              "desc": "<p>This event is emitted any time someone adds a new listener.\n\n\n</p>\n"
+            },
+            {
+              "textRaw": "Event: 'removeListener'",
+              "type": "event",
+              "name": "removeListener",
+              "params": [],
+              "desc": "<p>This event is emitted any time someone removes a listener.\n</p>\n"
             }
           ]
         }

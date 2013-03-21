@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Path Node.js v0.10.0 Manual &amp; Documentation</title>
+  <title>Path Node.js v0.10.1 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/path.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.0 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.1 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -88,7 +88,10 @@ On Windows backslashes are used.
 &#39;/foo/bar/baz/asdf&#39;</code></pre>
 <h2>path.join([path1], [path2], [...])<span><a class="mark" href="#path_path_join_path1_path2" id="path_path_join_path1_path2">#</a></span></h2>
 <p>Join all arguments together and normalize the resulting path.
-Non-string arguments are ignored.
+
+</p>
+<p>Arguments must be strings.  In v0.8, non-string arguments were
+silently ignored.  In v0.10 and up, an exception is thrown.
 
 </p>
 <p>Example:
@@ -260,7 +263,7 @@ process.env.PATH.split(path.delimiter)
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.0/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.1/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>
