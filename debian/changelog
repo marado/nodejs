@@ -3,8 +3,9 @@ nodejs (0.10.1~dfsg1-2) experimental; urgency=low
   * copyright: use Source field to document dfsg-repackaging.
   * nodejs-dev: install headers with the directory layout expected
     node-gyp.
+  * 2005_expected_failing_tests.patch: some tests fail in chroot.
 
- -- Jérémy Lal <kapouer@melix.org>  Mon, 25 Mar 2013 15:38:37 +0100
+ -- Jérémy Lal <kapouer@melix.org>  Mon, 25 Mar 2013 16:21:25 +0100
 
 nodejs (0.10.1~dfsg1-1) experimental; urgency=low
 
