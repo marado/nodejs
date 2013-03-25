@@ -1,6 +1,8 @@
 nodejs (0.10.1~dfsg1-2) UNRELEASED; urgency=low
 
-  * Copyright: use Source field to document dfsg-repackaging. 
+  * copyright: use Source field to document dfsg-repackaging.
+  * nodejs-dev: install headers with the directory layout expected
+    node-gyp.
 
  -- Jérémy Lal <kapouer@melix.org>  Mon, 25 Mar 2013 13:14:53 +0100
 
