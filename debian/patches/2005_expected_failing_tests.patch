@@ -12,7 +12,7 @@ Author: Jérémy Lal <kapouer@melix.org>
 Last-Update: 2013-03-16
 --- a/test/simple/simple.status
 +++ b/test/simple/simple.status
-@@ -1 +1,24 @@
+@@ -1 +1,25 @@
  prefix simple
 +
 +# only fail when some network resources are not available
@@ -20,6 +20,7 @@ Last-Update: 2013-03-16
 +test-net-connect-timeout: PASS || FAIL
 +test-dgram-multicast-multi-process: PASS || FAIL
 +test-dgram-broadcast-multi-process: PASS || FAIL
++test-net-listen-fd0: PASS || FAIL
 +
 +# sometimes these tests TIMEOUT or FAIL
 +# test-dgram-pingpong: PASS || FAIL || TIMEOUT
@@ -31,9 +32,9 @@ Last-Update: 2013-03-16
 +# 512 bits keys fail with openssl 1.0.1 - node tests will use 1024 bits
 +# keys : https://github.com/joyent/node/commit/ef046bf4
 +# Let it fail until the real cause if found.
-+# test-tls-server-verify: PASS || FAIL
++test-tls-server-verify: PASS || FAIL
 +
 +# https://buildd.debian.org/status/fetch.php?pkg=nodejs&arch=armhf&ver=0.6.19~dfsg1-1&stamp=1339013006
 +# test-debugger-repl-utf8: PASS || TIMEOUT
 +# test-debugger-repl: PASS || TIMEOUT
-+# test-debugger-client: PASS || TIMEOUT
++test-debugger-client: PASS || FAIL
