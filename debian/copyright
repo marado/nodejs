@@ -1,6 +1,19 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: Node
 Source: http://nodejs.org/
+ Repackaged to exclude non-DFSG files in
+ ./deps/npm/html/static/webfonts
+ Conveniently, remove unused software to simplify this file maintenance:
+ ./deps/npm/
+ ./deps/openssl/
+ ./deps/zlib/
+ ./deps/cares/
+ ./test/gc/node_modules/
+ ./tools/blog/
+ ./tools/gyp/
+ ./tools/closure_linter/
+ ./tools/msvs/genfiles/
+ ./tools/wrk/
 Upstream-Contact: https://github.com/joyent/node/issues
 
 Files: *
