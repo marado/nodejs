@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>process Node.js v0.10.1 Manual &amp; Documentation</title>
+  <title>process Node.js v0.10.2 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/process.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.1 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.2 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -188,6 +188,21 @@ that writes to them are usually blocking.  They are blocking in the case
 that they refer to regular files or TTY file descriptors. In the case they
 refer to pipes, they are non-blocking like other streams.
 
+</p>
+<p>To check if Node is being run in a TTY context, read the <code>isTTY</code> property
+on <code>process.stderr</code>, <code>process.stdout</code>, or <code>process.stdin</code>:
+
+</p>
+<pre><code>$ node -p &quot;Boolean(process.stdin.isTTY)&quot;
+true
+$ echo &quot;foo&quot; | node -p &quot;Boolean(process.stdin.isTTY)&quot;
+false
+
+$ node -p &quot;Boolean(process.stdout.isTTY)&quot;
+true
+$ node -p &quot;Boolean(process.stdout.isTTY)&quot; | cat
+false</code></pre>
+<p>See <a href="tty.html#tty_tty">the tty docs</a> for more information.
 
 </p>
 <h2>process.stderr<span><a class="mark" href="#process_process_stderr" id="process_process_stderr">#</a></span></h2>
@@ -654,7 +669,7 @@ setTimeout(function() {
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.1/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.2/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

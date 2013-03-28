@@ -10,7 +10,7 @@
           "textRaw": "crypto.getCiphers()",
           "type": "method",
           "name": "getCiphers",
-          "desc": "<p>Returns an array with the names of the supported ciphers.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>var ciphers = crypto.getCiphers();\nconsole.log(ciphers); // [&#39;AES128-SHA&#39;, &#39;AES256-SHA&#39;, ...]</code></pre>\n",
+          "desc": "<p>Returns an array with the names of the supported ciphers.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>var ciphers = crypto.getCiphers();\nconsole.log(ciphers); // [&#39;AES-128-CBC&#39;, &#39;AES-128-CBC-HMAC-SHA1&#39;, ...]</code></pre>\n",
           "signatures": [
             {
               "params": []
