@@ -441,7 +441,7 @@
               "textRaw": "Event: 'close'",
               "type": "event",
               "name": "close",
-              "desc": "<p><code>function () { }</code>\n\n</p>\n<p>Indicates that the underlaying connection was terminated before\n<code>response.end()</code> was called or able to flush.\n\n</p>\n",
+              "desc": "<p><code>function () { }</code>\n\n</p>\n<p>Indicates that the underlying connection was terminated before\n<code>response.end()</code> was called or able to flush.\n\n</p>\n",
               "params": []
             }
           ],
