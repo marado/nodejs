@@ -11,3 +11,4 @@
 #1002_upstream_forgot_to_build_doc.patch
 2012_fix_v8_3_10.patch
 2013_waf_linkflags.patch
+1002_net_make_pause_resume_work_with_connecting_sockets.patch
