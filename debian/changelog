@@ -1,3 +1,9 @@
+nodejs (0.10.5~dfsg1-2) experimental; urgency=low
+
+  * nodejs-dev.links: fix symlinks to v8 headers.
+
+ -- Jérémy Lal <kapouer@melix.org>  Sun, 28 Apr 2013 21:15:31 +0200
+
 nodejs (0.10.5~dfsg1-1) experimental; urgency=low
 
   * New upstream release. 
