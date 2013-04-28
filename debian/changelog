@@ -1,3 +1,11 @@
+nodejs (0.6.21~dfsg1-1) unstable; urgency=low
+
+  * Upstream update.
+  * nodejs-dev: install headers in places expected by node-gyp, and
+    maintain compatibility with node-waf.
+
+ -- Jérémy Lal <kapouer@melix.org>  Sun, 28 Apr 2013 22:21:21 +0200
+
 nodejs (0.6.19~dfsg1-6) unstable; urgency=low
 
   * Update package relations:
