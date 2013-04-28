@@ -1,8 +1,9 @@
-nodejs (0.10.2~dfsg1-1) UNRELEASED; urgency=low
+nodejs (0.10.5~dfsg1-1) UNRELEASED; urgency=low
 
   * New upstream release. 
+  * nodejs-dev.install: common.gypi is needed by node-gyp.
 
- -- Jérémy Lal <kapouer@melix.org>  Thu, 28 Mar 2013 21:08:28 +0100
+ -- Jérémy Lal <kapouer@melix.org>  Sun, 28 Apr 2013 19:16:22 +0200
 
 nodejs (0.10.1~dfsg1-2) experimental; urgency=low
 
