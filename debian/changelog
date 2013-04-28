@@ -1,10 +1,11 @@
-nodejs (0.6.21~dfsg1-1) unstable; urgency=low
+nodejs (0.6.19~dfsg1-7) unstable; urgency=low
 
-  * Upstream update.
   * nodejs-dev: install headers in places expected by node-gyp, and
     maintain compatibility with node-waf.
+  * Apply upstream patch for a bug fixed in nodejs 0.6.21 :
+    1002_net_make_pause_resume_work_with_connecting_sockets.patch
 
- -- Jérémy Lal <kapouer@melix.org>  Sun, 28 Apr 2013 22:21:21 +0200
+ -- Jérémy Lal <kapouer@melix.org>  Mon, 29 Apr 2013 00:37:51 +0200
 
 nodejs (0.6.19~dfsg1-6) unstable; urgency=low
 
