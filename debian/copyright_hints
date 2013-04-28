@@ -292,6 +292,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-child-process-ipc.js
  test/simple/test-child-process-kill-throw.js
  test/simple/test-child-process-kill.js
+ test/simple/test-child-process-send-utf8.js
  test/simple/test-child-process-set-blocking.js
  test/simple/test-child-process-silent.js
  test/simple/test-child-process-stdin.js
@@ -325,9 +326,11 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-console.js
  test/simple/test-crypto-binary-default.js
  test/simple/test-crypto-ecb.js
+ test/simple/test-crypto-hash-stream-pipe.js
  test/simple/test-crypto-padding-aes256.js
  test/simple/test-crypto-padding.js
  test/simple/test-crypto-random.js
+ test/simple/test-crypto-stream.js
  test/simple/test-crypto.js
  test/simple/test-debug-brk-no-arg.js
  test/simple/test-debugger-client.js
@@ -336,6 +339,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-delayed-require.js
  test/simple/test-deprecation-flags.js
  test/simple/test-dgram-address.js
+ test/simple/test-dgram-bind-default-address.js
  test/simple/test-dgram-bind.js
  test/simple/test-dgram-broadcast-multi-process.js
  test/simple/test-dgram-close.js
@@ -349,8 +353,10 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-dgram-regress-4496.js
  test/simple/test-dgram-udp4.js
  test/simple/test-dgram-unref.js
+ test/simple/test-dh-padding.js
  test/simple/test-domain-crypto.js
  test/simple/test-domain-exit-dispose.js
+ test/simple/test-domain-from-timer.js
  test/simple/test-domain-http-server.js
  test/simple/test-domain-implicit-fs.js
  test/simple/test-domain-multi.js
@@ -467,6 +473,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-http-default-encoding.js
  test/simple/test-http-destroyed-socket-write.js
  test/simple/test-http-dns-error.js
+ test/simple/test-http-end-throw-socket-handling.js
  test/simple/test-http-eof-on-connect.js
  test/simple/test-http-exceptions.js
  test/simple/test-http-expect-continue.js
@@ -479,12 +486,14 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-http-header-read.js
  test/simple/test-http-header-response-splitting.js
  test/simple/test-http-host-headers.js
+ test/simple/test-http-incoming-pipelined-socket-destroy.js
  test/simple/test-http-keep-alive-close-on-header.js
  test/simple/test-http-keep-alive.js
  test/simple/test-http-legacy.js
  test/simple/test-http-localaddress-bind-error.js
  test/simple/test-http-localaddress.js
  test/simple/test-http-malformed-request.js
+ test/simple/test-http-many-ended-pipelines.js
  test/simple/test-http-many-keep-alive-connections.js
  test/simple/test-http-max-headers-count.js
  test/simple/test-http-multi-line-headers.js
@@ -512,6 +521,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-http-set-trailers.js
  test/simple/test-http-should-keep-alive.js
  test/simple/test-http-status-code.js
+ test/simple/test-http-timeout-overflow.js
  test/simple/test-http-timeout.js
  test/simple/test-http-unix-socket.js
  test/simple/test-http-upgrade-agent.js
@@ -692,6 +702,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-stdio-readable-writable.js
  test/simple/test-stdout-cannot-be-closed-child-process-pipe.js
  test/simple/test-stdout-close-catch.js
+ test/simple/test-stdout-close-unref.js
  test/simple/test-stdout-stderr-reading.js
  test/simple/test-stdout-to-file.js
  test/simple/test-stream-big-push.js
@@ -702,7 +713,9 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-stream-pipe-multi.js
  test/simple/test-stream-push-order.js
  test/simple/test-stream-push-strings.js
+ test/simple/test-stream-readable-event.js
  test/simple/test-stream-readable-flow-recursion.js
+ test/simple/test-stream-unshift-read-race.js
  test/simple/test-stream2-compatibility.js
  test/simple/test-stream2-finish-pipe.js
  test/simple/test-stream2-httpclient-response-end.js
@@ -731,6 +744,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-tcp-wrap.js
  test/simple/test-timers-immediate.js
  test/simple/test-timers-linked-list.js
+ test/simple/test-timers-ordering.js
  test/simple/test-timers-this.js
  test/simple/test-timers-uncaught-exception.js
  test/simple/test-timers-unref.js
@@ -739,6 +753,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-tls-check-server-identity.js
  test/simple/test-tls-client-abort.js
  test/simple/test-tls-client-abort2.js
+ test/simple/test-tls-client-abort3.js
  test/simple/test-tls-client-reject.js
  test/simple/test-tls-client-resume.js
  test/simple/test-tls-client-verify.js
@@ -773,6 +788,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-tls-sni-server-client.js
  test/simple/test-tls-timeout-server-2.js
  test/simple/test-tls-timeout-server.js
+ test/simple/test-tls-zero-clear-in.js
  test/simple/test-tty-stdout-end.js
  test/simple/test-tty-wrap.js
  test/simple/test-typed-arrays.js
@@ -796,6 +812,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-zlib-invalid-input.js
  test/simple/test-zlib-random-byte-pipes.js
  test/simple/test-zlib-write-after-flush.js
+ test/simple/test-zlib-zero-byte.js
  tools/doc/generate.js
  tools/doc/html.js
  tools/doc/json.js
@@ -1392,6 +1409,7 @@ Files: AUTHORS
  benchmark/idle_clients.js
  benchmark/idle_server.js
  benchmark/io.c
+ benchmark/misc/child-process-read.js
  benchmark/misc/function_call/.gitignore
  benchmark/misc/function_call/Makefile
  benchmark/misc/function_call/binding.cc
@@ -1427,6 +1445,7 @@ Files: AUTHORS
  debian/gbp.conf
  debian/nodejs-dev.dirs
  debian/nodejs-dev.install
+ debian/nodejs-dev.links
  debian/nodejs-legacy.links
  debian/nodejs.README.Debian
  debian/nodejs.dirs
@@ -1454,6 +1473,7 @@ Files: AUTHORS
  deps/http_parser/http_parser.gyp
  deps/http_parser/url_parser.c
  deps/uv/.gitignore
+ deps/uv/ChangeLog
  deps/uv/README.md
  deps/uv/common.gypi
  deps/uv/gyp_uv
@@ -1625,6 +1645,12 @@ Files: AUTHORS
  doc/blog/release/node-version-0-6-19-stable.md
  doc/blog/release/node-version-0-7-9-unstable.md
  doc/blog/release/v0.10.0.md
+ doc/blog/release/v0.10.1.md
+ doc/blog/release/v0.10.2.md
+ doc/blog/release/v0.10.3.md
+ doc/blog/release/v0.10.4.md
+ doc/blog/release/v0.11.0.md
+ doc/blog/release/v0.11.1.md
  doc/blog/release/v0.6.20.md
  doc/blog/release/v0.8.1.md
  doc/blog/release/v0.8.10.md
@@ -1641,6 +1667,7 @@ Files: AUTHORS
  doc/blog/release/v0.8.20.md
  doc/blog/release/v0.8.21.md
  doc/blog/release/v0.8.22.md
+ doc/blog/release/v0.8.23.md
  doc/blog/release/v0.8.3.md
  doc/blog/release/v0.8.4.md
  doc/blog/release/v0.8.5.md
@@ -1935,8 +1962,10 @@ Files: deps/http_parser/LICENSE-MIT
  deps/uv/src/unix/timer.c
  deps/uv/src/unix/tty.c
  deps/uv/src/unix/udp.c
+ deps/uv/src/unix/uv-dtrace.d
  deps/uv/src/uv-common.c
  deps/uv/src/uv-common.h
+ deps/uv/src/version.c
  deps/uv/src/win/async.c
  deps/uv/src/win/atomicops-inl.h
  deps/uv/src/win/core.c
@@ -2118,7 +2147,7 @@ Files: doc/api/_toc.html
  doc/api/util.html
  doc/api/vm.html
  doc/api/zlib.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.1/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.5/LICENSE">license</a>.</p>
 License: UNKNOWN
  FIXME
 
@@ -2460,20 +2489,20 @@ License: UNKNOWN
  FIXME
 
 Files: doc/api/net.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.1/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.5/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
 License: UNKNOWN
  FIXME
 
 Files: doc/api/all.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.1/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.5/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
   { return c.indexOf(line) == 0 })
 License: UNKNOWN
  FIXME
 
 Files: doc/api/readline.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.1/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.5/LICENSE">license</a>.</p>
   { return c.indexOf(line) == 0 })
 License: UNKNOWN
  FIXME
