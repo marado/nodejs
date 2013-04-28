@@ -21,27 +21,13 @@
         {
           "textRaw": "http.IncomingMessage",
           "name": "IncomingMessage",
-          "desc": "<p>An <code>IncomingMessage</code> object is created by <code>http.Server</code> or <code>http.ClientRequest</code>\nand passed as the first argument to the <code>&#39;request&#39;</code> and <code>&#39;response&#39;</code> event\nrespectively. It may be used to access response status, headers and data.\n\n</p>\n<p>It implements the [Readable Stream][] interface. <code>http.IncomingMessage</code> is an\n[EventEmitter][] with the following events:\n\n</p>\n",
+          "desc": "<p>An <code>IncomingMessage</code> object is created by <code>http.Server</code> or <code>http.ClientRequest</code>\nand passed as the first argument to the <code>&#39;request&#39;</code> and <code>&#39;response&#39;</code> event\nrespectively. It may be used to access response status, headers and data.\n\n</p>\n<p>It implements the [Readable Stream][] interface, as well as the\nfollowing additional events, methods, and properties.\n\n</p>\n",
           "events": [
-            {
-              "textRaw": "Event: 'data'",
-              "type": "event",
-              "name": "data",
-              "desc": "<p><code>function (chunk) { }</code>\n\n</p>\n<p>Emitted when a piece of the message body is received. The chunk is a string if\nan encoding has been set with <code>message.setEncoding()</code>, otherwise it&#39;s\na [Buffer][].\n\n</p>\n<p>Note that the <strong>data will be lost</strong> if there is no listener when a\n<code>IncomingMessage</code> emits a <code>&#39;data&#39;</code> event.\n\n</p>\n",
-              "params": []
-            },
-            {
-              "textRaw": "Event: 'end'",
-              "type": "event",
-              "name": "end",
-              "desc": "<p><code>function () { }</code>\n\n</p>\n<p>Emitted exactly once for each response. After that, no more <code>&#39;data&#39;</code> events\nwill be emitted on the response.\n\n</p>\n",
-              "params": []
-            },
             {
               "textRaw": "Event: 'close'",
               "type": "event",
               "name": "close",
-              "desc": "<p><code>function () { }</code>\n\n</p>\n<p>Indicates that the underlaying connection was terminated before\n<code>response.end()</code> was called or able to flush.\n\n</p>\n<p>Just like <code>&#39;end&#39;</code>, this event occurs only once per response, and no more\n<code>&#39;data&#39;</code> events will fire afterwards. See [http.ServerResponse][]&#39;s <code>&#39;close&#39;</code>\nevent for more information.\n\n</p>\n",
+              "desc": "<p><code>function () { }</code>\n\n</p>\n<p>Indicates that the underlaying connection was terminated before\n<code>response.end()</code> was called or able to flush.\n\n</p>\n<p>Just like <code>&#39;end&#39;</code>, this event occurs only once per response. See\n[http.ServerResponse][]&#39;s <code>&#39;close&#39;</code> event for more information.\n\n</p>\n",
               "params": []
             }
           ],
@@ -114,44 +100,6 @@
                 }
               ],
               "desc": "<p>Calls <code>message.connection.setTimeout(msecs, callback)</code>.\n\n</p>\n"
-            },
-            {
-              "textRaw": "message.setEncoding([encoding])",
-              "type": "method",
-              "name": "setEncoding",
-              "desc": "<p>Set the encoding for data emitted by the <code>&#39;data&#39;</code> event. See [stream.setEncoding()][] for more\ninformation.\n\n</p>\n<p>Should be set before any <code>&#39;data&#39;</code> events have been emitted.\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": [
-                    {
-                      "name": "encoding",
-                      "optional": true
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "textRaw": "message.pause()",
-              "type": "method",
-              "name": "pause",
-              "desc": "<p>Pauses request/response from emitting events.  Useful to throttle back a download.\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": []
-                }
-              ]
-            },
-            {
-              "textRaw": "message.resume()",
-              "type": "method",
-              "name": "resume",
-              "desc": "<p>Resumes a paused request/response.\n\n</p>\n",
-              "signatures": [
-                {
-                  "params": []
-                }
-              ]
             }
           ]
         }
@@ -248,7 +196,7 @@
               "textRaw": "Event: 'connection'",
               "type": "event",
               "name": "connection",
-              "desc": "<p><code>function (socket) { }</code>\n\n</p>\n<p> When a new TCP stream is established. <code>socket</code> is an object of type\n <code>net.Socket</code>. Usually users will not want to access this event. The\n <code>socket</code> can also be accessed at <code>request.connection</code>.\n\n</p>\n",
+              "desc": "<p><code>function (socket) { }</code>\n\n</p>\n<p> When a new TCP stream is established. <code>socket</code> is an object of type\n <code>net.Socket</code>. Usually users will not want to access this event. In\n particular, the socket will not emit <code>readable</code> events because of how\n the protocol parser attaches to the socket. The <code>socket</code> can also be\n accessed at <code>request.connection</code>.\n\n</p>\n",
               "params": []
             },
             {
@@ -660,7 +608,7 @@
           "textRaw": "Class: http.ClientRequest",
           "type": "class",
           "name": "http.ClientRequest",
-          "desc": "<p>This object is created internally and returned from <code>http.request()</code>.  It\nrepresents an <em>in-progress</em> request whose header has already been queued.  The\nheader is still mutable using the <code>setHeader(name, value)</code>, <code>getHeader(name)</code>,\n<code>removeHeader(name)</code> API.  The actual header will be sent along with the first\ndata chunk or when closing the connection.\n\n</p>\n<p>To get the response, add a listener for <code>&#39;response&#39;</code> to the request object.\n<code>&#39;response&#39;</code> will be emitted from the request object when the response\nheaders have been received.  The <code>&#39;response&#39;</code> event is executed with one\nargument which is an instance of <code>http.IncomingMessage</code>.\n\n</p>\n<p>During the <code>&#39;response&#39;</code> event, one can add listeners to the\nresponse object; particularly to listen for the <code>&#39;data&#39;</code> event. Note that\nthe <code>&#39;response&#39;</code> event is called before any part of the response body is received,\nso there is no need to worry about racing to catch the first part of the\nbody. As long as a listener for <code>&#39;data&#39;</code> is added during the <code>&#39;response&#39;</code>\nevent, the entire body will be caught.\n\n\n</p>\n<pre><code>// Good\nrequest.on(&#39;response&#39;, function (response) {\n  response.on(&#39;data&#39;, function (chunk) {\n    console.log(&#39;BODY: &#39; + chunk);\n  });\n});\n\n// Bad - misses all or part of the body\nrequest.on(&#39;response&#39;, function (response) {\n  setTimeout(function () {\n    response.on(&#39;data&#39;, function (chunk) {\n      console.log(&#39;BODY: &#39; + chunk);\n    });\n  }, 10);\n});</code></pre>\n<p>Note: Node does not check whether Content-Length and the length of the body\nwhich has been transmitted are equal or not.\n\n</p>\n<p>The request implements the [Writable Stream][] interface. This is an\n[EventEmitter][] with the following events:\n\n</p>\n",
+          "desc": "<p>This object is created internally and returned from <code>http.request()</code>.  It\nrepresents an <em>in-progress</em> request whose header has already been queued.  The\nheader is still mutable using the <code>setHeader(name, value)</code>, <code>getHeader(name)</code>,\n<code>removeHeader(name)</code> API.  The actual header will be sent along with the first\ndata chunk or when closing the connection.\n\n</p>\n<p>To get the response, add a listener for <code>&#39;response&#39;</code> to the request object.\n<code>&#39;response&#39;</code> will be emitted from the request object when the response\nheaders have been received.  The <code>&#39;response&#39;</code> event is executed with one\nargument which is an instance of <code>http.IncomingMessage</code>.\n\n</p>\n<p>During the <code>&#39;response&#39;</code> event, one can add listeners to the\nresponse object; particularly to listen for the <code>&#39;data&#39;</code> event.\n\n</p>\n<p>If no <code>&#39;response&#39;</code> handler is added, then the response will be\nentirely discarded.  However, if you add a <code>&#39;response&#39;</code> event handler,\nthen you <strong>must</strong> consume the data from the response object, either by\ncalling <code>response.read()</code> whenever there is a <code>&#39;readable&#39;</code> event, or\nby adding a <code>&#39;data&#39;</code> handler, or by calling the <code>.resume()</code> method.\nUntil the data is consumed, the <code>&#39;end&#39;</code> event will not fire.\n\n</p>\n<p>Note: Node does not check whether Content-Length and the length of the body\nwhich has been transmitted are equal or not.\n\n</p>\n<p>The request implements the [Writable Stream][] interface. This is an\n[EventEmitter][] with the following events:\n\n</p>\n",
           "events": [
             {
               "textRaw": "Event 'response'",
