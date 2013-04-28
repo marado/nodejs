@@ -27,7 +27,7 @@
           "textRaw": "path.join([path1], [path2], [...])",
           "type": "method",
           "name": "join",
-          "desc": "<p>Join all arguments together and normalize the resulting path.\n\n</p>\n<p>Arguments must be strings.  In v0.8, non-string arguments were\nsilently ignored.  In v0.10 and up, an exception is thrown.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>path.join(&#39;/foo&#39;, &#39;bar&#39;, &#39;baz/asdf&#39;, &#39;quux&#39;, &#39;..&#39;)\n// returns\n&#39;/foo/bar/baz/asdf&#39;\n\npath.join(&#39;foo&#39;, {}, &#39;bar&#39;)\n// returns\n&#39;foo/bar&#39;</code></pre>\n",
+          "desc": "<p>Join all arguments together and normalize the resulting path.\n\n</p>\n<p>Arguments must be strings.  In v0.8, non-string arguments were\nsilently ignored.  In v0.10 and up, an exception is thrown.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>path.join(&#39;/foo&#39;, &#39;bar&#39;, &#39;baz/asdf&#39;, &#39;quux&#39;, &#39;..&#39;)\n// returns\n&#39;/foo/bar/baz/asdf&#39;\n\npath.join(&#39;foo&#39;, {}, &#39;bar&#39;)\n// throws exception\nTypeError: Arguments to path.join must be strings</code></pre>\n",
           "signatures": [
             {
               "params": [

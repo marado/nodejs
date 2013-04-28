@@ -68,7 +68,7 @@
         {
           "textRaw": "process.versions",
           "name": "versions",
-          "desc": "<p>A property exposing version strings of node and its dependencies.\n\n</p>\n<pre><code>console.log(process.versions);</code></pre>\n<p>Will output:\n\n</p>\n<pre><code>{ node: &#39;0.4.12&#39;,\n  v8: &#39;3.1.8.26&#39;,\n  ares: &#39;1.7.4&#39;,\n  ev: &#39;4.4&#39;,\n  openssl: &#39;1.0.0e-fips&#39; }</code></pre>\n"
+          "desc": "<p>A property exposing version strings of node and its dependencies.\n\n</p>\n<pre><code>console.log(process.versions);</code></pre>\n<p>Will print something like:\n\n</p>\n<pre><code>{ http_parser: &#39;1.0&#39;,\n  node: &#39;0.10.4&#39;,\n  v8: &#39;3.14.5.8&#39;,\n  ares: &#39;1.9.0-DEV&#39;,\n  uv: &#39;0.10.3&#39;,\n  zlib: &#39;1.2.3&#39;,\n  modules: &#39;11&#39;,\n  openssl: &#39;1.0.1e&#39; }</code></pre>\n"
         },
         {
           "textRaw": "process.config",

@@ -46,7 +46,7 @@
 #endif
 
 #define STATIC_ASSERT(expr)                                                   \
-  void uv__static_assert(int static_assert_failed[0 - !(expr)])
+  void uv__static_assert(int static_assert_failed[1 - 2 * !(expr)])
 
 #define ACCESS_ONCE(type, var)                                                \
   (*(volatile type*) &(var))
@@ -255,5 +255,12 @@ __attribute__((unused))
 static void uv__update_time(uv_loop_t* loop) {
   loop->time = uv__hrtime() / 1000000;
 }
+
+#ifdef HAVE_DTRACE
+#include "uv-dtrace.h"
+#else
+#define UV_TICK_START(arg0, arg1)
+#define UV_TICK_STOP(arg0, arg1)
+#endif
 
 #endif /* UV_UNIX_INTERNAL_H_ */
