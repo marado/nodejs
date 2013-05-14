@@ -101,6 +101,8 @@ Files: benchmark/buffers/buffer-base64-encode.js
  src/slab_allocator.h
  src/stream_wrap.cc
  src/stream_wrap.h
+ src/string_bytes.cc
+ src/string_bytes.h
  src/tcp_wrap.cc
  src/tcp_wrap.h
  src/timer_wrap.cc
@@ -150,6 +152,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/fixtures/b/c.js
  test/fixtures/b/d.js
  test/fixtures/b/package/index.js
+ test/fixtures/break-in-module/mod.js
  test/fixtures/catch-stdout-error.js
  test/fixtures/child_process_should_emit_error.js
  test/fixtures/create-file.js
@@ -254,6 +257,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/pummel/test-tls-throttle.js
  test/pummel/test-vm-memleak.js
  test/pummel/test-watch-file.js
+ test/simple/helper-debugger-repl.js
  test/simple/net-socket-readystate.js
  test/simple/path.js
  test/simple/test-arraybuffer-slice.js
@@ -292,6 +296,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-child-process-ipc.js
  test/simple/test-child-process-kill-throw.js
  test/simple/test-child-process-kill.js
+ test/simple/test-child-process-recv-handle.js
  test/simple/test-child-process-send-utf8.js
  test/simple/test-child-process-set-blocking.js
  test/simple/test-child-process-silent.js
@@ -334,6 +339,8 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-crypto.js
  test/simple/test-debug-brk-no-arg.js
  test/simple/test-debugger-client.js
+ test/simple/test-debugger-repl-break-in-module.js
+ test/simple/test-debugger-repl-restart.js
  test/simple/test-debugger-repl-utf8.js
  test/simple/test-debugger-repl.js
  test/simple/test-delayed-require.js
@@ -728,6 +735,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-stream2-readable-from-list.js
  test/simple/test-stream2-readable-legacy-drain.js
  test/simple/test-stream2-readable-non-empty-end.js
+ test/simple/test-stream2-readable-wrap-empty.js
  test/simple/test-stream2-readable-wrap.js
  test/simple/test-stream2-set-encoding.js
  test/simple/test-stream2-stderr-sync.js
@@ -1299,7 +1307,9 @@ Files: deps/v8/LICENSE
  deps/v8/tools/fuzz-harness.sh
  deps/v8/tools/gc-nvp-trace-processor.py
  deps/v8/tools/gcmole/Makefile
+ deps/v8/tools/gcmole/gccause.lua
  deps/v8/tools/gcmole/gcmole.cc
+ deps/v8/tools/gcmole/gcmole.lua
  deps/v8/tools/gdb-v8-support.py
  deps/v8/tools/gen-postmortem-metadata.py
  deps/v8/tools/grokdump.py
@@ -1391,6 +1401,8 @@ Files: AUTHORS
  benchmark/buffers/buffer-write.js
  benchmark/buffers/dataview-set.js
  benchmark/common.js
+ benchmark/crypto/hash-stream-creation.js
+ benchmark/crypto/hash-stream-throughput.js
  benchmark/fs-write-stream-throughput.js
  benchmark/fs/read-stream-throughput.js
  benchmark/fs/readfile.js
@@ -1649,8 +1661,10 @@ Files: AUTHORS
  doc/blog/release/v0.10.2.md
  doc/blog/release/v0.10.3.md
  doc/blog/release/v0.10.4.md
+ doc/blog/release/v0.10.5.md
  doc/blog/release/v0.11.0.md
  doc/blog/release/v0.11.1.md
+ doc/blog/release/v0.11.2.md
  doc/blog/release/v0.6.20.md
  doc/blog/release/v0.8.1.md
  doc/blog/release/v0.8.10.md
@@ -1710,7 +1724,6 @@ Files: AUTHORS
  doc/blog/vulnerability/http-server-security-vulnerability-please-upgrade-to-0-6-17.md
  doc/changelog-head.html
  doc/cla.html
- doc/download/index.html
  doc/favicon.ico
  doc/node.1
  doc/pipe.css
@@ -1745,6 +1758,7 @@ Files: AUTHORS
  test/fixtures/agent.crt
  test/fixtures/agent.key
  test/fixtures/alice.crt
+ test/fixtures/break-in-module/main.js
  test/fixtures/breakpoints.js
  test/fixtures/breakpoints_utf8.js
  test/fixtures/cert.pem
@@ -2147,7 +2161,7 @@ Files: doc/api/_toc.html
  doc/api/util.html
  doc/api/vm.html
  doc/api/zlib.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.5/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.6/LICENSE">license</a>.</p>
 License: UNKNOWN
  FIXME
 
@@ -2167,6 +2181,15 @@ Copyright: 1994-2006, Sun Microsystems Inc
 License: BSD-2-clause
  FIXME
 
+Files: doc/about/index.html
+ doc/changelog-foot.html
+ doc/download/index.html
+ doc/index.html
+ doc/template.html
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/__VERSION__/LICENSE">license</a>.</p>
+License: UNKNOWN
+ FIXME
+
 Files: deps/v8/src/arm/assembler-arm-inl.h
  deps/v8/src/arm/assembler-arm.cc
  deps/v8/src/arm/assembler-arm.h
@@ -2176,14 +2199,6 @@ Copyright: 1994-2006, Sun Microsystems Inc
   HOLDERS AND CONTRIBUTORS
   OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT
 License: BSD-2-clause
- FIXME
-
-Files: doc/about/index.html
- doc/changelog-foot.html
- doc/index.html
- doc/template.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/__VERSION__/LICENSE">license</a>.</p>
-License: UNKNOWN
  FIXME
 
 Files: benchmark/compare.js
@@ -2230,13 +2245,6 @@ License: UNKNOWN
 Files: tools/doc/node_modules/marked/bin/marked
  tools/doc/node_modules/marked/man/marked.1
 Copyright: 2011-2012, Christopher Jeffrey (MIT License)
-License: UNKNOWN
- FIXME
-
-Files: deps/v8/tools/gcmole/gccause.lua
- deps/v8/tools/gcmole/gcmole.lua
-Copyright: 2011, the V8 project authors.
-  HOLDERS AND CONTRIBUTORS
 License: UNKNOWN
  FIXME
 
@@ -2320,6 +2328,13 @@ Files: deps/v8/PRESUBMIT.py
 Copyright: 2012, the V8 project authors.
   HOLDERS AND CONTRIBUTORS
   header and trailing whitespaces check failed"))
+License: BSD-3-clause
+ FIXME
+
+Files: deps/v8/tools/generate-ten-powers.scm
+Copyright: 2010, the V8 project authors.
+  2010, the V8 project authors.")
+  HOLDERS AND CONTRIBUTORS
 License: BSD-3-clause
  FIXME
 
@@ -2489,20 +2504,20 @@ License: UNKNOWN
  FIXME
 
 Files: doc/api/net.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.5/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.6/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
 License: UNKNOWN
  FIXME
 
 Files: doc/api/all.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.5/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.6/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
   { return c.indexOf(line) == 0 })
 License: UNKNOWN
  FIXME
 
 Files: doc/api/readline.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.5/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.6/LICENSE">license</a>.</p>
   { return c.indexOf(line) == 0 })
 License: UNKNOWN
  FIXME
@@ -2519,13 +2534,6 @@ License: UNKNOWN
 
 Files: tools/doc/node_modules/marked/lib/marked.js
 Copyright: 2011-2012, Christopher Jeffrey. (MIT Licensed)
-License: UNKNOWN
- FIXME
-
-Files: deps/v8/tools/generate-ten-powers.scm
-Copyright: 2010, the V8 project authors.
-  2010, the V8 project authors.")
-  HOLDERS AND CONTRIBUTORS
 License: UNKNOWN
  FIXME
 
