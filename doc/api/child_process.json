@@ -271,18 +271,6 @@
                       "desc": "Current working directory of the child process"
                     },
                     {
-                      "textRaw": "`stdio` {Array|String} Child's stdio configuration. (See above) Only stdin is configurable, anything else will lead to unpredictable results. ",
-                      "name": "stdio",
-                      "type": "Array|String",
-                      "desc": "Child's stdio configuration. (See above) Only stdin is configurable, anything else will lead to unpredictable results."
-                    },
-                    {
-                      "textRaw": "`customFds` {Array} **Deprecated** File descriptors for the child to use for stdio.  (See above) ",
-                      "name": "customFds",
-                      "type": "Array",
-                      "desc": "**Deprecated** File descriptors for the child to use for stdio.  (See above)"
-                    },
-                    {
                       "textRaw": "`env` {Object} Environment key-value pairs ",
                       "name": "env",
                       "type": "Object",
@@ -391,18 +379,6 @@
                       "name": "cwd",
                       "type": "String",
                       "desc": "Current working directory of the child process"
-                    },
-                    {
-                      "textRaw": "`stdio` {Array|String} Child's stdio configuration. (See above) ",
-                      "name": "stdio",
-                      "type": "Array|String",
-                      "desc": "Child's stdio configuration. (See above)"
-                    },
-                    {
-                      "textRaw": "`customFds` {Array} **Deprecated** File descriptors for the child to use for stdio.  (See above) ",
-                      "name": "customFds",
-                      "type": "Array",
-                      "desc": "**Deprecated** File descriptors for the child to use for stdio.  (See above)"
                     },
                     {
                       "textRaw": "`env` {Object} Environment key-value pairs ",

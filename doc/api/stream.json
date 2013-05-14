@@ -95,7 +95,7 @@
               "desc": "<p>Note: <strong>This function should NOT be called directly.</strong>  It should be\nimplemented by child classes, and called by the internal Readable\nclass methods only.\n\n</p>\n<p>All Readable stream implementations must provide a <code>_read</code> method\nto fetch data from the underlying resource.\n\n</p>\n<p>This method is prefixed with an underscore because it is internal to\nthe class that defines it, and should not be called directly by user\nprograms.  However, you <strong>are</strong> expected to override this method in\nyour own extension classes.\n\n</p>\n<p>When data is available, put it into the read queue by calling\n<code>readable.push(chunk)</code>.  If <code>push</code> returns false, then you should stop\nreading.  When <code>_read</code> is called again, you should start pushing more\ndata.\n\n</p>\n<p>The <code>size</code> argument is advisory.  Implementations where a &quot;read&quot; is a\nsingle call that returns data can use this to know how much data to\nfetch.  Implementations where that is not relevant, such as TCP or\nTLS, may ignore this argument, and simply provide data whenever it\nbecomes available.  There is no need, for example to &quot;wait&quot; until\n<code>size</code> bytes are available before calling <code>stream.push(chunk)</code>.\n\n</p>\n"
             },
             {
-              "textRaw": "readable.push(chunk)",
+              "textRaw": "readable.push(chunk, [encoding])",
               "type": "method",
               "name": "push",
               "signatures": [
@@ -112,6 +112,13 @@
                       "name": "chunk",
                       "type": "Buffer | null | String",
                       "desc": "Chunk of data to push into the read queue"
+                    },
+                    {
+                      "textRaw": "`encoding` {String} Encoding of String chunks.  Must be a valid Buffer encoding, such as `'utf8'` or `'ascii'` ",
+                      "name": "encoding",
+                      "type": "String",
+                      "desc": "Encoding of String chunks.  Must be a valid Buffer encoding, such as `'utf8'` or `'ascii'`",
+                      "optional": true
                     }
                   ]
                 },
@@ -119,11 +126,15 @@
                   "params": [
                     {
                       "name": "chunk"
+                    },
+                    {
+                      "name": "encoding",
+                      "optional": true
                     }
                   ]
                 }
               ],
-              "desc": "<p>Note: <strong>This function should be called by Readable implementors, NOT\nby consumers of Readable subclasses.</strong>  The <code>_read()</code> function will not\nbe called again until at least one <code>push(chunk)</code> call is made.  If no\ndata is available, then you MAY call <code>push(&#39;&#39;)</code> (an empty string) to\nallow a future <code>_read</code> call, without adding any data to the queue.\n\n</p>\n<p>The <code>Readable</code> class works by putting data into a read queue to be\npulled out later by calling the <code>read()</code> method when the <code>&#39;readable&#39;</code>\nevent fires.\n\n</p>\n<p>The <code>push()</code> method will explicitly insert some data into the read\nqueue.  If it is called with <code>null</code> then it will signal the end of the\ndata.\n\n</p>\n<p>In some cases, you may be wrapping a lower-level source which has some\nsort of pause/resume mechanism, and a data callback.  In those cases,\nyou could wrap the low-level source object by doing something like\nthis:\n\n</p>\n<pre><code class=\"javascript\">// source is an object with readStop() and readStart() methods,\n// and an `ondata` member that gets called when it has data, and\n// an `onend` member that gets called when the data is over.\n\nvar stream = new Readable();\n\nsource.ondata = function(chunk) {\n  // if push() returns false, then we need to stop reading from source\n  if (!stream.push(chunk))\n    source.readStop();\n};\n\nsource.onend = function() {\n  stream.push(null);\n};\n\n// _read will be called when the stream wants to pull more data in\n// the advisory size argument is ignored in this case.\nstream._read = function(n) {\n  source.readStart();\n};</code></pre>\n"
+              "desc": "<p>Note: <strong>This function should be called by Readable implementors, NOT\nby consumers of Readable streams.</strong>  The <code>_read()</code> function will not\nbe called again until at least one <code>push(chunk)</code> call is made.  If no\ndata is available, then you MAY call <code>push(&#39;&#39;)</code> (an empty string) to\nallow a future <code>_read</code> call, without adding any data to the queue.\n\n</p>\n<p>The <code>Readable</code> class works by putting data into a read queue to be\npulled out later by calling the <code>read()</code> method when the <code>&#39;readable&#39;</code>\nevent fires.\n\n</p>\n<p>The <code>push()</code> method will explicitly insert some data into the read\nqueue.  If it is called with <code>null</code> then it will signal the end of the\ndata.\n\n</p>\n<p>In some cases, you may be wrapping a lower-level source which has some\nsort of pause/resume mechanism, and a data callback.  In those cases,\nyou could wrap the low-level source object by doing something like\nthis:\n\n</p>\n<pre><code class=\"javascript\">// source is an object with readStop() and readStart() methods,\n// and an `ondata` member that gets called when it has data, and\n// an `onend` member that gets called when the data is over.\n\nvar stream = new Readable();\n\nsource.ondata = function(chunk) {\n  // if push() returns false, then we need to stop reading from source\n  if (!stream.push(chunk))\n    source.readStop();\n};\n\nsource.onend = function() {\n  stream.push(null);\n};\n\n// _read will be called when the stream wants to pull more data in\n// the advisory size argument is ignored in this case.\nstream._read = function(n) {\n  source.readStart();\n};</code></pre>\n"
             },
             {
               "textRaw": "readable.unshift(chunk)",
@@ -554,6 +565,13 @@
               "type": "event",
               "name": "drain",
               "desc": "<p>Emitted when the stream&#39;s write queue empties and it&#39;s safe to write\nwithout buffering again. Listen for it when <code>stream.write()</code> returns\n<code>false</code>.\n\n</p>\n",
+              "params": []
+            },
+            {
+              "textRaw": "Event: 'error'",
+              "type": "event",
+              "name": "error",
+              "desc": "<p>Emitted if there was an error receiving data.\n\n</p>\n",
               "params": []
             },
             {

@@ -19,7 +19,7 @@
               "textRaw": "emitter.addListener(event, listener)",
               "type": "method",
               "name": "addListener",
-              "desc": "<p>Adds a listener to the end of the listeners array for the specified event.\n\n</p>\n<pre><code>server.on(&#39;connection&#39;, function (stream) {\n  console.log(&#39;someone connected!&#39;);\n});</code></pre>\n",
+              "desc": "<p>Adds a listener to the end of the listeners array for the specified event.\n\n</p>\n<pre><code>server.on(&#39;connection&#39;, function (stream) {\n  console.log(&#39;someone connected!&#39;);\n});</code></pre>\n<p>Returns emitter, so calls can be chained.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -47,7 +47,7 @@
               "textRaw": "emitter.on(event, listener)",
               "type": "method",
               "name": "on",
-              "desc": "<p>Adds a listener to the end of the listeners array for the specified event.\n\n</p>\n<pre><code>server.on(&#39;connection&#39;, function (stream) {\n  console.log(&#39;someone connected!&#39;);\n});</code></pre>\n",
+              "desc": "<p>Adds a listener to the end of the listeners array for the specified event.\n\n</p>\n<pre><code>server.on(&#39;connection&#39;, function (stream) {\n  console.log(&#39;someone connected!&#39;);\n});</code></pre>\n<p>Returns emitter, so calls can be chained.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -65,7 +65,7 @@
               "textRaw": "emitter.once(event, listener)",
               "type": "method",
               "name": "once",
-              "desc": "<p>Adds a <strong>one time</strong> listener for the event. This listener is\ninvoked only the next time the event is fired, after which\nit is removed.\n\n</p>\n<pre><code>server.once(&#39;connection&#39;, function (stream) {\n  console.log(&#39;Ah, we have our first user!&#39;);\n});</code></pre>\n",
+              "desc": "<p>Adds a <strong>one time</strong> listener for the event. This listener is\ninvoked only the next time the event is fired, after which\nit is removed.\n\n</p>\n<pre><code>server.once(&#39;connection&#39;, function (stream) {\n  console.log(&#39;Ah, we have our first user!&#39;);\n});</code></pre>\n<p>Returns emitter, so calls can be chained.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -83,7 +83,7 @@
               "textRaw": "emitter.removeListener(event, listener)",
               "type": "method",
               "name": "removeListener",
-              "desc": "<p>Remove a listener from the listener array for the specified event.\n<strong>Caution</strong>: changes array indices in the listener array behind the listener.\n\n</p>\n<pre><code>var callback = function(stream) {\n  console.log(&#39;someone connected!&#39;);\n};\nserver.on(&#39;connection&#39;, callback);\n// ...\nserver.removeListener(&#39;connection&#39;, callback);</code></pre>\n",
+              "desc": "<p>Remove a listener from the listener array for the specified event.\n<strong>Caution</strong>: changes array indices in the listener array behind the listener.\n\n</p>\n<pre><code>var callback = function(stream) {\n  console.log(&#39;someone connected!&#39;);\n};\nserver.on(&#39;connection&#39;, callback);\n// ...\nserver.removeListener(&#39;connection&#39;, callback);</code></pre>\n<p>Returns emitter, so calls can be chained.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -101,7 +101,7 @@
               "textRaw": "emitter.removeAllListeners([event])",
               "type": "method",
               "name": "removeAllListeners",
-              "desc": "<p>Removes all listeners, or those of the specified event.\n\n\n</p>\n",
+              "desc": "<p>Removes all listeners, or those of the specified event.\n\n</p>\n<p>Returns emitter, so calls can be chained.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -147,7 +147,7 @@
               "textRaw": "emitter.emit(event, [arg1], [arg2], [...])",
               "type": "method",
               "name": "emit",
-              "desc": "<p>Execute each of the listeners in order with the supplied arguments.\n\n\n</p>\n",
+              "desc": "<p>Execute each of the listeners in order with the supplied arguments.\n\n</p>\n<p>Returns <code>true</code> if event had listeners, <code>false</code> otherwise.\n\n\n</p>\n",
               "signatures": [
                 {
                   "params": [

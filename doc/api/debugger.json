@@ -23,6 +23,20 @@
           "name": "commands_reference",
           "modules": [
             {
+              "textRaw": "Stepping",
+              "name": "Stepping",
+              "desc": "<p>It is also possible to set a breakpoint in a file (module) that\nisn&#39;t loaded yet:\n\n</p>\n<pre><code>% ./node debug test/fixtures/break-in-module/main.js\n&lt; debugger listening on port 5858\nconnecting to port 5858... ok\nbreak in test/fixtures/break-in-module/main.js:1\n  1 var mod = require(&#39;./mod.js&#39;);\n  2 mod.hello();\n  3 mod.hello();\ndebug&gt; setBreakpoint(&#39;mod.js&#39;, 23)\nWarning: script &#39;mod.js&#39; was not loaded yet.\n  1 var mod = require(&#39;./mod.js&#39;);\n  2 mod.hello();\n  3 mod.hello();\ndebug&gt; c\nbreak in test/fixtures/break-in-module/mod.js:23\n 21\n 22 exports.hello = function() {\n 23   return &#39;hello from module&#39;;\n 24 };\n 25\ndebug&gt;</code></pre>\n",
+              "type": "module",
+              "displayName": "Breakpoints"
+            },
+            {
+              "textRaw": "Breakpoints",
+              "name": "breakpoints",
+              "desc": "<p>It is also possible to set a breakpoint in a file (module) that\nisn&#39;t loaded yet:\n\n</p>\n<pre><code>% ./node debug test/fixtures/break-in-module/main.js\n&lt; debugger listening on port 5858\nconnecting to port 5858... ok\nbreak in test/fixtures/break-in-module/main.js:1\n  1 var mod = require(&#39;./mod.js&#39;);\n  2 mod.hello();\n  3 mod.hello();\ndebug&gt; setBreakpoint(&#39;mod.js&#39;, 23)\nWarning: script &#39;mod.js&#39; was not loaded yet.\n  1 var mod = require(&#39;./mod.js&#39;);\n  2 mod.hello();\n  3 mod.hello();\ndebug&gt; c\nbreak in test/fixtures/break-in-module/mod.js:23\n 21\n 22 exports.hello = function() {\n 23   return &#39;hello from module&#39;;\n 24 };\n 25\ndebug&gt;</code></pre>\n",
+              "type": "module",
+              "displayName": "Breakpoints"
+            },
+            {
               "textRaw": "Execution control",
               "name": "Execution control",
               "type": "module",

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>About this Documentation Node.js v0.10.5 Manual &amp; Documentation</title>
+  <title>About this Documentation Node.js v0.10.6 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/all.html">
@@ -19,7 +19,7 @@
                 <li><a href="/" class="home">Home</a></li>
                 <li><a href="/download/" class="download">Download</a></li>
                 <li><a href="/about/" class="about">About</a></li>
-                <li><a href="http://search.npmjs.org/" class="npm">npm Registry</a></li>
+                <li><a href="http://npmjs.org/" class="npm">npm Registry</a></li>
                 <li><a href="http://nodejs.org/api/" class="docs current">Docs</a></li>
                 <li><a href="http://blog.nodejs.org" class="blog">Blog</a></li>
                 <li><a href="/community/" class="community">Community</a></li>
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.5 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.6 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -288,7 +288,7 @@
 <li><a href="#all_class_stream_readable">Class: stream.Readable</a><ul>
 <li><a href="#all_new_stream_readable_options">new stream.Readable([options])</a></li>
 <li><a href="#all_readable_read_size">readable._read(size)</a></li>
-<li><a href="#all_readable_push_chunk">readable.push(chunk)</a></li>
+<li><a href="#all_readable_push_chunk_encoding">readable.push(chunk, [encoding])</a></li>
 <li><a href="#all_readable_unshift_chunk">readable.unshift(chunk)</a></li>
 <li><a href="#all_readable_wrap_stream">readable.wrap(stream)</a></li>
 <li><a href="#all_event_readable">Event: &#39;readable&#39;</a></li>
@@ -310,6 +310,7 @@
 <li><a href="#all_writable_write_chunk_encoding_callback_1">writable.write(chunk, [encoding], [callback])</a></li>
 <li><a href="#all_writable_end_chunk_encoding_callback">writable.end([chunk], [encoding], [callback])</a></li>
 <li><a href="#all_event_drain">Event: &#39;drain&#39;</a></li>
+<li><a href="#all_event_error_1">Event: &#39;error&#39;</a></li>
 <li><a href="#all_event_close_1">Event: &#39;close&#39;</a></li>
 <li><a href="#all_event_finish">Event: &#39;finish&#39;</a></li>
 <li><a href="#all_event_pipe">Event: &#39;pipe&#39;</a></li>
@@ -535,7 +536,7 @@
 <li><a href="#all_class_fs_fswatcher">Class: fs.FSWatcher</a><ul>
 <li><a href="#all_watcher_close">watcher.close()</a></li>
 <li><a href="#all_event_change">Event: &#39;change&#39;</a></li>
-<li><a href="#all_event_error_1">Event: &#39;error&#39;</a></li>
+<li><a href="#all_event_error_2">Event: &#39;error&#39;</a></li>
 </ul>
 </li>
 </ul>
@@ -574,7 +575,7 @@
 <li><a href="#all_event_listening">Event: &#39;listening&#39;</a></li>
 <li><a href="#all_event_connection">Event: &#39;connection&#39;</a></li>
 <li><a href="#all_event_close_2">Event: &#39;close&#39;</a></li>
-<li><a href="#all_event_error_2">Event: &#39;error&#39;</a></li>
+<li><a href="#all_event_error_3">Event: &#39;error&#39;</a></li>
 </ul>
 </li>
 <li><a href="#all_class_net_socket">Class: net.Socket</a><ul>
@@ -605,7 +606,7 @@
 <li><a href="#all_event_end_1">Event: &#39;end&#39;</a></li>
 <li><a href="#all_event_timeout">Event: &#39;timeout&#39;</a></li>
 <li><a href="#all_event_drain_1">Event: &#39;drain&#39;</a></li>
-<li><a href="#all_event_error_3">Event: &#39;error&#39;</a></li>
+<li><a href="#all_event_error_4">Event: &#39;error&#39;</a></li>
 <li><a href="#all_event_close_3">Event: &#39;close&#39;</a></li>
 </ul>
 </li>
@@ -620,7 +621,7 @@
 <li><a href="#all_event_message">Event: &#39;message&#39;</a></li>
 <li><a href="#all_event_listening_1">Event: &#39;listening&#39;</a></li>
 <li><a href="#all_event_close_4">Event: &#39;close&#39;</a></li>
-<li><a href="#all_event_error_4">Event: &#39;error&#39;</a></li>
+<li><a href="#all_event_error_5">Event: &#39;error&#39;</a></li>
 <li><a href="#all_socket_send_buf_offset_length_port_address_callback">socket.send(buf, offset, length, port, address, [callback])</a></li>
 <li><a href="#all_socket_bind_port_address_callback">socket.bind(port, [address], [callback])</a></li>
 <li><a href="#all_socket_close">socket.close()</a></li>
@@ -819,7 +820,7 @@
 </li>
 <li><a href="#all_child_process">Child Process</a><ul>
 <li><a href="#all_class_childprocess">Class: ChildProcess</a><ul>
-<li><a href="#all_event_error_5">Event:  &#39;error&#39;</a></li>
+<li><a href="#all_event_error_6">Event:  &#39;error&#39;</a></li>
 <li><a href="#all_event_exit_2">Event:  &#39;exit&#39;</a></li>
 <li><a href="#all_event_close_9">Event: &#39;close&#39;</a></li>
 <li><a href="#all_event_disconnect">Event: &#39;disconnect&#39;</a></li>
@@ -1130,8 +1131,8 @@ value from this object, the next <code>require</code> will reload the module.
 
 </p>
 <h3>require.extensions<span><a class="mark" href="#all_require_extensions" id="all_require_extensions">#</a></span></h3>
-<div class="signature"><ul>
-<li><span class="type">Array</span></li>
+<pre class="api_stability_0">Stability: 0 - Deprecated</pre><div class="signature"><ul>
+<li><span class="type">Object</span></li>
 </div></ul>
 <p>Instruct <code>require</code> on how to handle certain file extensions.
 
@@ -1140,6 +1141,18 @@ value from this object, the next <code>require</code> will reload the module.
 
 </p>
 <pre><code>require.extensions[&#39;.sjs&#39;] = require.extensions[&#39;.js&#39;];</code></pre>
+<p><strong>Deprecated</strong>  In the past, this list has been used to load
+non-JavaScript modules into Node by compiling them on-demand.
+However, in practice, there are much better ways to do this, such as
+loading modules via some other Node program, or compiling them to
+JavaScript ahead of time.
+
+</p>
+<p>Since the Module system is locked, this feature will probably never go
+away.  However, it may have subtle bugs and complexities that are best
+left untouched.
+
+</p>
 <h2>__filename<span><a class="mark" href="#all_filename" id="all_filename">#</a></span></h2>
 <!-- type=var -->
 
@@ -3355,6 +3368,9 @@ added and <code>&#39;removeListener&#39;</code> when a listener is removed.
 <pre><code>server.on(&#39;connection&#39;, function (stream) {
   console.log(&#39;someone connected!&#39;);
 });</code></pre>
+<p>Returns emitter, so calls can be chained.
+
+</p>
 <h3>emitter.once(event, listener)<span><a class="mark" href="#all_emitter_once_event_listener" id="all_emitter_once_event_listener">#</a></span></h3>
 <p>Adds a <strong>one time</strong> listener for the event. This listener is
 invoked only the next time the event is fired, after which
@@ -3364,6 +3380,9 @@ it is removed.
 <pre><code>server.once(&#39;connection&#39;, function (stream) {
   console.log(&#39;Ah, we have our first user!&#39;);
 });</code></pre>
+<p>Returns emitter, so calls can be chained.
+
+</p>
 <h3>emitter.removeListener(event, listener)<span><a class="mark" href="#all_emitter_removelistener_event_listener" id="all_emitter_removelistener_event_listener">#</a></span></h3>
 <p>Remove a listener from the listener array for the specified event.
 <strong>Caution</strong>: changes array indices in the listener array behind the listener.
@@ -3375,9 +3394,14 @@ it is removed.
 server.on(&#39;connection&#39;, callback);
 // ...
 server.removeListener(&#39;connection&#39;, callback);</code></pre>
+<p>Returns emitter, so calls can be chained.
+
+</p>
 <h3>emitter.removeAllListeners([event])<span><a class="mark" href="#all_emitter_removealllisteners_event" id="all_emitter_removealllisteners_event">#</a></span></h3>
 <p>Removes all listeners, or those of the specified event.
 
+</p>
+<p>Returns emitter, so calls can be chained.
 
 </p>
 <h3>emitter.setMaxListeners(n)<span><a class="mark" href="#all_emitter_setmaxlisteners_n" id="all_emitter_setmaxlisteners_n">#</a></span></h3>
@@ -3398,6 +3422,9 @@ that to be increased. Set to zero for unlimited.
 console.log(util.inspect(server.listeners(&#39;connection&#39;))); // [ [Function] ]</code></pre>
 <h3>emitter.emit(event, [arg1], [arg2], [...])<span><a class="mark" href="#all_emitter_emit_event_arg1_arg2" id="all_emitter_emit_event_arg1_arg2">#</a></span></h3>
 <p>Execute each of the listeners in order with the supplied arguments.
+
+</p>
+<p>Returns <code>true</code> if event had listeners, <code>false</code> otherwise.
 
 
 </p>
@@ -4757,13 +4784,15 @@ becomes available.  There is no need, for example to &quot;wait&quot; until
 <code>size</code> bytes are available before calling <code>stream.push(chunk)</code>.
 
 </p>
-<h3>readable.push(chunk)<span><a class="mark" href="#all_readable_push_chunk" id="all_readable_push_chunk">#</a></span></h3>
+<h3>readable.push(chunk, [encoding])<span><a class="mark" href="#all_readable_push_chunk_encoding" id="all_readable_push_chunk_encoding">#</a></span></h3>
 <div class="signature"><ul>
 <li><code>chunk</code> <span class="type">Buffer | null | String</span> Chunk of data to push into the read queue</li>
+<li><code>encoding</code> <span class="type">String</span> Encoding of String chunks.  Must be a valid
+Buffer encoding, such as <code>&#39;utf8&#39;</code> or <code>&#39;ascii&#39;</code></li>
 <li>return <span class="type">Boolean</span> Whether or not more pushes should be performed</li>
 </div></ul>
 <p>Note: <strong>This function should be called by Readable implementors, NOT
-by consumers of Readable subclasses.</strong>  The <code>_read()</code> function will not
+by consumers of Readable streams.</strong>  The <code>_read()</code> function will not
 be called again until at least one <code>push(chunk)</code> call is made.  If no
 data is available, then you MAY call <code>push(&#39;&#39;)</code> (an empty string) to
 allow a future <code>_read</code> call, without adding any data to the queue.
@@ -5182,6 +5211,10 @@ stream.
 <p>Emitted when the stream&#39;s write queue empties and it&#39;s safe to write
 without buffering again. Listen for it when <code>stream.write()</code> returns
 <code>false</code>.
+
+</p>
+<h3>Event: &#39;error&#39;<span><a class="mark" href="#all_event_error_1" id="all_event_error_1">#</a></span></h3>
+<p>Emitted if there was an error receiving data.
 
 </p>
 <h3>Event: &#39;close&#39;<span><a class="mark" href="#all_event_close_1" id="all_event_close_1">#</a></span></h3>
@@ -7346,7 +7379,7 @@ for writing.
 See more details in <a href="#fs_fs_watch_filename_options_listener">fs.watch</a>.
 
 </p>
-<h3>Event: &#39;error&#39;<span><a class="mark" href="#all_event_error_1" id="all_event_error_1">#</a></span></h3>
+<h3>Event: &#39;error&#39;<span><a class="mark" href="#all_event_error_2" id="all_event_error_2">#</a></span></h3>
 <div class="signature"><ul>
 <li><code>error</code> <span class="type">Error object</span></li>
 </div></ul>
@@ -7820,7 +7853,7 @@ when sockets were sent to forks.
 event is not emitted until all connections are ended.
 
 </p>
-<h3>Event: &#39;error&#39;<span><a class="mark" href="#all_event_error_2" id="all_event_error_2">#</a></span></h3>
+<h3>Event: &#39;error&#39;<span><a class="mark" href="#all_event_error_3" id="all_event_error_3">#</a></span></h3>
 <div class="signature"><ul>
 <li><span class="type">Error Object</span></li>
 </div></ul>
@@ -8070,7 +8103,7 @@ the socket has been idle. The user must manually close the connection.
 <p>See also: the return values of <code>socket.write()</code>
 
 </p>
-<h3>Event: &#39;error&#39;<span><a class="mark" href="#all_event_error_3" id="all_event_error_3">#</a></span></h3>
+<h3>Event: &#39;error&#39;<span><a class="mark" href="#all_event_error_4" id="all_event_error_4">#</a></span></h3>
 <div class="signature"><ul>
 <li><span class="type">Error object</span></li>
 </div></ul>
@@ -8165,7 +8198,7 @@ are created.
 on this socket.
 
 </p>
-<h3>Event: &#39;error&#39;<span><a class="mark" href="#all_event_error_4" id="all_event_error_4">#</a></span></h3>
+<h3>Event: &#39;error&#39;<span><a class="mark" href="#all_event_error_5" id="all_event_error_5">#</a></span></h3>
 <div class="signature"><ul>
 <li><code>exception</code> Error object</li>
 </div></ul>
@@ -10645,7 +10678,7 @@ which can be piped to and from.
 <code>spawn()</code> or <code>fork()</code> methods to create a Child Process instance.
 
 </p>
-<h3>Event:  &#39;error&#39;<span><a class="mark" href="#all_event_error_5" id="all_event_error_5">#</a></span></h3>
+<h3>Event:  &#39;error&#39;<span><a class="mark" href="#all_event_error_6" id="all_event_error_6">#</a></span></h3>
 <div class="signature"><ul>
 <li><code>err</code> <span class="type">Error Object</span> the error.</li>
 </div></ul>
@@ -11122,11 +11155,6 @@ undocumented APIs in Node, they should not be used.
 <li><code>command</code> <span class="type">String</span> The command to run, with space-separated arguments</li>
 <li><code>options</code> <span class="type">Object</span><ul>
 <li><code>cwd</code> <span class="type">String</span> Current working directory of the child process</li>
-<li><code>stdio</code> <span class="type">Array|String</span> Child&#39;s stdio configuration. (See above)
-Only stdin is configurable, anything else will lead to unpredictable
-results.</li>
-<li><code>customFds</code> <span class="type">Array</span> <strong>Deprecated</strong> File descriptors for the child to use
-for stdio.  (See above)</li>
 <li><code>env</code> <span class="type">Object</span> Environment key-value pairs</li>
 <li><code>encoding</code> <span class="type">String</span> (Default: &#39;utf8&#39;)</li>
 <li><code>timeout</code> <span class="type">Number</span> (Default: 0)</li>
@@ -11186,9 +11214,6 @@ the child process is killed.
 <li><code>args</code> <span class="type">Array</span> List of string arguments</li>
 <li><code>options</code> <span class="type">Object</span><ul>
 <li><code>cwd</code> <span class="type">String</span> Current working directory of the child process</li>
-<li><code>stdio</code> <span class="type">Array|String</span> Child&#39;s stdio configuration. (See above)</li>
-<li><code>customFds</code> <span class="type">Array</span> <strong>Deprecated</strong> File descriptors for the child to use
-for stdio.  (See above)</li>
 <li><code>env</code> <span class="type">Object</span> Environment key-value pairs</li>
 <li><code>encoding</code> <span class="type">String</span> (Default: &#39;utf8&#39;)</li>
 <li><code>timeout</code> <span class="type">Number</span> (Default: 0)</li>
@@ -12031,6 +12056,30 @@ functions body</li>
 script.js</li>
 <li><code>clearBreakpoint</code>, <code>cb(...)</code> - Clear breakpoint</li>
 </div></ul>
+<p>It is also possible to set a breakpoint in a file (module) that
+isn&#39;t loaded yet:
+
+</p>
+<pre><code>% ./node debug test/fixtures/break-in-module/main.js
+&lt; debugger listening on port 5858
+connecting to port 5858... ok
+break in test/fixtures/break-in-module/main.js:1
+  1 var mod = require(&#39;./mod.js&#39;);
+  2 mod.hello();
+  3 mod.hello();
+debug&gt; setBreakpoint(&#39;mod.js&#39;, 23)
+Warning: script &#39;mod.js&#39; was not loaded yet.
+  1 var mod = require(&#39;./mod.js&#39;);
+  2 mod.hello();
+  3 mod.hello();
+debug&gt; c
+break in test/fixtures/break-in-module/mod.js:23
+ 21
+ 22 exports.hello = function() {
+ 23   return &#39;hello from module&#39;;
+ 24 };
+ 25
+debug&gt;</code></pre>
 <h3>Info<span><a class="mark" href="#all_info" id="all_info">#</a></span></h3>
 <div class="signature"><ul>
 <li><code>backtrace</code>, <code>bt</code> - Print backtrace of current execution frame</li>
@@ -12511,7 +12560,7 @@ that would normally not allow the worker to do any cleanup if needed.
 
   process.on(&#39;message&#39;, function(msg) {
     if (msg === &#39;force kill&#39;) {
-      server.destroy();
+      server.close();
     }
   });
 }</code></pre>
@@ -12619,11 +12668,12 @@ worker.on(&#39;exit&#39;, function(code, signal) {
         </div>
     </div>
     <div id="footer">
+        <a href="http://joyent.com" class="joyent-logo">Joyent</a>
         <ul class="clearfix">
             <li><a href="/">Node.js</a></li>
             <li><a href="/download/">Download</a></li>
             <li><a href="/about/">About</a></li>
-            <li><a href="http://search.npmjs.org/">npm Registry</a></li>
+            <li><a href="http://npmjs.org/">npm Registry</a></li>
             <li><a href="http://nodejs.org/api/">Docs</a></li>
             <li><a href="http://blog.nodejs.org">Blog</a></li>
             <li><a href="/community/">Community</a></li>
@@ -12632,7 +12682,7 @@ worker.on(&#39;exit&#39;, function(code, signal) {
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.5/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.6/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>
