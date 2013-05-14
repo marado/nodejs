@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Stream Node.js v0.10.5 Manual &amp; Documentation</title>
+  <title>Stream Node.js v0.10.6 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/stream.html">
@@ -19,7 +19,7 @@
                 <li><a href="/" class="home">Home</a></li>
                 <li><a href="/download/" class="download">Download</a></li>
                 <li><a href="/about/" class="about">About</a></li>
-                <li><a href="http://search.npmjs.org/" class="npm">npm Registry</a></li>
+                <li><a href="http://npmjs.org/" class="npm">npm Registry</a></li>
                 <li><a href="http://nodejs.org/api/" class="docs current">Docs</a></li>
                 <li><a href="http://blog.nodejs.org" class="blog">Blog</a></li>
                 <li><a href="/community/" class="community">Community</a></li>
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.5 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.6 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -50,7 +50,7 @@
 <li><a href="#stream_class_stream_readable">Class: stream.Readable</a><ul>
 <li><a href="#stream_new_stream_readable_options">new stream.Readable([options])</a></li>
 <li><a href="#stream_readable_read_size">readable._read(size)</a></li>
-<li><a href="#stream_readable_push_chunk">readable.push(chunk)</a></li>
+<li><a href="#stream_readable_push_chunk_encoding">readable.push(chunk, [encoding])</a></li>
 <li><a href="#stream_readable_unshift_chunk">readable.unshift(chunk)</a></li>
 <li><a href="#stream_readable_wrap_stream">readable.wrap(stream)</a></li>
 <li><a href="#stream_event_readable">Event: &#39;readable&#39;</a></li>
@@ -72,6 +72,7 @@
 <li><a href="#stream_writable_write_chunk_encoding_callback_1">writable.write(chunk, [encoding], [callback])</a></li>
 <li><a href="#stream_writable_end_chunk_encoding_callback">writable.end([chunk], [encoding], [callback])</a></li>
 <li><a href="#stream_event_drain">Event: &#39;drain&#39;</a></li>
+<li><a href="#stream_event_error_1">Event: &#39;error&#39;</a></li>
 <li><a href="#stream_event_close_1">Event: &#39;close&#39;</a></li>
 <li><a href="#stream_event_finish">Event: &#39;finish&#39;</a></li>
 <li><a href="#stream_event_pipe">Event: &#39;pipe&#39;</a></li>
@@ -240,13 +241,15 @@ becomes available.  There is no need, for example to &quot;wait&quot; until
 <code>size</code> bytes are available before calling <code>stream.push(chunk)</code>.
 
 </p>
-<h3>readable.push(chunk)<span><a class="mark" href="#stream_readable_push_chunk" id="stream_readable_push_chunk">#</a></span></h3>
+<h3>readable.push(chunk, [encoding])<span><a class="mark" href="#stream_readable_push_chunk_encoding" id="stream_readable_push_chunk_encoding">#</a></span></h3>
 <div class="signature"><ul>
 <li><code>chunk</code> <span class="type">Buffer | null | String</span> Chunk of data to push into the read queue</li>
+<li><code>encoding</code> <span class="type">String</span> Encoding of String chunks.  Must be a valid
+Buffer encoding, such as <code>&#39;utf8&#39;</code> or <code>&#39;ascii&#39;</code></li>
 <li>return <span class="type">Boolean</span> Whether or not more pushes should be performed</li>
 </div></ul>
 <p>Note: <strong>This function should be called by Readable implementors, NOT
-by consumers of Readable subclasses.</strong>  The <code>_read()</code> function will not
+by consumers of Readable streams.</strong>  The <code>_read()</code> function will not
 be called again until at least one <code>push(chunk)</code> call is made.  If no
 data is available, then you MAY call <code>push(&#39;&#39;)</code> (an empty string) to
 allow a future <code>_read</code> call, without adding any data to the queue.
@@ -667,6 +670,10 @@ without buffering again. Listen for it when <code>stream.write()</code> returns
 <code>false</code>.
 
 </p>
+<h3>Event: &#39;error&#39;<span><a class="mark" href="#stream_event_error_1" id="stream_event_error_1">#</a></span></h3>
+<p>Emitted if there was an error receiving data.
+
+</p>
 <h3>Event: &#39;close&#39;<span><a class="mark" href="#stream_event_close_1" id="stream_event_close_1">#</a></span></h3>
 <p>Emitted when the underlying resource (for example, the backing file
 descriptor) has been closed. Not all streams will emit this.
@@ -913,11 +920,12 @@ it can come in handy.
         </div>
     </div>
     <div id="footer">
+        <a href="http://joyent.com" class="joyent-logo">Joyent</a>
         <ul class="clearfix">
             <li><a href="/">Node.js</a></li>
             <li><a href="/download/">Download</a></li>
             <li><a href="/about/">About</a></li>
-            <li><a href="http://search.npmjs.org/">npm Registry</a></li>
+            <li><a href="http://npmjs.org/">npm Registry</a></li>
             <li><a href="http://nodejs.org/api/">Docs</a></li>
             <li><a href="http://blog.nodejs.org">Blog</a></li>
             <li><a href="/community/">Community</a></li>
@@ -926,7 +934,7 @@ it can come in handy.
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.5/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.6/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Events Node.js v0.10.5 Manual &amp; Documentation</title>
+  <title>Events Node.js v0.10.6 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/events.html">
@@ -19,7 +19,7 @@
                 <li><a href="/" class="home">Home</a></li>
                 <li><a href="/download/" class="download">Download</a></li>
                 <li><a href="/about/" class="about">About</a></li>
-                <li><a href="http://search.npmjs.org/" class="npm">npm Registry</a></li>
+                <li><a href="http://npmjs.org/" class="npm">npm Registry</a></li>
                 <li><a href="http://nodejs.org/api/" class="docs current">Docs</a></li>
                 <li><a href="http://blog.nodejs.org" class="blog">Blog</a></li>
                 <li><a href="/community/" class="community">Community</a></li>
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.5 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.6 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -109,6 +109,9 @@ added and <code>&#39;removeListener&#39;</code> when a listener is removed.
 <pre><code>server.on(&#39;connection&#39;, function (stream) {
   console.log(&#39;someone connected!&#39;);
 });</code></pre>
+<p>Returns emitter, so calls can be chained.
+
+</p>
 <h3>emitter.once(event, listener)<span><a class="mark" href="#events_emitter_once_event_listener" id="events_emitter_once_event_listener">#</a></span></h3>
 <p>Adds a <strong>one time</strong> listener for the event. This listener is
 invoked only the next time the event is fired, after which
@@ -118,6 +121,9 @@ it is removed.
 <pre><code>server.once(&#39;connection&#39;, function (stream) {
   console.log(&#39;Ah, we have our first user!&#39;);
 });</code></pre>
+<p>Returns emitter, so calls can be chained.
+
+</p>
 <h3>emitter.removeListener(event, listener)<span><a class="mark" href="#events_emitter_removelistener_event_listener" id="events_emitter_removelistener_event_listener">#</a></span></h3>
 <p>Remove a listener from the listener array for the specified event.
 <strong>Caution</strong>: changes array indices in the listener array behind the listener.
@@ -129,9 +135,14 @@ it is removed.
 server.on(&#39;connection&#39;, callback);
 // ...
 server.removeListener(&#39;connection&#39;, callback);</code></pre>
+<p>Returns emitter, so calls can be chained.
+
+</p>
 <h3>emitter.removeAllListeners([event])<span><a class="mark" href="#events_emitter_removealllisteners_event" id="events_emitter_removealllisteners_event">#</a></span></h3>
 <p>Removes all listeners, or those of the specified event.
 
+</p>
+<p>Returns emitter, so calls can be chained.
 
 </p>
 <h3>emitter.setMaxListeners(n)<span><a class="mark" href="#events_emitter_setmaxlisteners_n" id="events_emitter_setmaxlisteners_n">#</a></span></h3>
@@ -152,6 +163,9 @@ that to be increased. Set to zero for unlimited.
 console.log(util.inspect(server.listeners(&#39;connection&#39;))); // [ [Function] ]</code></pre>
 <h3>emitter.emit(event, [arg1], [arg2], [...])<span><a class="mark" href="#events_emitter_emit_event_arg1_arg2" id="events_emitter_emit_event_arg1_arg2">#</a></span></h3>
 <p>Execute each of the listeners in order with the supplied arguments.
+
+</p>
+<p>Returns <code>true</code> if event had listeners, <code>false</code> otherwise.
 
 
 </p>
@@ -181,11 +195,12 @@ console.log(util.inspect(server.listeners(&#39;connection&#39;))); // [ [Functio
         </div>
     </div>
     <div id="footer">
+        <a href="http://joyent.com" class="joyent-logo">Joyent</a>
         <ul class="clearfix">
             <li><a href="/">Node.js</a></li>
             <li><a href="/download/">Download</a></li>
             <li><a href="/about/">About</a></li>
-            <li><a href="http://search.npmjs.org/">npm Registry</a></li>
+            <li><a href="http://npmjs.org/">npm Registry</a></li>
             <li><a href="http://nodejs.org/api/">Docs</a></li>
             <li><a href="http://blog.nodejs.org">Blog</a></li>
             <li><a href="/community/">Community</a></li>
@@ -194,7 +209,7 @@ console.log(util.inspect(server.listeners(&#39;connection&#39;))); // [ [Functio
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.5/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.6/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>
