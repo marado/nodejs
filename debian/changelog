@@ -1,3 +1,9 @@
+nodejs (0.10.6~dfsg1-1) UNRELEASED; urgency=low
+
+  * New upstream release. 
+
+ -- Jérémy Lal <kapouer@melix.org>  Wed, 15 May 2013 00:06:21 +0200
+
 nodejs (0.10.5~dfsg1-2) experimental; urgency=low
 
   * nodejs-dev.links: fix symlinks to v8 headers.
