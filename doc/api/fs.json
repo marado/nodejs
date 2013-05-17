@@ -1553,7 +1553,7 @@
           "textRaw": "Class: fs.ReadStream",
           "type": "class",
           "name": "fs.ReadStream",
-          "desc": "<p><code>ReadStream</code> is a <a href=\"stream.html#stream_readable_stream\">Readable Stream</a>.\n\n</p>\n",
+          "desc": "<p><code>ReadStream</code> is a <a href=\"stream.html#stream_class_stream_readable\">Readable Stream</a>.\n\n</p>\n",
           "events": [
             {
               "textRaw": "Event: 'open'",
@@ -1561,6 +1561,28 @@
               "name": "open",
               "params": [],
               "desc": "<p>Emitted when the ReadStream&#39;s file is opened.\n\n\n</p>\n"
+            }
+          ]
+        },
+        {
+          "textRaw": "Class: fs.WriteStream",
+          "type": "class",
+          "name": "fs.WriteStream",
+          "desc": "<p><code>WriteStream</code> is a <a href=\"stream.html#stream_class_stream_writable\">Writable Stream</a>.\n\n</p>\n",
+          "events": [
+            {
+              "textRaw": "Event: 'open'",
+              "type": "event",
+              "name": "open",
+              "params": [],
+              "desc": "<p>Emitted when the WriteStream&#39;s file is opened.\n\n</p>\n"
+            }
+          ],
+          "properties": [
+            {
+              "textRaw": "file.bytesWritten",
+              "name": "bytesWritten",
+              "desc": "<p>The number of bytes written so far. Does not include data that is still queued\nfor writing.\n\n</p>\n"
             }
           ]
         },
@@ -1596,29 +1618,6 @@
               "name": "error",
               "params": [],
               "desc": "<p>Emitted when an error occurs.\n</p>\n"
-            }
-          ]
-        }
-      ],
-      "properties": [
-        {
-          "textRaw": "fs.WriteStream",
-          "name": "WriteStream",
-          "desc": "<p><code>WriteStream</code> is a <a href=\"stream.html#stream_writable_stream\">Writable Stream</a>.\n\n</p>\n",
-          "events": [
-            {
-              "textRaw": "Event: 'open'",
-              "type": "event",
-              "name": "open",
-              "params": [],
-              "desc": "<p>Emitted when the WriteStream&#39;s file is opened.\n\n</p>\n"
-            }
-          ],
-          "properties": [
-            {
-              "textRaw": "file.bytesWritten",
-              "name": "bytesWritten",
-              "desc": "<p>The number of bytes written so far. Does not include data that is still queued\nfor writing.\n\n</p>\n"
             }
           ]
         }
