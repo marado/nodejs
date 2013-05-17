@@ -1662,6 +1662,7 @@ Files: AUTHORS
  doc/blog/release/v0.10.3.md
  doc/blog/release/v0.10.4.md
  doc/blog/release/v0.10.5.md
+ doc/blog/release/v0.10.6.md
  doc/blog/release/v0.11.0.md
  doc/blog/release/v0.11.1.md
  doc/blog/release/v0.11.2.md
@@ -1945,7 +1946,7 @@ Files: deps/http_parser/LICENSE-MIT
  deps/uv/src/unix/async.c
  deps/uv/src/unix/core.c
  deps/uv/src/unix/cygwin.c
- deps/uv/src/unix/darwin-proctitle.m
+ deps/uv/src/unix/darwin-proctitle.c
  deps/uv/src/unix/darwin.c
  deps/uv/src/unix/dl.c
  deps/uv/src/unix/error.c
@@ -2071,6 +2072,7 @@ Files: deps/http_parser/LICENSE-MIT
  deps/uv/test/test-loop-stop.c
  deps/uv/test/test-multiple-listen.c
  deps/uv/test/test-mutexes.c
+ deps/uv/test/test-osx-select.c
  deps/uv/test/test-pass-always.c
  deps/uv/test/test-ping-pong.c
  deps/uv/test/test-pipe-bind-error.c
@@ -2161,7 +2163,7 @@ Files: doc/api/_toc.html
  doc/api/util.html
  doc/api/vm.html
  doc/api/zlib.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.6/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.7/LICENSE">license</a>.</p>
 License: UNKNOWN
  FIXME
 
@@ -2504,20 +2506,20 @@ License: UNKNOWN
  FIXME
 
 Files: doc/api/net.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.6/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.7/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
 License: UNKNOWN
  FIXME
 
 Files: doc/api/all.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.6/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.7/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
   { return c.indexOf(line) == 0 })
 License: UNKNOWN
  FIXME
 
 Files: doc/api/readline.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.6/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.7/LICENSE">license</a>.</p>
   { return c.indexOf(line) == 0 })
 License: UNKNOWN
  FIXME
