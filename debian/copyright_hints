@@ -546,6 +546,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-http-url.parse-search.js
  test/simple/test-http-wget.js
  test/simple/test-http-write-empty-string.js
+ test/simple/test-http-zero-length-write.js
  test/simple/test-http.js
  test/simple/test-https-agent.js
  test/simple/test-https-byteswritten.js
@@ -612,6 +613,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-net-server-unref.js
  test/simple/test-net-settimeout.js
  test/simple/test-net-socket-destroy-twice.js
+ test/simple/test-net-socket-timeout-unref.js
  test/simple/test-net-socket-timeout.js
  test/simple/test-net-stream.js
  test/simple/test-net-write-after-close.js
@@ -772,6 +774,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-tls-fast-writing.js
  test/simple/test-tls-getcipher.js
  test/simple/test-tls-handshake-nohang.js
+ test/simple/test-tls-hello-parser-failure.js
  test/simple/test-tls-honorcipherorder.js
  test/simple/test-tls-invalid-key.js
  test/simple/test-tls-junk-closes-server.js
@@ -1409,6 +1412,7 @@ Files: AUTHORS
  benchmark/fs/write-stream-throughput.js
  benchmark/http-flamegraph.sh
  benchmark/http.sh
+ benchmark/http/client-request-body.js
  benchmark/http/cluster.js
  benchmark/http/end-vs-write-end.js
  benchmark/http/simple.js
@@ -1468,6 +1472,7 @@ Files: AUTHORS
  debian/nodejs.manpages
  debian/nodejs.postinst
  debian/nodejs.prerm
+ debian/patches/1001_default_configuration_buildtype.patch
  debian/patches/2001_FHS_and_rename_to_nodejs.patch
  debian/patches/2004_relax_failing_test.patch
  debian/patches/2005_expected_failing_tests.patch
@@ -1663,6 +1668,7 @@ Files: AUTHORS
  doc/blog/release/v0.10.4.md
  doc/blog/release/v0.10.5.md
  doc/blog/release/v0.10.6.md
+ doc/blog/release/v0.10.7.md
  doc/blog/release/v0.11.0.md
  doc/blog/release/v0.11.1.md
  doc/blog/release/v0.11.2.md
@@ -1737,6 +1743,7 @@ Files: AUTHORS
  lib/punycode.js
  node.gyp
  src/macros.py
+ src/natives_macros.py
  src/node_crypto_groups.h
  src/perfctr_macros.py
  src/res/node_etw_provider.man
@@ -2163,7 +2170,7 @@ Files: doc/api/_toc.html
  doc/api/util.html
  doc/api/vm.html
  doc/api/zlib.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.7/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.8/LICENSE">license</a>.</p>
 License: UNKNOWN
  FIXME
 
@@ -2506,20 +2513,20 @@ License: UNKNOWN
  FIXME
 
 Files: doc/api/net.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.7/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.8/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
 License: UNKNOWN
  FIXME
 
 Files: doc/api/all.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.7/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.8/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
   { return c.indexOf(line) == 0 })
 License: UNKNOWN
  FIXME
 
 Files: doc/api/readline.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.7/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.8/LICENSE">license</a>.</p>
   { return c.indexOf(line) == 0 })
 License: UNKNOWN
  FIXME
