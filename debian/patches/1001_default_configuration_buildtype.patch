@@ -1,0 +1,51 @@
+Description: Match node's internal default_configuration with build type.
+ When building after ./configure --debug , both out/Debug/node and
+ out/Release/node have
+ process.config.target_defaults.default_configuration === 'Debug'
+ which causes node_gyp to build addons in Debug mode.
+ When `npm install` (which normally uses the Release build of node)
+ builds such addons as dependencies, some modules will fail to load
+ because their main script is not designed to use the Debug version
+ of the addon.
+ Fix this by setting default_configuration to the build type of the
+ node binary.
+Origin: https://github.com/joyent/node/pull/4299
+Author: Alain Kalker <a.c.kalker@gmail.com>
+Reviewed-by: Jérémy Lal <kapouer@melix.org>
+--- a/node.gyp
++++ b/node.gyp
+@@ -352,6 +352,7 @@
+           'inputs': [
+             '<@(library_files)',
+             './config.gypi',
++            'src/natives_macros.py',
+           ],
+           'outputs': [
+             '<(SHARED_INTERMEDIATE_DIR)/node_natives.h',
+@@ -369,6 +370,8 @@
+             }]
+           ],
+               'action': [
++                'env',
++                'BUILDTYPE=$(BUILDTYPE)',
+                 '<(python)',
+                 'tools/js2c.py',
+                 '<@(_outputs)',
+--- /dev/null
++++ b/src/natives_macros.py
+@@ -0,0 +1,5 @@
++# This file is used by tools/js2c.py to preprocess the files in lib/
++
++# Replace BUILDTYPE(x) with the current build type
++# Note: x must be specified, but can be anything.
++python macro BUILDTYPE(x) = repr(os.environ["BUILDTYPE"]);
+--- a/src/node.js
++++ b/src/node.js
+@@ -313,6 +313,7 @@
+       if (value === 'false') return false;
+       return value;
+     });
++    process.config.target_defaults.default_configuration = BUILDTYPE('');
+   };
+ 
+   startup.processNextTick = function() {
