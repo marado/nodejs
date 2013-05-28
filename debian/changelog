@@ -1,11 +1,11 @@
-nodejs (0.10.8~dfsg1-1) UNRELEASED; urgency=low
+nodejs (0.10.8~dfsg1-1) experimental; urgency=low
 
   * New upstream release.
   * 1001_default_configuration_buildtype.patch:
     process.config.default_configuration must be Release, not Debug,
     so that node-gyp uses BUILDTYPE=Release.
 
- -- Jérémy Lal <kapouer@melix.org>  Tue, 28 May 2013 23:20:05 +0200
+ -- Jérémy Lal <kapouer@melix.org>  Tue, 28 May 2013 23:38:22 +0200
 
 nodejs (0.10.7~dfsg1-1) experimental; urgency=low
 
