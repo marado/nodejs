@@ -2,4 +2,3 @@
 2004_relax_failing_test.patch
 2005_expected_failing_tests.patch
 2010_fix_makefile_missing_zlib.patch
-1001_revert_uv_osx_fix.patch
