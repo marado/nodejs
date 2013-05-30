@@ -1,3 +1,10 @@
+nodejs (0.10.9~dfsg1-1) experimental; urgency=low
+
+  * New upstream release.
+  * Unapply 1001_revert_uv_osx_fix.patch, fixed upstream. 
+
+ -- Jérémy Lal <kapouer@melix.org>  Thu, 30 May 2013 23:08:55 +0200
+
 nodejs (0.10.8~dfsg1-1) experimental; urgency=low
 
   * New upstream release.
