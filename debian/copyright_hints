@@ -1106,6 +1106,7 @@ Files: AUTHORS
  doc/blog/release/node-version-0-7-9-unstable.md
  doc/blog/release/v0.10.0.md
  doc/blog/release/v0.10.1.md
+ doc/blog/release/v0.10.10.md
  doc/blog/release/v0.10.2.md
  doc/blog/release/v0.10.3.md
  doc/blog/release/v0.10.4.md
@@ -1374,6 +1375,8 @@ Files: AUTHORS
  tools/osx-pkg.pmdoc/02npm.xml
  tools/osx-pkg.pmdoc/index.xml
  tools/osx-productsign.sh
+ tools/pkgsrc/comment
+ tools/pkgsrc/description
  tools/updateAuthors.awk
  vcbuild.bat
 Copyright: *No copyright*
@@ -2173,7 +2176,7 @@ Files: doc/api/_toc.html
  doc/api/util.html
  doc/api/vm.html
  doc/api/zlib.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.10/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.11/LICENSE">license</a>.</p>
 License: UNKNOWN
  FIXME
 
@@ -2429,6 +2432,13 @@ Copyright: 2002-2008, Kris Kowal <http://cixar.com/~kris.kowal>
 License: Expat
  FIXME
 
+Files: test/simple/test-net-GH-5504.js
+Copyright: HOLDERS BE LIABLE FOR ANY CLAIM
+  Joyent, Inc. and other Node contributors
+  c.kill();
+License: Expat
+ FIXME
+
 Files: test/simple/test-stream2-fs.js
 Copyright: HOLDERS BE LIABLE FOR ANY CLAIM
   Joyent, Inc. and other Node contributors
@@ -2516,20 +2526,20 @@ License: UNKNOWN
  FIXME
 
 Files: doc/api/net.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.10/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.11/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
 License: UNKNOWN
  FIXME
 
 Files: doc/api/all.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.10/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.11/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
   { return c.indexOf(line) == 0 })
 License: UNKNOWN
  FIXME
 
 Files: doc/api/readline.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.10/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.11/LICENSE">license</a>.</p>
   { return c.indexOf(line) == 0 })
 License: UNKNOWN
  FIXME
