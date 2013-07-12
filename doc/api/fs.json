@@ -1407,7 +1407,7 @@
           "type": "method",
           "name": "unwatchFile",
           "stability": 2,
-          "stabilityText": "Unstable.  Use fs.watch instead, if available.",
+          "stabilityText": "Unstable.  Use fs.watch instead, if possible.",
           "desc": "<p>Stop watching for changes on <code>filename</code>. If <code>listener</code> is specified, only that\nparticular listener is removed. Otherwise, <em>all</em> listeners are removed and you\nhave effectively stopped watching <code>filename</code>.\n\n</p>\n<p>Calling <code>fs.unwatchFile()</code> with a filename that is not being watched is a\nno-op, not an error.\n\n</p>\n",
           "signatures": [
             {

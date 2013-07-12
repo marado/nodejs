@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>About this Documentation Node.js v0.10.11 Manual &amp; Documentation</title>
+  <title>About this Documentation Node.js v0.10.13 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/all.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.11 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.13 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -1095,7 +1095,7 @@ scope; <code>var something</code> inside a Node module will be local to that mod
 <ul>
 <li>{Object}</li>
 </ul>
-<p>Used to print to stdout and stderr. See the <a href="stdio.html">stdio</a> section.
+<p>Used to print to stdout and stderr. See the <a href="console.html">console</a> section.
 
 </p>
 <h2>Class: Buffer<span><a class="mark" href="#all_class_buffer" id="all_class_buffer">#</a></span></h2>
@@ -6088,8 +6088,8 @@ exceeded. The limits are configurable:
 <ul>
 <li><p><code>tls.CLIENT_RENEG_LIMIT</code>: renegotiation limit, default is 3.</p>
 </li>
-<li><p><code>tls.CLIENT_RENEG_WINDOW</code>: renegotiation window in seconds, default is</p>
-<pre><code>                       10 minutes.</code></pre>
+<li><p><code>tls.CLIENT_RENEG_WINDOW</code>: renegotiation window in seconds, default is
+10 minutes.</p>
 </li>
 </ul>
 <p>Don&#39;t change the defaults unless you know what you are doing.
@@ -6152,17 +6152,18 @@ Revocation List)</p>
 <p>To mitigate <a href="http://blog.ivanristic.com/2011/10/mitigating-the-beast-attack-on-tls.html">BEAST attacks</a> it is recommended that you use this option in
 conjunction with the <code>honorCipherOrder</code> option described below to
 prioritize the non-CBC cipher.</p>
-<p>Defaults to
-<code>ECDHE-RSA-AES128-SHA256:AES128-GCM-SHA256:RC4:HIGH:!MD5:!aNULL:!EDH</code>.
+<p>Defaults to <code>AES128-GCM-SHA256:RC4:HIGH:!MD5:!aNULL:!EDH</code>.
 Consult the <a href="http://www.openssl.org/docs/apps/ciphers.html#CIPHER_LIST_FORMAT">OpenSSL cipher list format documentation</a> for details on the
-format.</p>
-<p><code>ECDHE-RSA-AES128-SHA256</code> and <code>AES128-GCM-SHA256</code> are used when node.js is
-linked against OpenSSL 1.0.1 or newer and the client speaks TLS 1.2, RC4 is
-used as a secure fallback.</p>
-<p><strong>NOTE</strong>: Previous revisions of this section suggested <code>AES256-SHA</code> as an
-acceptable cipher. Unfortunately, <code>AES256-SHA</code> is a CBC cipher and therefore
-susceptible to BEAST attacks. Do <em>not</em> use it.</p>
+format. ECDH (Elliptic Curve Diffie-Hellman) ciphers are not yet supported.</p>
 </li>
+</ul>
+<pre><code>`AES128-GCM-SHA256` is used when node.js is linked against OpenSSL 1.0.1
+or newer and the client speaks TLS 1.2, RC4 is used as a secure fallback.
+
+**NOTE**: Previous revisions of this section suggested `AES256-SHA` as an
+acceptable cipher. Unfortunately, `AES256-SHA` is a CBC cipher and therefore
+susceptible to BEAST attacks. Do *not* use it.</code></pre>
+<ul>
 <li><p><code>handshakeTimeout</code>: Abort the connection if the SSL/TLS handshake does not
 finish in this many milliseconds. The default is 120 seconds.</p>
 <p>A <code>&#39;clientError&#39;</code> is emitted on the <code>tls.Server</code> object whenever a handshake
@@ -7180,7 +7181,7 @@ you need to compare <code>curr.mtime</code> and <code>prev.mtime</code>.
 
 </p>
 <h2>fs.unwatchFile(filename, [listener])<span><a class="mark" href="#all_fs_unwatchfile_filename_listener" id="all_fs_unwatchfile_filename_listener">#</a></span></h2>
-<pre class="api_stability_2">Stability: 2 - Unstable.  Use fs.watch instead, if available.</pre><p>Stop watching for changes on <code>filename</code>. If <code>listener</code> is specified, only that
+<pre class="api_stability_2">Stability: 2 - Unstable.  Use fs.watch instead, if possible.</pre><p>Stop watching for changes on <code>filename</code>. If <code>listener</code> is specified, only that
 particular listener is removed. Otherwise, <em>all</em> listeners are removed and you
 have effectively stopped watching <code>filename</code>.
 
@@ -10451,7 +10452,7 @@ command.  Press twice on a blank line to forcibly exit.</li>
 </p>
 <h2>Caveats<span><a class="mark" href="#all_caveats_1" id="all_caveats_1">#</a></span></h2>
 <p>The <code>vm</code> module has many known issues and edge cases. If you run into
-issues or unexpected behavior, please consult <a href="https://github.com/joyent/node/search?q=vm+state%3Aopen&amp;type=Issues">the open issues on
+issues or unexpected behavior, please consult <a href="https://github.com/joyent/node/issues?labels=vm&amp;state=open">the open issues on
 GitHub</a>.
 Some of the biggest problems are described below.
 
@@ -11161,11 +11162,6 @@ not portable to all platforms and therefore removed.
 With <code>customFds</code> it was possible to hook up the new process&#39; <code>[stdin, stdout,
 stderr]</code> to existing streams; <code>-1</code> meant that a new stream should be created.
 Use at your own risk.
-
-</p>
-<p>There are several internal options. In particular <code>stdinStream</code>,
-<code>stdoutStream</code>, <code>stderrStream</code>. They are for INTERNAL USE ONLY. As with all
-undocumented APIs in Node, they should not be used.
 
 </p>
 <p>See also: <code>child_process.exec()</code> and <code>child_process.fork()</code>
@@ -12703,7 +12699,7 @@ worker.on(&#39;exit&#39;, function(code, signal) {
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.11/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.13/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

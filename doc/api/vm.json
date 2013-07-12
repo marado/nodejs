@@ -11,7 +11,7 @@
         {
           "textRaw": "Caveats",
           "name": "caveats",
-          "desc": "<p>The <code>vm</code> module has many known issues and edge cases. If you run into\nissues or unexpected behavior, please consult <a href=\"https://github.com/joyent/node/search?q=vm+state%3Aopen&amp;type=Issues\">the open issues on\nGitHub</a>.\nSome of the biggest problems are described below.\n\n</p>\n",
+          "desc": "<p>The <code>vm</code> module has many known issues and edge cases. If you run into\nissues or unexpected behavior, please consult <a href=\"https://github.com/joyent/node/issues?labels=vm&amp;state=open\">the open issues on\nGitHub</a>.\nSome of the biggest problems are described below.\n\n</p>\n",
           "modules": [
             {
               "textRaw": "Sandboxes",

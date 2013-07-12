@@ -17,7 +17,7 @@
       "textRaw": "console",
       "name": "console",
       "type": "global",
-      "desc": "<p>Used to print to stdout and stderr. See the [stdio][] section.\n\n</p>\n"
+      "desc": "<p>Used to print to stdout and stderr. See the [console][] section.\n\n</p>\n"
     },
     {
       "textRaw": "Class: Buffer",
@@ -167,7 +167,7 @@
           "textRaw": "console",
           "name": "console",
           "type": "global",
-          "desc": "<p>Used to print to stdout and stderr. See the [stdio][] section.\n\n</p>\n"
+          "desc": "<p>Used to print to stdout and stderr. See the [console][] section.\n\n</p>\n"
         },
         {
           "textRaw": "Class: Buffer",

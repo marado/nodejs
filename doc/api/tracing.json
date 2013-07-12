@@ -1,0 +1,331 @@
+{
+  "source": "doc/api/tracing.markdown",
+  "modules": [
+    {
+      "textRaw": "Tracing",
+      "name": "tracing",
+      "desc": "<p>  Stability: 2 - Unstable\n\n</p>\n<p>This is a description of the tracing points exported for use with tools like\n<a href=\"http://dtrace.org\">DTrace</a>,\n<a href=\"http://msdn.microsoft.com/en-us/magazine/cc163437.aspx\">ETW</a>, and\n<a href=\"sourceware.org/systemtap/\">SystemTap</a>. If your version of node was compiled\nwith these enabled you don&#39;t need to take any further action in your code to\nuse them.\n\n</p>\n",
+      "modules": [
+        {
+          "textRaw": "Brief examples",
+          "name": "brief_examples",
+          "desc": "<p>This is not meant to be documentation on how to use a specific tracing\nplatform. For information on how to use these tools please refer to their\nrespective documentation.\n\n</p>\n",
+          "modules": [
+            {
+              "textRaw": "DTrace",
+              "name": "dtrace",
+              "desc": "<p>The following is a simple example that will work on Illumos, OS X, and FreeBSD.\nIt will print the remote IP address, http method, and url for a given request\nas it comes in.\n\n</p>\n<pre><code># dtrace -qn &#39;node*::http-server-request {\n  printf(&quot;%s -&gt; %s %s\\n&quot;, copyinstr(arg5), copyinstr(arg6), copyinstr(arg3));\n}&#39;\nGET -&gt; /allison?limit=5&amp;offset=5 127.0.0.1\nGET -&gt; /uter?limit=5&amp;offset=5 127.0.0.1\nGET -&gt; /wendell 127.0.0.1</code></pre>\n",
+              "type": "module",
+              "displayName": "DTrace"
+            },
+            {
+              "textRaw": "SystemTap",
+              "name": "systemtap",
+              "desc": "<p>The same example from DTrace, but using SystemTap\n\n</p>\n<pre><code># stap -e &#39;probe process(&quot;node&quot;).mark(&quot;http__server__request&quot;) {\n  printf(&quot;%s -&gt; %s %s\\n&quot;, user_string($arg5), user_string($arg6), user_string($arg3));\n}&#39;\nGET -&gt; /uter?limit=5&amp;offset=5 127.0.0.1\nGET -&gt; /allison?limit=5 127.0.0.1\nGET -&gt; /uter?limit=5 127.0.0.1</code></pre>\n<p>Also we distribute a <code>node.stp</code> file in <code>${PREFIX}/share/systemtap/tapset/</code>,\nwhich maps <code>$arg0..N</code> to names, and defines a <code>probestr</code> which is a\nrepresentation of each trace point.\n\n</p>\n<pre><code># stap -e &#39;probe node_http_server_request { println(probestr); }&#39;\nhttp__server__request(remote=192.168.198.1, port=64913, method=GET, url=/, fd=11)\nhttp__server__request(remote=192.168.198.1, port=64913, method=GET, url=/favicon.ico, fd=11)</code></pre>\n",
+              "type": "module",
+              "displayName": "SystemTap"
+            },
+            {
+              "textRaw": "ETW",
+              "name": "etw",
+              "desc": "<p>Here is a quick example that records all trace points and translates the output\nto CSV.\n\n</p>\n<pre><code>:: Start collecting events into output.etl\nlogman start node -ow -p NodeJS-ETW-provider -ets -o output.etl\n:: Do stuff with node. All node processes are traced.\nnode myscript.js\n:: Stop collecting events.\nlogman stop node -ets\n:: Convert the log from binary format to csv. You can also do this while the\n:: collector is running.\ntracerpt output.etl -o output.csv -of csv</code></pre>\n<p>There are lots of options for logman and tracerpt to configure what you collect\nand report and how it is formatted.\n\n</p>\n",
+              "type": "module",
+              "displayName": "ETW"
+            }
+          ],
+          "type": "module",
+          "displayName": "Brief examples"
+        },
+        {
+          "textRaw": "Translators",
+          "name": "translators",
+          "desc": "<p>Some trace points (probes) have structs pased as arguments, on supported\nplatforms (like <a href=\"http://illumos.org\">Illumos</a>) software is able to\nautomatically translate the dereference of the members. However on other\nplatforms (OS X, FreeBSD, Linux/SystemTap) the software is unable automatically\ntranslate them for you. To handle that case many trace points include the\nmembers of the structs as additional arguments.\n\n</p>\n",
+          "modules": [
+            {
+              "textRaw": "node_dtrace_http_client_request_t",
+              "name": "node_dtrace_http_client_request_t",
+              "type": "module",
+              "displayName": "node_dtrace_http_server_request_t"
+            },
+            {
+              "textRaw": "node_dtrace_http_server_request_t",
+              "name": "node_dtrace_http_server_request_t",
+              "type": "module",
+              "displayName": "node_dtrace_http_server_request_t"
+            }
+          ],
+          "type": "module",
+          "displayName": "Translators"
+        },
+        {
+          "textRaw": "Trace points",
+          "name": "trace_points",
+          "methods": [
+            {
+              "textRaw": "gc-start(type, flags)",
+              "type": "method",
+              "name": "gc-start",
+              "desc": "<p>Fired by <a href=\"http://izs.me/v8-docs/namespacev8.html#ab1b8c05dd6d75d0fbed8902b63580ed1\">GCPrologueCallback</a>\n\n</p>\n<ul>\n<li><a href=\"http://izs.me/v8-docs/namespacev8.html#ac109d6f27e0c0f9ef4e98bcf7a806cf2\">GCType</a> type</li>\n<li><a href=\"http://izs.me/v8-docs/namespacev8.html#a247c37a849f4d6c293b9b16e94e1944b\">GCCallbackFlags</a> flags</li>\n</ul>\n",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "name": "type"
+                    },
+                    {
+                      "name": "flags"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "textRaw": "gc-done(type, flags)",
+              "type": "method",
+              "name": "gc-done",
+              "desc": "<p>Fired by <a href=\"http://izs.me/v8-docs/namespacev8.html#a220aa1e29ecc75f460d8dbd765b66435\">GCEpilogueCallback</a>\n\n</p>\n<ul>\n<li><a href=\"http://izs.me/v8-docs/namespacev8.html#ac109d6f27e0c0f9ef4e98bcf7a806cf2\">GCType</a> type</li>\n<li><a href=\"http://izs.me/v8-docs/namespacev8.html#a247c37a849f4d6c293b9b16e94e1944b\">GCCallbackFlags</a> flags</li>\n</ul>\n",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "name": "type"
+                    },
+                    {
+                      "name": "flags"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "textRaw": "socket-write(conn, nbytes, remote, port, fd)",
+              "type": "method",
+              "name": "socket-write",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "[node_dtrace_connection_t conn](#tracing_node_dtrace_connection_t) ",
+                      "name": "[node_dtrace_connection_t",
+                      "desc": "conn](#tracing_node_dtrace_connection_t)"
+                    },
+                    {
+                      "textRaw": "`int nbytes` ",
+                      "options": [
+                        {
+                          "textRaw": "number of bytes read ",
+                          "name": "number",
+                          "desc": "of bytes read"
+                        }
+                      ],
+                      "name": "int",
+                      "desc": "nbytes`"
+                    },
+                    {
+                      "textRaw": "`char *remote` ",
+                      "options": [
+                        {
+                          "textRaw": "IP address of remote client ",
+                          "name": "IP",
+                          "desc": "address of remote client"
+                        }
+                      ],
+                      "name": "char",
+                      "desc": "*remote`"
+                    },
+                    {
+                      "textRaw": "`int port` ",
+                      "options": [
+                        {
+                          "textRaw": "Port number of connected client ",
+                          "name": "Port",
+                          "desc": "number of connected client"
+                        }
+                      ],
+                      "name": "int",
+                      "desc": "port`"
+                    },
+                    {
+                      "textRaw": "`int fd` ",
+                      "options": [
+                        {
+                          "textRaw": "File descriptor of the underlying socket (-1 if unset or Win32) ",
+                          "name": "File",
+                          "desc": "descriptor of the underlying socket (-1 if unset or Win32)"
+                        }
+                      ],
+                      "name": "int",
+                      "desc": "fd`"
+                    }
+                  ]
+                },
+                {
+                  "params": [
+                    {
+                      "name": "conn"
+                    },
+                    {
+                      "name": "nbytes"
+                    },
+                    {
+                      "name": "remote"
+                    },
+                    {
+                      "name": "port"
+                    },
+                    {
+                      "name": "fd"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Fired before <a href=\"net.html#event_connection_\">&#39;connection&#39;</a> is emitted\n\n</p>\n<ul>\n<li><a href=\"#tracing_node_dtrace_connection_t\">node_dtrace_connection_t conn</a></li>\n<li><code>char *remote</code><ul>\n<li>IP address of remote client</li>\n</ul>\n</li>\n<li><code>int port</code><ul>\n<li>Port number of connected client</li>\n</ul>\n</li>\n<li><code>int fd</code><ul>\n<li>File descriptor of the underlying socket (-1 if unset or Win32)</li>\n</ul>\n</li>\n</ul>\n"
+            },
+            {
+              "textRaw": "net-server-connection(conn, remote, port, fd)",
+              "type": "method",
+              "name": "net-server-connection",
+              "desc": "<p>Fired before <a href=\"net.html#event_connection_\">&#39;connection&#39;</a> is emitted\n\n</p>\n<ul>\n<li><a href=\"#tracing_node_dtrace_connection_t\">node_dtrace_connection_t conn</a></li>\n<li><code>char *remote</code><ul>\n<li>IP address of remote client</li>\n</ul>\n</li>\n<li><code>int port</code><ul>\n<li>Port number of connected client</li>\n</ul>\n</li>\n<li><code>int fd</code><ul>\n<li>File descriptor of the underlying socket (-1 if unset or Win32)</li>\n</ul>\n</li>\n</ul>\n",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "name": "conn"
+                    },
+                    {
+                      "name": "remote"
+                    },
+                    {
+                      "name": "port"
+                    },
+                    {
+                      "name": "fd"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "textRaw": "http-server-request(req, conn, remote, port, method, url, fd)",
+              "type": "method",
+              "name": "http-server-request",
+              "desc": "<p>Fired before <a href=\"http.html#event_request_\">&#39;request&#39;</a> is emitted\n\n</p>\n<ul>\n<li><a href=\"#tracing_node_dtrace_http_server_request_t\">node_dtrace_http server_request_t req</a></li>\n<li><a href=\"#tracing_node_dtrace_connection_t\">node_dtrace_connection_t conn</a></li>\n<li><code>char *remote</code><ul>\n<li>IP address of remote client</li>\n</ul>\n</li>\n<li><code>int port</code><ul>\n<li>Port number of connected client</li>\n</ul>\n</li>\n<li><code>char *method</code><ul>\n<li>METHOD of incoming request</li>\n</ul>\n</li>\n<li><code>char *url</code><ul>\n<li>URL of incoming request</li>\n</ul>\n</li>\n<li><code>int fd</code><ul>\n<li>File descriptor of the underlying socket (-1 if unset or Win32)</li>\n</ul>\n</li>\n</ul>\n",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "name": "req"
+                    },
+                    {
+                      "name": "conn"
+                    },
+                    {
+                      "name": "remote"
+                    },
+                    {
+                      "name": "port"
+                    },
+                    {
+                      "name": "method"
+                    },
+                    {
+                      "name": "url"
+                    },
+                    {
+                      "name": "fd"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "textRaw": "http-server-response(conn, remote, port, fd)",
+              "type": "method",
+              "name": "http-server-response",
+              "desc": "<p>Fired before <a href=\"stream.html#event_finish_\">&#39;finish&#39;</a> is emitted\n\n</p>\n<ul>\n<li><a href=\"#tracing_node_dtrace_connection_t\">node_dtrace_connection_t conn</a></li>\n<li><code>char *remote</code><ul>\n<li>IP address of remote client</li>\n</ul>\n</li>\n<li><code>int port</code><ul>\n<li>Port number of connected client</li>\n</ul>\n</li>\n<li><code>int fd</code><ul>\n<li>File descriptor of the underlying socket (-1 if unset or Win32)</li>\n</ul>\n</li>\n</ul>\n",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "name": "conn"
+                    },
+                    {
+                      "name": "remote"
+                    },
+                    {
+                      "name": "port"
+                    },
+                    {
+                      "name": "fd"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "textRaw": "http-client-request(req, conn, remote, port, method, url, fd)",
+              "type": "method",
+              "name": "http-client-request",
+              "desc": "<p>Fired before <a href=\"stream.html#event_finish_\">&#39;finish&#39;</a> is emitted\n\n</p>\n<ul>\n<li><a href=\"#tracing_node_dtrace_http_server_request_t\">node_dtrace_http server_request_t req</a></li>\n<li><a href=\"#tracing_node_dtrace_connection_t\">node_dtrace_connection_t conn</a></li>\n<li><code>char *remote</code><ul>\n<li>IP address of remote client</li>\n</ul>\n</li>\n<li><code>int port</code><ul>\n<li>Port number of connected client</li>\n</ul>\n</li>\n<li><code>char *method</code><ul>\n<li>METHOD of incoming request</li>\n</ul>\n</li>\n<li><code>char *url</code><ul>\n<li>URL of incoming request</li>\n</ul>\n</li>\n<li><code>int fd</code><ul>\n<li>File descriptor of the underlying socket (-1 if unset or Win32)</li>\n</ul>\n</li>\n</ul>\n",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "name": "req"
+                    },
+                    {
+                      "name": "conn"
+                    },
+                    {
+                      "name": "remote"
+                    },
+                    {
+                      "name": "port"
+                    },
+                    {
+                      "name": "method"
+                    },
+                    {
+                      "name": "url"
+                    },
+                    {
+                      "name": "fd"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "textRaw": "http-client-response(conn, remote, port, fd)",
+              "type": "method",
+              "name": "http-client-response",
+              "desc": "<p>Fired before <a href=\"http.html#event_response_\">&#39;response&#39;</a> is emitted\n\n</p>\n<ul>\n<li><a href=\"#tracing_node_dtrace_connection_t\">node_dtrace_connection_t conn</a></li>\n<li><code>char *remote</code><ul>\n<li>IP address of remote client</li>\n</ul>\n</li>\n<li><code>int port</code><ul>\n<li>Port number of connected client</li>\n</ul>\n</li>\n<li><code>int fd</code><ul>\n<li>File descriptor of the underlying socket (-1 if unset or Win32)</li>\n</ul>\n</li>\n</ul>\n",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "name": "conn"
+                    },
+                    {
+                      "name": "remote"
+                    },
+                    {
+                      "name": "port"
+                    },
+                    {
+                      "name": "fd"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "type": "module",
+          "displayName": "Trace points"
+        }
+      ],
+      "type": "module",
+      "displayName": "Tracing"
+    }
+  ]
+}
