@@ -80,6 +80,16 @@
     },
     {
       "type": "text",
+      "text": "[Console](console.html)"
+    },
+    {
+      "type": "list_item_end"
+    },
+    {
+      "type": "list_item_start"
+    },
+    {
+      "type": "text",
       "text": "[Crypto](crypto.html)"
     },
     {
@@ -251,16 +261,6 @@
     {
       "type": "text",
       "text": "[REPL](repl.html)"
-    },
-    {
-      "type": "list_item_end"
-    },
-    {
-      "type": "list_item_start"
-    },
-    {
-      "type": "text",
-      "text": "[STDIO](stdio.html)"
     },
     {
       "type": "list_item_end"
