@@ -301,6 +301,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-child-process-set-blocking.js
  test/simple/test-child-process-silent.js
  test/simple/test-child-process-stdin.js
+ test/simple/test-child-process-stdio-big-write-end.js
  test/simple/test-child-process-stdio-inherit.js
  test/simple/test-child-process-stdio.js
  test/simple/test-child-process-stdout-flush.js
@@ -448,6 +449,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-http-304.js
  test/simple/test-http-abort-before-end.js
  test/simple/test-http-abort-client.js
+ test/simple/test-http-abort-stream-end.js
  test/simple/test-http-after-connect.js
  test/simple/test-http-agent-destroyed-socket.js
  test/simple/test-http-agent.js
@@ -483,6 +485,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-http-end-throw-socket-handling.js
  test/simple/test-http-eof-on-connect.js
  test/simple/test-http-exceptions.js
+ test/simple/test-http-exit-delay.js
  test/simple/test-http-expect-continue.js
  test/simple/test-http-extra-response.js
  test/simple/test-http-full-response.js
@@ -552,6 +555,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-https-byteswritten.js
  test/simple/test-https-client-get-url.js
  test/simple/test-https-client-reject.js
+ test/simple/test-https-client-resume.js
  test/simple/test-https-connecting-to-http.js
  test/simple/test-https-drain.js
  test/simple/test-https-eof-for-eom.js
@@ -976,6 +980,8 @@ Files: AUTHORS
  doc/api/child_process.markdown
  doc/api/cluster.json
  doc/api/cluster.markdown
+ doc/api/console.json
+ doc/api/console.markdown
  doc/api/crypto.json
  doc/api/crypto.markdown
  doc/api/debugger.json
@@ -1014,8 +1020,6 @@ Files: AUTHORS
  doc/api/querystring.markdown
  doc/api/repl.json
  doc/api/repl.markdown
- doc/api/stdio.json
- doc/api/stdio.markdown
  doc/api/stream.json
  doc/api/stream.markdown
  doc/api/string_decoder.json
@@ -1026,6 +1030,7 @@ Files: AUTHORS
  doc/api/timers.markdown
  doc/api/tls.json
  doc/api/tls.markdown
+ doc/api/tracing.json
  doc/api/tty.json
  doc/api/tty.markdown
  doc/api/url.json
@@ -1055,6 +1060,7 @@ Files: AUTHORS
  doc/blog/Uncategorized/the-videos-from-node-meetup.md
  doc/blog/Uncategorized/trademark.md
  doc/blog/Uncategorized/version-0-6.md
+ doc/blog/favicon.ico
  doc/blog/feature/streams2.md
  doc/blog/module/multi-server-continuous-deployment-with-fleet.md
  doc/blog/module/service-logging-in-json-with-bunyan.md
@@ -1107,6 +1113,8 @@ Files: AUTHORS
  doc/blog/release/v0.10.0.md
  doc/blog/release/v0.10.1.md
  doc/blog/release/v0.10.10.md
+ doc/blog/release/v0.10.11.md
+ doc/blog/release/v0.10.12.md
  doc/blog/release/v0.10.2.md
  doc/blog/release/v0.10.3.md
  doc/blog/release/v0.10.4.md
@@ -1118,6 +1126,7 @@ Files: AUTHORS
  doc/blog/release/v0.11.0.md
  doc/blog/release/v0.11.1.md
  doc/blog/release/v0.11.2.md
+ doc/blog/release/v0.11.3.md
  doc/blog/release/v0.6.20.md
  doc/blog/release/v0.8.1.md
  doc/blog/release/v0.8.10.md
@@ -1136,6 +1145,7 @@ Files: AUTHORS
  doc/blog/release/v0.8.22.md
  doc/blog/release/v0.8.23.md
  doc/blog/release/v0.8.24.md
+ doc/blog/release/v0.8.25.md
  doc/blog/release/v0.8.3.md
  doc/blog/release/v0.8.4.md
  doc/blog/release/v0.8.5.md
@@ -2123,6 +2133,7 @@ Files: deps/http_parser/LICENSE-MIT
  deps/uv/test/test-threadpool-cancel.c
  deps/uv/test/test-threadpool.c
  deps/uv/test/test-timer-again.c
+ deps/uv/test/test-timer-from-check.c
  deps/uv/test/test-timer.c
  deps/uv/test/test-tty.c
  deps/uv/test/test-udp-dgram-too-big.c
@@ -2146,6 +2157,7 @@ Files: doc/api/_toc.html
  doc/api/buffer.html
  doc/api/child_process.html
  doc/api/cluster.html
+ doc/api/console.html
  doc/api/crypto.html
  doc/api/debugger.html
  doc/api/dgram.html
@@ -2165,7 +2177,6 @@ Files: doc/api/_toc.html
  doc/api/punycode.html
  doc/api/querystring.html
  doc/api/repl.html
- doc/api/stdio.html
  doc/api/stream.html
  doc/api/string_decoder.html
  doc/api/synopsis.html
@@ -2176,7 +2187,7 @@ Files: doc/api/_toc.html
  doc/api/util.html
  doc/api/vm.html
  doc/api/zlib.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.11/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.13/LICENSE">license</a>.</p>
 License: UNKNOWN
  FIXME
 
@@ -2525,21 +2536,26 @@ Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/
 License: UNKNOWN
  FIXME
 
+Files: doc/api/tracing.html
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.13-pre/LICENSE">license</a>.</p>
+License: UNKNOWN
+ FIXME
+
 Files: doc/api/net.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.11/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.13/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
 License: UNKNOWN
  FIXME
 
 Files: doc/api/all.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.11/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.13/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
   { return c.indexOf(line) == 0 })
 License: UNKNOWN
  FIXME
 
 Files: doc/api/readline.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.11/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.13/LICENSE">license</a>.</p>
   { return c.indexOf(line) == 0 })
 License: UNKNOWN
  FIXME
