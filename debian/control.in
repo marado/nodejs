@@ -5,7 +5,7 @@ Maintainer: Debian Javascript Maintainers <pkg-javascript-devel@lists.alioth.deb
 Uploaders: Jérémy Lal <kapouer@melix.org>,
  Jonas Smedegaard <dr@jones.dk>
 Build-Depends: @cdbs@,
- gyp,
+ gyp (>= 0.1~svn1654-1),
  python,
  libv8-3.14-dev,
  binutils,
