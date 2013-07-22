@@ -37,7 +37,7 @@ DEB_MAKE_CLEAN_TARGET = clean
 exp-relax-check := $(if $(shell dpkg-parsechangelog | grep -x 'Distribution: \(experimental\|UNRELEASED\)'),-i)
 DEB_MAKE_CHECK_TARGET = $(exp-relax-check) test
 
-ifeq (freebsd, $(filter kfreebsd,$(DEB_HOST_ARCH_OS)))
+ifneq ($(filter kfreebsd,$(DEB_HOST_ARCH_OS)),)
 DEB_CONFIGURE_EXTRA_FLAGS += --dest-os=freebsd
 endif
 
