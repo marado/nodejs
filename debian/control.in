@@ -16,7 +16,8 @@ Build-Depends: @cdbs@,
  bash-completion,
  curl,
  procps,
- zlib1g-dev
+ zlib1g-dev,
+ libkvm-dev [kfreebsd-any]
 Standards-Version: 3.9.3
 Homepage: http://nodejs.org/
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=collab-maint/nodejs.git
