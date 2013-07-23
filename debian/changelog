@@ -7,6 +7,8 @@ nodejs (0.6.19~dfsg1-8) UNRELEASED; urgency=low
   * Add notes in rules file about reasons for versioned dependencies.
   * Drop NEWS file: Contains only entries for versions older than
     existing in any Debian suite since about a year.
+  * Rewrite short and long descriptions based on upstream texts.
+  * Bump standards-version to 3.9.4.
 
  -- Jonas Smedegaard <dr@jones.dk>  Tue, 23 Jul 2013 16:22:19 +0200
 
