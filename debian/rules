@@ -24,7 +24,7 @@ DEB_UPSTREAM_REPACKAGE_EXCLUDES += \
 ./tools/gyp/ \
 ./tools/closure_linter/
 
-DEB_UPSTREAM_REPACKAGE_TAG = $(shell echo $(DEB_UPSTREAM_VERSION) | egrep -o "dfsg[0-9]+")
+DEB_UPSTREAM_REPACKAGE_TAG := $(shell echo $(DEB_UPSTREAM_VERSION) | egrep -o "dfsg[0-9]*")
 
 # Needed by upstream build
 bdeps = binutils, openssl (>= 1.0.0g), pkg-config, bash-completion
