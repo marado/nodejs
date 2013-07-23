@@ -25,16 +25,19 @@ DEB_UPSTREAM_REPACKAGE_EXCLUDES += \
 
 DEB_UPSTREAM_REPACKAGE_TAG := $(shell echo $(DEB_UPSTREAM_VERSION) | egrep -o "dfsg[0-9]*")
 
+# recent OpenSSL needed because... FIXME (git commit c232e17)
+ssl-minver = 1.0.0g
+
 # Needed by upstream build
-bdeps = binutils, openssl (>= 1.0.0g), pkg-config, bash-completion
-bdeps +=, curl, procps, zlib1g-dev
+bdeps = binutils, openssl (>= $(ssl-minver)), pkg-config
+bdeps +=, bash-completion, curl, procps, zlib1g-dev
 
 # Needed by upstream build and binary development package
-deps = python,\
- libv8-dev (>= 3.7),\
- libssl-dev (>= 1.0.0g),\
- libev-dev (>= 1:4.11),\
- libc-ares-dev (>= 1.7.5)
+#  * recent libv8 because... FIXME (git commit eb490ef)
+#  * recent libev needed for file descriptor leakage (see bug#657080)
+#  * recent libc-ares because... FIXME (git commit ccad613)
+deps = python, libv8-dev (>= 3.7), libssl-dev (>= $(ssl-minver))
+deps +=, libev-dev (>= 1:4.11), libc-ares-dev (>= 1.7.5)
 
 CDBS_BUILD_DEPENDS +=, $(bdeps), $(deps)
 CDBS_DEPENDS_nodejs-dev = $(deps)
