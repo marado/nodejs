@@ -23,7 +23,7 @@ DEB_UPSTREAM_REPACKAGE_EXCLUDES += \
 ./tools/msvs/genfiles/ \
 ./tools/wrk/
 
-DEB_UPSTREAM_REPACKAGE_TAG = $(shell echo $(DEB_UPSTREAM_VERSION) | egrep -o "dfsg[0-9]+")
+DEB_UPSTREAM_REPACKAGE_TAG := $(shell echo $(DEB_UPSTREAM_VERSION) | egrep -o "dfsg[0-9]*")
 
 # suppress checking binary files, to not upset dpkg-source
 DEB_COPYRIGHT_CHECK_IGNORE_REGEX = ^(doc/trademark-policy\.pdf|doc/mac_osx_nodejs_installer_logo\.png|doc/.*-white-stripe\.jpg|favicon\.ico|deps/v8/benchmarks/v8-logo\.png|test/fixtures/person\.jpg.*|src/res/node\.ico|debian/(changelog|copyright(|_hints|_newhints)))$
