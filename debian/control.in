@@ -16,14 +16,12 @@ Architecture: any
 Depends: ${cdbs:Depends},
  ${misc:Depends},
  nodejs (= ${binary:Version})
-Description: Development files for Node.js
- Node.js provides an event-based server-side javascript engine.
- .
- It is similar in design to and influenced by systems like
- Ruby's Event Machine or Python's Twisted.
- .
- Node.js takes the event model a bit further - it presents the event
- loop as a language construct instead of as a library.
+Description: evented I/O for V8 javascript (development files)
+ Node.js is a platform built on Chrome's JavaScript runtime for easily
+ building fast, scalable network applications. Node.js uses an
+ event-driven, non-blocking I/O model that makes it lightweight and
+ efficient, perfect for data-intensive real-time applications that run
+ across distributed devices.
  .
  This package is needed to build plugins.
 
@@ -31,14 +29,16 @@ Package: nodejs
 Architecture: any
 Depends: ${shlibs:Depends},
  ${misc:Depends}
-Description: Node.js event-based server-side javascript engine
- Node.js is similar in design to and influenced by systems like
- Ruby's Event Machine or Python's Twisted.
+Description: evented I/O for V8 javascript
+ Node.js is a platform built on Chrome's JavaScript runtime for easily
+ building fast, scalable network applications. Node.js uses an
+ event-driven, non-blocking I/O model that makes it lightweight and
+ efficient, perfect for data-intensive real-time applications that run
+ across distributed devices.
  .
- It takes the event model a bit further - it presents the event
- loop as a language construct instead of as a library.
+ Node.js is bundled with several useful libraries to handle server
+ tasks:
  .
- Node.js is bundled with several useful libraries to handle server tasks :
  System, Events, Standard I/O, Modules, Timers, Child Processes, POSIX,
  HTTP, Multipart Parsing, TCP, DNS, Assert, Path, URL, Query Strings.
 
@@ -48,16 +48,12 @@ Architecture: any
 Depends: ${misc:Depends},
  nodejs (= ${binary:Version})
 Recommends: libv8-3.14-dbg
-Description: Node.js event-based server-side javascript engine (debug)
- Node.js is similar in design to and influenced by systems like
- Ruby's Event Machine or Python's Twisted.
- .
- It takes the event model a bit further - it presents the event
- loop as a language construct instead of as a library.
- .
- Node.js is bundled with several useful libraries to handle server tasks :
- System, Events, Standard I/O, Modules, Timers, Child Processes, POSIX,
- HTTP, Multipart Parsing, TCP, DNS, Assert, Path, URL, Query Strings.
+Description: evented I/O for V8 javascript (debug)
+ Node.js is a platform built on Chrome's JavaScript runtime for easily
+ building fast, scalable network applications. Node.js uses an
+ event-driven, non-blocking I/O model that makes it lightweight and
+ efficient, perfect for data-intensive real-time applications that run
+ across distributed devices.
  .
  This package contains the debugging symbols.
 
@@ -67,16 +63,12 @@ Architecture: all
 Depends: ${misc:Depends},
  nodejs (>= 0.6.19~dfsg1-3~)
 Conflicts: node
-Description: Node.js event-based server-side javascript engine (legacy symlink)
- Node.js is similar in design to and influenced by systems like
- Ruby's Event Machine or Python's Twisted.
- .
- It takes the event model a bit further - it presents the event
- loop as a language construct instead of as a library.
- .
- Node.js is bundled with several useful libraries to handle server tasks :
- System, Events, Standard I/O, Modules, Timers, Child Processes, POSIX,
- HTTP, Multipart Parsing, TCP, DNS, Assert, Path, URL, Query Strings.
+Description: evented I/O for V8 javascript (legacy symlink)
+ Node.js is a platform built on Chrome's JavaScript runtime for easily
+ building fast, scalable network applications. Node.js uses an
+ event-driven, non-blocking I/O model that makes it lightweight and
+ efficient, perfect for data-intensive real-time applications that run
+ across distributed devices.
  .
  This package contains a symlink for legacy Node.js code requiring
  binary to be /usr/bin/node (not /usr/bin/nodejs as provided in Debian).
