@@ -15,7 +15,7 @@ Section: devel
 Architecture: any
 Depends: ${cdbs:Depends},
  ${misc:Depends},
- nodejs (= ${binary:Version}),
+ nodejs (= ${binary:Version})
 Description: Development files for Node.js
  Node.js provides an event-based server-side javascript engine.
  .
