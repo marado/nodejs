@@ -1,10 +1,15 @@
 nodejs (0.10.13~dfsg1-2) UNRELEASED; urgency=low
 
+  [ Jérémy Lal ]
   * Fixing kfreebsd build :
     + depend on libkvm-dev [kfreebsd-any],
     + tighten dependency on gyp version that builds using flock, 
     + 2012_kfreebsd.patch adds __FreeBSD_kernel__ defines.
     + debian/rules sets gyp flavor using --dest-os switch.
+  * Tighten gyp version to the one supporting kfreebsd
+
+  [ Jonas Smedegaard ]
+  * Make ~dfsg version suffix only optionally numbered.
 
  -- Jérémy Lal <kapouer@melix.org>  Tue, 23 Jul 2013 01:33:09 +0200
 
