@@ -36,7 +36,7 @@ bdeps +=, libkvm-dev [kfreebsd-any], gyp (>= 0.1~svn1654-1)
 # Needed by upstream build and binary development package
 #  * recent libv8 because... FIXME (git commit eb490ef)
 #  * recent libc-ares because... FIXME (git commit ccad613)
-deps = python, libv8-dev (>= 3.7), libssl-dev (>= $(ssl-minver))
+deps = python, libv8-3.14-dev (>= 3.7), libssl-dev (>= $(ssl-minver))
 deps +=, libc-ares-dev (>= 1.7.5)
 
 CDBS_BUILD_DEPENDS +=, $(bdeps), $(deps)
