@@ -31,7 +31,7 @@ ssl-minver = 1.0.0g
 #  * recent gyp needed to build using flock
 bdeps = binutils, openssl (>= $(ssl-minver)), pkg-config
 bdeps +=, bash-completion, curl, procps, zlib1g-dev
-bdeps +=, libkvm-dev [kfreebsd-any], gyp (>= 0.1~svn1654-1)
+bdeps +=, libkvm-dev [kfreebsd-any], gyp (>= 0.1~svn1654)
 
 # Needed by upstream build and binary development package
 #  * recent libv8 because... FIXME (git commit eb490ef)
