@@ -118,3 +118,74 @@ Last-Update: 2013-07-23
      action(['doc/node.1'], 'man/man1/')
    else:
      action(['doc/node.1'], 'share/man/man1/')
+--- a/deps/uv/common.gypi
++++ b/deps/uv/common.gypi
+@@ -130,7 +130,7 @@
+           }]
+         ]
+       }],
+-      [ 'OS=="linux" or OS=="freebsd" or OS=="openbsd" or OS=="solaris"', {
++      [ 'OS=="linux" or OS=="freebsd" or OS=="kfreebsd" or OS=="openbsd" or OS=="solaris"', {
+         'cflags': [ '-Wall' ],
+         'cflags_cc': [ '-fno-rtti', '-fno-exceptions' ],
+         'target_conditions': [
+--- a/deps/uv/uv.gyp
++++ b/deps/uv/uv.gyp
+@@ -240,7 +240,7 @@
+             ],
+           },
+         }],
+-        [ 'OS=="freebsd" or OS=="dragonflybsd"', {
++        [ 'OS=="freebsd" or OS=="dragonflybsd" or OS=="kfreebsd"', {
+           'sources': [ 'src/unix/freebsd.c' ],
+         }],
+         [ 'OS=="openbsd"', {
+@@ -249,12 +249,12 @@
+         [ 'OS=="netbsd"', {
+           'sources': [ 'src/unix/netbsd.c' ],
+         }],
+-        [ 'OS in "freebsd dragonflybsd openbsd netbsd".split()', {
++        [ 'OS in "freebsd kfreebsd dragonflybsd openbsd netbsd".split()', {
+           'link_settings': {
+             'libraries': [ '-lkvm' ],
+           },
+         }],
+-        [ 'OS in "mac freebsd dragonflybsd openbsd netbsd".split()', {
++        [ 'OS in "mac freebsd kfreebsd dragonflybsd openbsd netbsd".split()', {
+           'sources': [ 'src/unix/kqueue.c' ],
+         }],
+         ['library=="shared_library"', {
+--- a/node.gyp
++++ b/node.gyp
+@@ -276,6 +276,11 @@
+             '-lkvm',
+           ],
+         }],
++	[ 'OS=="kfreebsd"', {
++          'libraries': [
++            '-lkvm',
++          ],
++        }],
+         [ 'OS=="solaris"', {
+           'libraries': [
+             '-lkstat',
+--- a/common.gypi
++++ b/common.gypi
+@@ -159,7 +159,7 @@
+           'BUILDING_UV_SHARED=1',
+         ],
+       }],
+-      [ 'OS=="linux" or OS=="freebsd" or OS=="openbsd" or OS=="solaris"', {
++      [ 'OS=="linux" or OS=="freebsd" or OS=="kfreebsd" or OS=="openbsd" or OS=="solaris"', {
+         'cflags': [ '-Wall', '-Wextra', '-Wno-unused-parameter', '-pthread', ],
+         'cflags_cc': [ '-fno-rtti', '-fno-exceptions' ],
+         'ldflags': [ '-pthread', '-rdynamic' ],
+@@ -223,7 +223,7 @@
+           }],
+         ],
+       }],
+-      ['OS=="freebsd" and node_use_dtrace=="true"', {
++      ['(OS=="freebsd" or OS=="kfreebsd") and node_use_dtrace=="true"', {
+         'libraries': [ '-lelf' ],
+       }]
+     ],
