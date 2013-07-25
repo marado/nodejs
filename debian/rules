@@ -55,7 +55,7 @@ exp-relax-check := $(if $(shell dpkg-parsechangelog | grep -x 'Distribution: \(e
 DEB_MAKE_CHECK_TARGET = $(exp-relax-check) test
 
 ifeq ($(DEB_HOST_ARCH_OS), kfreebsd)
-DEB_CONFIGURE_EXTRA_FLAGS += --dest-os=freebsd
+DEB_CONFIGURE_EXTRA_FLAGS += --dest-os=kfreebsd
 endif
 
 # hardening gyp
