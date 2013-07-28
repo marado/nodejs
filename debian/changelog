@@ -5,6 +5,8 @@ nodejs (0.10.13~dfsg1-2) UNRELEASED; urgency=low
     + Depend on libkvm-dev on kfreebsd systems.
     + Tighten to build-depend on gyp versions that builds using flock.
     + Add patch 2012 to add __FreeBSD_kernel__ defines.
+    + Add patch 1001 readFile not throwing EISDIR on some archs.
+    + Add patches 1002, 1003 to fix bugs in unit tests.
     + Set gyp flavor in rules file using --dest-os switch.
 
   [ Jonas Smedegaard ]
