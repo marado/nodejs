@@ -1,5 +1,5 @@
 Description: raise EISDIR if readFile or readFileSync a directory
-Bug-Node: FILL ME
+Bug-Node: https://github.com/joyent/node/pull/5928
 Author: Jérémy Lal <kapouer@melix.org>
 Last-Update: 2013-07-28
 --- a/lib/fs.js
