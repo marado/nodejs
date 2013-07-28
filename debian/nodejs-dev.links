@@ -4,12 +4,3 @@ usr/include/v8-profiler.h usr/include/nodejs/deps/v8/include/v8-profiler.h
 usr/include/v8stdint.h usr/include/nodejs/deps/v8/include/v8stdint.h
 usr/include/v8-testing.h usr/include/nodejs/deps/v8/include/v8-testing.h
 usr/include/v8-debug.h usr/include/nodejs/deps/v8/include/v8-debug.h
-usr/include/nodejs/deps/uv/include/uv.h usr/include/nodejs/uv.h
-usr/include/nodejs/deps/uv/include/uv-private/eio.h usr/include/nodejs/uv-private/eio.h
-usr/include/nodejs/deps/uv/include/uv-private/ngx-queue.h usr/include/nodejs/uv-private/ngx-queue.h
-usr/include/nodejs/deps/uv/include/uv-private/uv-unix.h usr/include/nodejs/uv-private/uv-unix.h
-usr/include/nodejs/deps/uv/include/uv-private/uv-win.h usr/include/nodejs/uv-private/uv-win.h
-usr/include/nodejs/src/node.h usr/include/nodejs/node.h
-usr/include/nodejs/src/node_buffer.h usr/include/nodejs/node_buffer.h
-usr/include/nodejs/src/node_object_wrap.h usr/include/nodejs/node_object_wrap.h
-usr/include/nodejs/src/node_version.h usr/include/nodejs/node_version.h

@@ -11,7 +11,7 @@ Throws an exception that displays the values for `actual` and `expected` separat
 
 ## assert(value, message), assert.ok(value, [message])
 
-Tests if value is a `true` value, it is equivalent to `assert.equal(true, value, message);`
+Tests if value is truthy, it is equivalent to `assert.equal(true, !!value, message);`
 
 ## assert.equal(actual, expected, [message])
 
@@ -74,7 +74,7 @@ Custom error validation:
       "unexpected error"
     );
 
-## assert.doesNotThrow(block, [error], [message])
+## assert.doesNotThrow(block, [message])
 
 Expects `block` not to throw an error, see assert.throws for details.
 

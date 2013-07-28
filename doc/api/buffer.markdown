@@ -2,7 +2,7 @@
 
     Stability: 3 - Stable
 
-Pure Javascript is Unicode friendly but not nice to binary data.  When
+Pure JavaScript is Unicode friendly but not nice to binary data.  When
 dealing with TCP streams or the file system, it's necessary to handle octet
 streams. Node has several strategies for manipulating, creating, and
 consuming octet streams.
@@ -19,14 +19,18 @@ encoding method.  Here are the different string encodings.
 
 * `'ascii'` - for 7 bit ASCII data only.  This encoding method is very fast, and
   will strip the high bit if set.
-  Note that this encoding converts a null character (`'\0'` or `'\u0000'`) into
-  `0x20` (character code of a space). If you want to convert a null character
-  into `0x00`, you should use `'utf8'`.
 
-* `'utf8'` - Multi byte encoded Unicode characters.  Many web pages and other document formats use UTF-8.
+  Note that when converting from string to buffer, this encoding converts a null
+  character (`'\0'` or `'\u0000'`) into `0x20` (character code of a space). If
+  you want to convert a null character into `0x00`, you should use `'utf8'`.
 
-* `'ucs2'` - 2-bytes, little endian encoded Unicode characters. It can encode
-  only BMP(Basic Multilingual Plane, U+0000 - U+FFFF).
+* `'utf8'` - Multibyte encoded Unicode characters. Many web pages and other
+  document formats use UTF-8.
+
+* `'utf16le'` - 2 or 4 bytes, little endian encoded Unicode characters.
+  Surrogate pairs (U+10000 to U+10FFFF) are supported.
+
+* `'ucs2'` - Alias of `'utf16le'`.
 
 * `'base64'` - Base64 string encoding.
 
@@ -35,7 +39,18 @@ encoding method.  Here are the different string encodings.
   should be avoided in favor of `Buffer` objects where possible. This encoding
   will be removed in future versions of Node.
 
-* `'hex'` - Encode each byte as two hexidecimal characters.
+* `'hex'` - Encode each byte as two hexadecimal characters.
+
+A `Buffer` object can also be used with typed arrays.  The buffer object is
+cloned to an `ArrayBuffer` that is used as the backing store for the typed
+array.  The memory of the buffer and the `ArrayBuffer` is not shared.
+
+NOTE: Node.js v0.8 simply retained a reference to the buffer in `array.buffer`
+instead of cloning it.
+
+While more efficient, it introduces subtle incompatibilities with the typed
+arrays specification.  `ArrayBuffer#slice()` makes a copy of the slice while
+`Buffer#slice()` creates a view.
 
 ## Class: Buffer
 
@@ -61,6 +76,13 @@ Allocates a new buffer using an `array` of octets.
 
 Allocates a new buffer containing the given `str`.
 `encoding` defaults to `'utf8'`.
+
+### Class Method: Buffer.isEncoding(encoding)
+
+* `encoding` {String} The encoding string to test
+
+Returns true if the `encoding` is a valid encoding argument, or false
+otherwise.
 
 ### buf.write(string, [offset], [length], [encoding])
 
@@ -97,6 +119,25 @@ Decodes and returns a string from buffer data encoded with `encoding`
 
 See `buffer.write()` example, above.
 
+
+### buf.toJSON()
+
+Returns a JSON-representation of the Buffer instance, which is identical to the
+output for JSON Arrays. `JSON.stringify` implicitly calls this function when
+stringifying a Buffer instance.
+
+Example:
+
+    var buf = new Buffer('test');
+    var json = JSON.stringify(buf);
+
+    console.log(json);
+    // '[116,101,115,116]'
+
+    var copy = new Buffer(JSON.parse(json));
+
+    console.log(copy);
+    // <Buffer 74 65 73 74>
 
 ### buf[index]
 
@@ -145,6 +186,26 @@ Example:
 
     // ½ + ¼ = ¾: 9 characters, 12 bytes
 
+### Class Method: Buffer.concat(list, [totalLength])
+
+* `list` {Array} List of Buffer objects to concat
+* `totalLength` {Number} Total length of the buffers when concatenated
+
+Returns a buffer which is the result of concatenating all the buffers in
+the list together.
+
+If the list has no items, or if the totalLength is 0, then it returns a
+zero-length buffer.
+
+If the list has exactly one item, then the first item of the list is
+returned.
+
+If the list has more than one item, then a new Buffer is created.
+
+If totalLength is not provided, it is read from the buffers in the list.
+However, this adds an additional loop to the function, so it is faster
+to provide the length explicitly.
+
 ### buf.length
 
 * Number
@@ -156,7 +217,7 @@ buffer object.  It does not change when the contents of the buffer are changed.
     buf = new Buffer(1234);
 
     console.log(buf.length);
-    buf.write("some string", "ascii", 0);
+    buf.write("some string", 0, "ascii");
     console.log(buf.length);
 
     // 1234
@@ -172,6 +233,9 @@ buffer object.  It does not change when the contents of the buffer are changed.
 Does copy between buffers. The source and target regions can be overlapped.
 `targetStart` and `sourceStart` default to `0`.
 `sourceEnd` defaults to `buffer.length`.
+
+All values passed that are `undefined`/`NaN` or are out of bounds are set equal
+to their respective defaults.
 
 Example: build two Buffers, then copy `buf1` from byte 16 through byte 19
 into `buf2`, starting at the 8th byte in `buf2`.
@@ -197,7 +261,7 @@ into `buf2`, starting at the 8th byte in `buf2`.
 
 Returns a new buffer which references the same memory as the old, but offset
 and cropped by the `start` (defaults to `0`) and `end` (defaults to
-`buffer.length`) indexes.
+`buffer.length`) indexes.  Negative indexes start from the end of the buffer.
 
 **Modifying the new buffer slice will modify memory in the original buffer!**
 
@@ -560,7 +624,7 @@ complement signed integer into `buffer`.
 * `noAssert` Boolean, Optional, Default: false
 
 Writes `value` to the buffer at the specified offset with specified endian
-format. Note, `value` must be a valid 32 bit float.
+format. Note, behavior is unspecified if `value` is not a 32 bit float.
 
 Set `noAssert` to true to skip validation of `value` and `offset`. This means
 that `value` may be too large for the specific function and `offset` may be

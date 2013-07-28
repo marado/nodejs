@@ -50,14 +50,12 @@ typedef struct {
 static uv_loop_t* loop;
 
 
-static int server_closed;
 static uv_tcp_t server;
 
 
 static void after_write(uv_write_t* req, int status);
 static void after_read(uv_stream_t*, ssize_t nread, uv_buf_t buf);
 static void on_close(uv_handle_t* peer);
-static void on_server_close(uv_handle_t* handle);
 static void on_connection(uv_stream_t*, int status);
 
 #define WRITE_BUF_LEN   (64*1024)
@@ -65,9 +63,18 @@ static void on_connection(uv_stream_t*, int status);
 
 #define LEN_OFFSET 0
 #define QUERYID_OFFSET 2
-unsigned char DNSRsp[] = {0, 43, 0, 0, 0x81, 0x80, 0, 1, 0, 1, 0, 0, 0, 0 };
-unsigned char qrecord[] = {5, 'e', 'c', 'h', 'o', 's', 3, 's', 'r', 'v', 0, 0, 1, 0, 1};
-unsigned char arecord[] = {0xc0, 0x0c, 0, 1, 0, 1, 0, 0, 5, 0xbd, 0, 4, 10, 0, 1, 1 };
+
+static unsigned char DNSRsp[] = {
+  0, 43, 0, 0, 0x81, 0x80, 0, 1, 0, 1, 0, 0, 0, 0
+};
+
+static unsigned char qrecord[] = {
+  5, 'e', 'c', 'h', 'o', 's', 3, 's', 'r', 'v', 0, 0, 1, 0, 1
+};
+
+static unsigned char arecord[] = {
+  0xc0, 0x0c, 0, 1, 0, 1, 0, 0, 5, 0xbd, 0, 4, 10, 0, 1, 1
+};
 
 
 static void after_write(uv_write_t* req, int status) {
@@ -155,7 +162,6 @@ static void process_req(uv_stream_t* handle, ssize_t nread, uv_buf_t buf) {
           hdrbuf_remaining = DNSREC_LEN - readbuf_remaining;
           break;
         } else {
-          short int reclen_n;
           /* save header */
           memcpy(&hdrbuf[DNSREC_LEN - hdrbuf_remaining], dnsreq, hdrbuf_remaining);
           dnsreq += hdrbuf_remaining;
@@ -163,8 +169,8 @@ static void process_req(uv_stream_t* handle, ssize_t nread, uv_buf_t buf) {
           hdrbuf_remaining = 0;
 
           /* get record length */
-          reclen_n = *((short int*)hdrbuf);
-          rec_remaining = ntohs(reclen_n) - (DNSREC_LEN - 2);
+          rec_remaining = (unsigned) hdrbuf[0] * 256 + (unsigned) hdrbuf[1];
+          rec_remaining -= (DNSREC_LEN - 2);
         }
       }
 
@@ -283,11 +289,6 @@ static void on_connection(uv_stream_t* server, int status) {
 }
 
 
-static void on_server_close(uv_handle_t* handle) {
-  ASSERT(handle == (uv_handle_t*)&server);
-}
-
-
 static int dns_start(int port) {
   struct sockaddr_in addr = uv_ip4_addr("0.0.0.0", port);
   int r;
@@ -323,6 +324,6 @@ HELPER_IMPL(dns_server) {
   if (dns_start(TEST_PORT_2))
     return 1;
 
-  uv_run(loop);
+  uv_run(loop, UV_RUN_DEFAULT);
   return 0;
 }

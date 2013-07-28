@@ -1,4 +1,4 @@
-// Copyright 2011 the V8 project authors. All rights reserved.
+// Copyright 2012 the V8 project authors. All rights reserved.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -29,6 +29,8 @@
 // own but contains the parts which are the same across POSIX platforms Linux,
 // Mac OS, FreeBSD and OpenBSD.
 
+#include "platform-posix.h"
+
 #include <unistd.h>
 #include <errno.h>
 #include <time.h>
@@ -46,13 +48,14 @@
 
 #undef MAP_TYPE
 
-#if defined(ANDROID)
+#if defined(ANDROID) && !defined(V8_ANDROID_LOG_STDOUT)
 #define LOG_TAG "v8"
-#include <utils/Log.h>  // LOG_PRI_VA
+#include <android/log.h>
 #endif
 
 #include "v8.h"
 
+#include "codegen.h"
 #include "platform.h"
 
 namespace v8 {
@@ -70,6 +73,12 @@ intptr_t OS::MaxVirtualMemory() {
 }
 
 
+intptr_t OS::CommitPageSize() {
+  static intptr_t page_size = getpagesize();
+  return page_size;
+}
+
+
 #ifndef __CYGWIN__
 // Get rid of writable permission on code allocations.
 void OS::ProtectCode(void* address, const size_t size) {
@@ -84,6 +93,49 @@ void OS::Guard(void* address, const size_t size) {
 #endif  // __CYGWIN__
 
 
+void* OS::GetRandomMmapAddr() {
+  Isolate* isolate = Isolate::UncheckedCurrent();
+  // Note that the current isolate isn't set up in a call path via
+  // CpuFeatures::Probe. We don't care about randomization in this case because
+  // the code page is immediately freed.
+  if (isolate != NULL) {
+#ifdef V8_TARGET_ARCH_X64
+    uint64_t rnd1 = V8::RandomPrivate(isolate);
+    uint64_t rnd2 = V8::RandomPrivate(isolate);
+    uint64_t raw_addr = (rnd1 << 32) ^ rnd2;
+    // Currently available CPUs have 48 bits of virtual addressing.  Truncate
+    // the hint address to 46 bits to give the kernel a fighting chance of
+    // fulfilling our placement request.
+    raw_addr &= V8_UINT64_C(0x3ffffffff000);
+#else
+    uint32_t raw_addr = V8::RandomPrivate(isolate);
+
+    raw_addr &= 0x3ffff000;
+
+# ifdef __sun
+    // For our Solaris/illumos mmap hint, we pick a random address in the bottom
+    // half of the top half of the address space (that is, the third quarter).
+    // Because we do not MAP_FIXED, this will be treated only as a hint -- the
+    // system will not fail to mmap() because something else happens to already
+    // be mapped at our random address. We deliberately set the hint high enough
+    // to get well above the system's break (that is, the heap); Solaris and
+    // illumos will try the hint and if that fails allocate as if there were
+    // no hint at all. The high hint prevents the break from getting hemmed in
+    // at low values, ceding half of the address space to the system heap.
+    raw_addr += 0x80000000;
+# else
+    // The range 0x20000000 - 0x60000000 is relatively unpopulated across a
+    // variety of ASLR modes (PAE kernel, NX compat mode, etc) and on macos
+    // 10.6 and 10.7.
+    raw_addr += 0x20000000;
+# endif
+#endif
+    return reinterpret_cast<void*>(raw_addr);
+  }
+  return NULL;
+}
+
+
 // ----------------------------------------------------------------------------
 // Math functions
 
@@ -92,9 +144,32 @@ double modulo(double x, double y) {
 }
 
 
+#define UNARY_MATH_FUNCTION(name, generator)             \
+static UnaryMathFunction fast_##name##_function = NULL;  \
+void init_fast_##name##_function() {                     \
+  fast_##name##_function = generator;                    \
+}                                                        \
+double fast_##name(double x) {                           \
+  return (*fast_##name##_function)(x);                   \
+}
+
+UNARY_MATH_FUNCTION(sin, CreateTranscendentalFunction(TranscendentalCache::SIN))
+UNARY_MATH_FUNCTION(cos, CreateTranscendentalFunction(TranscendentalCache::COS))
+UNARY_MATH_FUNCTION(tan, CreateTranscendentalFunction(TranscendentalCache::TAN))
+UNARY_MATH_FUNCTION(log, CreateTranscendentalFunction(TranscendentalCache::LOG))
+UNARY_MATH_FUNCTION(sqrt, CreateSqrtFunction())
+
+#undef MATH_FUNCTION
+
+
 double OS::nan_value() {
   // NAN from math.h is defined in C99 and not in POSIX.
   return NAN;
+}
+
+
+int OS::GetCurrentProcessId() {
+  return static_cast<int>(getpid());
 }
 
 
@@ -182,7 +257,7 @@ void OS::Print(const char* format, ...) {
 
 void OS::VPrint(const char* format, va_list args) {
 #if defined(ANDROID) && !defined(V8_ANDROID_LOG_STDOUT)
-  LOG_PRI_VA(ANDROID_LOG_INFO, LOG_TAG, format, args);
+  __android_log_vprint(ANDROID_LOG_INFO, LOG_TAG, format, args);
 #else
   vprintf(format, args);
 #endif
@@ -199,7 +274,7 @@ void OS::FPrint(FILE* out, const char* format, ...) {
 
 void OS::VFPrint(FILE* out, const char* format, va_list args) {
 #if defined(ANDROID) && !defined(V8_ANDROID_LOG_STDOUT)
-  LOG_PRI_VA(ANDROID_LOG_INFO, LOG_TAG, format, args);
+  __android_log_vprint(ANDROID_LOG_INFO, LOG_TAG, format, args);
 #else
   vfprintf(out, format, args);
 #endif
@@ -216,7 +291,7 @@ void OS::PrintError(const char* format, ...) {
 
 void OS::VPrintError(const char* format, va_list args) {
 #if defined(ANDROID) && !defined(V8_ANDROID_LOG_STDOUT)
-  LOG_PRI_VA(ANDROID_LOG_ERROR, LOG_TAG, format, args);
+  __android_log_vprint(ANDROID_LOG_ERROR, LOG_TAG, format, args);
 #else
   vfprintf(stderr, format, args);
 #endif
@@ -249,20 +324,11 @@ int OS::VSNPrintF(Vector<char> str,
 
 #if defined(V8_TARGET_ARCH_IA32)
 static OS::MemCopyFunction memcopy_function = NULL;
-static Mutex* memcopy_function_mutex = OS::CreateMutex();
 // Defined in codegen-ia32.cc.
 OS::MemCopyFunction CreateMemCopyFunction();
 
 // Copy memory area to disjoint memory area.
 void OS::MemCopy(void* dest, const void* src, size_t size) {
-  if (memcopy_function == NULL) {
-    ScopedLock lock(memcopy_function_mutex);
-    if (memcopy_function == NULL) {
-      OS::MemCopyFunction temp = CreateMemCopyFunction();
-      MemoryBarrier();
-      memcopy_function = temp;
-    }
-  }
   // Note: here we rely on dependent reads being ordered. This is true
   // on all architectures we currently support.
   (*memcopy_function)(dest, src, size);
@@ -271,6 +337,18 @@ void OS::MemCopy(void* dest, const void* src, size_t size) {
 #endif
 }
 #endif  // V8_TARGET_ARCH_IA32
+
+
+void POSIXPostSetUp() {
+#if defined(V8_TARGET_ARCH_IA32)
+  memcopy_function = CreateMemCopyFunction();
+#endif
+  init_fast_sin_function();
+  init_fast_cos_function();
+  init_fast_tan_function();
+  init_fast_log_function();
+  init_fast_sqrt_function();
+}
 
 // ----------------------------------------------------------------------------
 // POSIX string support.
@@ -363,7 +441,11 @@ Socket* POSIXSocket::Accept() const {
     return NULL;
   }
 
-  int socket = accept(socket_, NULL, NULL);
+  int socket;
+  do {
+    socket = accept(socket_, NULL, NULL);
+  } while (socket == -1 && errno == EINTR);
+
   if (socket == -1) {
     return NULL;
   } else {
@@ -390,7 +472,9 @@ bool POSIXSocket::Connect(const char* host, const char* port) {
   }
 
   // Connect.
-  status = connect(socket_, result->ai_addr, result->ai_addrlen);
+  do {
+    status = connect(socket_, result->ai_addr, result->ai_addrlen);
+  } while (status == -1 && errno == EINTR);
   freeaddrinfo(result);
   return status == 0;
 }
@@ -409,14 +493,29 @@ bool POSIXSocket::Shutdown() {
 
 
 int POSIXSocket::Send(const char* data, int len) const {
-  int status = send(socket_, data, len, 0);
-  return status;
+  if (len <= 0) return 0;
+  int written = 0;
+  while (written < len) {
+    int status = send(socket_, data + written, len - written, 0);
+    if (status == 0) {
+      break;
+    } else if (status > 0) {
+      written += status;
+    } else if (errno != EINTR) {
+      return 0;
+    }
+  }
+  return written;
 }
 
 
 int POSIXSocket::Receive(char* data, int len) const {
-  int status = recv(socket_, data, len, 0);
-  return status;
+  if (len <= 0) return 0;
+  int status;
+  do {
+    status = recv(socket_, data, len, 0);
+  } while (status == -1 && errno == EINTR);
+  return (status < 0) ? 0 : status;
 }
 
 
@@ -427,7 +526,7 @@ bool POSIXSocket::SetReuseAddress(bool reuse_address) {
 }
 
 
-bool Socket::Setup() {
+bool Socket::SetUp() {
   // Nothing to do on POSIX.
   return true;
 }

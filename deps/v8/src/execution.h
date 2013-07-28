@@ -1,4 +1,4 @@
-// Copyright 2006-2008 the V8 project authors. All rights reserved.
+// Copyright 2011 the V8 project authors. All rights reserved.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -41,8 +41,14 @@ enum InterruptFlag {
   DEBUGCOMMAND = 1 << 2,
   PREEMPT = 1 << 3,
   TERMINATE = 1 << 4,
-  RUNTIME_PROFILER_TICK = 1 << 5
+  RUNTIME_PROFILER_TICK = 1 << 5,
+  GC_REQUEST = 1 << 6,
+  CODE_READY = 1 << 7
 };
+
+
+class Isolate;
+
 
 class Execution : public AllStatic {
  public:
@@ -60,7 +66,7 @@ class Execution : public AllStatic {
   static Handle<Object> Call(Handle<Object> callable,
                              Handle<Object> receiver,
                              int argc,
-                             Object*** args,
+                             Handle<Object> argv[],
                              bool* pending_exception,
                              bool convert_receiver = false);
 
@@ -73,7 +79,7 @@ class Execution : public AllStatic {
   //
   static Handle<Object> New(Handle<JSFunction> func,
                             int argc,
-                            Object*** args,
+                            Handle<Object> argv[],
                             bool* pending_exception);
 
   // Call a function, just like Call(), but make sure to silently catch
@@ -83,7 +89,7 @@ class Execution : public AllStatic {
   static Handle<Object> TryCall(Handle<JSFunction> func,
                                 Handle<Object> receiver,
                                 int argc,
-                                Object*** args,
+                                Handle<Object> argv[],
                                 bool* caught_exception);
 
   // ECMA-262 9.2
@@ -135,12 +141,13 @@ class Execution : public AllStatic {
                                           Handle<Object> is_global);
 #ifdef ENABLE_DEBUGGER_SUPPORT
   static Object* DebugBreakHelper();
-  static void ProcessDebugMesssages(bool debug_command_only);
+  static void ProcessDebugMessages(bool debug_command_only);
 #endif
 
   // If the stack guard is triggered, but it is not an actual
   // stack overflow, then handle the interruption accordingly.
-  MUST_USE_RESULT static MaybeObject* HandleStackGuardInterrupt();
+  MUST_USE_RESULT static MaybeObject* HandleStackGuardInterrupt(
+      Isolate* isolate);
 
   // Get a function delegate (or undefined) for the given non-function
   // object. Used for support calling objects as functions.
@@ -157,7 +164,6 @@ class Execution : public AllStatic {
 
 
 class ExecutionAccess;
-class Isolate;
 
 
 // StackGuard contains the handling of the limits that are used to limit the
@@ -190,12 +196,16 @@ class StackGuard {
   void TerminateExecution();
   bool IsRuntimeProfilerTick();
   void RequestRuntimeProfilerTick();
+  bool IsCodeReadyEvent();
+  void RequestCodeReadyEvent();
 #ifdef ENABLE_DEBUGGER_SUPPORT
   bool IsDebugBreak();
   void DebugBreak();
   bool IsDebugCommand();
   void DebugCommand();
 #endif
+  bool IsGCRequest();
+  void RequestGC();
   void Continue(InterruptFlag after_what);
 
   // This provides an asynchronous read of the stack limits for the current
@@ -219,6 +229,7 @@ class StackGuard {
   Address address_of_real_jslimit() {
     return reinterpret_cast<Address>(&thread_local_.real_jslimit_);
   }
+  bool ShouldPostponeInterrupts();
 
  private:
   StackGuard();

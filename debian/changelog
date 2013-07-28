@@ -1,39 +1,198 @@
-nodejs (0.6.19~dfsg1-8) UNRELEASED; urgency=low
+nodejs (0.10.13~dfsg1-2) UNRELEASED; urgency=low
 
+  [ Jérémy Lal ]
+  * Fix kfreebsd build:
+    + Depend on libkvm-dev on kfreebsd systems.
+    + Tighten to build-depend on gyp versions that builds using flock.
+    + Add patch 2012 to add __FreeBSD_kernel__ defines.
+    + Add patch 1001 readFile not throwing EISDIR on some archs.
+    + Add patches 1002, 1003 to fix bugs in unit tests.
+    + Set gyp flavor in rules file using --dest-os switch.
+
+  [ Jonas Smedegaard ]
   * Make ~dfsg version suffix only optionally numbered.
-  * Bump debhelper compatibility to 8.
   * Stop breaking packages depending on old node binary: None of the
     affected packages exist in any Debian suite since about a year.
+  * Declare all package relations except same-source ones in rules file.
   * Add notes in rules file about reasons for versioned dependencies.
   * Drop NEWS file: Contains only entries for versions older than
     existing in any Debian suite since about a year.
   * Rewrite short and long descriptions based on upstream texts.
   * Bump standards-version to 3.9.4.
 
- -- Jonas Smedegaard <dr@jones.dk>  Tue, 23 Jul 2013 16:22:19 +0200
+ -- Jérémy Lal <kapouer@melix.org>  Tue, 23 Jul 2013 01:33:09 +0200
 
-nodejs (0.6.19~dfsg1-7) unstable; urgency=low
+nodejs (0.10.13~dfsg1-1) experimental; urgency=low
 
-  * nodejs-dev: install headers in places expected by node-gyp, and
-    maintain compatibility with node-waf.
-  * Apply upstream patch for a bug fixed in nodejs 0.6.21 :
-    1002_net_make_pause_resume_work_with_connecting_sockets.patch
+  * New upstream release.
 
- -- Jérémy Lal <kapouer@melix.org>  Mon, 29 Apr 2013 00:37:51 +0200
+ -- Jérémy Lal <kapouer@melix.org>  Fri, 12 Jul 2013 12:23:38 +0200
 
-nodejs (0.6.19~dfsg1-6) unstable; urgency=low
+nodejs (0.10.11~dfsg1-1) experimental; urgency=low
+
+  * New upstream release. 
+
+ -- Jérémy Lal <kapouer@melix.org>  Fri, 14 Jun 2013 01:32:49 +0200
+
+nodejs (0.10.10~dfsg1-1) experimental; urgency=low
+
+  * New upstream release. 
+
+ -- Jérémy Lal <kapouer@melix.org>  Wed, 05 Jun 2013 00:21:10 +0200
+
+nodejs (0.10.9~dfsg1-1) experimental; urgency=low
+
+  * New upstream release.
+  * Unapply 1001_revert_uv_osx_fix.patch, fixed upstream. 
+
+ -- Jérémy Lal <kapouer@melix.org>  Thu, 30 May 2013 23:08:55 +0200
+
+nodejs (0.10.8~dfsg1-1) experimental; urgency=low
+
+  * New upstream release.
+  * Set process.config.default_configuration to Release by removing
+    --debug flag.
+  * 1001_revert_uv_osx_fix.patch: revert a libuv commit bringing a
+    test/simple/test-stdout-close-catch.js regression.
+
+ -- Jérémy Lal <kapouer@melix.org>  Wed, 29 May 2013 00:42:14 +0200
+
+nodejs (0.10.7~dfsg1-1) experimental; urgency=low
+
+  * New upstream release.
+
+ -- Jérémy Lal <kapouer@melix.org>  Sat, 18 May 2013 00:40:02 +0200
+
+nodejs (0.10.6~dfsg1-1) experimental; urgency=low
+
+  * New upstream release. 
+
+ -- Jérémy Lal <kapouer@melix.org>  Wed, 15 May 2013 00:12:32 +0200
+
+nodejs (0.10.5~dfsg1-2) experimental; urgency=low
+
+  * nodejs-dev.links: fix symlinks to v8 headers.
+
+ -- Jérémy Lal <kapouer@melix.org>  Sun, 28 Apr 2013 21:15:31 +0200
+
+nodejs (0.10.5~dfsg1-1) experimental; urgency=low
+
+  * New upstream release. 
+  * nodejs-dev.install: common.gypi is needed by node-gyp.
+
+ -- Jérémy Lal <kapouer@melix.org>  Sun, 28 Apr 2013 20:47:03 +0200
+
+nodejs (0.10.1~dfsg1-2) experimental; urgency=low
+
+  * copyright: use Source field to document dfsg-repackaging.
+  * nodejs-dev: install headers with the directory layout expected
+    node-gyp.
+  * 2005_expected_failing_tests.patch: some tests fail in chroot.
+
+ -- Jérémy Lal <kapouer@melix.org>  Mon, 25 Mar 2013 16:21:25 +0100
+
+nodejs (0.10.1~dfsg1-1) experimental; urgency=low
+
+  * New upstream release. 
+
+ -- Jérémy Lal <kapouer@melix.org>  Fri, 22 Mar 2013 00:11:25 +0100
+
+nodejs (0.10.0~dfsg1-2) experimental; urgency=low
+
+  * Fix have nodejs-dev depend on libv8-3.14-dev (not bogus
+    libv8-3--14dev).
+
+ -- Jonas Smedegaard <dr@jones.dk>  Tue, 19 Mar 2013 05:07:15 +0100
+
+nodejs (0.10.0~dfsg1-1) experimental; urgency=low
+
+  [ upstream ]
+  * New release.
+    + Node-waf dropped: Replaced by node-gyp (packaged independently).
+
+  [ Jérémy Lal ]
+  * Build-depend unversioned on cdbs: Needed version satisfied in stable
+    and oldstable no longer supported.
+  * Upstream tarball repackaging:
+    + Exclude test/gc/node_modules.
+    + Exclude tools/blog.
+    + Exclude tools/wrk, a benchmark tool.
+    + Exclude tools/msvs/genfiles, it should be generated instead. It
+      also contains binaries and a meaningless copyright statement.
+    + Exclude deps/cares.
+    + Update exclusions to match already removed files.
+  * Documentation building:
+    + Remove workaround from 0.6.19~dfsg1-3.
+    + Delete already unapplied 1002_upstream_forgot_to_build_doc.patch.
+    + Remove script tags calling external assets from html files.
+  * Patches:
+    + Remove all patches regarding WAF.
+    + Remove patches involving eio or ev since those libs have been
+      rewritten inside uv.
+    + Remove 2008_fix_use_shared_cares.patch, no longer needed.
+    + Adjust 2005_expected_failing_tests.patch: re-enable some tests.
+    + Merge path, binary renames into 2001_FHS_paths_for_nodejs.patch.
+    + Remove unneeded 2002_build_without_libv8_debug.patch.
+    + Remove 2007_fix_use_shared_zlib.patch, replaced by --shared-zlib,
+      but 2010 patch is needed to shut up Makefile.
+    + Remove 1001_align_fast_buffers_8byte_boundary.patch, applied.
+    + Remove 2014_v8_38_compat.patch, unneeded.
+    + Disable 2011_enable_mipsel_build: libv8 fails to build on mipsel.
+  * Drop WAF quirks.
+  * Remove --no-ssl2 flag, it builds fine without it now, and
+    test-tls-server-verify fails in both cases.
+  * Use --without-snapshot since nodejs is using system libv8.
+  * Remove unneeded --shared-ev.
+  * Harden gyp: append CPPFLAGS to CXXFLAGS, export CXXFLAGS and
+    LDFLAGS.
+    Works around bug#689754.
+  * Update DEB_COPYRIGHT_CHECK_IGNORE_REGEX to match all binary files.
+  * Remove trailing slash in DEB_UPSTREAM_URL.
+  * Ship all headers from src and uv/include in nodejs-dev: node-gyp
+    expects them.
+  * Update copyright file:
+    + Drop obsolete paragraphs: eio, waf, buffer_ieee754.js,
+      src/platform_darwin_proctitle.cc.
+    + Add 'Nginx Inc' copyright to ngx-queue.h, as given by upstream
+      LICENSE file, and list the second copy of ngx-queue.h.
+    + Add license for deps/uv/include/uv-private/tree.h and the copy in
+      src/tree.h.
+    + Add ISC licenses for deps/uv/checksparse.sh, deps/uv/src/inet.c.
+    + Add deps/uv/include/uv-private/stdint-msvc2008.h BSD-3-clause.
+    + Add src/v8_typed_array* Expat license.
+    + Update licenses for bundled deps/v8 copy, taken from libv8
+      debian package. Note deps/v8/tools/testrunner/server/daemon.py is
+      Public-Domain.
+    + List all copies of sh.css.
+  * Suppress lintian OpenSSL warning: false positive.
+
+  [ Jonas Smedegaard ]
+  * Update copyright file:
+    + Fix GPL licensing to separate verbatim custom reference, verbatim
+      generic boilerplate, and packaging comments.
+    + Explicitly mention Public Domain file as such in Copyright field.
+  * Update package relations:
+    + Build-depend on, and have nodejs-dev depend on, libv8-3.14-dev
+      (not versioned on libv8-dev).
+    + Have nodejs-dbg recommend (not suggest) libv8-3.14-dbg (not
+      libv8-dbg).
+  * Bump dephelper compatibility level to 8.
+  * Drop obsolete "DM-Upload-Allowed" field.
+  * Rewrite README.source:
+    + Refer to common CDBS+git-buildpackage praxis.
+    + Emphasize explicitly that NMUs can totally ignore control.in file.
+
+ -- Jonas Smedegaard <dr@jones.dk>  Tue, 19 Mar 2013 04:38:57 +0100
+
+nodejs (0.6.19~dfsg1-6) UNRELEASED; urgency=low
 
   * Update package relations:
     + Generally tighten breaks to relate to (backport of) first known
       working version (not last known broken version): node → nodejs
       transition now done for all dependent packages.
     + Relax needlesly tight breaks for node-bones.
-    + Declare (build-)dependencies in rules file.
-  * Sync rules and control.in with control: Provide binary package
-    nodejs-legacy, and break all packages depending on old binary
-    package node (not conflict directly with it).
 
- -- Jonas Smedegaard <dr@jones.dk>  Mon, 26 Nov 2012 20:55:52 +0100
+ -- Jonas Smedegaard <dr@jones.dk>  Sat, 22 Sep 2012 16:09:56 +0200
 
 nodejs (0.6.19~dfsg1-5) unstable; urgency=low
 

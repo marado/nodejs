@@ -1,4 +1,4 @@
-// Copyright 2011 the V8 project authors. All rights reserved.
+// Copyright 2012 the V8 project authors. All rights reserved.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -46,24 +46,43 @@ enum ContextLookupFlags {
 
 // ES5 10.2 defines lexical environments with mutable and immutable bindings.
 // Immutable bindings have two states, initialized and uninitialized, and
-// their state is changed by the InitializeImmutableBinding method.
+// their state is changed by the InitializeImmutableBinding method. The
+// BindingFlags enum represents information if a binding has definitely been
+// initialized. A mutable binding does not need to be checked and thus has
+// the BindingFlag MUTABLE_IS_INITIALIZED.
+//
+// There are two possibilities for immutable bindings
+//  * 'const' declared variables. They are initialized when evaluating the
+//    corresponding declaration statement. They need to be checked for being
+//    initialized and thus get the flag IMMUTABLE_CHECK_INITIALIZED.
+//  * The function name of a named function literal. The binding is immediately
+//    initialized when entering the function and thus does not need to be
+//    checked. it gets the BindingFlag IMMUTABLE_IS_INITIALIZED.
+// Accessing an uninitialized binding produces the undefined value.
 //
 // The harmony proposal for block scoped bindings also introduces the
-// uninitialized state for mutable bindings. A 'let' declared variable
-// is a mutable binding that is created uninitalized upon activation of its
-// lexical environment and it is initialized when evaluating its declaration
-// statement. Var declared variables are mutable bindings that are
-// immediately initialized upon creation. The BindingFlags enum represents
-// information if a binding has definitely been initialized. 'const' declared
-// variables are created as uninitialized immutable bindings.
-
-// In harmony mode accessing an uninitialized binding produces a reference
-// error.
+// uninitialized state for mutable bindings.
+//  * A 'let' declared variable. They are initialized when evaluating the
+//    corresponding declaration statement. They need to be checked for being
+//    initialized and thus get the flag MUTABLE_CHECK_INITIALIZED.
+//  * A 'var' declared variable. It is initialized immediately upon creation
+//    and thus doesn't need to be checked. It gets the flag
+//    MUTABLE_IS_INITIALIZED.
+//  * Catch bound variables, function parameters and variables introduced by
+//    function declarations are initialized immediately and do not need to be
+//    checked. Thus they get the flag MUTABLE_IS_INITIALIZED.
+// Immutable bindings in harmony mode get the _HARMONY flag variants. Accessing
+// an uninitialized binding produces a reference error.
+//
+// In V8 uninitialized bindings are set to the hole value upon creation and set
+// to a different value upon initialization.
 enum BindingFlags {
   MUTABLE_IS_INITIALIZED,
   MUTABLE_CHECK_INITIALIZED,
   IMMUTABLE_IS_INITIALIZED,
   IMMUTABLE_CHECK_INITIALIZED,
+  IMMUTABLE_IS_INITIALIZED_HARMONY,
+  IMMUTABLE_CHECK_INITIALIZED_HARMONY,
   MISSING_BINDING
 };
 
@@ -77,7 +96,7 @@ enum BindingFlags {
 // must always be allocated via Heap::AllocateContext() or
 // Factory::NewContext.
 
-#define GLOBAL_CONTEXT_FIELDS(V) \
+#define NATIVE_CONTEXT_FIELDS(V) \
   V(GLOBAL_PROXY_INDEX, JSObject, global_proxy_object) \
   V(SECURITY_TOKEN_INDEX, Object, security_token) \
   V(BOOLEAN_FUNCTION_INDEX, JSFunction, boolean_function) \
@@ -85,7 +104,9 @@ enum BindingFlags {
   V(STRING_FUNCTION_INDEX, JSFunction, string_function) \
   V(STRING_FUNCTION_PROTOTYPE_MAP_INDEX, Map, string_function_prototype_map) \
   V(OBJECT_FUNCTION_INDEX, JSFunction, object_function) \
+  V(INTERNAL_ARRAY_FUNCTION_INDEX, JSFunction, internal_array_function) \
   V(ARRAY_FUNCTION_INDEX, JSFunction, array_function) \
+  V(JS_ARRAY_MAPS_INDEX, Object, js_array_maps) \
   V(DATE_FUNCTION_INDEX, JSFunction, date_function) \
   V(JSON_OBJECT_INDEX, JSObject, json_object) \
   V(REGEXP_FUNCTION_INDEX, JSFunction, regexp_function) \
@@ -109,7 +130,6 @@ enum BindingFlags {
   V(FUNCTION_INSTANCE_MAP_INDEX, Map, function_instance_map) \
   V(STRICT_MODE_FUNCTION_INSTANCE_MAP_INDEX, Map, \
     strict_mode_function_instance_map) \
-  V(JS_ARRAY_MAP_INDEX, Map, js_array_map)\
   V(REGEXP_RESULT_MAP_INDEX, Map, regexp_result_map)\
   V(ARGUMENTS_BOILERPLATE_INDEX, JSObject, arguments_boilerplate) \
   V(ALIASED_ARGUMENTS_BOILERPLATE_INDEX, JSObject, \
@@ -134,9 +154,15 @@ enum BindingFlags {
   V(MAP_CACHE_INDEX, Object, map_cache) \
   V(CONTEXT_DATA_INDEX, Object, data) \
   V(ALLOW_CODE_GEN_FROM_STRINGS_INDEX, Object, allow_code_gen_from_strings) \
+  V(ERROR_MESSAGE_FOR_CODE_GEN_FROM_STRINGS_INDEX, Object, \
+    error_message_for_code_gen_from_strings) \
+  V(TO_COMPLETE_PROPERTY_DESCRIPTOR_INDEX, JSFunction, \
+    to_complete_property_descriptor) \
   V(DERIVED_HAS_TRAP_INDEX, JSFunction, derived_has_trap) \
   V(DERIVED_GET_TRAP_INDEX, JSFunction, derived_get_trap) \
-  V(DERIVED_SET_TRAP_INDEX, JSFunction, derived_set_trap)
+  V(DERIVED_SET_TRAP_INDEX, JSFunction, derived_set_trap) \
+  V(PROXY_ENUMERATE, JSFunction, proxy_enumerate) \
+  V(RANDOM_SEED_INDEX, ByteArray, random_seed)
 
 // JSFunctions are pairs (context, function code), sometimes also called
 // closures. A Context object is used to represent function contexts and
@@ -166,16 +192,19 @@ enum BindingFlags {
 //                Dynamically declared variables/functions are also added
 //                to lazily allocated extension object. Context::Lookup
 //                searches the extension object for properties.
+//                For global and block contexts, contains the respective
+//                ScopeInfo.
+//                For module contexts, points back to the respective JSModule.
 //
-// [ global    ]  A pointer to the global object. Provided for quick
+// [ global_object ]  A pointer to the global object. Provided for quick
 //                access to the global object from inside the code (since
 //                we always have a context pointer).
 //
 // In addition, function contexts may have statically allocated context slots
 // to store local variables/functions that are accessed from inner functions
 // (via static context addresses) or through 'eval' (dynamic context lookups).
-// Finally, the global context contains additional slots for fast access to
-// global properties.
+// Finally, the native context contains additional slots for fast access to
+// native properties.
 
 class Context: public FixedArray {
  public:
@@ -192,21 +221,21 @@ class Context: public FixedArray {
     PREVIOUS_INDEX,
     // The extension slot is used for either the global object (in global
     // contexts), eval extension object (function contexts), subject of with
-    // (with contexts), or the variable name (catch contexts).
+    // (with contexts), or the variable name (catch contexts), the serialized
+    // scope info (block contexts), or the module instance (module contexts).
     EXTENSION_INDEX,
-    GLOBAL_INDEX,
+    GLOBAL_OBJECT_INDEX,
     MIN_CONTEXT_SLOTS,
 
     // This slot holds the thrown value in catch contexts.
     THROWN_OBJECT_INDEX = MIN_CONTEXT_SLOTS,
 
-    // These slots are only in global contexts.
+    // These slots are only in native contexts.
     GLOBAL_PROXY_INDEX = MIN_CONTEXT_SLOTS,
     SECURITY_TOKEN_INDEX,
     ARGUMENTS_BOILERPLATE_INDEX,
     ALIASED_ARGUMENTS_BOILERPLATE_INDEX,
     STRICT_MODE_ARGUMENTS_BOILERPLATE_INDEX,
-    JS_ARRAY_MAP_INDEX,
     REGEXP_RESULT_MAP_INDEX,
     FUNCTION_MAP_INDEX,
     STRICT_MODE_FUNCTION_MAP_INDEX,
@@ -220,7 +249,9 @@ class Context: public FixedArray {
     STRING_FUNCTION_INDEX,
     STRING_FUNCTION_PROTOTYPE_MAP_INDEX,
     OBJECT_FUNCTION_INDEX,
+    INTERNAL_ARRAY_FUNCTION_INDEX,
     ARRAY_FUNCTION_INDEX,
+    JS_ARRAY_MAPS_INDEX,
     DATE_FUNCTION_INDEX,
     JSON_OBJECT_INDEX,
     REGEXP_FUNCTION_INDEX,
@@ -252,9 +283,13 @@ class Context: public FixedArray {
     OUT_OF_MEMORY_INDEX,
     CONTEXT_DATA_INDEX,
     ALLOW_CODE_GEN_FROM_STRINGS_INDEX,
+    ERROR_MESSAGE_FOR_CODE_GEN_FROM_STRINGS_INDEX,
+    TO_COMPLETE_PROPERTY_DESCRIPTOR_INDEX,
     DERIVED_HAS_TRAP_INDEX,
     DERIVED_GET_TRAP_INDEX,
     DERIVED_SET_TRAP_INDEX,
+    PROXY_ENUMERATE,
+    RANDOM_SEED_INDEX,
 
     // Properties from here are treated as weak references by the full GC.
     // Scavenge treats them as strong references.
@@ -263,7 +298,7 @@ class Context: public FixedArray {
     NEXT_CONTEXT_LINK,  // Weak.
 
     // Total number of slots.
-    GLOBAL_CONTEXT_SLOTS,
+    NATIVE_CONTEXT_SLOTS,
 
     FIRST_WEAK_SLOT = OPTIMIZED_FUNCTIONS_LIST
   };
@@ -274,7 +309,7 @@ class Context: public FixedArray {
 
   Context* previous() {
     Object* result = unchecked_previous();
-    ASSERT(IsBootstrappingOrContext(result));
+    ASSERT(IsBootstrappingOrValidParentContext(result, this));
     return reinterpret_cast<Context*>(result);
   }
   void set_previous(Context* context) { set(PREVIOUS_INDEX, context); }
@@ -283,16 +318,21 @@ class Context: public FixedArray {
   Object* extension() { return get(EXTENSION_INDEX); }
   void set_extension(Object* object) { set(EXTENSION_INDEX, object); }
 
+  JSModule* module() { return JSModule::cast(get(EXTENSION_INDEX)); }
+  void set_module(JSModule* module) { set(EXTENSION_INDEX, module); }
+
   // Get the context where var declarations will be hoisted to, which
   // may be the context itself.
   Context* declaration_context();
 
-  GlobalObject* global() {
-    Object* result = get(GLOBAL_INDEX);
+  GlobalObject* global_object() {
+    Object* result = get(GLOBAL_OBJECT_INDEX);
     ASSERT(IsBootstrappingOrGlobalObject(result));
     return reinterpret_cast<GlobalObject*>(result);
   }
-  void set_global(GlobalObject* global) { set(GLOBAL_INDEX, global); }
+  void set_global_object(GlobalObject* object) {
+    set(GLOBAL_OBJECT_INDEX, object);
+  }
 
   // Returns a JSGlobalProxy object or null.
   JSObject* global_proxy();
@@ -301,12 +341,16 @@ class Context: public FixedArray {
   // The builtins object.
   JSBuiltinsObject* builtins();
 
-  // Compute the global context by traversing the context chain.
-  Context* global_context();
+  // Compute the native context by traversing the context chain.
+  Context* native_context();
 
-  // Predicates for context types.  IsGlobalContext is defined on Object
-  // because we frequently have to know if arbitrary objects are global
+  // Predicates for context types.  IsNativeContext is also defined on Object
+  // because we frequently have to know if arbitrary objects are natives
   // contexts.
+  bool IsNativeContext() {
+    Map* map = this->map();
+    return map == map->GetHeap()->native_context_map();
+  }
   bool IsFunctionContext() {
     Map* map = this->map();
     return map == map->GetHeap()->function_context_map();
@@ -323,84 +367,70 @@ class Context: public FixedArray {
     Map* map = this->map();
     return map == map->GetHeap()->block_context_map();
   }
-
-  // Tells whether the global context is marked with out of memory.
-  inline bool has_out_of_memory();
-
-  // Mark the global context with out of memory.
-  inline void mark_out_of_memory();
-
-  // The exception holder is the object used as a with object in
-  // the implementation of a catch block.
-  bool is_exception_holder(Object* object) {
-    return IsCatchContext() && extension() == object;
+  bool IsModuleContext() {
+    Map* map = this->map();
+    return map == map->GetHeap()->module_context_map();
+  }
+  bool IsGlobalContext() {
+    Map* map = this->map();
+    return map == map->GetHeap()->global_context_map();
   }
 
-  // A global context hold a list of all functions which have been optimized.
+  // Tells whether the native context is marked with out of memory.
+  inline bool has_out_of_memory();
+
+  // Mark the native context with out of memory.
+  inline void mark_out_of_memory();
+
+  // A native context hold a list of all functions which have been optimized.
   void AddOptimizedFunction(JSFunction* function);
   void RemoveOptimizedFunction(JSFunction* function);
   Object* OptimizedFunctionsListHead();
   void ClearOptimizedFunctions();
 
-#define GLOBAL_CONTEXT_FIELD_ACCESSORS(index, type, name) \
+  Handle<Object> ErrorMessageForCodeGenerationFromStrings();
+
+#define NATIVE_CONTEXT_FIELD_ACCESSORS(index, type, name) \
   void  set_##name(type* value) {                         \
-    ASSERT(IsGlobalContext());                            \
+    ASSERT(IsNativeContext());                            \
     set(index, value);                                    \
   }                                                       \
   type* name() {                                          \
-    ASSERT(IsGlobalContext());                            \
+    ASSERT(IsNativeContext());                            \
     return type::cast(get(index));                        \
   }
-  GLOBAL_CONTEXT_FIELDS(GLOBAL_CONTEXT_FIELD_ACCESSORS)
-#undef GLOBAL_CONTEXT_FIELD_ACCESSORS
+  NATIVE_CONTEXT_FIELDS(NATIVE_CONTEXT_FIELD_ACCESSORS)
+#undef NATIVE_CONTEXT_FIELD_ACCESSORS
 
-  // Lookup the the slot called name, starting with the current context.
-  // There are 4 possible outcomes:
+  // Lookup the slot called name, starting with the current context.
+  // There are three possibilities:
   //
-  // 1) index_ >= 0 && result->IsContext():
-  //    most common case, the result is a Context, and index is the
-  //    context slot index, and the slot exists.
-  //    attributes == READ_ONLY for the function name variable, NONE otherwise.
+  // 1) result->IsContext():
+  //    The binding was found in a context.  *index is always the
+  //    non-negative slot index.  *attributes is NONE for var and let
+  //    declarations, READ_ONLY for const declarations (never ABSENT).
   //
-  // 2) index_ >= 0 && result->IsJSObject():
-  //    the result is the JSObject arguments object, the index is the parameter
-  //    index, i.e., key into the arguments object, and the property exists.
-  //    attributes != ABSENT.
+  // 2) result->IsJSObject():
+  //    The binding was found as a named property in a context extension
+  //    object (i.e., was introduced via eval), as a property on the subject
+  //    of with, or as a property of the global object.  *index is -1 and
+  //    *attributes is not ABSENT.
   //
-  // 3) index_ < 0 && result->IsJSObject():
-  //    the result is the JSObject extension context or the global object,
-  //    and the name is the property name, and the property exists.
-  //    attributes != ABSENT.
-  //
-  // 4) index_ < 0 && result.is_null():
-  //    there was no context found with the corresponding property.
-  //    attributes == ABSENT.
+  // 3) result.is_null():
+  //    There was no binding found, *index is always -1 and *attributes is
+  //    always ABSENT.
   Handle<Object> Lookup(Handle<String> name,
                         ContextLookupFlags flags,
-                        int* index_,
+                        int* index,
                         PropertyAttributes* attributes,
                         BindingFlags* binding_flags);
-
-  // Determine if a local variable with the given name exists in a
-  // context.  Do not consider context extension objects.  This is
-  // used for compiling code using eval.  If the context surrounding
-  // the eval call does not have a local variable with this name and
-  // does not contain a with statement the property is global unless
-  // it is shadowed by a property in an extension object introduced by
-  // eval.
-  bool GlobalIfNotShadowedByEval(Handle<String> name);
-
-  // Determine if any function scope in the context call eval and if
-  // any of those calls are in non-strict mode.
-  void ComputeEvalScopeInfo(bool* outer_scope_calls_eval,
-                            bool* outer_scope_calls_non_strict_eval);
 
   // Code generation support.
   static int SlotOffset(int index) {
     return kHeaderSize + index * kPointerSize - kHeapObjectTag;
   }
 
-  static const int kSize = kHeaderSize + GLOBAL_CONTEXT_SLOTS * kPointerSize;
+  static const int kSize = kHeaderSize + NATIVE_CONTEXT_SLOTS * kPointerSize;
 
   // GC support.
   typedef FixedBodyDescriptor<
@@ -417,7 +447,7 @@ class Context: public FixedArray {
 
 #ifdef DEBUG
   // Bootstrapping-aware type checks.
-  static bool IsBootstrappingOrContext(Object* object);
+  static bool IsBootstrappingOrValidParentContext(Object* object, Context* kid);
   static bool IsBootstrappingOrGlobalObject(Object* object);
 #endif
 };

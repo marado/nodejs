@@ -2,12 +2,6 @@
 <html lang="en">
   <head>
   <meta charset="utf-8">
-    <style>
-    ul {
-      padding: 0;
-      margin: 0;
-    }
-    </style>
     <link type="image/x-icon" rel="icon" href="favicon.ico">
     <link type="image/x-icon" rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="pipe.css">
@@ -29,12 +23,18 @@
         lightweight and efficient, perfect for data-intensive real-time
         applications that run across distributed devices.</p>
 
-        <a href="#download" class="button" id="downloadbutton">Download</a>
-        <a href="api/" class="button" id="docsbutton">Docs</a>
-        <p class="version">__VERSION__</p> 
+        <p>Current Version: __VERSION__</p>
 
-        <a href="http://github.com/joyent/node"><img class="forkme" src="https://a248.e.akamai.net/camo.github.com/abad93f42020b733148435e2cd92ce15c542d320/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub"></a>
+        <div class=buttons>
+        <a href="http://nodejs.org/dist/__VERSION__/node-__VERSION__.tar.gz" class="button downloadbutton" id="downloadbutton">INSTALL</a>
+
+        <a href="download/" class=button id="all-dl-options">Downloads</a
+        ><a href="api/" class="button" id="docsbutton">API Docs</a>
+        </div>
+
+        <a href="http://github.com/joyent/node"><img class="forkme" src="http://nodejs.org/images/forkme.png" alt="Fork me on GitHub"></a>
     </div>
+
     <div id="quotes" class="clearfix">
         <h2>Node.js in the Industry</h2>
         <ul>
@@ -43,9 +43,10 @@
             experience for the development of a whole new class of real-time
             applications.
             <br>
-            <a href="http://blogs.msdn.com/b/interoperability/">Claudio Caldato</a>
+            <a href="https://www.windowsazure.com/en-us/develop/nodejs">Claudio Caldato</a>
             <br>
-            <span>Principal Program Manager, Interoperability Strategy</span></p></li>
+            <span>Principal Program Manager, Microsoft Open Technologies, Inc.</span></p>
+            </li>
 
             <li class="ebay"><img src="http://nodejs.org/images/ebay-logo.png">
             <p>Node’s evented I/O model freed us from worrying about locking
@@ -76,80 +77,6 @@
         </ul>
     </div>
 
-    <div id="download">
-        <a href="#" id="download-close">X</a>
-        <img id="download-logo" src="http://nodejs.org/images/download-logo.png" alt="node.js">
-        <ul id="installers" class="clearfix">
-            <li><a href="http://nodejs.org/dist/__VERSION__/node-__VERSION__.msi">Windows Installer</a><br>node-__VERSION__.msi</li>
-            <li><a href="http://nodejs.org/dist/__VERSION__/node-__VERSION__.pkg">Macintosh Installer</a><br>node-__VERSION__.pkg</li>
-            <li id="source"><a href="http://nodejs.org/dist/__VERSION__/node-__VERSION__.tar.gz">Source Code</a><br>node-__VERSION__.tar.gz</li>
-        </ul>
-        <ul id="documentation">
-            <li><a href="https://raw.github.com/joyent/node/__VERSION__/ChangeLog">Change Log</a></li>
-            <li><a href="http://nodejs.org/docs/__VERSION__/api/">Documentation</a></li>
-            <li><a href="http://nodejs.org/dist/__VERSION__">Other release files</a></li>
-            <li><a href="https://raw.github.com/joyent/node/__VERSION__/LICENSE">License</a></li>
-            <li><a href="https://github.com/joyent/node">Git Repository</a></li>
-            <li><a href="https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager">Installing
-            with a Package Manager</a>
-        </ul>
-    </div>
-
-    <script>;(function() {
-      // attach as soon as the required elements are in the DOM.
-      // don't need to wait for entire document to be ready, since we're
-      // not adding any *new* nodes to the <body>, so there's no threat
-      // of 'Invalid operation' errors in old MSIE 6.
-      document.getElementById('downloadbutton').onclick = function(e) {
-        e = e || window.event;
-        e.stopPropagation && e.stopPropagation();
-        e.cancelBubble = true;
-        // need to give the hash a tick to update
-        setTimeout(downloadDialogUpdate, 0);
-      };
-
-      document.getElementById('download-close').onclick =
-      document.documentElement.onclick = function(e) {
-        e = e || window.event;
-        if (location.hash === '#download') location.hash = '';
-        downloadDialogUpdate();
-      };
-
-      document.getElementById('download').onclick = function(e) {
-        e = e || window.event;
-        e.stopPropagation && e.stopPropagation();
-        e.cancelBubble = true;
-      };
-
-      // I keep expecting <Esc> to close the dialog...
-      document.documentElement.onkeydown = function(e) {
-        e = e || window.event;
-        var k = e.which || e.keyCode || e.keyIdentifier;
-        if (typeof k === 'string') k = k.charCodeAt(0);
-        if (k === 27) document.documentElement.onclick(e);
-      };
-
-      // hacky workaround for old ie browsers that don't support :target css.
-      function downloadDialogUpdate () {
-        var div = document.getElementById('download');
-        if (!div) return;
-        var expect = location.hash === '#download' ? 'block' : 'none';
-        var actual = div.currentStyle ? div.currentStyle.display
-                   : window.getComputedStyle
-                     ? document.defaultView.getComputedStyle(div, null).getPropertyValue('display')
-                   : null;
-
-        // it looks like a string, but it might not actually be a string.
-        // explicitly cast for MSIE 6 and 7.
-        actual = '' + actual;
-        expect = '' + expect;
-        if (actual !== expect) {
-          div.style.display = expect;
-        }
-      }
-      downloadDialogUpdate();
-    })();</script>
-
     <div id="content" class="clearfix">
             <div id="column1">
                 <h2>An example: Webserver</h2>
@@ -162,7 +89,9 @@ http.createServer(function (req, res) {
 }).listen(1337, '127.0.0.1');
 console.log('Server running at http://127.0.0.1:1337/');</pre>
 
-              <p>To run the server, put the code into a file <code>example.js</code> and execute it with the <code>node</code> program:</p>
+              <p>To run the server, put the code into a file
+              <code>example.js</code> and execute it with the
+              <code>node</code> program from the command line:</p>
               <pre class="sh_none">
 % node example.js
 Server running at http://127.0.0.1:1337/</pre>
@@ -189,7 +118,7 @@ server.listen(1337, '127.0.0.1');</pre>
             <h2>Explore Node.js</h2>
             <ul id="explore">
                 <li><a href="about/" class="explore">About</a><br><span>Technical overview</span></li>
-                <li><a href="http://search.npmjs.org/" class="explore">npm Registry</a><br><span>Modules, resources and more</span></li>
+                <li><a href="http://npmjs.org/" class="explore">npm Registry</a><br><span>Modules, resources and more</span></li>
                 <li><a href="http://nodejs.org/api/" class="explore">Documentation</a><br><span>API Specifications</span></li>
                 <li><a href="http://blog.nodejs.org" class="explore">Node.js Blog</a><br><span>Insight, perspective and events</span></li>
                 <li><a href="community/" class="explore">Community</a><br><span>Mailing lists, blogs, and more</span></li>
@@ -200,11 +129,12 @@ server.listen(1337, '127.0.0.1');</pre>
 </div>
 
     <div id="footer">
+        <a href="http://joyent.com" class="joyent-logo">Joyent</a>
         <ul class="clearfix">
             <li><a href="/">Node.js</a></li>
-            <li><a href="/#download">Download</a></li>
+            <li><a href="/download/">Download</a></li>
             <li><a href="/about/">About</a></li>
-            <li><a href="http://search.npmjs.org/">npm Registry</a></li>
+            <li><a href="http://npmjs.org/">npm Registry</a></li>
             <li><a href="http://nodejs.org/api/">Docs</a></li>
             <li><a href="http://blog.nodejs.org">Blog</a></li>
             <li><a href="/community/">Community</a></li>
@@ -213,7 +143,7 @@ server.listen(1337, '127.0.0.1');</pre>
             <!-- <li><a hrfe="http://twitter.com/nodejs" class="twitter">@nodejs</a></li> -->
         </ul>
 
-        <p>Copyright <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/__VERSION__/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/__VERSION__/LICENSE">license</a>.</p>
     </div>
 
 
@@ -222,15 +152,48 @@ server.listen(1337, '127.0.0.1');</pre>
     <script>highlight(undefined, undefined, 'pre');</script>
 
     <script>
-      var gaJsHost = (("https:" == document.location.protocol) ?
-      "https://ssl." : "http://www.");
-      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+      window._gaq = [['_setAccount', 'UA-10874194-2'], ['_trackPageview']];
+      (function(d, t) {
+        var g = d.createElement(t),
+            s = d.getElementsByTagName(t)[0];
+        g.src = '//www.google-analytics.com/ga.js';
+        s.parentNode.insertBefore(g, s);
+      }(document, 'script'));
+      ;(function(d,n) {
+        var os = n.platform.match(/(Win|Mac|Linux)/);
+        var x = n.userAgent.match(/x86_64|Win64|WOW64/) ||
+                n.cpuClass === 'x64' ? 'x64' : 'x86';
+        var base = 'http://nodejs.org/dist/__VERSION__/';
+        var href = 'node-__VERSION__.tar.gz';
+        var db = d.getElementById('downloadbutton');
+        var d2;
+        switch (os && os[1]) {
+          case 'Mac':
+            href = 'node-__VERSION__.pkg';
+            break;
+          case 'Win':
+            href = 'node-__VERSION__-' + x + '.msi';
+            if (x === 'x64') href = 'x64/' + href;
+            break;
+
+          // TODO uncomment when we have these
+          // case 'Linux':
+          //   // two buttons: .deb and .rpm
+          //   href = 'node-__VERSION__-' + x + '.rpm';
+          //   var d2 = document.createElement('a');
+          //   d2.href = base + 'node-__VERSION__-' + x + '.deb';
+          //   d2.className = 'button downloadbutton';
+          //   d2.innerHTML = 'INSTALL .deb';
+          //   db.innerHTML = 'INSTALL .rpm';
+          //   db.parentNode.insertBefore(d2, db);
+          //   break;
+        }
+
+        db.href = base + href;
+        // if there's one download option, then download it at #download
+        if (location.hash === '#download' && !d2)
+          location.replace(b.href);
+      })(document,navigator);
     </script>
-    <script>
-      try {
-        var pageTracker = _gat._getTracker("UA-10874194-2");
-        pageTracker._trackPageview();
-      } catch(err) {}
-    </script>
-  </body>
+ </body>
 </html>

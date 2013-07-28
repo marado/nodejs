@@ -46,10 +46,12 @@ var server = tls.Server({
 
 var connectCount = 0;
 server.listen(common.PORT, function() {
-  var c = tls.connect(common.PORT, {
+  var c = tls.connect({
+    port: common.PORT,
     key: key,
     passphrase: 'passphrase',
-    cert: cert
+    cert: cert,
+    rejectUnauthorized: false
   }, function() {
     ++connectCount;
   });
@@ -59,10 +61,12 @@ server.listen(common.PORT, function() {
 });
 
 assert.throws(function() {
-  tls.connect(common.PORT, {
+  tls.connect({
+    port: common.PORT,
     key: key,
     passphrase: 'invalid',
-    cert: cert
+    cert: cert,
+    rejectUnauthorized: false
   });
 });
 

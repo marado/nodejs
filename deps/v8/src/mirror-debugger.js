@@ -1,4 +1,4 @@
-// Copyright 2006-2008 the V8 project authors. All rights reserved.
+// Copyright 2006-2012 the V8 project authors. All rights reserved.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -144,46 +144,45 @@ function inherits(ctor, superCtor) {
 
 
 // Type names of the different mirrors.
-const UNDEFINED_TYPE = 'undefined';
-const NULL_TYPE = 'null';
-const BOOLEAN_TYPE = 'boolean';
-const NUMBER_TYPE = 'number';
-const STRING_TYPE = 'string';
-const OBJECT_TYPE = 'object';
-const FUNCTION_TYPE = 'function';
-const REGEXP_TYPE = 'regexp';
-const ERROR_TYPE = 'error';
-const PROPERTY_TYPE = 'property';
-const FRAME_TYPE = 'frame';
-const SCRIPT_TYPE = 'script';
-const CONTEXT_TYPE = 'context';
-const SCOPE_TYPE = 'scope';
+var UNDEFINED_TYPE = 'undefined';
+var NULL_TYPE = 'null';
+var BOOLEAN_TYPE = 'boolean';
+var NUMBER_TYPE = 'number';
+var STRING_TYPE = 'string';
+var OBJECT_TYPE = 'object';
+var FUNCTION_TYPE = 'function';
+var REGEXP_TYPE = 'regexp';
+var ERROR_TYPE = 'error';
+var PROPERTY_TYPE = 'property';
+var INTERNAL_PROPERTY_TYPE = 'internalProperty';
+var FRAME_TYPE = 'frame';
+var SCRIPT_TYPE = 'script';
+var CONTEXT_TYPE = 'context';
+var SCOPE_TYPE = 'scope';
 
 // Maximum length when sending strings through the JSON protocol.
-const kMaxProtocolStringLength = 80;
+var kMaxProtocolStringLength = 80;
 
 // Different kind of properties.
-PropertyKind = {};
+var PropertyKind = {};
 PropertyKind.Named   = 1;
 PropertyKind.Indexed = 2;
 
 
 // A copy of the PropertyType enum from global.h
-PropertyType = {};
+var PropertyType = {};
 PropertyType.Normal                  = 0;
 PropertyType.Field                   = 1;
 PropertyType.ConstantFunction        = 2;
 PropertyType.Callbacks               = 3;
 PropertyType.Handler                 = 4;
 PropertyType.Interceptor             = 5;
-PropertyType.MapTransition           = 6;
-PropertyType.ExternalArrayTransition = 7;
-PropertyType.ConstantTransition      = 8;
-PropertyType.NullDescriptor          = 9;
+PropertyType.Transition              = 6;
+PropertyType.Nonexistent             = 7;
 
 
 // Different attributes for a property.
-PropertyAttribute = {};
+var PropertyAttribute = {};
 PropertyAttribute.None       = NONE;
 PropertyAttribute.ReadOnly   = READ_ONLY;
 PropertyAttribute.DontEnum   = DONT_ENUM;
@@ -191,12 +190,12 @@ PropertyAttribute.DontDelete = DONT_DELETE;
 
 
 // A copy of the scope types from runtime.cc.
-ScopeType = { Global: 0,
-              Local: 1,
-              With: 2,
-              Closure: 3,
-              Catch: 4,
-              Block: 5 };
+var ScopeType = { Global: 0,
+                  Local: 1,
+                  With: 2,
+                  Closure: 3,
+                  Catch: 4,
+                  Block: 5 };
 
 
 // Mirror hierarchy:
@@ -214,6 +213,7 @@ ScopeType = { Global: 0,
 //         - RegExpMirror
 //         - ErrorMirror
 //     - PropertyMirror
+//     - InternalPropertyMirror
 //     - FrameMirror
 //     - ScriptMirror
 
@@ -225,7 +225,7 @@ ScopeType = { Global: 0,
  */
 function Mirror(type) {
   this.type_ = type;
-};
+}
 
 
 Mirror.prototype.type = function() {
@@ -239,7 +239,7 @@ Mirror.prototype.type = function() {
  */
 Mirror.prototype.isValue = function() {
   return this instanceof ValueMirror;
-}
+};
 
 
 /**
@@ -248,7 +248,7 @@ Mirror.prototype.isValue = function() {
  */
 Mirror.prototype.isUndefined = function() {
   return this instanceof UndefinedMirror;
-}
+};
 
 
 /**
@@ -257,7 +257,7 @@ Mirror.prototype.isUndefined = function() {
  */
 Mirror.prototype.isNull = function() {
   return this instanceof NullMirror;
-}
+};
 
 
 /**
@@ -266,7 +266,7 @@ Mirror.prototype.isNull = function() {
  */
 Mirror.prototype.isBoolean = function() {
   return this instanceof BooleanMirror;
-}
+};
 
 
 /**
@@ -275,7 +275,7 @@ Mirror.prototype.isBoolean = function() {
  */
 Mirror.prototype.isNumber = function() {
   return this instanceof NumberMirror;
-}
+};
 
 
 /**
@@ -284,7 +284,7 @@ Mirror.prototype.isNumber = function() {
  */
 Mirror.prototype.isString = function() {
   return this instanceof StringMirror;
-}
+};
 
 
 /**
@@ -293,7 +293,7 @@ Mirror.prototype.isString = function() {
  */
 Mirror.prototype.isObject = function() {
   return this instanceof ObjectMirror;
-}
+};
 
 
 /**
@@ -302,7 +302,7 @@ Mirror.prototype.isObject = function() {
  */
 Mirror.prototype.isFunction = function() {
   return this instanceof FunctionMirror;
-}
+};
 
 
 /**
@@ -311,7 +311,7 @@ Mirror.prototype.isFunction = function() {
  */
 Mirror.prototype.isUnresolvedFunction = function() {
   return this instanceof UnresolvedFunctionMirror;
-}
+};
 
 
 /**
@@ -320,7 +320,7 @@ Mirror.prototype.isUnresolvedFunction = function() {
  */
 Mirror.prototype.isArray = function() {
   return this instanceof ArrayMirror;
-}
+};
 
 
 /**
@@ -329,7 +329,7 @@ Mirror.prototype.isArray = function() {
  */
 Mirror.prototype.isDate = function() {
   return this instanceof DateMirror;
-}
+};
 
 
 /**
@@ -338,7 +338,7 @@ Mirror.prototype.isDate = function() {
  */
 Mirror.prototype.isRegExp = function() {
   return this instanceof RegExpMirror;
-}
+};
 
 
 /**
@@ -347,7 +347,7 @@ Mirror.prototype.isRegExp = function() {
  */
 Mirror.prototype.isError = function() {
   return this instanceof ErrorMirror;
-}
+};
 
 
 /**
@@ -356,7 +356,16 @@ Mirror.prototype.isError = function() {
  */
 Mirror.prototype.isProperty = function() {
   return this instanceof PropertyMirror;
-}
+};
+
+
+/**
+ * Check whether the mirror reflects an internal property.
+ * @returns {boolean} True if the mirror reflects an internal property
+ */
+Mirror.prototype.isInternalProperty = function() {
+  return this instanceof InternalPropertyMirror;
+};
 
 
 /**
@@ -365,7 +374,7 @@ Mirror.prototype.isProperty = function() {
  */
 Mirror.prototype.isFrame = function() {
   return this instanceof FrameMirror;
-}
+};
 
 
 /**
@@ -374,7 +383,7 @@ Mirror.prototype.isFrame = function() {
  */
 Mirror.prototype.isScript = function() {
   return this instanceof ScriptMirror;
-}
+};
 
 
 /**
@@ -383,7 +392,7 @@ Mirror.prototype.isScript = function() {
  */
 Mirror.prototype.isContext = function() {
   return this instanceof ContextMirror;
-}
+};
 
 
 /**
@@ -392,7 +401,7 @@ Mirror.prototype.isContext = function() {
  */
 Mirror.prototype.isScope = function() {
   return this instanceof ScopeMirror;
-}
+};
 
 
 /**
@@ -400,7 +409,7 @@ Mirror.prototype.isScope = function() {
  */
 Mirror.prototype.allocateHandle_ = function() {
   this.handle_ = next_handle_++;
-}
+};
 
 
 /**
@@ -409,13 +418,13 @@ Mirror.prototype.allocateHandle_ = function() {
  */
 Mirror.prototype.allocateTransientHandle_ = function() {
   this.handle_ = next_transient_handle_--;
-}
+};
 
 
 Mirror.prototype.toText = function() {
   // Simpel to text which is used when on specialization in subclass.
   return "#<" + this.constructor.name + ">";
-}
+};
 
 
 /**
@@ -480,7 +489,7 @@ inherits(UndefinedMirror, ValueMirror);
 
 UndefinedMirror.prototype.toText = function() {
   return 'undefined';
-}
+};
 
 
 /**
@@ -496,7 +505,7 @@ inherits(NullMirror, ValueMirror);
 
 NullMirror.prototype.toText = function() {
   return 'null';
-}
+};
 
 
 /**
@@ -513,7 +522,7 @@ inherits(BooleanMirror, ValueMirror);
 
 BooleanMirror.prototype.toText = function() {
   return this.value_ ? 'true' : 'false';
-}
+};
 
 
 /**
@@ -530,7 +539,7 @@ inherits(NumberMirror, ValueMirror);
 
 NumberMirror.prototype.toText = function() {
   return %NumberToString(this.value_);
-}
+};
 
 
 /**
@@ -555,11 +564,11 @@ StringMirror.prototype.getTruncatedValue = function(maxLength) {
            '... (length: ' + this.length() + ')';
   }
   return this.value_;
-}
+};
 
 StringMirror.prototype.toText = function() {
   return this.getTruncatedValue(kMaxProtocolStringLength);
-}
+};
 
 
 /**
@@ -686,7 +695,7 @@ ObjectMirror.prototype.propertyNames = function(kind, limit) {
  * Return the properties for this object as an array of PropertyMirror objects.
  * @param {number} kind Indicate whether named, indexed or both kinds of
  *     properties are requested
- * @param {number} limit Limit the number of properties returend to the
+ * @param {number} limit Limit the number of properties returned to the
        specified value
  * @return {Array} Property mirrors for this object
  */
@@ -699,6 +708,16 @@ ObjectMirror.prototype.properties = function(kind, limit) {
 
   return properties;
 };
+
+
+/**
+ * Return the internal properties for this object as an array of
+ * InternalPropertyMirror objects.
+ * @return {Array} Property mirrors for this object
+ */
+ObjectMirror.prototype.internalProperties = function() {
+  return ObjectMirror.GetInternalProperties(this.value_);
+}
 
 
 ObjectMirror.prototype.property = function(name) {
@@ -772,6 +791,37 @@ ObjectMirror.prototype.toText = function() {
   }
   return '#<' + name + '>';
 };
+
+
+/**
+ * Return the internal properties of the value, such as [[PrimitiveValue]] of
+ * scalar wrapper objects and properties of the bound function.
+ * This method is done static to be accessible from Debug API with the bare
+ * values without mirrors.
+ * @return {Array} array (possibly empty) of InternalProperty instances
+ */
+ObjectMirror.GetInternalProperties = function(value) {
+  if (IS_STRING_WRAPPER(value) || IS_NUMBER_WRAPPER(value) ||
+      IS_BOOLEAN_WRAPPER(value)) {
+    var primitiveValue = %_ValueOf(value);
+    return [new InternalPropertyMirror("[[PrimitiveValue]]", primitiveValue)];
+  } else if (IS_FUNCTION(value)) {
+    var bindings = %BoundFunctionGetBindings(value);
+    var result = [];
+    if (bindings && IS_ARRAY(bindings)) {
+      result.push(new InternalPropertyMirror("[[TargetFunction]]",
+                                             bindings[0]));
+      result.push(new InternalPropertyMirror("[[BoundThis]]", bindings[1]));
+      var boundArgs = [];
+      for (var i = 2; i < bindings.length; i++) {
+        boundArgs.push(bindings[i]);
+      }
+      result.push(new InternalPropertyMirror("[[BoundArgs]]", boundArgs));
+    }
+    return result;
+  }
+  return [];
+}
 
 
 /**
@@ -896,9 +946,25 @@ FunctionMirror.prototype.constructedBy = function(opt_max_instances) {
 };
 
 
+FunctionMirror.prototype.scopeCount = function() {
+  if (this.resolved()) {
+    return %GetFunctionScopeCount(this.value());
+  } else {
+    return 0;
+  }
+};
+
+
+FunctionMirror.prototype.scope = function(index) {
+  if (this.resolved()) {
+    return new ScopeMirror(void 0, this, index);
+  }
+};
+
+
 FunctionMirror.prototype.toText = function() {
   return this.source();
-}
+};
 
 
 /**
@@ -951,7 +1017,7 @@ UnresolvedFunctionMirror.prototype.inferredName = function() {
 
 UnresolvedFunctionMirror.prototype.propertyNames = function(kind, limit) {
   return [];
-}
+};
 
 
 /**
@@ -971,7 +1037,8 @@ ArrayMirror.prototype.length = function() {
 };
 
 
-ArrayMirror.prototype.indexedPropertiesFromRange = function(opt_from_index, opt_to_index) {
+ArrayMirror.prototype.indexedPropertiesFromRange = function(opt_from_index,
+                                                            opt_to_index) {
   var from_index = opt_from_index || 0;
   var to_index = opt_to_index || this.length() - 1;
   if (from_index > to_index) return new Array();
@@ -987,7 +1054,7 @@ ArrayMirror.prototype.indexedPropertiesFromRange = function(opt_from_index, opt_
     values[i - from_index] = value;
   }
   return values;
-}
+};
 
 
 /**
@@ -1005,7 +1072,7 @@ inherits(DateMirror, ObjectMirror);
 DateMirror.prototype.toText = function() {
   var s = JSON.stringify(this.value_);
   return s.substring(1, s.length - 1);  // cut quotes
-}
+};
 
 
 /**
@@ -1059,7 +1126,7 @@ RegExpMirror.prototype.multiline = function() {
 RegExpMirror.prototype.toText = function() {
   // Simpel to text which is used when on specialization in subclass.
   return "/" + this.source() + "/";
-}
+};
 
 
 /**
@@ -1087,12 +1154,12 @@ ErrorMirror.prototype.toText = function() {
   // Use the same text representation as in messages.js.
   var text;
   try {
-    str = %_CallFunction(this.value_, builtins.errorToString);
+    str = %_CallFunction(this.value_, builtins.ErrorToString);
   } catch (e) {
     str = '#<Error>';
   }
   return str;
-}
+};
 
 
 /**
@@ -1110,7 +1177,7 @@ function PropertyMirror(mirror, name, details) {
   this.value_ = details[0];
   this.details_ = details[1];
   if (details.length > 2) {
-    this.exception_ = details[2]
+    this.exception_ = details[2];
     this.getter_ = details[3];
     this.setter_ = details[4];
   }
@@ -1120,22 +1187,22 @@ inherits(PropertyMirror, Mirror);
 
 PropertyMirror.prototype.isReadOnly = function() {
   return (this.attributes() & PropertyAttribute.ReadOnly) != 0;
-}
+};
 
 
 PropertyMirror.prototype.isEnum = function() {
   return (this.attributes() & PropertyAttribute.DontEnum) == 0;
-}
+};
 
 
 PropertyMirror.prototype.canDelete = function() {
   return (this.attributes() & PropertyAttribute.DontDelete) == 0;
-}
+};
 
 
 PropertyMirror.prototype.name = function() {
   return this.name_;
-}
+};
 
 
 PropertyMirror.prototype.isIndexed = function() {
@@ -1145,12 +1212,12 @@ PropertyMirror.prototype.isIndexed = function() {
     }
   }
   return true;
-}
+};
 
 
 PropertyMirror.prototype.value = function() {
   return MakeMirror(this.value_, false);
-}
+};
 
 
 /**
@@ -1159,22 +1226,22 @@ PropertyMirror.prototype.value = function() {
  */
 PropertyMirror.prototype.isException = function() {
   return this.exception_ ? true : false;
-}
+};
 
 
 PropertyMirror.prototype.attributes = function() {
   return %DebugPropertyAttributesFromDetails(this.details_);
-}
+};
 
 
 PropertyMirror.prototype.propertyType = function() {
   return %DebugPropertyTypeFromDetails(this.details_);
-}
+};
 
 
 PropertyMirror.prototype.insertionIndex = function() {
   return %DebugPropertyIndexFromDetails(this.details_);
-}
+};
 
 
 /**
@@ -1183,7 +1250,7 @@ PropertyMirror.prototype.insertionIndex = function() {
  */
 PropertyMirror.prototype.hasGetter = function() {
   return this.getter_ ? true : false;
-}
+};
 
 
 /**
@@ -1192,7 +1259,7 @@ PropertyMirror.prototype.hasGetter = function() {
  */
 PropertyMirror.prototype.hasSetter = function() {
   return this.setter_ ? true : false;
-}
+};
 
 
 /**
@@ -1206,7 +1273,7 @@ PropertyMirror.prototype.getter = function() {
   } else {
     return GetUndefinedMirror();
   }
-}
+};
 
 
 /**
@@ -1220,7 +1287,7 @@ PropertyMirror.prototype.setter = function() {
   } else {
     return GetUndefinedMirror();
   }
-}
+};
 
 
 /**
@@ -1233,27 +1300,54 @@ PropertyMirror.prototype.isNative = function() {
   return (this.propertyType() == PropertyType.Interceptor) ||
          ((this.propertyType() == PropertyType.Callbacks) &&
           !this.hasGetter() && !this.hasSetter());
+};
+
+
+/**
+ * Mirror object for internal properties. Internal property reflects properties
+ * not accessible from user code such as [[BoundThis]] in bound function.
+ * Their names are merely symbolic.
+ * @param {string} name The name of the property
+ * @param {value} property value
+ * @constructor
+ * @extends Mirror
+ */
+function InternalPropertyMirror(name, value) {
+  %_CallFunction(this, INTERNAL_PROPERTY_TYPE, Mirror);
+  this.name_ = name;
+  this.value_ = value;
 }
+inherits(InternalPropertyMirror, Mirror);
 
 
-const kFrameDetailsFrameIdIndex = 0;
-const kFrameDetailsReceiverIndex = 1;
-const kFrameDetailsFunctionIndex = 2;
-const kFrameDetailsArgumentCountIndex = 3;
-const kFrameDetailsLocalCountIndex = 4;
-const kFrameDetailsSourcePositionIndex = 5;
-const kFrameDetailsConstructCallIndex = 6;
-const kFrameDetailsAtReturnIndex = 7;
-const kFrameDetailsFlagsIndex = 8;
-const kFrameDetailsFirstDynamicIndex = 9;
+InternalPropertyMirror.prototype.name = function() {
+  return this.name_;
+};
 
-const kFrameDetailsNameIndex = 0;
-const kFrameDetailsValueIndex = 1;
-const kFrameDetailsNameValueSize = 2;
 
-const kFrameDetailsFlagDebuggerFrameMask = 1 << 0;
-const kFrameDetailsFlagOptimizedFrameMask = 1 << 1;
-const kFrameDetailsFlagInlinedFrameIndexMask = 7 << 2;
+InternalPropertyMirror.prototype.value = function() {
+  return MakeMirror(this.value_, false);
+};
+
+
+var kFrameDetailsFrameIdIndex = 0;
+var kFrameDetailsReceiverIndex = 1;
+var kFrameDetailsFunctionIndex = 2;
+var kFrameDetailsArgumentCountIndex = 3;
+var kFrameDetailsLocalCountIndex = 4;
+var kFrameDetailsSourcePositionIndex = 5;
+var kFrameDetailsConstructCallIndex = 6;
+var kFrameDetailsAtReturnIndex = 7;
+var kFrameDetailsFlagsIndex = 8;
+var kFrameDetailsFirstDynamicIndex = 9;
+
+var kFrameDetailsNameIndex = 0;
+var kFrameDetailsValueIndex = 1;
+var kFrameDetailsNameValueSize = 2;
+
+var kFrameDetailsFlagDebuggerFrameMask = 1 << 0;
+var kFrameDetailsFlagOptimizedFrameMask = 1 << 1;
+var kFrameDetailsFlagInlinedFrameIndexMask = 7 << 2;
 
 /**
  * Wrapper for the frame details information retreived from the VM. The frame
@@ -1284,63 +1378,63 @@ function FrameDetails(break_id, index) {
 FrameDetails.prototype.frameId = function() {
   %CheckExecutionState(this.break_id_);
   return this.details_[kFrameDetailsFrameIdIndex];
-}
+};
 
 
 FrameDetails.prototype.receiver = function() {
   %CheckExecutionState(this.break_id_);
   return this.details_[kFrameDetailsReceiverIndex];
-}
+};
 
 
 FrameDetails.prototype.func = function() {
   %CheckExecutionState(this.break_id_);
   return this.details_[kFrameDetailsFunctionIndex];
-}
+};
 
 
 FrameDetails.prototype.isConstructCall = function() {
   %CheckExecutionState(this.break_id_);
   return this.details_[kFrameDetailsConstructCallIndex];
-}
+};
 
 
 FrameDetails.prototype.isAtReturn = function() {
   %CheckExecutionState(this.break_id_);
   return this.details_[kFrameDetailsAtReturnIndex];
-}
+};
 
 
 FrameDetails.prototype.isDebuggerFrame = function() {
   %CheckExecutionState(this.break_id_);
   var f = kFrameDetailsFlagDebuggerFrameMask;
   return (this.details_[kFrameDetailsFlagsIndex] & f) == f;
-}
+};
 
 
 FrameDetails.prototype.isOptimizedFrame = function() {
   %CheckExecutionState(this.break_id_);
   var f = kFrameDetailsFlagOptimizedFrameMask;
   return (this.details_[kFrameDetailsFlagsIndex] & f) == f;
-}
+};
 
 
 FrameDetails.prototype.isInlinedFrame = function() {
   return this.inlinedFrameIndex() > 0;
-}
+};
 
 
 FrameDetails.prototype.inlinedFrameIndex = function() {
   %CheckExecutionState(this.break_id_);
   var f = kFrameDetailsFlagInlinedFrameIndexMask;
-  return (this.details_[kFrameDetailsFlagsIndex] & f) >> 2
-}
+  return (this.details_[kFrameDetailsFlagsIndex] & f) >> 2;
+};
 
 
 FrameDetails.prototype.argumentCount = function() {
   %CheckExecutionState(this.break_id_);
   return this.details_[kFrameDetailsArgumentCountIndex];
-}
+};
 
 
 FrameDetails.prototype.argumentName = function(index) {
@@ -1348,9 +1442,9 @@ FrameDetails.prototype.argumentName = function(index) {
   if (index >= 0 && index < this.argumentCount()) {
     return this.details_[kFrameDetailsFirstDynamicIndex +
                          index * kFrameDetailsNameValueSize +
-                         kFrameDetailsNameIndex]
+                         kFrameDetailsNameIndex];
   }
-}
+};
 
 
 FrameDetails.prototype.argumentValue = function(index) {
@@ -1358,45 +1452,45 @@ FrameDetails.prototype.argumentValue = function(index) {
   if (index >= 0 && index < this.argumentCount()) {
     return this.details_[kFrameDetailsFirstDynamicIndex +
                          index * kFrameDetailsNameValueSize +
-                         kFrameDetailsValueIndex]
+                         kFrameDetailsValueIndex];
   }
-}
+};
 
 
 FrameDetails.prototype.localCount = function() {
   %CheckExecutionState(this.break_id_);
   return this.details_[kFrameDetailsLocalCountIndex];
-}
+};
 
 
 FrameDetails.prototype.sourcePosition = function() {
   %CheckExecutionState(this.break_id_);
   return this.details_[kFrameDetailsSourcePositionIndex];
-}
+};
 
 
 FrameDetails.prototype.localName = function(index) {
   %CheckExecutionState(this.break_id_);
   if (index >= 0 && index < this.localCount()) {
     var locals_offset = kFrameDetailsFirstDynamicIndex +
-                        this.argumentCount() * kFrameDetailsNameValueSize
+                        this.argumentCount() * kFrameDetailsNameValueSize;
     return this.details_[locals_offset +
                          index * kFrameDetailsNameValueSize +
-                         kFrameDetailsNameIndex]
+                         kFrameDetailsNameIndex];
   }
-}
+};
 
 
 FrameDetails.prototype.localValue = function(index) {
   %CheckExecutionState(this.break_id_);
   if (index >= 0 && index < this.localCount()) {
     var locals_offset = kFrameDetailsFirstDynamicIndex +
-                        this.argumentCount() * kFrameDetailsNameValueSize
+                        this.argumentCount() * kFrameDetailsNameValueSize;
     return this.details_[locals_offset +
                          index * kFrameDetailsNameValueSize +
-                         kFrameDetailsValueIndex]
+                         kFrameDetailsValueIndex];
   }
-}
+};
 
 
 FrameDetails.prototype.returnValue = function() {
@@ -1407,12 +1501,12 @@ FrameDetails.prototype.returnValue = function() {
   if (this.details_[kFrameDetailsAtReturnIndex]) {
     return this.details_[return_value_offset];
   }
-}
+};
 
 
 FrameDetails.prototype.scopeCount = function() {
   return %GetScopeCount(this.break_id_, this.frameId());
-}
+};
 
 
 /**
@@ -1571,11 +1665,12 @@ FrameMirror.prototype.scopeCount = function() {
 
 
 FrameMirror.prototype.scope = function(index) {
-  return new ScopeMirror(this, index);
+  return new ScopeMirror(this, void 0, index);
 };
 
 
-FrameMirror.prototype.evaluate = function(source, disable_break, opt_context_object) {
+FrameMirror.prototype.evaluate = function(source, disable_break,
+                                          opt_context_object) {
   var result = %DebugEvaluate(this.break_id_,
                               this.details_.frameId(),
                               this.details_.inlinedFrameIndex(),
@@ -1599,7 +1694,8 @@ FrameMirror.prototype.invocationText = function() {
     result += '[debugger]';
   } else {
     // If the receiver has a className which is 'global' don't display it.
-    var display_receiver = !receiver.className || receiver.className() != 'global';
+    var display_receiver =
+      !receiver.className || (receiver.className() != 'global');
     if (display_receiver) {
       result += receiver.toText();
     }
@@ -1661,7 +1757,7 @@ FrameMirror.prototype.invocationText = function() {
   }
 
   return result;
-}
+};
 
 
 FrameMirror.prototype.sourceAndPositionText = function() {
@@ -1693,13 +1789,13 @@ FrameMirror.prototype.sourceAndPositionText = function() {
   }
 
   return result;
-}
+};
 
 
 FrameMirror.prototype.localsText = function() {
   // Format local variables.
   var result = '';
-  var locals_count = this.localCount()
+  var locals_count = this.localCount();
   if (locals_count > 0) {
     for (var i = 0; i < locals_count; ++i) {
       result += '      var ';
@@ -1711,7 +1807,16 @@ FrameMirror.prototype.localsText = function() {
   }
 
   return result;
-}
+};
+
+
+FrameMirror.prototype.restart = function() {
+  var result = %LiveEditRestartFrame(this.break_id_, this.index_);
+  if (IS_UNDEFINED(result)) {
+    result = "Failed to find requested frame";
+  }
+  return result;
+};
 
 
 FrameMirror.prototype.toText = function(opt_locals) {
@@ -1726,45 +1831,80 @@ FrameMirror.prototype.toText = function(opt_locals) {
     result += this.localsText();
   }
   return result;
-}
+};
 
 
-const kScopeDetailsTypeIndex = 0;
-const kScopeDetailsObjectIndex = 1;
+var kScopeDetailsTypeIndex = 0;
+var kScopeDetailsObjectIndex = 1;
 
-function ScopeDetails(frame, index) {
-  this.break_id_ = frame.break_id_;
-  this.details_ = %GetScopeDetails(frame.break_id_,
-                                   frame.details_.frameId(),
-                                   frame.details_.inlinedFrameIndex(),
-                                   index);
+function ScopeDetails(frame, fun, index) {
+  if (frame) {
+    this.break_id_ = frame.break_id_;
+    this.details_ = %GetScopeDetails(frame.break_id_,
+                                     frame.details_.frameId(),
+                                     frame.details_.inlinedFrameIndex(),
+                                     index);
+    this.frame_id_ = frame.details_.frameId();
+    this.inlined_frame_id_ = frame.details_.inlinedFrameIndex();
+  } else {
+    this.details_ = %GetFunctionScopeDetails(fun.value(), index);
+    this.fun_value_ = fun.value();
+    this.break_id_ = undefined;
+  }
+  this.index_ = index;
 }
 
 
 ScopeDetails.prototype.type = function() {
-  %CheckExecutionState(this.break_id_);
+  if (!IS_UNDEFINED(this.break_id_)) {
+    %CheckExecutionState(this.break_id_);
+  }
   return this.details_[kScopeDetailsTypeIndex];
-}
+};
 
 
 ScopeDetails.prototype.object = function() {
-  %CheckExecutionState(this.break_id_);
+  if (!IS_UNDEFINED(this.break_id_)) {
+    %CheckExecutionState(this.break_id_);
+  }
   return this.details_[kScopeDetailsObjectIndex];
-}
+};
+
+
+ScopeDetails.prototype.setVariableValueImpl = function(name, new_value) {
+  var raw_res;
+  if (!IS_UNDEFINED(this.break_id_)) {
+    %CheckExecutionState(this.break_id_);
+    raw_res = %SetScopeVariableValue(this.break_id_, this.frame_id_,
+        this.inlined_frame_id_, this.index_, name, new_value);
+  } else {
+    raw_res = %SetScopeVariableValue(this.fun_value_, null, null, this.index_,
+        name, new_value);
+  }
+  if (!raw_res) {
+    throw new Error("Failed to set variable value");
+  }
+};
 
 
 /**
- * Mirror object for scope.
+ * Mirror object for scope of frame or function. Either frame or function must
+ * be specified.
  * @param {FrameMirror} frame The frame this scope is a part of
+ * @param {FunctionMirror} function The function this scope is a part of
  * @param {number} index The scope index in the frame
  * @constructor
  * @extends Mirror
  */
-function ScopeMirror(frame, index) {
+function ScopeMirror(frame, function, index) {
   %_CallFunction(this, SCOPE_TYPE, Mirror);
-  this.frame_index_ = frame.index_;
+  if (frame) {
+    this.frame_index_ = frame.index_;
+  } else {
+    this.frame_index_ = undefined;
+  }
   this.scope_index_ = index;
-  this.details_ = new ScopeDetails(frame, index);
+  this.details_ = new ScopeDetails(frame, function, index);
 }
 inherits(ScopeMirror, Mirror);
 
@@ -1791,6 +1931,11 @@ ScopeMirror.prototype.scopeObject = function() {
   var transient = this.scopeType() == ScopeType.Local ||
                   this.scopeType() == ScopeType.Closure;
   return MakeMirror(this.details_.object(), transient);
+};
+
+
+ScopeMirror.prototype.setVariableValue = function(name, new_value) {
+  this.details_.setVariableValueImpl(name, new_value);
 };
 
 
@@ -1829,6 +1974,11 @@ ScriptMirror.prototype.source = function() {
 };
 
 
+ScriptMirror.prototype.setSource = function(source) {
+  %DebugSetScriptSource(this.script_, source);
+};
+
+
 ScriptMirror.prototype.lineOffset = function() {
   return this.script_.line_offset;
 };
@@ -1862,12 +2012,12 @@ ScriptMirror.prototype.lineCount = function() {
 ScriptMirror.prototype.locationFromPosition = function(
     position, include_resource_offset) {
   return this.script_.locationFromPosition(position, include_resource_offset);
-}
+};
 
 
 ScriptMirror.prototype.sourceSlice = function (opt_from_line, opt_to_line) {
   return this.script_.sourceSlice(opt_from_line, opt_to_line);
-}
+};
 
 
 ScriptMirror.prototype.context = function() {
@@ -1907,7 +2057,7 @@ ScriptMirror.prototype.toText = function() {
   }
   result += ')';
   return result;
-}
+};
 
 
 /**
@@ -1965,7 +2115,7 @@ function JSONProtocolSerializer(details, options) {
  */
 JSONProtocolSerializer.prototype.serializeReference = function(mirror) {
   return this.serialize_(mirror, true, true);
-}
+};
 
 
 /**
@@ -1978,7 +2128,7 @@ JSONProtocolSerializer.prototype.serializeReference = function(mirror) {
 JSONProtocolSerializer.prototype.serializeValue = function(mirror) {
   var json = this.serialize_(mirror, false, true);
   return json;
-}
+};
 
 
 /**
@@ -2000,17 +2150,17 @@ JSONProtocolSerializer.prototype.serializeReferencedObjects = function() {
   }
 
   return content;
-}
+};
 
 
 JSONProtocolSerializer.prototype.includeSource_ = function() {
   return this.options_ && this.options_.includeSource;
-}
+};
 
 
 JSONProtocolSerializer.prototype.inlineRefs_ = function() {
   return this.options_ && this.options_.inlineRefs;
-}
+};
 
 
 JSONProtocolSerializer.prototype.maxStringLength_ = function() {
@@ -2019,7 +2169,7 @@ JSONProtocolSerializer.prototype.maxStringLength_ = function() {
     return kMaxProtocolStringLength;
   }
   return this.options_.maxStringLength;
-}
+};
 
 
 JSONProtocolSerializer.prototype.add_ = function(mirror) {
@@ -2032,7 +2182,7 @@ JSONProtocolSerializer.prototype.add_ = function(mirror) {
 
   // Add the mirror to the list of mirrors to be serialized.
   this.mirrors_.push(mirror);
-}
+};
 
 
 /**
@@ -2139,7 +2289,8 @@ JSONProtocolSerializer.prototype.serialize_ = function(mirror, reference,
       break;
 
     case PROPERTY_TYPE:
-      throw new Error('PropertyMirror cannot be serialized independeltly')
+    case INTERNAL_PROPERTY_TYPE:
+      throw new Error('PropertyMirror cannot be serialized independently');
       break;
 
     case FRAME_TYPE:
@@ -2179,7 +2330,7 @@ JSONProtocolSerializer.prototype.serialize_ = function(mirror, reference,
           mirror.evalFromScript()) {
         content.evalFromScript =
             this.serializeReference(mirror.evalFromScript());
-        var evalFromLocation = mirror.evalFromLocation()
+        var evalFromLocation = mirror.evalFromLocation();
         if (evalFromLocation) {
           content.evalFromLocation = { line: evalFromLocation.line,
                                        column: evalFromLocation.column };
@@ -2203,7 +2354,7 @@ JSONProtocolSerializer.prototype.serialize_ = function(mirror, reference,
 
   // Create and return the JSON string.
   return content;
-}
+};
 
 
 /**
@@ -2215,7 +2366,8 @@ JSONProtocolSerializer.prototype.serialize_ = function(mirror, reference,
  *    "prototypeObject":{"ref":<number>},
  *    "namedInterceptor":<boolean>,
  *    "indexedInterceptor":<boolean>,
- *    "properties":[<properties>]}
+ *    "properties":[<properties>],
+ *    "internalProperties":[<internal properties>]}
  */
 JSONProtocolSerializer.prototype.serializeObject_ = function(mirror, content,
                                                              details) {
@@ -2251,6 +2403,15 @@ JSONProtocolSerializer.prototype.serializeObject_ = function(mirror, content,
 
       serializeLocationFields(mirror.sourceLocation(), content);
     }
+
+    content.scopes = [];
+    for (var i = 0; i < mirror.scopeCount(); i++) {
+      var scope = mirror.scope(i);
+      content.scopes.push({
+        type: scope.scopeType(),
+        index: i
+      });
+    }
   }
 
   // Add date specific properties.
@@ -2278,7 +2439,16 @@ JSONProtocolSerializer.prototype.serializeObject_ = function(mirror, content,
     }
   }
   content.properties = p;
-}
+
+  var internalProperties = mirror.internalProperties();
+  if (internalProperties.length > 0) {
+    var ip = [];
+    for (var i = 0; i < internalProperties.length; i++) {
+      ip.push(this.serializeInternalProperty_(internalProperties[i]));
+    }
+    content.internalProperties = ip;
+  }
+};
 
 
 /**
@@ -2342,7 +2512,34 @@ JSONProtocolSerializer.prototype.serializeProperty_ = function(propertyMirror) {
     result.ref = propertyValue.handle();
   }
   return result;
-}
+};
+
+
+/**
+ * Serialize internal property information to the following JSON format for
+ * building the array of properties.
+ *
+ *   {"name":"<property name>",
+ *    "ref":<number>}
+ *
+ *   {"name":"[[BoundThis]]","ref":117}
+ *
+ * @param {InternalPropertyMirror} propertyMirror The property to serialize.
+ * @returns {Object} Protocol object representing the property.
+ */
+JSONProtocolSerializer.prototype.serializeInternalProperty_ =
+    function(propertyMirror) {
+  var result = {};
+
+  result.name = propertyMirror.name();
+  var propertyValue = propertyMirror.value();
+  if (this.inlineRefs_() && propertyValue.isValue()) {
+    result.value = this.serializeReferenceWithDisplayData_(propertyValue);
+  } else {
+    result.ref = propertyValue.handle();
+  }
+  return result;
+};
 
 
 JSONProtocolSerializer.prototype.serializeFrame_ = function(mirror, content) {
@@ -2362,7 +2559,7 @@ JSONProtocolSerializer.prototype.serializeFrame_ = function(mirror, content) {
   var x = new Array(mirror.argumentCount());
   for (var i = 0; i < mirror.argumentCount(); i++) {
     var arg = {};
-    var argument_name = mirror.argumentName(i)
+    var argument_name = mirror.argumentName(i);
     if (argument_name) {
       arg.name = argument_name;
     }
@@ -2392,7 +2589,7 @@ JSONProtocolSerializer.prototype.serializeFrame_ = function(mirror, content) {
       index: i
     });
   }
-}
+};
 
 
 JSONProtocolSerializer.prototype.serializeScope_ = function(mirror, content) {
@@ -2402,7 +2599,7 @@ JSONProtocolSerializer.prototype.serializeScope_ = function(mirror, content) {
   content.object = this.inlineRefs_() ?
                    this.serializeValue(mirror.scopeObject()) :
                    this.serializeReference(mirror.scopeObject());
-}
+};
 
 
 /**

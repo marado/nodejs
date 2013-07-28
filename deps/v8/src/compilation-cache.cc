@@ -1,4 +1,4 @@
-// Copyright 2008 the V8 project authors. All rights reserved.
+// Copyright 2011 the V8 project authors. All rights reserved.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -27,6 +27,7 @@
 
 #include "v8.h"
 
+#include "assembler.h"
 #include "compilation-cache.h"
 #include "serialize.h"
 
@@ -164,10 +165,12 @@ bool CompilationCacheScript::HasOrigin(
 // be cached in the same script generation. Currently the first use
 // will be cached, but subsequent code from different source / line
 // won't.
-Handle<SharedFunctionInfo> CompilationCacheScript::Lookup(Handle<String> source,
-                                                          Handle<Object> name,
-                                                          int line_offset,
-                                                          int column_offset) {
+Handle<SharedFunctionInfo> CompilationCacheScript::Lookup(
+    Handle<String> source,
+    Handle<Object> name,
+    int line_offset,
+    int column_offset,
+    Handle<Context> context) {
   Object* result = NULL;
   int generation;
 
@@ -176,7 +179,7 @@ Handle<SharedFunctionInfo> CompilationCacheScript::Lookup(Handle<String> source,
   { HandleScope scope(isolate());
     for (generation = 0; generation < generations(); generation++) {
       Handle<CompilationCacheTable> table = GetTable(generation);
-      Handle<Object> probe(table->Lookup(*source), isolate());
+      Handle<Object> probe(table->Lookup(*source, *context), isolate());
       if (probe->IsSharedFunctionInfo()) {
         Handle<SharedFunctionInfo> function_info =
             Handle<SharedFunctionInfo>::cast(probe);
@@ -213,7 +216,7 @@ Handle<SharedFunctionInfo> CompilationCacheScript::Lookup(Handle<String> source,
     ASSERT(HasOrigin(shared, name, line_offset, column_offset));
     // If the script was found in a later generation, we promote it to
     // the first generation to let it survive longer in the cache.
-    if (generation != 0) Put(source, shared);
+    if (generation != 0) Put(source, context, shared);
     isolate()->counters()->compilation_cache_hits()->Increment();
     return shared;
   } else {
@@ -225,32 +228,36 @@ Handle<SharedFunctionInfo> CompilationCacheScript::Lookup(Handle<String> source,
 
 MaybeObject* CompilationCacheScript::TryTablePut(
     Handle<String> source,
+    Handle<Context> context,
     Handle<SharedFunctionInfo> function_info) {
   Handle<CompilationCacheTable> table = GetFirstTable();
-  return table->Put(*source, *function_info);
+  return table->Put(*source, *context, *function_info);
 }
 
 
 Handle<CompilationCacheTable> CompilationCacheScript::TablePut(
     Handle<String> source,
+    Handle<Context> context,
     Handle<SharedFunctionInfo> function_info) {
   CALL_HEAP_FUNCTION(isolate(),
-                     TryTablePut(source, function_info),
+                     TryTablePut(source, context, function_info),
                      CompilationCacheTable);
 }
 
 
 void CompilationCacheScript::Put(Handle<String> source,
+                                 Handle<Context> context,
                                  Handle<SharedFunctionInfo> function_info) {
   HandleScope scope(isolate());
-  SetFirstTable(TablePut(source, function_info));
+  SetFirstTable(TablePut(source, context, function_info));
 }
 
 
 Handle<SharedFunctionInfo> CompilationCacheEval::Lookup(
     Handle<String> source,
     Handle<Context> context,
-    StrictModeFlag strict_mode) {
+    LanguageMode language_mode,
+    int scope_position) {
   // Make sure not to leak the table into the surrounding handle
   // scope. Otherwise, we risk keeping old tables around even after
   // having cleared the cache.
@@ -259,7 +266,8 @@ Handle<SharedFunctionInfo> CompilationCacheEval::Lookup(
   { HandleScope scope(isolate());
     for (generation = 0; generation < generations(); generation++) {
       Handle<CompilationCacheTable> table = GetTable(generation);
-      result = table->LookupEval(*source, *context, strict_mode);
+      result = table->LookupEval(
+          *source, *context, language_mode, scope_position);
       if (result->IsSharedFunctionInfo()) {
         break;
       }
@@ -269,7 +277,7 @@ Handle<SharedFunctionInfo> CompilationCacheEval::Lookup(
     Handle<SharedFunctionInfo>
         function_info(SharedFunctionInfo::cast(result), isolate());
     if (generation != 0) {
-      Put(source, context, function_info);
+      Put(source, context, function_info, scope_position);
     }
     isolate()->counters()->compilation_cache_hits()->Increment();
     return function_info;
@@ -283,27 +291,31 @@ Handle<SharedFunctionInfo> CompilationCacheEval::Lookup(
 MaybeObject* CompilationCacheEval::TryTablePut(
     Handle<String> source,
     Handle<Context> context,
-    Handle<SharedFunctionInfo> function_info) {
+    Handle<SharedFunctionInfo> function_info,
+    int scope_position) {
   Handle<CompilationCacheTable> table = GetFirstTable();
-  return table->PutEval(*source, *context, *function_info);
+  return table->PutEval(*source, *context, *function_info, scope_position);
 }
 
 
 Handle<CompilationCacheTable> CompilationCacheEval::TablePut(
     Handle<String> source,
     Handle<Context> context,
-    Handle<SharedFunctionInfo> function_info) {
+    Handle<SharedFunctionInfo> function_info,
+    int scope_position) {
   CALL_HEAP_FUNCTION(isolate(),
-                     TryTablePut(source, context, function_info),
+                     TryTablePut(
+                         source, context, function_info, scope_position),
                      CompilationCacheTable);
 }
 
 
 void CompilationCacheEval::Put(Handle<String> source,
                                Handle<Context> context,
-                               Handle<SharedFunctionInfo> function_info) {
+                               Handle<SharedFunctionInfo> function_info,
+                               int scope_position) {
   HandleScope scope(isolate());
-  SetFirstTable(TablePut(source, context, function_info));
+  SetFirstTable(TablePut(source, context, function_info, scope_position));
 }
 
 
@@ -373,15 +385,17 @@ void CompilationCache::Remove(Handle<SharedFunctionInfo> function_info) {
 }
 
 
-Handle<SharedFunctionInfo> CompilationCache::LookupScript(Handle<String> source,
-                                                          Handle<Object> name,
-                                                          int line_offset,
-                                                          int column_offset) {
+Handle<SharedFunctionInfo> CompilationCache::LookupScript(
+    Handle<String> source,
+    Handle<Object> name,
+    int line_offset,
+    int column_offset,
+    Handle<Context> context) {
   if (!IsEnabled()) {
     return Handle<SharedFunctionInfo>::null();
   }
 
-  return script_.Lookup(source, name, line_offset, column_offset);
+  return script_.Lookup(source, name, line_offset, column_offset, context);
 }
 
 
@@ -389,16 +403,20 @@ Handle<SharedFunctionInfo> CompilationCache::LookupEval(
     Handle<String> source,
     Handle<Context> context,
     bool is_global,
-    StrictModeFlag strict_mode) {
+    LanguageMode language_mode,
+    int scope_position) {
   if (!IsEnabled()) {
     return Handle<SharedFunctionInfo>::null();
   }
 
   Handle<SharedFunctionInfo> result;
   if (is_global) {
-    result = eval_global_.Lookup(source, context, strict_mode);
+    result = eval_global_.Lookup(
+        source, context, language_mode, scope_position);
   } else {
-    result = eval_contextual_.Lookup(source, context, strict_mode);
+    ASSERT(scope_position != RelocInfo::kNoPosition);
+    result = eval_contextual_.Lookup(
+        source, context, language_mode, scope_position);
   }
   return result;
 }
@@ -415,28 +433,31 @@ Handle<FixedArray> CompilationCache::LookupRegExp(Handle<String> source,
 
 
 void CompilationCache::PutScript(Handle<String> source,
+                                 Handle<Context> context,
                                  Handle<SharedFunctionInfo> function_info) {
   if (!IsEnabled()) {
     return;
   }
 
-  script_.Put(source, function_info);
+  script_.Put(source, context, function_info);
 }
 
 
 void CompilationCache::PutEval(Handle<String> source,
                                Handle<Context> context,
                                bool is_global,
-                               Handle<SharedFunctionInfo> function_info) {
+                               Handle<SharedFunctionInfo> function_info,
+                               int scope_position) {
   if (!IsEnabled()) {
     return;
   }
 
   HandleScope scope(isolate());
   if (is_global) {
-    eval_global_.Put(source, context, function_info);
+    eval_global_.Put(source, context, function_info, scope_position);
   } else {
-    eval_contextual_.Put(source, context, function_info);
+    ASSERT(scope_position != RelocInfo::kNoPosition);
+    eval_contextual_.Put(source, context, function_info, scope_position);
   }
 }
 

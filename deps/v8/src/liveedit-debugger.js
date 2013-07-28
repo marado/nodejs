@@ -1,4 +1,4 @@
-// Copyright 2010 the V8 project authors. All rights reserved.
+// Copyright 2012 the V8 project authors. All rights reserved.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -46,6 +46,8 @@ Debug.LiveEdit = new function() {
 
   // Forward declaration for minifier.
   var FunctionStatus;
+
+  var NEEDS_STEP_IN_PROPERTY_NAME = "stack_update_needs_step_in";
 
   // Applies the change to the script.
   // The change is in form of list of chunks encoded in a single array as
@@ -158,6 +160,11 @@ Debug.LiveEdit = new function() {
         CheckStackActivations(replaced_function_infos, change_log);
 
     preview_description.stack_modified = dropped_functions_number != 0;
+
+    // Our current implementation requires client to manually issue "step in"
+    // command for correct stack state.
+    preview_description[NEEDS_STEP_IN_PROPERTY_NAME] =
+        preview_description.stack_modified;
 
     // Start with breakpoints. Convert their line/column positions and
     // temporary remove.
@@ -325,9 +332,10 @@ Debug.LiveEdit = new function() {
             if (old_node.children[i].live_shared_function_infos) {
               old_node.children[i].live_shared_function_infos.
                   forEach(function (old_child_info) {
-                    %LiveEditReplaceRefToNestedFunction(old_info.info,
-                                                        corresponding_child_info,
-                                                        old_child_info.info);
+                    %LiveEditReplaceRefToNestedFunction(
+                        old_info.info,
+                        corresponding_child_info,
+                        old_child_info.info);
                   });
             }
           }
@@ -381,7 +389,7 @@ Debug.LiveEdit = new function() {
           position: break_point_position,
           line: break_point.line(),
           column: break_point.column()
-      }
+      };
       break_point_old_positions.push(old_position_description);
     }
 
@@ -418,7 +426,7 @@ Debug.LiveEdit = new function() {
             position: updated_position,
             line: new_location.line,
             column: new_location.column
-        }
+        };
 
         break_point.set(original_script);
 
@@ -428,7 +436,7 @@ Debug.LiveEdit = new function() {
           new_positions: new_position_description
           } );
       }
-    }
+    };
   }
 
 
@@ -465,7 +473,7 @@ Debug.LiveEdit = new function() {
   }
   PosTranslator.prototype.GetChunks = function() {
     return this.chunks;
-  }
+  };
 
   PosTranslator.prototype.Translate = function(pos, inside_chunk_handler) {
     var array = this.chunks;
@@ -492,18 +500,18 @@ Debug.LiveEdit = new function() {
       inside_chunk_handler = PosTranslator.DefaultInsideChunkHandler;
     }
     return inside_chunk_handler(pos, chunk);
-  }
+  };
 
   PosTranslator.DefaultInsideChunkHandler = function(pos, diff_chunk) {
     Assert(false, "Cannot translate position in changed area");
-  }
+  };
 
   PosTranslator.ShiftWithTopInsideChunkHandler =
       function(pos, diff_chunk) {
     // We carelessly do not check whether we stay inside the chunk after
     // translation.
     return pos - diff_chunk.pos1 + diff_chunk.pos2;
-  }
+  };
 
   var FunctionStatus = {
       // No change to function or its inner functions; however its positions
@@ -517,7 +525,7 @@ Debug.LiveEdit = new function() {
       CHANGED: "changed",
       // Function is changed but cannot be patched.
       DAMAGED: "damaged"
-  }
+  };
 
   function CodeInfoTreeNode(code_info, children, array_index) {
     this.info = code_info;
@@ -580,19 +588,19 @@ Debug.LiveEdit = new function() {
   // children of unchanged functions are ignored.
   function MarkChangedFunctions(code_info_tree, chunks) {
 
-    // A convenient interator over diff chunks that also translates
+    // A convenient iterator over diff chunks that also translates
     // positions from old to new in a current non-changed part of script.
     var chunk_it = new function() {
       var chunk_index = 0;
       var pos_diff = 0;
-      this.current = function() { return chunks[chunk_index]; }
+      this.current = function() { return chunks[chunk_index]; };
       this.next = function() {
         var chunk = chunks[chunk_index];
         pos_diff = chunk.pos2 + chunk.len2 - (chunk.pos1 + chunk.len1);
         chunk_index++;
-      }
-      this.done = function() { return chunk_index >= chunks.length; }
-      this.TranslatePos = function(pos) { return pos + pos_diff; }
+      };
+      this.done = function() { return chunk_index >= chunks.length; };
+      this.TranslatePos = function(pos) { return pos + pos_diff; };
     };
 
     // A recursive function that processes internals of a function and all its
@@ -946,16 +954,16 @@ Debug.LiveEdit = new function() {
       BLOCKED_ON_OTHER_STACK: 3,
       BLOCKED_UNDER_NATIVE_CODE: 4,
       REPLACED_ON_ACTIVE_STACK: 5
-  }
+  };
 
   FunctionPatchabilityStatus.SymbolName = function(code) {
-    var enum = FunctionPatchabilityStatus;
-    for (name in enum) {
-      if (enum[name] == code) {
+    var enumeration = FunctionPatchabilityStatus;
+    for (name in enumeration) {
+      if (enumeration[name] == code) {
         return name;
       }
     }
-  }
+  };
 
 
   // A logical failure in liveedit process. This means that change_log
@@ -968,7 +976,7 @@ Debug.LiveEdit = new function() {
 
   Failure.prototype.toString = function() {
     return "LiveEdit Failure: " + this.message;
-  }
+  };
 
   // A testing entry.
   function GetPcFromSourcePos(func, source_pos) {
@@ -1072,11 +1080,23 @@ Debug.LiveEdit = new function() {
     return ProcessOldNode(old_code_tree);
   }
 
+  // Restarts call frame and returns value similar to what LiveEdit returns.
+  function RestartFrame(frame_mirror) {
+    var result = frame_mirror.restart();
+    if (IS_STRING(result)) {
+      throw new Failure("Failed to restart frame: " + result);
+    }
+    var result = {};
+    result[NEEDS_STEP_IN_PROPERTY_NAME] = true;
+    return result;
+  }
+  // Function is public.
+  this.RestartFrame = RestartFrame;
 
   // Functions are public for tests.
   this.TestApi = {
     PosTranslator: PosTranslator,
     CompareStrings: CompareStrings,
     ApplySingleChunkPatch: ApplySingleChunkPatch
-  }
-}
+  };
+};

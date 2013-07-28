@@ -22,9 +22,18 @@
 #ifndef object_wrap_h
 #define object_wrap_h
 
-#include <node.h>
-#include <v8.h>
+#include "node.h"
+#include "v8.h"
 #include <assert.h>
+
+// Explicitly instantiate some template classes, so we're sure they will be
+// present in the binary / shared object. There isn't much doubt that they will
+// be, but MSVC tends to complain about these things.
+#ifdef _MSC_VER
+  template class NODE_EXTERN v8::Persistent<v8::Object>;
+  template class NODE_EXTERN v8::Persistent<v8::FunctionTemplate>;
+#endif
+
 
 namespace node {
 
@@ -39,7 +48,7 @@ class NODE_EXTERN ObjectWrap {
     if (!handle_.IsEmpty()) {
       assert(handle_.IsNearDeath());
       handle_.ClearWeak();
-      handle_->SetInternalField(0, v8::Undefined());
+      handle_->SetPointerInInternalField(0, 0);
       handle_.Dispose();
       handle_.Clear();
     }
@@ -103,6 +112,8 @@ class NODE_EXTERN ObjectWrap {
 
  private:
   static void WeakCallback (v8::Persistent<v8::Value> value, void *data) {
+    v8::HandleScope scope;
+
     ObjectWrap *obj = static_cast<ObjectWrap*>(data);
     assert(value == obj->handle_);
     assert(!obj->refs_);

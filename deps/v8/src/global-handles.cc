@@ -232,7 +232,7 @@ class GlobalHandles::Node {
       VMState state(isolate, EXTERNAL);
       func(object, par);
     }
-    // Absense of explicit cleanup or revival of weak handle
+    // Absence of explicit cleanup or revival of weak handle
     // in most of the cases would lead to memory leak.
     ASSERT(state_ != NEAR_DEATH);
     return true;
@@ -384,6 +384,7 @@ GlobalHandles::GlobalHandles(Isolate* isolate)
     : isolate_(isolate),
       number_of_weak_handles_(0),
       number_of_global_object_weak_handles_(0),
+      number_of_global_handles_(0),
       first_block_(NULL),
       first_used_block_(NULL),
       first_free_(NULL),
@@ -403,6 +404,7 @@ GlobalHandles::~GlobalHandles() {
 
 Handle<Object> GlobalHandles::Create(Object* value) {
   isolate_->counters()->global_handles()->Increment();
+  number_of_global_handles_++;
   if (first_free_ == NULL) {
     first_block_ = new NodeBlock(first_block_);
     first_block_->PutNodesOnFreeList(&first_free_);
@@ -423,6 +425,7 @@ Handle<Object> GlobalHandles::Create(Object* value) {
 
 void GlobalHandles::Destroy(Object** location) {
   isolate_->counters()->global_handles()->Decrement();
+  number_of_global_handles_--;
   if (location == NULL) return;
   Node::FromLocation(location)->Release(this);
 }
@@ -445,6 +448,11 @@ void GlobalHandles::MarkIndependent(Object** location) {
 }
 
 
+bool GlobalHandles::IsIndependent(Object** location) {
+  return Node::FromLocation(location)->is_independent();
+}
+
+
 bool GlobalHandles::IsNearDeath(Object** location) {
   return Node::FromLocation(location)->IsNearDeath();
 }
@@ -459,6 +467,9 @@ void GlobalHandles::SetWrapperClassId(Object** location, uint16_t class_id) {
   Node::FromLocation(location)->set_wrapper_class_id(class_id);
 }
 
+uint16_t GlobalHandles::GetWrapperClassId(Object** location) {
+  return Node::FromLocation(location)->wrapper_class_id();
+}
 
 void GlobalHandles::IterateWeakRoots(ObjectVisitor* v) {
   for (NodeIterator it(this); !it.done(); it.Advance()) {

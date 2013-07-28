@@ -6,6 +6,14 @@ Provides a few basic operating-system related utility functions.
 
 Use `require('os')` to access this module.
 
+## os.tmpdir()
+
+Returns the operating system's default directory for temp files.
+
+## os.endianness()
+
+Returns the endianness of the CPU. Possible values are `"BE"` or `"LE"`.
+
 ## os.hostname()
 
 Returns the hostname of the operating system.
@@ -44,7 +52,9 @@ Returns the amount of free system memory in bytes.
 
 ## os.cpus()
 
-Returns an array of objects containing information about each CPU/core installed: model, speed (in MHz), and times (an object containing the number of CPU ticks spent in: user, nice, sys, idle, and irq).
+Returns an array of objects containing information about each CPU/core
+installed: model, speed (in MHz), and times (an object containing the number of
+milliseconds the CPU/core spent in: user, nice, sys, idle, and irq).
 
 Example inspection of os.cpus:
 
@@ -129,3 +139,6 @@ Get a list of network interfaces:
       vmnet8: [ { address: '10.88.88.1', family: 'IPv4', internal: false } ],
       ppp0: [ { address: '10.2.0.231', family: 'IPv4', internal: false } ] }
 
+## os.EOL
+
+A constant defining the appropriate End-of-line marker for the operating system.

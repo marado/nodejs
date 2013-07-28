@@ -1,4 +1,4 @@
-// Copyright 2011 the V8 project authors. All rights reserved.
+// Copyright 2012 the V8 project authors. All rights reserved.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -31,6 +31,15 @@ namespace v8 {
 namespace internal {
 
 
+void LookupResult::Iterate(ObjectVisitor* visitor) {
+  LookupResult* current = this;  // Could be NULL.
+  while (current != NULL) {
+    visitor->VisitPointer(BitCast<Object**>(&current->holder_));
+    current = current->next_;
+  }
+}
+
+
 #ifdef OBJECT_PRINT
 void LookupResult::Print(FILE* out) {
   if (!IsFound()) {
@@ -45,18 +54,6 @@ void LookupResult::Print(FILE* out) {
     case NORMAL:
       PrintF(out, " -type = normal\n");
       PrintF(out, " -entry = %d", GetDictionaryEntry());
-      break;
-    case MAP_TRANSITION:
-      PrintF(out, " -type = map transition\n");
-      PrintF(out, " -map:\n");
-      GetTransitionMap()->Print(out);
-      PrintF(out, "\n");
-      break;
-    case ELEMENTS_TRANSITION:
-      PrintF(out, " -type = elements transition\n");
-      PrintF(out, " -map:\n");
-      GetTransitionMap()->Print(out);
-      PrintF(out, "\n");
       break;
     case CONSTANT_FUNCTION:
       PrintF(out, " -type = constant function\n");
@@ -80,11 +77,31 @@ void LookupResult::Print(FILE* out) {
     case INTERCEPTOR:
       PrintF(out, " -type = lookup interceptor\n");
       break;
-    case CONSTANT_TRANSITION:
-      PrintF(out, " -type = constant property transition\n");
-      break;
-    case NULL_DESCRIPTOR:
-      PrintF(out, " =type = null descriptor\n");
+    case TRANSITION:
+      switch (GetTransitionDetails().type()) {
+        case FIELD:
+          PrintF(out, " -type = map transition\n");
+          PrintF(out, " -map:\n");
+          GetTransitionMap()->Print(out);
+          PrintF(out, "\n");
+          return;
+        case CONSTANT_FUNCTION:
+          PrintF(out, " -type = constant property transition\n");
+          PrintF(out, " -map:\n");
+          GetTransitionMap()->Print(out);
+          PrintF(out, "\n");
+          return;
+        case CALLBACKS:
+          PrintF(out, " -type = callbacks transition\n");
+          PrintF(out, " -callback object:\n");
+          GetCallbackObject()->Print(out);
+          return;
+        default:
+          UNREACHABLE();
+          return;
+      }
+    case NONEXISTENT:
+      UNREACHABLE();
       break;
   }
 }
@@ -95,7 +112,7 @@ void Descriptor::Print(FILE* out) {
   GetKey()->ShortPrint(out);
   PrintF(out, " @ ");
   GetValue()->ShortPrint(out);
-  PrintF(out, " %d\n", GetDetails().index());
+  PrintF(out, " %d\n", GetDetails().descriptor_index());
 }
 
 

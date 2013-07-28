@@ -39,6 +39,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+var common = require('../common');
 var punycode = require('punycode');
 var assert = require('assert');
 
@@ -177,5 +178,18 @@ for (var encoded in tests) {
     errors++;
   }
 }
+
+// BMP code point
+assert.equal(punycode.ucs2.encode([0x61]), 'a');
+// supplementary code point (surrogate pair)
+assert.equal(punycode.ucs2.encode([0x1D306]), '\uD834\uDF06');
+// high surrogate
+assert.equal(punycode.ucs2.encode([0xD800]), '\uD800');
+// high surrogate followed by non-surrogates
+assert.equal(punycode.ucs2.encode([0xD800, 0x61, 0x62]), '\uD800ab');
+// low surrogate
+assert.equal(punycode.ucs2.encode([0xDC00]), '\uDC00');
+// low surrogate followed by non-surrogates
+assert.equal(punycode.ucs2.encode([0xDC00, 0x61, 0x62]), '\uDC00ab');
 
 assert.equal(errors, 0);

@@ -4,12 +4,11 @@ Priority: extra
 Maintainer: Debian Javascript Maintainers <pkg-javascript-devel@lists.alioth.debian.org>
 Uploaders: Jérémy Lal <kapouer@melix.org>,
  Jonas Smedegaard <dr@jones.dk>
-DM-Upload-Allowed: yes
 Build-Depends: @cdbs@
 Standards-Version: 3.9.4
 Homepage: http://nodejs.org/
-Vcs-Browser: http://git.debian.org/?p=collab-maint/nodejs.git
-Vcs-Git: git://git.debian.org/git/collab-maint/nodejs.git
+Vcs-Browser: http://anonscm.debian.org/gitweb/?p=collab-maint/nodejs.git
+Vcs-Git: git://anonscm.debian.org/collab-maint/nodejs.git
 
 Package: nodejs-dev
 Section: devel
@@ -48,7 +47,7 @@ Section: debug
 Architecture: any
 Depends: ${misc:Depends},
  nodejs (= ${binary:Version})
-Suggests: libv8-dbg
+Recommends: libv8-3.14-dbg
 Description: evented I/O for V8 javascript (debug)
  Node.js is a platform built on Chrome's JavaScript runtime for easily
  building fast, scalable network applications. Node.js uses an

@@ -19,6 +19,7 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+var common = require('../common');
 var net = require('net'),
     cp = require('child_process'),
     util = require('util');
@@ -35,9 +36,11 @@ if (process.argv[2] === 'server') {
       server.close();
     });
   });
-  server.listen(1234, '127.0.0.1');
 
-  console.log('Server running.');
+  server.listen(common.PORT, '127.0.0.1', function() {
+    console.log('Server running.');
+  });
+
 } else {
   // Client
 
@@ -46,7 +49,7 @@ if (process.argv[2] === 'server') {
   serverProcess.stderr.pipe(process.stdout);
 
   serverProcess.stdout.once('data', function() {
-    var client = net.createConnection(1234, '127.0.0.1');
+    var client = net.createConnection(common.PORT, '127.0.0.1');
     client.on('connect', function() {
       var alot = new Buffer(1024),
           alittle = new Buffer(1);

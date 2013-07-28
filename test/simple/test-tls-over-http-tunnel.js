@@ -19,9 +19,6 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
-
-
 if (!process.versions.openssl) {
   console.error('Skipping because node compiled without OpenSSL.');
   process.exit(0);
@@ -49,8 +46,8 @@ var options = {
 var server = https.createServer(options, function(req, res) {
   console.log('SERVER: got request');
   res.writeHead(200, {
-    'content-type': 'text/plain',
-   });
+    'content-type': 'text/plain'
+  });
   console.log('SERVER: sending response');
   res.end('hello world\n');
 });
@@ -63,9 +60,9 @@ var proxy = net.createServer(function(clientSocket) {
   clientSocket.on('data', function(chunk) {
     if (!serverSocket) {
       // Verify the CONNECT request
-      assert.equal('CONNECT localhost:' + common.PORT + ' HTTP/1.1\r\n' + 
-                   'Proxy-Connections: keep-alive\r\nContent-Length:'   +
-                   ' 0\r\nHost: localhost:' + proxyPort + '\r\n\r\n',
+      assert.equal('CONNECT localhost:' + common.PORT + ' HTTP/1.1\r\n' +
+                   'Proxy-Connections: keep-alive\r\n' +
+                   'Host: localhost:' + proxyPort + '\r\n\r\n',
                    chunk);
 
       console.log('PROXY: got CONNECT request');
@@ -103,28 +100,45 @@ server.listen(common.PORT);
 proxy.listen(proxyPort, function() {
   console.log('CLIENT: Making CONNECT request');
 
-  http.request({
+  var req = http.request({
     port: proxyPort,
     method: 'CONNECT',
     path: 'localhost:' + common.PORT,
     headers: {
-      'Proxy-Connections': 'keep-alive',
-      'Content-Length': 0
+      'Proxy-Connections': 'keep-alive'
     }
-  }, function(res) {
+  });
+  req.useChunkedEncodingByDefault = false; // for v0.6
+  req.on('response', onResponse); // for v0.6
+  req.on('upgrade', onUpgrade);   // for v0.6
+  req.on('connect', onConnect);   // for v0.7 or later
+  req.end();
+
+  function onResponse(res) {
+    // Very hacky. This is necessary to avoid http-parser leaks.
+    res.upgrade = true;
+  }
+
+  function onUpgrade(res, socket, head) {
+    // Hacky.
+    process.nextTick(function() {
+      onConnect(res, socket, head);
+    });
+  }
+
+  function onConnect(res, socket, header) {
     assert.equal(200, res.statusCode);
     console.log('CLIENT: got CONNECT response');
 
     // detach the socket
-    res.socket.emit('agentRemove');
-    res.socket.removeAllListeners('data');
-    res.socket.removeAllListeners('close');
-    res.socket.removeAllListeners('error');
-    res.socket.removeAllListeners('drain');
-    res.socket.removeAllListeners('end');
-    res.socket.ondata = null;
-    res.socket.onend = null;
-    res.socket.ondrain = null;
+    socket.removeAllListeners('data');
+    socket.removeAllListeners('close');
+    socket.removeAllListeners('error');
+    socket.removeAllListeners('drain');
+    socket.removeAllListeners('end');
+    socket.ondata = null;
+    socket.onend = null;
+    socket.ondrain = null;
 
     console.log('CLIENT: Making HTTPS request');
 
@@ -132,8 +146,9 @@ proxy.listen(proxyPort, function() {
       path: '/foo',
       key: key,
       cert: cert,
-      socket: res.socket,  // reuse the socket
+      socket: socket,  // reuse the socket
       agent: false,
+      rejectUnauthorized: false
     }, function(res) {
       assert.equal(200, res.statusCode);
 
@@ -147,8 +162,14 @@ proxy.listen(proxyPort, function() {
         proxy.close();
         server.close();
       });
+    }).on('error', function(er) {
+      // We're ok with getting ECONNRESET in this test, but it's
+      // timing-dependent, and thus unreliable. Any other errors
+      // are just failures, though.
+      if (er.code !== 'ECONNRESET')
+        throw er;
     }).end();
-  }).end();
+  }
 });
 
 process.on('exit', function() {

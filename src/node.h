@@ -58,32 +58,16 @@
 # define SIGKILL         9
 #endif
 
-#include <uv.h>
-#include <v8.h>
+#include "uv.h"
+#include "v8.h"
 #include <sys/types.h> /* struct stat */
 #include <sys/stat.h>
 #include <assert.h>
 
-#include <node_object_wrap.h>
+#include "node_object_wrap.h"
 
-#if defined(_MSC_VER)
-#undef interface
-#endif
-
-#ifndef offset_of
-// g++ in strict mode complains loudly about the system offsetof() macro
-// because it uses NULL as the base address.
-#define offset_of(type, member) \
-  ((intptr_t) ((char *) &(((type *) 8)->member) - 8))
-#endif
-
-#ifndef container_of
-#define container_of(ptr, type, member) \
-  ((type *) ((char *) (ptr) - offset_of(type, member)))
-#endif
-
-#ifndef ARRAY_SIZE
-#define ARRAY_SIZE(a) (sizeof((a)) / sizeof((a)[0]))
+#if NODE_WANT_INTERNALS
+# include "node_internals.h"
 #endif
 
 #ifndef NODE_STRINGIFY
@@ -99,9 +83,12 @@
 # endif
 #endif
 
+
 namespace node {
 
-int Start(int argc, char *argv[]);
+NODE_EXTERN extern bool no_deprecation;
+
+NODE_EXTERN int Start(int argc, char *argv[]);
 
 char** Init(int argc, char *argv[]);
 v8::Handle<v8::Object> SetupProcessObject(int argc, char *argv[]);
@@ -117,68 +104,50 @@ void EmitExit(v8::Handle<v8::Object> process);
 
 #define NODE_DEFINE_CONSTANT(target, constant)                            \
   (target)->Set(v8::String::NewSymbol(#constant),                         \
-                v8::Integer::New(constant),                               \
+                v8::Number::New(constant),                                \
                 static_cast<v8::PropertyAttribute>(                       \
                     v8::ReadOnly|v8::DontDelete))
 
-#define NODE_SET_METHOD(obj, name, callback)                              \
-  obj->Set(v8::String::NewSymbol(name),                                   \
-           v8::FunctionTemplate::New(callback)->GetFunction())
+template <typename target_t>
+void SetMethod(target_t obj, const char* name,
+        v8::InvocationCallback callback)
+{
+    obj->Set(v8::String::NewSymbol(name),
+        v8::FunctionTemplate::New(callback)->GetFunction());
+}
 
-#define NODE_SET_PROTOTYPE_METHOD(templ, name, callback)                  \
-do {                                                                      \
-  v8::Local<v8::Signature> __callback##_SIG = v8::Signature::New(templ);  \
-  v8::Local<v8::FunctionTemplate> __callback##_TEM =                      \
-    v8::FunctionTemplate::New(callback, v8::Handle<v8::Value>(),          \
-                          __callback##_SIG);                              \
-  templ->PrototypeTemplate()->Set(v8::String::NewSymbol(name),            \
-                                  __callback##_TEM);                      \
-} while (0)
+template <typename target_t>
+void SetPrototypeMethod(target_t target,
+        const char* name, v8::InvocationCallback callback)
+{
+    v8::Local<v8::FunctionTemplate> templ = v8::FunctionTemplate::New(callback);
+    target->PrototypeTemplate()->Set(v8::String::NewSymbol(name), templ);
+}
 
-enum encoding {ASCII, UTF8, BASE64, UCS2, BINARY, HEX};
+// for backwards compatibility
+#define NODE_SET_METHOD node::SetMethod
+#define NODE_SET_PROTOTYPE_METHOD node::SetPrototypeMethod
+
+enum encoding {ASCII, UTF8, BASE64, UCS2, BINARY, HEX, BUFFER};
 enum encoding ParseEncoding(v8::Handle<v8::Value> encoding_v,
                             enum encoding _default = BINARY);
 NODE_EXTERN void FatalException(v8::TryCatch &try_catch);
 void DisplayExceptionLine(v8::TryCatch &try_catch); // hack
 
-v8::Local<v8::Value> Encode(const void *buf, size_t len,
-                            enum encoding encoding = BINARY);
+NODE_EXTERN v8::Local<v8::Value> Encode(const void *buf, size_t len,
+                                        enum encoding encoding = BINARY);
 
 // Returns -1 if the handle was not valid for decoding
-ssize_t DecodeBytes(v8::Handle<v8::Value>,
-                    enum encoding encoding = BINARY);
+NODE_EXTERN ssize_t DecodeBytes(v8::Handle<v8::Value>,
+                                enum encoding encoding = BINARY);
 
 // returns bytes written.
-ssize_t DecodeWrite(char *buf,
-                    size_t buflen,
-                    v8::Handle<v8::Value>,
-                    enum encoding encoding = BINARY);
+NODE_EXTERN ssize_t DecodeWrite(char *buf,
+                                size_t buflen,
+                                v8::Handle<v8::Value>,
+                                enum encoding encoding = BINARY);
 
-// Use different stat structs & calls on windows and posix;
-// on windows, _stati64 is utf-8 and big file aware.
-#if __POSIX__
-# define NODE_STAT        stat
-# define NODE_FSTAT       fstat
-# define NODE_STAT_STRUCT struct stat
-#else // _WIN32
-# define NODE_STAT        _stati64
-# define NODE_FSTAT       _fstati64
-# define NODE_STAT_STRUCT struct _stati64
-#endif
-
-v8::Local<v8::Object> BuildStatsObject(NODE_STAT_STRUCT *s);
-
-
-/**
- * Call this when your constructor is invoked as a regular function, e.g.
- * Buffer(10) instead of new Buffer(10).
- * @param constructorTemplate Constructor template to instantiate from.
- * @param args The arguments object passed to your constructor.
- * @see v8::Arguments::IsConstructCall
- */
-v8::Handle<v8::Value> FromConstructorTemplate(
-    v8::Persistent<v8::FunctionTemplate>& constructorTemplate,
-    const v8::Arguments& args);
+v8::Local<v8::Object> BuildStatsObject(const uv_statbuf_t* s);
 
 
 static inline v8::Persistent<v8::Function>* cb_persist(
@@ -218,11 +187,15 @@ NODE_EXTERN v8::Local<v8::Value> WinapiErrnoException(int errorno,
 
 const char *signo_string(int errorno);
 
+
+NODE_EXTERN typedef void (* addon_register_func)(
+    v8::Handle<v8::Object> exports, v8::Handle<v8::Value> module);
+
 struct node_module_struct {
   int version;
   void *dso_handle;
   const char *filename;
-  void (*register_func) (v8::Handle<v8::Object> target);
+  node::addon_register_func register_func;
   const char *modname;
 };
 
@@ -232,9 +205,9 @@ node_module_struct* get_builtin_module(const char *name);
  * When this version number is changed, node.js will refuse
  * to load older modules.  This should be done whenever
  * an API is broken in the C++ side, including in v8 or
- * other dependencies
+ * other dependencies.
  */
-#define NODE_MODULE_VERSION (1)
+#define NODE_MODULE_VERSION 11
 
 #define NODE_STANDARD_MODULE_STUFF \
           NODE_MODULE_VERSION,     \
@@ -252,7 +225,7 @@ node_module_struct* get_builtin_module(const char *name);
     NODE_MODULE_EXPORT node::node_module_struct modname ## _module =  \
     {                                                                 \
       NODE_STANDARD_MODULE_STUFF,                                     \
-      regfunc,                                                        \
+      (node::addon_register_func)regfunc,                             \
       NODE_STRINGIFY(modname)                                         \
     };                                                                \
   }
@@ -260,11 +233,30 @@ node_module_struct* get_builtin_module(const char *name);
 #define NODE_MODULE_DECL(modname) \
   extern "C" node::node_module_struct modname ## _module;
 
+/* Called after the event loop exits but before the VM is disposed.
+ * Callbacks are run in reverse order of registration, i.e. newest first.
+ */
+NODE_EXTERN void AtExit(void (*cb)(void* arg), void* arg = 0);
+
 NODE_EXTERN void SetErrno(uv_err_t err);
-NODE_EXTERN void MakeCallback(v8::Handle<v8::Object> object,
-                              const char* method,
-                              int argc,
-                              v8::Handle<v8::Value> argv[]);
+NODE_EXTERN v8::Handle<v8::Value>
+MakeCallback(const v8::Handle<v8::Object> object,
+             const char* method,
+             int argc,
+             v8::Handle<v8::Value> argv[]);
+
+NODE_EXTERN v8::Handle<v8::Value>
+MakeCallback(const v8::Handle<v8::Object> object,
+             const v8::Handle<v8::String> symbol,
+             int argc,
+             v8::Handle<v8::Value> argv[]);
+
+NODE_EXTERN v8::Handle<v8::Value>
+MakeCallback(const v8::Handle<v8::Object> object,
+             const v8::Handle<v8::Function> callback,
+             int argc,
+             v8::Handle<v8::Value> argv[]);
 
 }  // namespace node
+
 #endif  // SRC_NODE_H_

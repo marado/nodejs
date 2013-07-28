@@ -26,7 +26,7 @@
 #define MAX_CONNS 1000
 
 #undef NANOSEC
-#define NANOSEC ((uint64_t)10e8)
+#define NANOSEC ((uint64_t) 1e9)
 
 #undef DEBUG
 #define DEBUG 0
@@ -287,7 +287,7 @@ static int pound_it(int concurrency,
   r = do_connect(concurrency, make_connect, arg);
   ASSERT(!r);
 
-  uv_run(loop);
+  uv_run(loop, UV_RUN_DEFAULT);
 
   end_time = uv_hrtime();
 
@@ -300,6 +300,7 @@ static int pound_it(int concurrency,
        closed_streams / secs,
        conns_failed);
 
+  MAKE_VALGRIND_HAPPY();
   return 0;
 }
 

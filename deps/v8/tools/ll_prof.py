@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright 2010 the V8 project authors. All rights reserved.
+# Copyright 2012 the V8 project authors. All rights reserved.
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
 # met:
@@ -68,14 +68,8 @@ Examples:
 """
 
 
-# Must match kGcFakeMmap.
-V8_GC_FAKE_MMAP = "/tmp/__v8_gc__"
-
 JS_ORIGIN = "js"
 JS_SNAPSHOT_ORIGIN = "js-snapshot"
-
-OBJDUMP_BIN = disasm.OBJDUMP_BIN
-
 
 class Code(object):
   """Code object."""
@@ -334,6 +328,7 @@ class LogReader(object):
   _ARCH_TO_POINTER_TYPE_MAP = {
     "ia32": ctypes.c_uint32,
     "arm": ctypes.c_uint32,
+    "mips": ctypes.c_uint32,
     "x64": ctypes.c_uint64
   }
 
@@ -399,12 +394,16 @@ class LogReader(object):
         code = Code(name, start_address, end_address, origin, origin_offset)
         conficting_code = self.code_map.Find(start_address)
         if conficting_code:
-          LogReader._HandleCodeConflict(conficting_code, code)
-          # TODO(vitalyr): this warning is too noisy because of our
-          # attempts to reconstruct code log from the snapshot.
-          # print >>sys.stderr, \
-          #     "Warning: Skipping duplicate code log entry %s" % code
-          continue
+          if not (conficting_code.start_address == code.start_address and
+            conficting_code.end_address == code.end_address):
+            self.code_map.Remove(conficting_code)
+          else:
+            LogReader._HandleCodeConflict(conficting_code, code)
+            # TODO(vitalyr): this warning is too noisy because of our
+            # attempts to reconstruct code log from the snapshot.
+            # print >>sys.stderr, \
+            #     "Warning: Skipping duplicate code log entry %s" % code
+            continue
         self.code_map.Add(code)
         continue
 
@@ -634,7 +633,7 @@ class TraceReader(object):
     # Read null-terminated filename.
     filename = self.trace[offset + self.header_size + ctypes.sizeof(mmap_info):
                           offset + header.size]
-    mmap_info.filename = filename[:filename.find(chr(0))]
+    mmap_info.filename = HOST_ROOT + filename[:filename.find(chr(0))]
     return mmap_info
 
   def ReadSample(self, header, offset):
@@ -668,7 +667,9 @@ OBJDUMP_SECTION_HEADER_RE = re.compile(
 OBJDUMP_SYMBOL_LINE_RE = re.compile(
   r"^([a-f0-9]+)\s(.{7})\s(\S+)\s+([a-f0-9]+)\s+(?:\.hidden\s+)?(.*)$")
 OBJDUMP_DYNAMIC_SYMBOLS_START_RE = re.compile(
-   r"^DYNAMIC SYMBOL TABLE")
+  r"^DYNAMIC SYMBOL TABLE")
+OBJDUMP_SKIP_RE = re.compile(
+  r"^.*ld\.so\.cache$")
 KERNEL_ALLSYMS_FILE = "/proc/kallsyms"
 PERF_KERNEL_ALLSYMS_RE = re.compile(
   r".*kallsyms.*")
@@ -686,6 +687,8 @@ class LibraryRepo(object):
     # Skip kernel mmaps when requested using the fact that their tid
     # is 0.
     if mmap_info.tid == 0 and not options.kernel:
+      return True
+    if OBJDUMP_SKIP_RE.match(mmap_info.filename):
       return True
     if PERF_KERNEL_ALLSYMS_RE.match(mmap_info.filename):
       return self._LoadKernelSymbols(code_map)
@@ -849,6 +852,15 @@ if __name__ == "__main__":
                     default=False,
                     action="store_true",
                     help="no auxiliary messages [default: %default]")
+  parser.add_option("--gc-fake-mmap",
+                    default="/tmp/__v8_gc__",
+                    help="gc fake mmap file [default: %default]")
+  parser.add_option("--objdump",
+                    default="/usr/bin/objdump",
+                    help="objdump tool to use [default: %default]")
+  parser.add_option("--host-root",
+                    default="",
+                    help="Path to the host root [default: %default]")
   options, args = parser.parse_args()
 
   if not options.quiet:
@@ -859,6 +871,14 @@ if __name__ == "__main__":
     else:
       print "V8 log: %s, %s.ll (no snapshot)" % (options.log, options.log)
     print "Perf trace file: %s" % options.trace
+
+  V8_GC_FAKE_MMAP = options.gc_fake_mmap
+  HOST_ROOT = options.host_root
+  if os.path.exists(options.objdump):
+    disasm.OBJDUMP_BIN = options.objdump
+    OBJDUMP_BIN = options.objdump
+  else:
+    print "Cannot find %s, falling back to default objdump" % options.objdump
 
   # Stats.
   events = 0
@@ -896,7 +916,7 @@ if __name__ == "__main__":
     if header.type == PERF_RECORD_MMAP:
       start = time.time()
       mmap_info = trace_reader.ReadMmap(header, offset)
-      if mmap_info.filename == V8_GC_FAKE_MMAP:
+      if mmap_info.filename == HOST_ROOT + V8_GC_FAKE_MMAP:
         log_reader.ReadUpToGC()
       else:
         library_repo.Load(mmap_info, code_map, options)

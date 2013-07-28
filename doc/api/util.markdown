@@ -6,7 +6,7 @@ These functions are in the module `'util'`. Use `require('util')` to access
 them.
 
 
-## util.format()
+## util.format(format, [...])
 
 Returns a formatted string using the first argument as a `printf`-like format.
 
@@ -44,6 +44,20 @@ output `string` immediately to `stderr`.
 
     require('util').debug('message on stderr');
 
+## util.error([...])
+
+Same as `util.debug()` except this will output all arguments immediately to
+`stderr`.
+
+## util.puts([...])
+
+A synchronous output function. Will block the process and output all arguments
+to `stdout` with newlines after each argument.
+
+## util.print([...])
+
+A synchronous output function. Will block the process, cast each argument to a
+string then output to `stdout`. Does not place newlines after each argument.
 
 ## util.log(string)
 
@@ -52,27 +66,66 @@ Output with timestamp on `stdout`.
     require('util').log('Timestamped message.');
 
 
-## util.inspect(object, [showHidden], [depth], [colors])
+## util.inspect(object, [options])
 
 Return a string representation of `object`, which is useful for debugging.
 
-If `showHidden` is `true`, then the object's non-enumerable properties will be
-shown too. Defaults to `false`.
+An optional *options* object may be passed that alters certain aspects of the
+formatted string:
 
-If `depth` is provided, it tells `inspect` how many times to recurse while
-formatting the object. This is useful for inspecting large complicated objects.
+ - `showHidden` - if `true` then the object's non-enumerable properties will be
+   shown too. Defaults to `false`.
 
-The default is to only recurse twice.  To make it recurse indefinitely, pass
-in `null` for `depth`.
+ - `depth` - tells `inspect` how many times to recurse while formatting the
+   object. This is useful for inspecting large complicated objects. Defaults to
+   `2`. To make it recurse indefinitely pass `null`.
 
-If `colors` is `true`, the output will be styled with ANSI color codes.
-Defaults to `false`.
+ - `colors` - if `true`, then the output will be styled with ANSI color codes.
+   Defaults to `false`. Colors are customizable, see below.
+
+ - `customInspect` - if `false`, then custom `inspect()` functions defined on the
+   objects being inspected won't be called. Defaults to `true`.
 
 Example of inspecting all properties of the `util` object:
 
     var util = require('util');
 
-    console.log(util.inspect(util, true, null));
+    console.log(util.inspect(util, { showHidden: true, depth: null }));
+
+### Customizing `util.inspect` colors
+
+Color output (if enabled) of `util.inspect` is customizable globally
+via `util.inspect.styles` and `util.inspect.colors` objects.
+
+`util.inspect.styles` is a map assigning each style a color
+from `util.inspect.colors`.
+Highlighted styles and their default values are:
+ * `number` (yellow)
+ * `boolean` (yellow)
+ * `string` (green)
+ * `date` (magenta)
+ * `regexp` (red)
+ * `null` (bold)
+ * `undefined` (grey)
+ * `special` - only function at this time (cyan)
+ * `name` (intentionally no styling)
+
+Predefined color codes are: `white`, `grey`, `black`, `blue`, `cyan`, 
+`green`, `magenta`, `red` and `yellow`.
+There are also `bold`, `italic`, `underline` and `inverse` codes.
+
+Objects also may define their own `inspect(depth)` function which `util.inspect()`
+will invoke and use the result of when inspecting the object:
+
+    var util = require('util');
+
+    var obj = { name: 'nate' };
+    obj.inspect = function(depth) {
+      return '{' + this.name + '}';
+    };
+
+    util.inspect(obj);
+      // "{nate}"
 
 
 ## util.isArray(object)
@@ -133,7 +186,7 @@ Returns `true` if the given "object" is an `Error`. `false` otherwise.
 
 ## util.pump(readableStream, writableStream, [callback])
 
-Experimental
+    Stability: 0 - Deprecated: Use readableStream.pipe(writableStream)
 
 Read the data from `readableStream` and send it to the `writableStream`.
 When `writableStream.write(data)` returns `false` `readableStream` will be

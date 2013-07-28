@@ -22,11 +22,8 @@
 #include <assert.h>
 
 #include "uv.h"
-#include "../uv-common.h"
 #include "internal.h"
 
-/* Whether ipv6 is supported */
-int uv_allow_ipv6;
 
 /* Whether there are any non-IFS LSPs stacked on TCP */
 int uv_tcp_non_ifs_lsp_ipv4;
@@ -75,13 +72,13 @@ BOOL uv_get_connectex_function(SOCKET socket, LPFN_CONNECTEX* target) {
 }
 
 
-void uv_winsock_init() {
-  const GUID wsaid_connectex            = WSAID_CONNECTEX;
-  const GUID wsaid_acceptex             = WSAID_ACCEPTEX;
-  const GUID wsaid_getacceptexsockaddrs = WSAID_GETACCEPTEXSOCKADDRS;
-  const GUID wsaid_disconnectex         = WSAID_DISCONNECTEX;
-  const GUID wsaid_transmitfile         = WSAID_TRANSMITFILE;
+static int error_means_no_support(DWORD error) {
+  return error == WSAEPROTONOSUPPORT || error == WSAESOCKTNOSUPPORT ||
+         error == WSAEPFNOSUPPORT || error == WSAEAFNOSUPPORT;
+}
 
+
+void uv_winsock_init() {
   WSADATA wsa_data;
   int errorno;
   SOCKET dummy;
@@ -100,48 +97,48 @@ void uv_winsock_init() {
 
   /* Detect non-IFS LSPs */
   dummy = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
-  if (dummy == INVALID_SOCKET) {
-    uv_fatal_error(WSAGetLastError(), "socket");
-  }
 
-  opt_len = (int) sizeof protocol_info;
-  if (!getsockopt(dummy,
-                  SOL_SOCKET,
-                  SO_PROTOCOL_INFOW,
-                  (char*) &protocol_info,
-                  &opt_len) == SOCKET_ERROR) {
-    uv_fatal_error(WSAGetLastError(), "socket");
-  }
-
-  if (!(protocol_info.dwServiceFlags1 & XP1_IFS_HANDLES)) {
-    uv_tcp_non_ifs_lsp_ipv4 = 1;
-  }
-
-  if (closesocket(dummy) == SOCKET_ERROR) {
-    uv_fatal_error(WSAGetLastError(), "closesocket");
-  }
-
-  /* Detect IPV6 support and non-IFS LSPs */
-  dummy = socket(AF_INET6, SOCK_STREAM, IPPROTO_IP);
   if (dummy != INVALID_SOCKET) {
-    uv_allow_ipv6 = TRUE;
-
     opt_len = (int) sizeof protocol_info;
     if (!getsockopt(dummy,
                     SOL_SOCKET,
                     SO_PROTOCOL_INFOW,
                     (char*) &protocol_info,
-                    &opt_len) == SOCKET_ERROR) {
-      uv_fatal_error(WSAGetLastError(), "socket");
-    }
+                    &opt_len) == SOCKET_ERROR)
+      uv_fatal_error(WSAGetLastError(), "getsockopt");
 
-    if (!(protocol_info.dwServiceFlags1 & XP1_IFS_HANDLES)) {
-      uv_tcp_non_ifs_lsp_ipv6 = 1;
-    }
+    if (!(protocol_info.dwServiceFlags1 & XP1_IFS_HANDLES))
+      uv_tcp_non_ifs_lsp_ipv4 = 1;
 
-    if (closesocket(dummy) == SOCKET_ERROR) {
+    if (closesocket(dummy) == SOCKET_ERROR)
       uv_fatal_error(WSAGetLastError(), "closesocket");
-    }
+
+  } else if (!error_means_no_support(WSAGetLastError())) {
+    /* Any error other than "socket type not supported" is fatal. */
+    uv_fatal_error(WSAGetLastError(), "socket");
+  }
+
+  /* Detect IPV6 support and non-IFS LSPs */
+  dummy = socket(AF_INET6, SOCK_STREAM, IPPROTO_IP);
+
+  if (dummy != INVALID_SOCKET) {
+    opt_len = (int) sizeof protocol_info;
+    if (!getsockopt(dummy,
+                    SOL_SOCKET,
+                    SO_PROTOCOL_INFOW,
+                    (char*) &protocol_info,
+                    &opt_len) == SOCKET_ERROR)
+      uv_fatal_error(WSAGetLastError(), "getsockopt");
+
+    if (!(protocol_info.dwServiceFlags1 & XP1_IFS_HANDLES))
+      uv_tcp_non_ifs_lsp_ipv6 = 1;
+
+    if (closesocket(dummy) == SOCKET_ERROR)
+      uv_fatal_error(WSAGetLastError(), "closesocket");
+
+  } else if (!error_means_no_support(WSAGetLastError())) {
+    /* Any error other than "socket type not supported" is fatal. */
+    uv_fatal_error(WSAGetLastError(), "socket");
   }
 }
 
@@ -453,6 +450,93 @@ int WSAAPI uv_wsarecvfrom_workaround(SOCKET socket, WSABUF* buffers,
     case STATUS_RECEIVE_PARTIAL:
       error = ERROR_SUCCESS;
       *flags = MSG_PARTIAL;
+      break;
+
+    default:
+      error = uv_ntstatus_to_winsock_error(status);
+      break;
+  }
+
+  WSASetLastError(error);
+
+  if (error == ERROR_SUCCESS) {
+    return 0;
+  } else {
+    return SOCKET_ERROR;
+  }
+}
+
+
+int WSAAPI uv_msafd_poll(SOCKET socket, AFD_POLL_INFO* info,
+    OVERLAPPED* overlapped) {
+  IO_STATUS_BLOCK iosb;
+  IO_STATUS_BLOCK* iosb_ptr;
+  HANDLE event = NULL;
+  void* apc_context;
+  NTSTATUS status;
+  DWORD error;
+
+  if (overlapped != NULL) {
+    /* Overlapped operation. */
+    iosb_ptr = (IO_STATUS_BLOCK*) &overlapped->Internal;
+    event = overlapped->hEvent;
+
+    /* Do not report iocp completion if hEvent is tagged. */
+    if ((uintptr_t) event & 1) {
+      event = (HANDLE)((uintptr_t) event & ~(uintptr_t) 1);
+      apc_context = NULL;
+    } else {
+      apc_context = overlapped;
+    }
+
+  } else {
+    /* Blocking operation. */
+    iosb_ptr = &iosb;
+    event = CreateEvent(NULL, FALSE, FALSE, NULL);
+    if (event == NULL) {
+      return SOCKET_ERROR;
+    }
+    apc_context = NULL;
+  }
+
+  iosb_ptr->Status = STATUS_PENDING;
+  status = pNtDeviceIoControlFile((HANDLE) socket,
+                                  event,
+                                  NULL,
+                                  apc_context,
+                                  iosb_ptr,
+                                  IOCTL_AFD_POLL,
+                                  info,
+                                  sizeof *info,
+                                  info,
+                                  sizeof *info);
+
+  if (overlapped == NULL) {
+    /* If this is a blocking operation, wait for the event to become */
+    /* signaled, and then grab the real status from the io status block. */
+    if (status == STATUS_PENDING) {
+      DWORD r = WaitForSingleObject(event, INFINITE);
+
+      if (r == WAIT_FAILED) {
+        DWORD saved_error = GetLastError();
+        CloseHandle(event);
+        WSASetLastError(saved_error);
+        return SOCKET_ERROR;
+      }
+
+      status = iosb.Status;
+    }
+
+    CloseHandle(event);
+  }
+
+  switch (status) {
+    case STATUS_SUCCESS:
+      error = ERROR_SUCCESS;
+      break;
+
+    case STATUS_PENDING:
+      error = WSA_IO_PENDING;
       break;
 
     default:

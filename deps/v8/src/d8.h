@@ -1,4 +1,4 @@
-// Copyright 2011 the V8 project authors. All rights reserved.
+// Copyright 2012 the V8 project authors. All rights reserved.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -31,7 +31,7 @@
 #ifndef V8_SHARED
 #include "allocation.h"
 #include "hashmap.h"
-#include "smart-array-pointer.h"
+#include "smart-pointers.h"
 #include "v8.h"
 #else
 #include "../include/v8.h"
@@ -67,7 +67,7 @@ class CounterCollection {
   CounterCollection();
   Counter* GetNextCounter();
  private:
-  static const unsigned kMaxCounters = 256;
+  static const unsigned kMaxCounters = 512;
   uint32_t magic_number_;
   uint32_t max_counters_;
   uint32_t max_name_size_;
@@ -116,14 +116,13 @@ class CounterMap {
 #endif  // V8_SHARED
 
 
-#ifndef V8_SHARED
 class LineEditor {
  public:
   enum Type { DUMB = 0, READLINE = 1 };
   LineEditor(Type type, const char* name);
   virtual ~LineEditor() { }
 
-  virtual i::SmartArrayPointer<char> Prompt(const char* prompt) = 0;
+  virtual Handle<String> Prompt(const char* prompt) = 0;
   virtual bool Open() { return true; }
   virtual bool Close() { return true; }
   virtual void AddHistory(const char* str) { }
@@ -136,7 +135,6 @@ class LineEditor {
   LineEditor* next_;
   static LineEditor* first_;
 };
-#endif  // V8_SHARED
 
 
 class SourceGroup {
@@ -197,6 +195,27 @@ class SourceGroup {
 };
 
 
+class BinaryResource : public v8::String::ExternalAsciiStringResource {
+ public:
+  BinaryResource(const char* string, int length)
+      : data_(string),
+        length_(length) { }
+
+  ~BinaryResource() {
+    delete[] data_;
+    data_ = NULL;
+    length_ = 0;
+  }
+
+  virtual const char* data() const { return data_; }
+  virtual size_t length() const { return length_; }
+
+ private:
+  const char* data_;
+  size_t length_;
+};
+
+
 class ShellOptions {
  public:
   ShellOptions() :
@@ -208,6 +227,7 @@ class ShellOptions {
 #endif  // V8_SHARED
      script_executed(false),
      last_run(true),
+     send_idle_notification(false),
      stress_opt(false),
      stress_deopt(false),
      interactive_shell(false),
@@ -230,6 +250,7 @@ class ShellOptions {
 #endif  // V8_SHARED
   bool script_executed;
   bool last_run;
+  bool send_idle_notification;
   bool stress_opt;
   bool stress_deopt;
   bool interactive_shell;
@@ -268,12 +289,13 @@ class Shell : public i::AllStatic {
                                size_t buckets);
   static void AddHistogramSample(void* histogram, int sample);
   static void MapCounters(const char* name);
-#endif  // V8_SHARED
 
 #ifdef ENABLE_DEBUGGER_SUPPORT
   static Handle<Object> DebugMessageDetails(Handle<String> message);
   static Handle<Value> DebugCommandToJSONRequest(Handle<String> command);
-#endif
+  static void DispatchDebugMessages();
+#endif  // ENABLE_DEBUGGER_SUPPORT
+#endif  // V8_SHARED
 
 #ifdef WIN32
 #undef Yield
@@ -287,8 +309,13 @@ class Shell : public i::AllStatic {
   static Handle<Value> EnableProfiler(const Arguments& args);
   static Handle<Value> DisableProfiler(const Arguments& args);
   static Handle<Value> Read(const Arguments& args);
-  static Handle<Value> ReadLine(const Arguments& args);
+  static Handle<Value> ReadBuffer(const Arguments& args);
+  static Handle<String> ReadFromStdin();
+  static Handle<Value> ReadLine(const Arguments& args) {
+    return ReadFromStdin();
+  }
   static Handle<Value> Load(const Arguments& args);
+  static Handle<Value> ArrayBuffer(const Arguments& args);
   static Handle<Value> Int8Array(const Arguments& args);
   static Handle<Value> Uint8Array(const Arguments& args);
   static Handle<Value> Int16Array(const Arguments& args);
@@ -297,7 +324,10 @@ class Shell : public i::AllStatic {
   static Handle<Value> Uint32Array(const Arguments& args);
   static Handle<Value> Float32Array(const Arguments& args);
   static Handle<Value> Float64Array(const Arguments& args);
-  static Handle<Value> PixelArray(const Arguments& args);
+  static Handle<Value> Uint8ClampedArray(const Arguments& args);
+  static Handle<Value> ArrayBufferSlice(const Arguments& args);
+  static Handle<Value> ArraySubArray(const Arguments& args);
+  static Handle<Value> ArraySet(const Arguments& args);
   // The OS object on the global object contains methods for performing
   // operating system calls:
   //
@@ -334,11 +364,8 @@ class Shell : public i::AllStatic {
   static Handle<Value> RemoveDirectory(const Arguments& args);
 
   static void AddOSMethods(Handle<ObjectTemplate> os_template);
-#ifndef V8_SHARED
-  static const char* kHistoryFileName;
-  static const int kMaxHistoryEntries;
+
   static LineEditor* console;
-#endif  // V8_SHARED
   static const char* kPrompt;
   static ShellOptions options;
 
@@ -361,9 +388,20 @@ class Shell : public i::AllStatic {
   static void RunShell();
   static bool SetOptions(int argc, char* argv[]);
   static Handle<ObjectTemplate> CreateGlobalTemplate();
+  static Handle<FunctionTemplate> CreateArrayBufferTemplate(InvocationCallback);
+  static Handle<FunctionTemplate> CreateArrayTemplate(InvocationCallback);
+  static Handle<Value> CreateExternalArrayBuffer(Handle<Object> buffer,
+                                                 int32_t size);
+  static Handle<Object> CreateExternalArray(Handle<Object> array,
+                                            Handle<Object> buffer,
+                                            ExternalArrayType type,
+                                            int32_t length,
+                                            int32_t byteLength,
+                                            int32_t byteOffset,
+                                            int32_t element_size);
   static Handle<Value> CreateExternalArray(const Arguments& args,
                                            ExternalArrayType type,
-                                           size_t element_size);
+                                           int32_t element_size);
   static void ExternalArrayWeakCallback(Persistent<Value> object, void* data);
 };
 

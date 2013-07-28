@@ -1,4 +1,4 @@
-// Copyright (c) 2011 Sun Microsystems Inc.
+// Copyright (c) 1994-2006 Sun Microsystems Inc.
 // All Rights Reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,23 +30,43 @@
 
 // The original source code covered by the above license above has been
 // modified significantly by Google Inc.
-// Copyright 2011 the V8 project authors. All rights reserved.
+// Copyright 2012 the V8 project authors. All rights reserved.
 
-#include "v8.h"
+#include "assembler.h"
 
-#include "arguments.h"
+#include <math.h>  // For cos, log, pow, sin, tan, etc.
+#include "api.h"
+#include "builtins.h"
+#include "counters.h"
+#include "cpu.h"
+#include "debug.h"
 #include "deoptimizer.h"
 #include "execution.h"
-#include "ic-inl.h"
-#include "factory.h"
-#include "runtime.h"
-#include "runtime-profiler.h"
-#include "serialize.h"
-#include "stub-cache.h"
-#include "regexp-stack.h"
-#include "ast.h"
-#include "regexp-macro-assembler.h"
+#include "ic.h"
+#include "isolate.h"
+#include "jsregexp.h"
+#include "lazy-instance.h"
 #include "platform.h"
+#include "regexp-macro-assembler.h"
+#include "regexp-stack.h"
+#include "runtime.h"
+#include "serialize.h"
+#include "store-buffer-inl.h"
+#include "stub-cache.h"
+#include "token.h"
+
+#if V8_TARGET_ARCH_IA32
+#include "ia32/assembler-ia32-inl.h"
+#elif V8_TARGET_ARCH_X64
+#include "x64/assembler-x64-inl.h"
+#elif V8_TARGET_ARCH_ARM
+#include "arm/assembler-arm-inl.h"
+#elif V8_TARGET_ARCH_MIPS
+#include "mips/assembler-mips-inl.h"
+#else
+#error "Unknown architecture."
+#endif
+
 // Include native regexp-macro-assembler.
 #ifndef V8_INTERPRETED_REGEXP
 #if V8_TARGET_ARCH_IA32
@@ -65,15 +85,22 @@
 namespace v8 {
 namespace internal {
 
+// -----------------------------------------------------------------------------
+// Common double constants.
 
-const double DoubleConstant::min_int = kMinInt;
-const double DoubleConstant::one_half = 0.5;
-const double DoubleConstant::minus_zero = -0.0;
-const double DoubleConstant::uint8_max_value = 255;
-const double DoubleConstant::zero = 0.0;
-const double DoubleConstant::canonical_non_hole_nan = OS::nan_value();
-const double DoubleConstant::the_hole_nan = BitCast<double>(kHoleNanInt64);
-const double DoubleConstant::negative_infinity = -V8_INFINITY;
+struct DoubleConstant BASE_EMBEDDED {
+  double min_int;
+  double one_half;
+  double minus_zero;
+  double zero;
+  double uint8_max_value;
+  double negative_infinity;
+  double canonical_non_hole_nan;
+  double the_hole_nan;
+};
+
+static DoubleConstant double_constants;
+
 const char* const RelocInfo::kFillerCommentString = "DEOPTIMIZATION PADDING";
 
 // -----------------------------------------------------------------------------
@@ -114,7 +141,7 @@ int Label::pos() const {
 // an iteration.
 //
 // The encoding relies on the fact that there are fewer than 14
-// different non-compactly encoded relocation modes.
+// different relocation modes using standard non-compact encoding.
 //
 // The first byte of a relocation record has a tag in its low 2 bits:
 // Here are the record schemes, depending on the low tag and optional higher
@@ -146,7 +173,9 @@ int Label::pos() const {
 //                              00 [4 bit middle_tag] 11 followed by
 //                              00 [6 bit pc delta]
 //
-//      1101: not used (would allow one more relocation mode to be added)
+//      1101: constant pool. Used on ARM only for now.
+//        The format is:       11 1101 11
+//                             signed int (size of the constant pool).
 //      1110: long_data_record
 //        The format is:       [2-bit data_type_tag] 1110 11
 //                             signed intptr_t, lowest byte written first
@@ -167,7 +196,7 @@ int Label::pos() const {
 //                dropped, and last non-zero chunk tagged with 1.)
 
 
-const int kMaxRelocModes = 14;
+const int kMaxStandardNonCompactModes = 14;
 
 const int kTagBits = 2;
 const int kTagMask = (1 << kTagBits) - 1;
@@ -200,6 +229,9 @@ const int kCodeWithIdTag = 0;
 const int kNonstatementPositionTag = 1;
 const int kStatementPositionTag = 2;
 const int kCommentTag = 3;
+
+const int kConstPoolExtraTag = kPCJumpExtraTag - 2;
+const int kConstPoolTag = 3;
 
 
 uint32_t RelocInfoWriter::WriteVariableLengthPCJump(uint32_t pc_delta) {
@@ -258,6 +290,15 @@ void RelocInfoWriter::WriteExtraTaggedIntData(int data_delta, int top_tag) {
   }
 }
 
+void RelocInfoWriter::WriteExtraTaggedConstPoolData(int data) {
+  WriteExtraTag(kConstPoolExtraTag, kConstPoolTag);
+  for (int i = 0; i < kIntSize; i++) {
+    *--pos_ = static_cast<byte>(data);
+    // Signed right shift is arithmetic shift.  Tested in test-utils.cc.
+    data = data >> kBitsPerByte;
+  }
+}
+
 void RelocInfoWriter::WriteExtraTaggedData(intptr_t data_delta, int top_tag) {
   WriteExtraTag(kDataJumpExtraTag, top_tag);
   for (int i = 0; i < kIntptrSize; i++) {
@@ -273,8 +314,8 @@ void RelocInfoWriter::Write(const RelocInfo* rinfo) {
   byte* begin_pos = pos_;
 #endif
   ASSERT(rinfo->pc() - last_pc_ >= 0);
-  ASSERT(RelocInfo::NUMBER_OF_MODES - RelocInfo::LAST_COMPACT_ENUM <=
-         kMaxRelocModes);
+  ASSERT(RelocInfo::LAST_STANDARD_NONCOMPACT_ENUM - RelocInfo::LAST_COMPACT_ENUM
+         <= kMaxStandardNonCompactModes);
   // Use unsigned delta-encoding for pc.
   uint32_t pc_delta = static_cast<uint32_t>(rinfo->pc() - last_pc_);
   RelocInfo::Mode rmode = rinfo->rmode();
@@ -320,6 +361,9 @@ void RelocInfoWriter::Write(const RelocInfo* rinfo) {
     WriteExtraTaggedPC(pc_delta, kPCJumpExtraTag);
     WriteExtraTaggedData(rinfo->data(), kCommentTag);
     ASSERT(begin_pos - pos_ >= RelocInfo::kMinRelocCommentSize);
+  } else if (RelocInfo::IsConstPool(rmode)) {
+      WriteExtraTaggedPC(pc_delta, kPCJumpExtraTag);
+      WriteExtraTaggedConstPoolData(static_cast<int>(rinfo->data()));
   } else {
     ASSERT(rmode > RelocInfo::LAST_COMPACT_ENUM);
     int saved_mode = rmode - RelocInfo::LAST_COMPACT_ENUM;
@@ -367,6 +411,15 @@ void RelocIterator::AdvanceReadId() {
   }
   last_id_ += x;
   rinfo_.data_ = last_id_;
+}
+
+
+void RelocIterator::AdvanceReadConstPoolData() {
+  int x = 0;
+  for (int i = 0; i < kIntSize; i++) {
+    x |= static_cast<int>(*--pos_) << i * kBitsPerByte;
+  }
+  rinfo_.data_ = x;
 }
 
 
@@ -473,8 +526,7 @@ void RelocIterator::next() {
       ASSERT(tag == kDefaultTag);
       int extra_tag = GetExtraTag();
       if (extra_tag == kPCJumpExtraTag) {
-        int top_tag = GetTopTag();
-        if (top_tag == kVariableLengthPCJumpTopTag) {
+        if (GetTopTag() == kVariableLengthPCJumpTopTag) {
           AdvanceReadVariableLengthPCJump();
         } else {
           AdvanceReadPC();
@@ -504,6 +556,13 @@ void RelocIterator::next() {
           }
           Advance(kIntptrSize);
         }
+      } else if ((extra_tag == kConstPoolExtraTag) &&
+                 (GetTopTag() == kConstPoolTag)) {
+        if (SetMode(RelocInfo::CONST_POOL)) {
+          AdvanceReadConstPoolData();
+          return;
+        }
+        Advance(kIntSize);
       } else {
         AdvanceReadPC();
         int rmode = extra_tag + RelocInfo::LAST_COMPACT_ENUM;
@@ -516,6 +575,7 @@ void RelocIterator::next() {
 
 
 RelocIterator::RelocIterator(Code* code, int mode_mask) {
+  rinfo_.host_ = code;
   rinfo_.pc_ = code->instruction_start();
   rinfo_.data_ = 0;
   // Relocation info is read backwards.
@@ -585,6 +645,8 @@ const char* RelocInfo::RelocModeName(RelocInfo::Mode rmode) {
       return "external reference";
     case RelocInfo::INTERNAL_REFERENCE:
       return "internal reference";
+    case RelocInfo::CONST_POOL:
+      return "constant pool";
     case RelocInfo::DEBUG_BREAK_SLOT:
 #ifndef ENABLE_DEBUGGER_SUPPORT
       UNREACHABLE();
@@ -635,7 +697,7 @@ void RelocInfo::Print(FILE* out) {
 #endif  // ENABLE_DISASSEMBLER
 
 
-#ifdef DEBUG
+#ifdef VERIFY_HEAP
 void RelocInfo::Verify() {
   switch (rmode_) {
     case EMBEDDED_OBJECT:
@@ -655,12 +717,12 @@ void RelocInfo::Verify() {
     case CODE_TARGET: {
       // convert inline target address to code object
       Address addr = target_address();
-      ASSERT(addr != NULL);
+      CHECK(addr != NULL);
       // Check that we can find the right code object.
       Code* code = Code::GetCodeFromTargetAddress(addr);
       Object* found = HEAP->FindCodeObject(addr);
-      ASSERT(found->IsCode());
-      ASSERT(code->address() == HeapObject::cast(found)->address());
+      CHECK(found->IsCode());
+      CHECK(code->address() == HeapObject::cast(found)->address());
       break;
     }
     case RUNTIME_ENTRY:
@@ -670,6 +732,7 @@ void RelocInfo::Verify() {
     case STATEMENT_POSITION:
     case EXTERNAL_REFERENCE:
     case INTERNAL_REFERENCE:
+    case CONST_POOL:
     case DEBUG_BREAK_SLOT:
     case NONE:
       break;
@@ -678,11 +741,23 @@ void RelocInfo::Verify() {
       break;
   }
 }
-#endif  // DEBUG
+#endif  // VERIFY_HEAP
 
 
 // -----------------------------------------------------------------------------
 // Implementation of ExternalReference
+
+void ExternalReference::SetUp() {
+  double_constants.min_int = kMinInt;
+  double_constants.one_half = 0.5;
+  double_constants.minus_zero = -0.0;
+  double_constants.uint8_max_value = 255;
+  double_constants.zero = 0.0;
+  double_constants.canonical_non_hole_nan = OS::nan_value();
+  double_constants.the_hole_nan = BitCast<double>(kHoleNanInt64);
+  double_constants.negative_infinity = -V8_INFINITY;
+}
+
 
 ExternalReference::ExternalReference(Builtins::CFunctionId id, Isolate* isolate)
   : address_(Redirect(isolate, Builtins::c_function_address(id))) {}
@@ -736,9 +811,38 @@ ExternalReference::ExternalReference(const SCTableReference& table_ref)
   : address_(table_ref.address()) {}
 
 
+ExternalReference ExternalReference::
+    incremental_marking_record_write_function(Isolate* isolate) {
+  return ExternalReference(Redirect(
+      isolate,
+      FUNCTION_ADDR(IncrementalMarking::RecordWriteFromCode)));
+}
+
+
+ExternalReference ExternalReference::
+    incremental_evacuation_record_write_function(Isolate* isolate) {
+  return ExternalReference(Redirect(
+      isolate,
+      FUNCTION_ADDR(IncrementalMarking::RecordWriteForEvacuationFromCode)));
+}
+
+
+ExternalReference ExternalReference::
+    store_buffer_overflow_function(Isolate* isolate) {
+  return ExternalReference(Redirect(
+      isolate,
+      FUNCTION_ADDR(StoreBuffer::StoreBufferOverflow)));
+}
+
+
+ExternalReference ExternalReference::flush_icache_function(Isolate* isolate) {
+  return ExternalReference(Redirect(isolate, FUNCTION_ADDR(CPU::FlushICache)));
+}
+
+
 ExternalReference ExternalReference::perform_gc_function(Isolate* isolate) {
-  return ExternalReference(Redirect(isolate,
-                                    FUNCTION_ADDR(Runtime::PerformGC)));
+  return
+      ExternalReference(Redirect(isolate, FUNCTION_ADDR(Runtime::PerformGC)));
 }
 
 
@@ -764,6 +868,17 @@ ExternalReference ExternalReference::random_uint32_function(
 }
 
 
+ExternalReference ExternalReference::get_date_field_function(
+    Isolate* isolate) {
+  return ExternalReference(Redirect(isolate, FUNCTION_ADDR(JSDate::GetField)));
+}
+
+
+ExternalReference ExternalReference::date_cache_stamp(Isolate* isolate) {
+  return ExternalReference(isolate->date_cache()->stamp_address());
+}
+
+
 ExternalReference ExternalReference::transcendental_cache_array_address(
     Isolate* isolate) {
   return ExternalReference(
@@ -785,11 +900,6 @@ ExternalReference ExternalReference::compute_output_frames_function(
 }
 
 
-ExternalReference ExternalReference::global_contexts_list(Isolate* isolate) {
-  return ExternalReference(isolate->heap()->global_contexts_list_address());
-}
-
-
 ExternalReference ExternalReference::keyed_lookup_cache_keys(Isolate* isolate) {
   return ExternalReference(isolate->keyed_lookup_cache()->keys_address());
 }
@@ -802,19 +912,8 @@ ExternalReference ExternalReference::keyed_lookup_cache_field_offsets(
 }
 
 
-ExternalReference ExternalReference::the_hole_value_location(Isolate* isolate) {
-  return ExternalReference(isolate->factory()->the_hole_value().location());
-}
-
-
-ExternalReference ExternalReference::arguments_marker_location(
-    Isolate* isolate) {
-  return ExternalReference(isolate->factory()->arguments_marker().location());
-}
-
-
-ExternalReference ExternalReference::roots_address(Isolate* isolate) {
-  return ExternalReference(isolate->heap()->roots_address());
+ExternalReference ExternalReference::roots_array_start(Isolate* isolate) {
+  return ExternalReference(isolate->heap()->roots_array_start());
 }
 
 
@@ -840,9 +939,14 @@ ExternalReference ExternalReference::new_space_start(Isolate* isolate) {
 }
 
 
+ExternalReference ExternalReference::store_buffer_top(Isolate* isolate) {
+  return ExternalReference(isolate->heap()->store_buffer()->TopAddress());
+}
+
+
 ExternalReference ExternalReference::new_space_mask(Isolate* isolate) {
-  Address mask = reinterpret_cast<Address>(isolate->heap()->NewSpaceMask());
-  return ExternalReference(mask);
+  return ExternalReference(reinterpret_cast<Address>(
+      isolate->heap()->NewSpaceMask()));
 }
 
 
@@ -886,51 +990,66 @@ ExternalReference ExternalReference::scheduled_exception_address(
 }
 
 
+ExternalReference ExternalReference::address_of_pending_message_obj(
+    Isolate* isolate) {
+  return ExternalReference(isolate->pending_message_obj_address());
+}
+
+
+ExternalReference ExternalReference::address_of_has_pending_message(
+    Isolate* isolate) {
+  return ExternalReference(isolate->has_pending_message_address());
+}
+
+
+ExternalReference ExternalReference::address_of_pending_message_script(
+    Isolate* isolate) {
+  return ExternalReference(isolate->pending_message_script_address());
+}
+
+
 ExternalReference ExternalReference::address_of_min_int() {
-  return ExternalReference(reinterpret_cast<void*>(
-      const_cast<double*>(&DoubleConstant::min_int)));
+  return ExternalReference(reinterpret_cast<void*>(&double_constants.min_int));
 }
 
 
 ExternalReference ExternalReference::address_of_one_half() {
-  return ExternalReference(reinterpret_cast<void*>(
-      const_cast<double*>(&DoubleConstant::one_half)));
+  return ExternalReference(reinterpret_cast<void*>(&double_constants.one_half));
 }
 
 
 ExternalReference ExternalReference::address_of_minus_zero() {
-  return ExternalReference(reinterpret_cast<void*>(
-      const_cast<double*>(&DoubleConstant::minus_zero)));
+  return ExternalReference(
+      reinterpret_cast<void*>(&double_constants.minus_zero));
 }
 
 
 ExternalReference ExternalReference::address_of_zero() {
-  return ExternalReference(reinterpret_cast<void*>(
-      const_cast<double*>(&DoubleConstant::zero)));
+  return ExternalReference(reinterpret_cast<void*>(&double_constants.zero));
 }
 
 
 ExternalReference ExternalReference::address_of_uint8_max_value() {
-  return ExternalReference(reinterpret_cast<void*>(
-      const_cast<double*>(&DoubleConstant::uint8_max_value)));
+  return ExternalReference(
+      reinterpret_cast<void*>(&double_constants.uint8_max_value));
 }
 
 
 ExternalReference ExternalReference::address_of_negative_infinity() {
-  return ExternalReference(reinterpret_cast<void*>(
-      const_cast<double*>(&DoubleConstant::negative_infinity)));
+  return ExternalReference(
+      reinterpret_cast<void*>(&double_constants.negative_infinity));
 }
 
 
 ExternalReference ExternalReference::address_of_canonical_non_hole_nan() {
-  return ExternalReference(reinterpret_cast<void*>(
-      const_cast<double*>(&DoubleConstant::canonical_non_hole_nan)));
+  return ExternalReference(
+      reinterpret_cast<void*>(&double_constants.canonical_non_hole_nan));
 }
 
 
 ExternalReference ExternalReference::address_of_the_hole_nan() {
-  return ExternalReference(reinterpret_cast<void*>(
-      const_cast<double*>(&DoubleConstant::the_hole_nan)));
+  return ExternalReference(
+      reinterpret_cast<void*>(&double_constants.the_hole_nan));
 }
 
 
@@ -973,7 +1092,7 @@ ExternalReference ExternalReference::re_word_character_map() {
 ExternalReference ExternalReference::address_of_static_offsets_vector(
     Isolate* isolate) {
   return ExternalReference(
-      OffsetsVector::static_offsets_vector_address(isolate));
+      reinterpret_cast<Address>(isolate->jsregexp_static_offsets_vector()));
 }
 
 ExternalReference ExternalReference::address_of_regexp_stack_memory_address(
@@ -1025,6 +1144,11 @@ static double math_cos_double(double x) {
 }
 
 
+static double math_tan_double(double x) {
+  return tan(x);
+}
+
+
 static double math_log_double(double x) {
   return log(x);
 }
@@ -1046,11 +1170,25 @@ ExternalReference ExternalReference::math_cos_double_function(
 }
 
 
+ExternalReference ExternalReference::math_tan_double_function(
+    Isolate* isolate) {
+  return ExternalReference(Redirect(isolate,
+                                    FUNCTION_ADDR(math_tan_double),
+                                    BUILTIN_FP_CALL));
+}
+
+
 ExternalReference ExternalReference::math_log_double_function(
     Isolate* isolate) {
   return ExternalReference(Redirect(isolate,
                                     FUNCTION_ADDR(math_log_double),
                                     BUILTIN_FP_CALL));
+}
+
+
+ExternalReference ExternalReference::page_flags(Page* page) {
+  return ExternalReference(reinterpret_cast<Address>(page) +
+                           MemoryChunk::kFlagsOffset);
 }
 
 
@@ -1074,17 +1212,23 @@ double power_double_int(double x, int y) {
 
 
 double power_double_double(double x, double y) {
-  int y_int = static_cast<int>(y);
-  if (y == y_int) {
-    return power_double_int(x, y_int);  // Returns 1.0 for exponent 0.
+#ifdef __MINGW64_VERSION_MAJOR
+  // MinGW64 has a custom implementation for pow.  This handles certain
+  // special cases that are different.
+  if ((x == 0.0 || isinf(x)) && isfinite(y)) {
+    double f;
+    if (modf(y, &f) != 0.0) return ((x == 0.0) ^ (y > 0)) ? V8_INFINITY : 0;
   }
-  if (!isinf(x)) {
-    if (y == 0.5) return sqrt(x + 0.0);  // -0 must be converted to +0.
-    if (y == -0.5) return 1.0 / sqrt(x + 0.0);
+
+  if (x == 2.0) {
+    int y_int = static_cast<int>(y);
+    if (y == y_int) return ldexp(1.0, y_int);
   }
-  if (isnan(y) || ((x == 1 || x == -1) && isinf(y))) {
-    return OS::nan_value();
-  }
+#endif
+
+  // The checks for special cases can be dropped in ia32 because it has already
+  // been done in generated code before bailing out here.
+  if (isnan(y) || ((x == 1 || x == -1) && isinf(y))) return OS::nan_value();
   return pow(x, y);
 }
 
@@ -1108,6 +1252,23 @@ ExternalReference ExternalReference::power_double_int_function(
 static int native_compare_doubles(double y, double x) {
   if (x == y) return EQUAL;
   return x < y ? LESS : GREATER;
+}
+
+
+bool EvalComparison(Token::Value op, double op1, double op2) {
+  ASSERT(Token::IsCompareOp(op));
+  switch (op) {
+    case Token::EQ:
+    case Token::EQ_STRICT: return (op1 == op2);
+    case Token::NE: return (op1 != op2);
+    case Token::LT: return (op1 < op2);
+    case Token::GT: return (op1 > op2);
+    case Token::LTE: return (op1 <= op2);
+    case Token::GTE: return (op1 >= op2);
+    default:
+      UNREACHABLE();
+      return false;
+  }
 }
 
 

@@ -1,13 +1,30 @@
 {
   'variables': {
     'visibility%': 'hidden',         # V8's visibility setting
+    'target_arch%': 'ia32',          # set v8's target architecture
+    'host_arch%': 'ia32',            # set v8's host architecture
+    'want_separate_host_toolset': 0, # V8 should not build target and host
     'library%': 'static_library',    # allow override to 'shared_library' for DLL/.so builds
     'component%': 'static_library',  # NB. these names match with what V8 expects
     'msvs_multi_core_compile': '0',  # we do enable multicore compiles, but not using the V8 way
+    'gcc_version%': 'unknown',
+    'clang%': 0,
+    'python%': 'python',
+
+    # Turn on optimizations that may trigger compiler bugs.
+    # Use at your own risk. Do *NOT* report bugs if this option is enabled.
+    'node_unsafe_optimizations%': 0,
+
+    # Enable V8's post-mortem debugging only on unix flavors.
+    'conditions': [
+      ['OS != "win"', {
+        'v8_postmortem_support': 'true'
+      }]
+    ],
   },
 
   'target_defaults': {
-    'default_configuration': 'Debug',
+    'default_configuration': 'Release',
     'configurations': {
       'Debug': {
         'defines': [ 'DEBUG', '_DEBUG' ],
@@ -19,13 +36,7 @@
         ],
         'msvs_settings': {
           'VCCLCompilerTool': {
-            'target_conditions': [
-              ['library=="static_library"', {
-                'RuntimeLibrary': 1, # static debug
-              }, {
-                'RuntimeLibrary': 3, # DLL debug
-              }],
-            ],
+            'RuntimeLibrary': 1, # static debug
             'Optimization': 0, # /Od, no optimization
             'MinimalRebuild': 'false',
             'OmitFramePointers': 'false',
@@ -35,24 +46,47 @@
             'LinkIncremental': 2, # enable incremental linking
           },
         },
+        'xcode_settings': {
+          'GCC_OPTIMIZATION_LEVEL': '0', # stop gyp from defaulting to -Os
+        },
       },
       'Release': {
-        'defines': [ 'NDEBUG' ],
-        'cflags': [ '-O3', '-fomit-frame-pointer', '-fdata-sections', '-ffunction-sections' ],
         'conditions': [
           ['target_arch=="x64"', {
             'msvs_configuration_platform': 'x64',
           }],
+          ['node_unsafe_optimizations==1', {
+            'cflags': [ '-O3', '-ffunction-sections', '-fdata-sections' ],
+            'ldflags': [ '-Wl,--gc-sections' ],
+          }, {
+            'cflags': [ '-O2', '-fno-strict-aliasing' ],
+            'cflags!': [ '-O3', '-fstrict-aliasing' ],
+            'conditions': [
+              # Required by the dtrace post-processor. Unfortunately,
+              # some gcc/binutils combos generate bad code when
+              # -ffunction-sections is enabled. Let's hope for the best.
+              ['OS=="solaris"', {
+                'cflags': [ '-ffunction-sections', '-fdata-sections' ],
+              }, {
+                'cflags!': [ '-ffunction-sections', '-fdata-sections' ],
+              }],
+              ['clang == 0 and gcc_version >= 40', {
+                'cflags': [ '-fno-tree-vrp' ],
+              }],
+              ['clang == 0 and gcc_version <= 44', {
+                'cflags': [ '-fno-tree-sink' ],
+              }],
+            ],
+          }],
+          ['OS=="solaris"', {
+            'cflags': [ '-fno-omit-frame-pointer' ],
+            # pull in V8's postmortem metadata
+            'ldflags': [ '-Wl,-z,allextract' ]
+          }],
         ],
         'msvs_settings': {
           'VCCLCompilerTool': {
-            'target_conditions': [
-              ['library=="static_library"', {
-                'RuntimeLibrary': 0, # static release
-              }, {
-                'RuntimeLibrary': 2, # debug release
-              }],
-            ],
+            'RuntimeLibrary': 0, # static release
             'Optimization': 3, # /Ox, full optimization
             'FavorSizeOrSpeed': 1, # /Ot, favour speed over size
             'InlineFunctionExpansion': 2, # /Ob2, inline anything eligible
@@ -60,6 +94,8 @@
             'OmitFramePointers': 'true',
             'EnableFunctionLevelLinking': 'true',
             'EnableIntrinsicFunctions': 'true',
+            'RuntimeTypeInfo': 'false',
+            'ExceptionHandling': '0',
             'AdditionalOptions': [
               '/MP', # compile across multiple CPUs
             ],
@@ -124,23 +160,33 @@
         ],
       }],
       [ 'OS=="linux" or OS=="freebsd" or OS=="openbsd" or OS=="solaris"', {
-        'cflags': [ '-Wall', '-pthread', ],
+        'cflags': [ '-Wall', '-Wextra', '-Wno-unused-parameter', '-pthread', ],
         'cflags_cc': [ '-fno-rtti', '-fno-exceptions' ],
-        'ldflags': [ '-pthread', ],
+        'ldflags': [ '-pthread', '-rdynamic' ],
+        'target_conditions': [
+          ['_type=="static_library"', {
+            'standalone_static_library': 1, # disable thin archive which needs binutils >= 2.19
+          }],
+        ],
         'conditions': [
           [ 'target_arch=="ia32"', {
             'cflags': [ '-m32' ],
             'ldflags': [ '-m32' ],
           }],
-          [ 'OS=="linux"', {
-            'cflags': [ '-ansi' ],
+          [ 'target_arch=="x64"', {
+            'cflags': [ '-m64' ],
+            'ldflags': [ '-m64' ],
           }],
-          [ 'visibility=="hidden"', {
-            'cflags': [ '-fvisibility=hidden' ],
+          [ 'OS=="solaris"', {
+            'cflags': [ '-pthreads' ],
+            'ldflags': [ '-pthreads' ],
+            'cflags!': [ '-pthread' ],
+            'ldflags!': [ '-pthread' ],
           }],
         ],
       }],
       ['OS=="mac"', {
+        'defines': ['_DARWIN_USE_64_BIT_INODE=1'],
         'xcode_settings': {
           'ALWAYS_SEARCH_USER_PATHS': 'NO',
           'GCC_CW_ASM_SYNTAX': 'NO',                # No -fasm-blocks
@@ -149,14 +195,9 @@
           'GCC_ENABLE_CPP_EXCEPTIONS': 'NO',        # -fno-exceptions
           'GCC_ENABLE_CPP_RTTI': 'NO',              # -fno-rtti
           'GCC_ENABLE_PASCAL_STRINGS': 'NO',        # No -mpascal-strings
-          # GCC_INLINES_ARE_PRIVATE_EXTERN maps to -fvisibility-inlines-hidden
-          'GCC_INLINES_ARE_PRIVATE_EXTERN': 'YES',
-          'GCC_SYMBOLS_PRIVATE_EXTERN': 'YES',      # -fvisibility=hidden
           'GCC_THREADSAFE_STATICS': 'NO',           # -fno-threadsafe-statics
-          'GCC_VERSION': '4.2',
-          'GCC_WARN_ABOUT_MISSING_NEWLINE': 'YES',  # -Wnewline-eof
-          'MACOSX_DEPLOYMENT_TARGET': '10.4',       # -mmacosx-version-min=10.4
           'PREBINDING': 'NO',                       # No -Wl,-prebind
+          'MACOSX_DEPLOYMENT_TARGET': '10.5',       # -mmacosx-version-min=10.5
           'USE_HEADERMAP': 'NO',
           'OTHER_CFLAGS': [
             '-fno-strict-aliasing',
@@ -173,7 +214,18 @@
             'xcode_settings': {'OTHER_LDFLAGS': ['-Wl,-search_paths_first']},
           }],
         ],
+        'conditions': [
+          ['target_arch=="ia32"', {
+            'xcode_settings': {'ARCHS': ['i386']},
+          }],
+          ['target_arch=="x64"', {
+            'xcode_settings': {'ARCHS': ['x86_64']},
+          }],
+        ],
       }],
+      ['OS=="freebsd" and node_use_dtrace=="true"', {
+        'libraries': [ '-lelf' ],
+      }]
     ],
   }
 }

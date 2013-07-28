@@ -35,6 +35,7 @@
 #include "global-handles.h"
 #include "log.h"
 #include "macro-assembler.h"
+#include "platform.h"
 #include "runtime-profiler.h"
 #include "serialize.h"
 #include "string-stream.h"
@@ -144,7 +145,7 @@ class Profiler: public Thread {
 //
 // StackTracer implementation
 //
-void StackTracer::Trace(Isolate* isolate, TickSample* sample) {
+DISABLE_ASAN void StackTracer::Trace(Isolate* isolate, TickSample* sample) {
   ASSERT(isolate->IsInitialized());
 
   // Avoid collecting traces while doing GC.
@@ -461,18 +462,20 @@ class Logger::NameBuffer {
       utf8_pos_ += utf8_length;
       return;
     }
-    int uc16_length = Min(str->length(), kUc16BufferSize);
-    String::WriteToFlat(str, uc16_buffer_, 0, uc16_length);
+    int uc16_length = Min(str->length(), kUtf16BufferSize);
+    String::WriteToFlat(str, utf16_buffer, 0, uc16_length);
+    int previous = unibrow::Utf16::kNoPreviousCharacter;
     for (int i = 0; i < uc16_length && utf8_pos_ < kUtf8BufferSize; ++i) {
-      uc16 c = uc16_buffer_[i];
+      uc16 c = utf16_buffer[i];
       if (c <= String::kMaxAsciiCharCodeU) {
         utf8_buffer_[utf8_pos_++] = static_cast<char>(c);
       } else {
-        int char_length = unibrow::Utf8::Length(c);
+        int char_length = unibrow::Utf8::Length(c, previous);
         if (utf8_pos_ + char_length > kUtf8BufferSize) break;
-        unibrow::Utf8::Encode(utf8_buffer_ + utf8_pos_, c);
+        unibrow::Utf8::Encode(utf8_buffer_ + utf8_pos_, c, previous);
         utf8_pos_ += char_length;
       }
+      previous = c;
     }
   }
 
@@ -504,11 +507,11 @@ class Logger::NameBuffer {
 
  private:
   static const int kUtf8BufferSize = 512;
-  static const int kUc16BufferSize = 128;
+  static const int kUtf16BufferSize = 128;
 
   int utf8_pos_;
   char utf8_buffer_[kUtf8BufferSize];
-  uc16 uc16_buffer_[kUc16BufferSize];
+  uc16 utf16_buffer[kUtf16BufferSize];
 };
 
 
@@ -523,6 +526,7 @@ Logger::Logger()
     name_buffer_(new NameBuffer),
     address_to_name_map_(NULL),
     is_initialized_(false),
+    code_event_handler_(NULL),
     last_address_(NULL),
     prev_sp_(NULL),
     prev_function_(NULL),
@@ -535,6 +539,52 @@ Logger::~Logger() {
   delete address_to_name_map_;
   delete name_buffer_;
   delete log_;
+}
+
+
+void Logger::IssueCodeAddedEvent(Code* code,
+                                 const char* name,
+                                 size_t name_len) {
+  JitCodeEvent event;
+  event.type = JitCodeEvent::CODE_ADDED;
+  event.code_start = code->instruction_start();
+  event.code_len = code->instruction_size();
+  event.name.str = name;
+  event.name.len = name_len;
+
+  code_event_handler_(&event);
+}
+
+
+void Logger::IssueCodeMovedEvent(Address from, Address to) {
+  Code* from_code = Code::cast(HeapObject::FromAddress(from));
+
+  JitCodeEvent event;
+  event.type = JitCodeEvent::CODE_MOVED;
+  event.code_start = from_code->instruction_start();
+  event.code_len = from_code->instruction_size();
+
+  // Calculate the header size.
+  const size_t header_size =
+      from_code->instruction_start() - reinterpret_cast<byte*>(from_code);
+
+  // Calculate the new start address of the instructions.
+  event.new_code_start =
+      reinterpret_cast<byte*>(HeapObject::FromAddress(to)) + header_size;
+
+  code_event_handler_(&event);
+}
+
+
+void Logger::IssueCodeRemovedEvent(Address from) {
+  Code* from_code = Code::cast(HeapObject::FromAddress(from));
+
+  JitCodeEvent event;
+  event.type = JitCodeEvent::CODE_REMOVED;
+  event.code_start = from_code->instruction_start();
+  event.code_len = from_code->instruction_size();
+
+  code_event_handler_(&event);
 }
 
 
@@ -861,13 +911,17 @@ void Logger::SetterCallbackEvent(String* name, Address entry_point) {
 void Logger::CodeCreateEvent(LogEventsAndTags tag,
                              Code* code,
                              const char* comment) {
-  if (!log_->IsEnabled()) return;
-  if (FLAG_ll_prof || Serializer::enabled()) {
+  if (!is_logging_code_events()) return;
+  if (FLAG_ll_prof || Serializer::enabled() || code_event_handler_ != NULL) {
     name_buffer_->Reset();
     name_buffer_->AppendBytes(kLogEventsNames[tag]);
     name_buffer_->AppendByte(':');
     name_buffer_->AppendBytes(comment);
   }
+  if (code_event_handler_ != NULL) {
+    IssueCodeAddedEvent(code, name_buffer_->get(), name_buffer_->size());
+  }
+  if (!log_->IsEnabled()) return;
   if (FLAG_ll_prof) {
     LowLevelCodeCreateEvent(code, name_buffer_->get(), name_buffer_->size());
   }
@@ -896,13 +950,17 @@ void Logger::CodeCreateEvent(LogEventsAndTags tag,
 void Logger::CodeCreateEvent(LogEventsAndTags tag,
                              Code* code,
                              String* name) {
-  if (!log_->IsEnabled()) return;
-  if (FLAG_ll_prof || Serializer::enabled()) {
+  if (!is_logging_code_events()) return;
+  if (FLAG_ll_prof || Serializer::enabled() || code_event_handler_ != NULL) {
     name_buffer_->Reset();
     name_buffer_->AppendBytes(kLogEventsNames[tag]);
     name_buffer_->AppendByte(':');
     name_buffer_->AppendString(name);
   }
+  if (code_event_handler_ != NULL) {
+    IssueCodeAddedEvent(code, name_buffer_->get(), name_buffer_->size());
+  }
+  if (!log_->IsEnabled()) return;
   if (FLAG_ll_prof) {
     LowLevelCodeCreateEvent(code, name_buffer_->get(), name_buffer_->size());
   }
@@ -937,14 +995,18 @@ void Logger::CodeCreateEvent(LogEventsAndTags tag,
                              Code* code,
                              SharedFunctionInfo* shared,
                              String* name) {
-  if (!log_->IsEnabled()) return;
-  if (FLAG_ll_prof || Serializer::enabled()) {
+  if (!is_logging_code_events()) return;
+  if (FLAG_ll_prof || Serializer::enabled() || code_event_handler_ != NULL) {
     name_buffer_->Reset();
     name_buffer_->AppendBytes(kLogEventsNames[tag]);
     name_buffer_->AppendByte(':');
     name_buffer_->AppendBytes(ComputeMarker(code));
     name_buffer_->AppendString(name);
   }
+  if (code_event_handler_ != NULL) {
+    IssueCodeAddedEvent(code, name_buffer_->get(), name_buffer_->size());
+  }
+  if (!log_->IsEnabled()) return;
   if (FLAG_ll_prof) {
     LowLevelCodeCreateEvent(code, name_buffer_->get(), name_buffer_->size());
   }
@@ -978,8 +1040,8 @@ void Logger::CodeCreateEvent(LogEventsAndTags tag,
                              Code* code,
                              SharedFunctionInfo* shared,
                              String* source, int line) {
-  if (!log_->IsEnabled()) return;
-  if (FLAG_ll_prof || Serializer::enabled()) {
+  if (!is_logging_code_events()) return;
+  if (FLAG_ll_prof || Serializer::enabled() || code_event_handler_ != NULL) {
     name_buffer_->Reset();
     name_buffer_->AppendBytes(kLogEventsNames[tag]);
     name_buffer_->AppendByte(':');
@@ -990,6 +1052,10 @@ void Logger::CodeCreateEvent(LogEventsAndTags tag,
     name_buffer_->AppendByte(':');
     name_buffer_->AppendInt(line);
   }
+  if (code_event_handler_ != NULL) {
+    IssueCodeAddedEvent(code, name_buffer_->get(), name_buffer_->size());
+  }
+  if (!log_->IsEnabled()) return;
   if (FLAG_ll_prof) {
     LowLevelCodeCreateEvent(code, name_buffer_->get(), name_buffer_->size());
   }
@@ -1019,13 +1085,17 @@ void Logger::CodeCreateEvent(LogEventsAndTags tag,
 
 
 void Logger::CodeCreateEvent(LogEventsAndTags tag, Code* code, int args_count) {
-  if (!log_->IsEnabled()) return;
-  if (FLAG_ll_prof || Serializer::enabled()) {
+  if (!is_logging_code_events()) return;
+  if (FLAG_ll_prof || Serializer::enabled() || code_event_handler_ != NULL) {
     name_buffer_->Reset();
     name_buffer_->AppendBytes(kLogEventsNames[tag]);
     name_buffer_->AppendByte(':');
     name_buffer_->AppendInt(args_count);
   }
+  if (code_event_handler_ != NULL) {
+    IssueCodeAddedEvent(code, name_buffer_->get(), name_buffer_->size());
+  }
+  if (!log_->IsEnabled()) return;
   if (FLAG_ll_prof) {
     LowLevelCodeCreateEvent(code, name_buffer_->get(), name_buffer_->size());
   }
@@ -1052,13 +1122,17 @@ void Logger::CodeMovingGCEvent() {
 
 
 void Logger::RegExpCodeCreateEvent(Code* code, String* source) {
-  if (!log_->IsEnabled()) return;
-  if (FLAG_ll_prof || Serializer::enabled()) {
+  if (!is_logging_code_events()) return;
+  if (FLAG_ll_prof || Serializer::enabled() || code_event_handler_ != NULL) {
     name_buffer_->Reset();
     name_buffer_->AppendBytes(kLogEventsNames[REG_EXP_TAG]);
     name_buffer_->AppendByte(':');
     name_buffer_->AppendString(source);
   }
+  if (code_event_handler_ != NULL) {
+    IssueCodeAddedEvent(code, name_buffer_->get(), name_buffer_->size());
+  }
+  if (!log_->IsEnabled()) return;
   if (FLAG_ll_prof) {
     LowLevelCodeCreateEvent(code, name_buffer_->get(), name_buffer_->size());
   }
@@ -1080,6 +1154,7 @@ void Logger::RegExpCodeCreateEvent(Code* code, String* source) {
 
 
 void Logger::CodeMoveEvent(Address from, Address to) {
+  if (code_event_handler_ != NULL) IssueCodeMovedEvent(from, to);
   if (!log_->IsEnabled()) return;
   if (FLAG_ll_prof) LowLevelCodeMoveEvent(from, to);
   if (Serializer::enabled() && address_to_name_map_ != NULL) {
@@ -1090,6 +1165,7 @@ void Logger::CodeMoveEvent(Address from, Address to) {
 
 
 void Logger::CodeDeleteEvent(Address from) {
+  if (code_event_handler_ != NULL) IssueCodeRemovedEvent(from);
   if (!log_->IsEnabled()) return;
   if (FLAG_ll_prof) LowLevelCodeDeleteEvent(from);
   if (Serializer::enabled() && address_to_name_map_ != NULL) {
@@ -1356,12 +1432,12 @@ class EnumerateOptimizedFunctionsVisitor: public OptimizedFunctionVisitor {
 
 static int EnumerateCompiledFunctions(Handle<SharedFunctionInfo>* sfis,
                                       Handle<Code>* code_objects) {
+  HeapIterator iterator;
   AssertNoAllocation no_alloc;
   int compiled_funcs_count = 0;
 
   // Iterate the heap to find shared function info objects and record
   // the unoptimized code for them.
-  HeapIterator iterator;
   for (HeapObject* obj = iterator.next(); obj != NULL; obj = iterator.next()) {
     if (!obj->IsSharedFunctionInfo()) continue;
     SharedFunctionInfo* sfi = SharedFunctionInfo::cast(obj);
@@ -1389,7 +1465,7 @@ static int EnumerateCompiledFunctions(Handle<SharedFunctionInfo>* sfis,
 
 
 void Logger::LogCodeObject(Object* object) {
-  if (FLAG_log_code || FLAG_ll_prof) {
+  if (FLAG_log_code || FLAG_ll_prof || is_logging_code_events()) {
     Code* code_object = Code::cast(object);
     LogEventsAndTags tag = Logger::STUB_TAG;
     const char* description = "Unknown code from the snapshot";
@@ -1450,6 +1526,8 @@ void Logger::LogCodeInfo() {
   const char arch[] = "x64";
 #elif V8_TARGET_ARCH_ARM
   const char arch[] = "arm";
+#elif V8_TARGET_ARCH_MIPS
+  const char arch[] = "mips";
 #else
   const char arch[] = "unknown";
 #endif
@@ -1519,8 +1597,10 @@ void Logger::LowLevelLogWriteBytes(const char* bytes, int size) {
 
 
 void Logger::LogCodeObjects() {
-  AssertNoAllocation no_alloc;
+  HEAP->CollectAllGarbage(Heap::kMakeHeapIterableMask,
+                          "Logger::LogCodeObjects");
   HeapIterator iterator;
+  AssertNoAllocation no_alloc;
   for (HeapObject* obj = iterator.next(); obj != NULL; obj = iterator.next()) {
     if (obj->IsCode()) LogCodeObject(obj);
   }
@@ -1573,6 +1653,8 @@ void Logger::LogExistingFunction(Handle<SharedFunctionInfo> shared,
 
 
 void Logger::LogCompiledFunctions() {
+  HEAP->CollectAllGarbage(Heap::kMakeHeapIterableMask,
+                          "Logger::LogCompiledFunctions");
   HandleScope scope;
   const int compiled_funcs_count = EnumerateCompiledFunctions(NULL, NULL);
   ScopedVector< Handle<SharedFunctionInfo> > sfis(compiled_funcs_count);
@@ -1591,9 +1673,10 @@ void Logger::LogCompiledFunctions() {
 
 
 void Logger::LogAccessorCallbacks() {
-  AssertNoAllocation no_alloc;
+  HEAP->CollectAllGarbage(Heap::kMakeHeapIterableMask,
+                          "Logger::LogAccessorCallbacks");
   HeapIterator iterator;
-  i::Isolate* isolate = ISOLATE;
+  AssertNoAllocation no_alloc;
   for (HeapObject* obj = iterator.next(); obj != NULL; obj = iterator.next()) {
     if (!obj->IsAccessorInfo()) continue;
     AccessorInfo* ai = AccessorInfo::cast(obj);
@@ -1601,17 +1684,17 @@ void Logger::LogAccessorCallbacks() {
     String* name = String::cast(ai->name());
     Address getter_entry = v8::ToCData<Address>(ai->getter());
     if (getter_entry != 0) {
-      PROFILE(isolate, GetterCallbackEvent(name, getter_entry));
+      PROFILE(ISOLATE, GetterCallbackEvent(name, getter_entry));
     }
     Address setter_entry = v8::ToCData<Address>(ai->setter());
     if (setter_entry != 0) {
-      PROFILE(isolate, SetterCallbackEvent(name, setter_entry));
+      PROFILE(ISOLATE, SetterCallbackEvent(name, setter_entry));
     }
   }
 }
 
 
-bool Logger::Setup() {
+bool Logger::SetUp() {
   // Tests and EnsureInitialize() can call this twice in a row. It's harmless.
   if (is_initialized_) return true;
   is_initialized_ = true;
@@ -1666,6 +1749,18 @@ bool Logger::Setup() {
 }
 
 
+void Logger::SetCodeEventHandler(uint32_t options,
+                                 JitCodeEventHandler event_handler) {
+  code_event_handler_ = event_handler;
+
+  if (code_event_handler_ != NULL && (options & kJitCodeEventEnumExisting)) {
+    HandleScope scope;
+    LogCodeObjects();
+    LogCompiledFunctions();
+  }
+}
+
+
 Sampler* Logger::sampler() {
   return ticker_;
 }
@@ -1704,9 +1799,9 @@ FILE* Logger::TearDown() {
 
 
 void Logger::EnableSlidingStateWindow() {
-  // If the ticker is NULL, Logger::Setup has not been called yet.  In
+  // If the ticker is NULL, Logger::SetUp has not been called yet.  In
   // that case, we set the sliding_state_window flag so that the
-  // sliding window computation will be started when Logger::Setup is
+  // sliding window computation will be started when Logger::SetUp is
   // called.
   if (ticker_ == NULL) {
     FLAG_sliding_state_window = true;
@@ -1719,13 +1814,21 @@ void Logger::EnableSlidingStateWindow() {
   }
 }
 
+// Protects the state below.
+static Mutex* active_samplers_mutex = NULL;
 
-Mutex* SamplerRegistry::mutex_ = OS::CreateMutex();
 List<Sampler*>* SamplerRegistry::active_samplers_ = NULL;
 
 
+void SamplerRegistry::SetUp() {
+  if (!active_samplers_mutex) {
+    active_samplers_mutex = OS::CreateMutex();
+  }
+}
+
+
 bool SamplerRegistry::IterateActiveSamplers(VisitSampler func, void* param) {
-  ScopedLock lock(mutex_);
+  ScopedLock lock(active_samplers_mutex);
   for (int i = 0;
        ActiveSamplersExist() && i < active_samplers_->length();
        ++i) {
@@ -1752,7 +1855,7 @@ SamplerRegistry::State SamplerRegistry::GetState() {
 
 void SamplerRegistry::AddActiveSampler(Sampler* sampler) {
   ASSERT(sampler->IsActive());
-  ScopedLock lock(mutex_);
+  ScopedLock lock(active_samplers_mutex);
   if (active_samplers_ == NULL) {
     active_samplers_ = new List<Sampler*>;
   } else {
@@ -1764,7 +1867,7 @@ void SamplerRegistry::AddActiveSampler(Sampler* sampler) {
 
 void SamplerRegistry::RemoveActiveSampler(Sampler* sampler) {
   ASSERT(sampler->IsActive());
-  ScopedLock lock(mutex_);
+  ScopedLock lock(active_samplers_mutex);
   ASSERT(active_samplers_ != NULL);
   bool removed = active_samplers_->RemoveElement(sampler);
   ASSERT(removed);

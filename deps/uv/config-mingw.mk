@@ -24,38 +24,25 @@ CC = $(PREFIX)gcc
 AR = $(PREFIX)ar
 E=.exe
 
-CFLAGS=$(CPPFLAGS) -g --std=gnu89 -D_WIN32_WINNT=0x0501 -Isrc/ares/config_win32
-LINKFLAGS=-lm
+CFLAGS=$(CPPFLAGS) -g --std=gnu89 -D_WIN32_WINNT=0x0600
+LDFLAGS=-lm
 
-CARES_OBJS += src/ares/windows_port.o
-CARES_OBJS += src/ares/ares_platform.o
-WIN_SRCS=$(wildcard src/win/*.c)
+WIN_SRCS=$(wildcard $(SRCDIR)/src/win/*.c)
 WIN_OBJS=$(WIN_SRCS:.c=.o)
 
 RUNNER_CFLAGS=$(CFLAGS) -D_GNU_SOURCE # Need _GNU_SOURCE for strdup?
-RUNNER_LINKFLAGS=$(LINKFLAGS)
-RUNNER_LIBS=-lws2_32
+RUNNER_LDFLAGS=$(LDFLAGS)
+RUNNER_LIBS=-lws2_32 -lpsapi -liphlpapi
 RUNNER_SRC=test/runner-win.c
 
-uv.a: $(WIN_OBJS) src/uv-common.o $(CARES_OBJS)
-	$(AR) rcs uv.a src/win/*.o src/uv-common.o $(CARES_OBJS)
+libuv.a: $(WIN_OBJS) src/fs-poll.o src/inet.o src/uv-common.o src/version.o
+	$(AR) rcs $@ $^
 
-src/win/%.o: src/win/%.c src/win/internal.h
+src/%.o: src/%.c include/uv.h include/uv-private/uv-win.h
+	$(CC) $(CFLAGS) -c $< -o $@
+
+src/win/%.o: src/win/%.c include/uv.h include/uv-private/uv-win.h src/win/internal.h
 	$(CC) $(CFLAGS) -o $@ -c $<
 
-src/uv-common.o: src/uv-common.c include/uv.h include/uv-private/uv-win.h
-	$(CC) $(CFLAGS) -c src/uv-common.c -o src/uv-common.o
-
-EIO_CPPFLAGS += $(CPPFLAGS)
-EIO_CPPFLAGS += -DEIO_STACKSIZE=65536
-EIO_CPPFLAGS += -D_GNU_SOURCE
-
 clean-platform:
-	-rm -f src/ares/*.o
-	-rm -f src/eio/*.o
-	-rm -f src/win/*.o
-
-distclean-platform:
-	-rm -f src/ares/*.o
-	-rm -f src/eio/*.o
 	-rm -f src/win/*.o

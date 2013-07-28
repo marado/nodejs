@@ -38,6 +38,7 @@ var tcp = net.Server(function(s) {
   });
 
   s.on('end', function() {
+    console.error('SERVER: end', buf.toString());
     assert.equal(buf, "L'État, c'est moi");
     console.log('tcp socket disconnect');
     s.end();
@@ -50,7 +51,7 @@ var tcp = net.Server(function(s) {
 });
 
 tcp.listen(common.PORT, function() {
-  var socket = net.Stream();
+  var socket = net.Stream({ highWaterMark: 0 });
 
   console.log('Connecting to socket ');
 
@@ -64,19 +65,20 @@ tcp.listen(common.PORT, function() {
   assert.equal('opening', socket.readyState);
 
   // Make sure that anything besides a buffer or a string throws.
-  [ null,
-    true,
-    false,
-    undefined,
-    1,
-    1.0,
-    1 / 0,
-    +Infinity
-    -Infinity,
-    [],
-    {}
+  [null,
+   true,
+   false,
+   undefined,
+   1,
+   1.0,
+   1 / 0,
+   +Infinity,
+   -Infinity,
+   [],
+   {}
   ].forEach(function(v) {
     function f() {
+      console.error('write', v);
       socket.write(v);
     }
     assert.throws(f, TypeError);
@@ -90,12 +92,17 @@ tcp.listen(common.PORT, function() {
   // We're still connecting at this point so the datagram is first pushed onto
   // the connect queue. Make sure that it's not added to `bytesWritten` again
   // when the actual write happens.
-  var r = socket.write(a, function() {
+  var r = socket.write(a, function(er) {
+    console.error('write cb');
     dataWritten = true;
     assert.ok(connectHappened);
-    assert.equal(socket.bytesWritten, Buffer(a + b).length);
+    console.error('socket.bytesWritten', socket.bytesWritten);
+    //assert.equal(socket.bytesWritten, Buffer(a + b).length);
     console.error('data written');
   });
+  console.error('socket.bytesWritten', socket.bytesWritten);
+  console.error('write returned', r);
+
   assert.equal(socket.bytesWritten, Buffer(a).length);
 
   assert.equal(false, r);

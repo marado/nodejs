@@ -200,7 +200,7 @@ static int DecodeIt(FILE* f,
     // Print all the reloc info for this instruction which are not comments.
     for (int i = 0; i < pcs.length(); i++) {
       // Put together the reloc info
-      RelocInfo relocinfo(pcs[i], rmodes[i], datas[i]);
+      RelocInfo relocinfo(pcs[i], rmodes[i], datas[i], NULL);
 
       // Indent the printing of the reloc info.
       if (i == 0) {
@@ -244,8 +244,8 @@ static int DecodeIt(FILE* f,
           out.AddFormatted(" %s, %s", Code::Kind2String(kind),
               Code::ICState2String(ic_state));
           if (ic_state == MONOMORPHIC) {
-            PropertyType type = code->type();
-            out.AddFormatted(", %s", Code::PropertyType2String(type));
+            Code::StubType type = code->type();
+            out.AddFormatted(", %s", Code::StubType2String(type));
           }
           if (kind == Code::CALL_IC || kind == Code::KEYED_CALL_IC) {
             out.AddFormatted(", argc = %d", code->arguments_count());

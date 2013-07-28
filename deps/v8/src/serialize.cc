@@ -1,4 +1,4 @@
-// Copyright 2011 the V8 project authors. All rights reserved.
+// Copyright 2012 the V8 project authors. All rights reserved.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -37,6 +37,7 @@
 #include "platform.h"
 #include "runtime.h"
 #include "serialize.h"
+#include "snapshot.h"
 #include "stub-cache.h"
 #include "v8threads.h"
 
@@ -244,7 +245,7 @@ void ExternalReferenceTable::PopulateTable(Isolate* isolate) {
     "Isolate::" #hacker_name "_address",
     FOR_EACH_ISOLATE_ADDRESS_NAME(BUILD_NAME_LITERAL)
     NULL
-#undef C
+#undef BUILD_NAME_LITERAL
   };
 
   for (uint16_t i = 0; i < Isolate::kIsolateAddressCount; ++i) {
@@ -273,14 +274,22 @@ void ExternalReferenceTable::PopulateTable(Isolate* isolate) {
       STUB_CACHE_TABLE,
       2,
       "StubCache::primary_->value");
-  Add(stub_cache->key_reference(StubCache::kSecondary).address(),
+  Add(stub_cache->map_reference(StubCache::kPrimary).address(),
       STUB_CACHE_TABLE,
       3,
+      "StubCache::primary_->map");
+  Add(stub_cache->key_reference(StubCache::kSecondary).address(),
+      STUB_CACHE_TABLE,
+      4,
       "StubCache::secondary_->key");
   Add(stub_cache->value_reference(StubCache::kSecondary).address(),
       STUB_CACHE_TABLE,
-      4,
+      5,
       "StubCache::secondary_->value");
+  Add(stub_cache->map_reference(StubCache::kSecondary).address(),
+      STUB_CACHE_TABLE,
+      6,
+      "StubCache::secondary_->map");
 
   // Runtime entries
   Add(ExternalReference::perform_gc_function(isolate).address(),
@@ -300,16 +309,28 @@ void ExternalReferenceTable::PopulateTable(Isolate* isolate) {
       RUNTIME_ENTRY,
       4,
       "HandleScope::DeleteExtensions");
+  Add(ExternalReference::
+          incremental_marking_record_write_function(isolate).address(),
+      RUNTIME_ENTRY,
+      5,
+      "IncrementalMarking::RecordWrite");
+  Add(ExternalReference::store_buffer_overflow_function(isolate).address(),
+      RUNTIME_ENTRY,
+      6,
+      "StoreBuffer::StoreBufferOverflow");
+  Add(ExternalReference::
+          incremental_evacuation_record_write_function(isolate).address(),
+      RUNTIME_ENTRY,
+      7,
+      "IncrementalMarking::RecordWrite");
+
+
 
   // Miscellaneous
-  Add(ExternalReference::the_hole_value_location(isolate).address(),
-      UNCLASSIFIED,
-      2,
-      "Factory::the_hole_value().location()");
-  Add(ExternalReference::roots_address(isolate).address(),
+  Add(ExternalReference::roots_array_start(isolate).address(),
       UNCLASSIFIED,
       3,
-      "Heap::roots_address()");
+      "Heap::roots_array_start()");
   Add(ExternalReference::address_of_stack_limit(isolate).address(),
       UNCLASSIFIED,
       4,
@@ -351,129 +372,157 @@ void ExternalReferenceTable::PopulateTable(Isolate* isolate) {
       "Heap::always_allocate_scope_depth()");
   Add(ExternalReference::new_space_allocation_limit_address(isolate).address(),
       UNCLASSIFIED,
-      13,
+      14,
       "Heap::NewSpaceAllocationLimitAddress()");
   Add(ExternalReference::new_space_allocation_top_address(isolate).address(),
       UNCLASSIFIED,
-      14,
+      15,
       "Heap::NewSpaceAllocationTopAddress()");
 #ifdef ENABLE_DEBUGGER_SUPPORT
   Add(ExternalReference::debug_break(isolate).address(),
       UNCLASSIFIED,
-      15,
+      16,
       "Debug::Break()");
   Add(ExternalReference::debug_step_in_fp_address(isolate).address(),
       UNCLASSIFIED,
-      16,
+      17,
       "Debug::step_in_fp_addr()");
 #endif
   Add(ExternalReference::double_fp_operation(Token::ADD, isolate).address(),
       UNCLASSIFIED,
-      17,
+      18,
       "add_two_doubles");
   Add(ExternalReference::double_fp_operation(Token::SUB, isolate).address(),
       UNCLASSIFIED,
-      18,
+      19,
       "sub_two_doubles");
   Add(ExternalReference::double_fp_operation(Token::MUL, isolate).address(),
       UNCLASSIFIED,
-      19,
+      20,
       "mul_two_doubles");
   Add(ExternalReference::double_fp_operation(Token::DIV, isolate).address(),
       UNCLASSIFIED,
-      20,
+      21,
       "div_two_doubles");
   Add(ExternalReference::double_fp_operation(Token::MOD, isolate).address(),
       UNCLASSIFIED,
-      21,
+      22,
       "mod_two_doubles");
   Add(ExternalReference::compare_doubles(isolate).address(),
       UNCLASSIFIED,
-      22,
+      23,
       "compare_doubles");
 #ifndef V8_INTERPRETED_REGEXP
   Add(ExternalReference::re_case_insensitive_compare_uc16(isolate).address(),
       UNCLASSIFIED,
-      23,
+      24,
       "NativeRegExpMacroAssembler::CaseInsensitiveCompareUC16()");
   Add(ExternalReference::re_check_stack_guard_state(isolate).address(),
       UNCLASSIFIED,
-      24,
+      25,
       "RegExpMacroAssembler*::CheckStackGuardState()");
   Add(ExternalReference::re_grow_stack(isolate).address(),
       UNCLASSIFIED,
-      25,
+      26,
       "NativeRegExpMacroAssembler::GrowStack()");
   Add(ExternalReference::re_word_character_map().address(),
       UNCLASSIFIED,
-      26,
+      27,
       "NativeRegExpMacroAssembler::word_character_map");
 #endif  // V8_INTERPRETED_REGEXP
   // Keyed lookup cache.
   Add(ExternalReference::keyed_lookup_cache_keys(isolate).address(),
       UNCLASSIFIED,
-      27,
+      28,
       "KeyedLookupCache::keys()");
   Add(ExternalReference::keyed_lookup_cache_field_offsets(isolate).address(),
       UNCLASSIFIED,
-      28,
+      29,
       "KeyedLookupCache::field_offsets()");
   Add(ExternalReference::transcendental_cache_array_address(isolate).address(),
       UNCLASSIFIED,
-      29,
+      30,
       "TranscendentalCache::caches()");
   Add(ExternalReference::handle_scope_next_address().address(),
       UNCLASSIFIED,
-      30,
+      31,
       "HandleScope::next");
   Add(ExternalReference::handle_scope_limit_address().address(),
       UNCLASSIFIED,
-      31,
+      32,
       "HandleScope::limit");
   Add(ExternalReference::handle_scope_level_address().address(),
       UNCLASSIFIED,
-      32,
+      33,
       "HandleScope::level");
   Add(ExternalReference::new_deoptimizer_function(isolate).address(),
       UNCLASSIFIED,
-      33,
+      34,
       "Deoptimizer::New()");
   Add(ExternalReference::compute_output_frames_function(isolate).address(),
       UNCLASSIFIED,
-      34,
+      35,
       "Deoptimizer::ComputeOutputFrames()");
   Add(ExternalReference::address_of_min_int().address(),
       UNCLASSIFIED,
-      35,
+      36,
       "LDoubleConstant::min_int");
   Add(ExternalReference::address_of_one_half().address(),
       UNCLASSIFIED,
-      36,
+      37,
       "LDoubleConstant::one_half");
   Add(ExternalReference::isolate_address().address(),
       UNCLASSIFIED,
-      37,
+      38,
       "isolate");
   Add(ExternalReference::address_of_minus_zero().address(),
       UNCLASSIFIED,
-      38,
+      39,
       "LDoubleConstant::minus_zero");
   Add(ExternalReference::address_of_negative_infinity().address(),
       UNCLASSIFIED,
-      39,
+      40,
       "LDoubleConstant::negative_infinity");
   Add(ExternalReference::power_double_double_function(isolate).address(),
       UNCLASSIFIED,
-      40,
+      41,
       "power_double_double_function");
   Add(ExternalReference::power_double_int_function(isolate).address(),
       UNCLASSIFIED,
-      41,
-      "power_double_int_function");
-  Add(ExternalReference::arguments_marker_location(isolate).address(),
-      UNCLASSIFIED,
       42,
-      "Factory::arguments_marker().location()");
+      "power_double_int_function");
+  Add(ExternalReference::store_buffer_top(isolate).address(),
+      UNCLASSIFIED,
+      43,
+      "store_buffer_top");
+  Add(ExternalReference::address_of_canonical_non_hole_nan().address(),
+      UNCLASSIFIED,
+      44,
+      "canonical_nan");
+  Add(ExternalReference::address_of_the_hole_nan().address(),
+      UNCLASSIFIED,
+      45,
+      "the_hole_nan");
+  Add(ExternalReference::get_date_field_function(isolate).address(),
+      UNCLASSIFIED,
+      46,
+      "JSDate::GetField");
+  Add(ExternalReference::date_cache_stamp(isolate).address(),
+      UNCLASSIFIED,
+      47,
+      "date_cache_stamp");
+  Add(ExternalReference::address_of_pending_message_obj(isolate).address(),
+      UNCLASSIFIED,
+      48,
+      "address_of_pending_message_obj");
+  Add(ExternalReference::address_of_has_pending_message(isolate).address(),
+      UNCLASSIFIED,
+      49,
+      "address_of_has_pending_message");
+  Add(ExternalReference::address_of_pending_message_script(isolate).address(),
+      UNCLASSIFIED,
+      50,
+      "pending_message_script");
 }
 
 
@@ -550,117 +599,63 @@ Deserializer::Deserializer(SnapshotByteSource* source)
     : isolate_(NULL),
       source_(source),
       external_reference_decoder_(NULL) {
-}
-
-
-// This routine both allocates a new object, and also keeps
-// track of where objects have been allocated so that we can
-// fix back references when deserializing.
-Address Deserializer::Allocate(int space_index, Space* space, int size) {
-  Address address;
-  if (!SpaceIsLarge(space_index)) {
-    ASSERT(!SpaceIsPaged(space_index) ||
-           size <= Page::kPageSize - Page::kObjectStartOffset);
-    MaybeObject* maybe_new_allocation;
-    if (space_index == NEW_SPACE) {
-      maybe_new_allocation =
-          reinterpret_cast<NewSpace*>(space)->AllocateRaw(size);
-    } else {
-      maybe_new_allocation =
-          reinterpret_cast<PagedSpace*>(space)->AllocateRaw(size);
-    }
-    Object* new_allocation = maybe_new_allocation->ToObjectUnchecked();
-    HeapObject* new_object = HeapObject::cast(new_allocation);
-    address = new_object->address();
-    high_water_[space_index] = address + size;
-  } else {
-    ASSERT(SpaceIsLarge(space_index));
-    LargeObjectSpace* lo_space = reinterpret_cast<LargeObjectSpace*>(space);
-    Object* new_allocation;
-    if (space_index == kLargeData) {
-      new_allocation = lo_space->AllocateRaw(size)->ToObjectUnchecked();
-    } else if (space_index == kLargeFixedArray) {
-      new_allocation =
-          lo_space->AllocateRawFixedArray(size)->ToObjectUnchecked();
-    } else {
-      ASSERT_EQ(kLargeCode, space_index);
-      new_allocation = lo_space->AllocateRawCode(size)->ToObjectUnchecked();
-    }
-    HeapObject* new_object = HeapObject::cast(new_allocation);
-    // Record all large objects in the same space.
-    address = new_object->address();
-    pages_[LO_SPACE].Add(address);
+  for (int i = 0; i < LAST_SPACE + 1; i++) {
+    reservations_[i] = kUninitializedReservation;
   }
-  last_object_address_ = address;
-  return address;
-}
-
-
-// This returns the address of an object that has been described in the
-// snapshot as being offset bytes back in a particular space.
-HeapObject* Deserializer::GetAddressFromEnd(int space) {
-  int offset = source_->GetInt();
-  ASSERT(!SpaceIsLarge(space));
-  offset <<= kObjectAlignmentBits;
-  return HeapObject::FromAddress(high_water_[space] - offset);
-}
-
-
-// This returns the address of an object that has been described in the
-// snapshot as being offset bytes into a particular space.
-HeapObject* Deserializer::GetAddressFromStart(int space) {
-  int offset = source_->GetInt();
-  if (SpaceIsLarge(space)) {
-    // Large spaces have one object per 'page'.
-    return HeapObject::FromAddress(pages_[LO_SPACE][offset]);
-  }
-  offset <<= kObjectAlignmentBits;
-  if (space == NEW_SPACE) {
-    // New space has only one space - numbered 0.
-    return HeapObject::FromAddress(pages_[space][0] + offset);
-  }
-  ASSERT(SpaceIsPaged(space));
-  int page_of_pointee = offset >> kPageSizeBits;
-  Address object_address = pages_[space][page_of_pointee] +
-                           (offset & Page::kPageAlignmentMask);
-  return HeapObject::FromAddress(object_address);
 }
 
 
 void Deserializer::Deserialize() {
   isolate_ = Isolate::Current();
-  // Don't GC while deserializing - just expand the heap.
-  AlwaysAllocateScope always_allocate;
-  // Don't use the free lists while deserializing.
-  LinearAllocationScope allocate_linearly;
+  ASSERT(isolate_ != NULL);
+  isolate_->heap()->ReserveSpace(reservations_, &high_water_[0]);
   // No active threads.
   ASSERT_EQ(NULL, isolate_->thread_manager()->FirstThreadStateInUse());
   // No active handles.
   ASSERT(isolate_->handle_scope_implementer()->blocks()->is_empty());
-  // Make sure the entire partial snapshot cache is traversed, filling it with
-  // valid object pointers.
-  isolate_->set_serialize_partial_snapshot_cache_length(
-      Isolate::kPartialSnapshotCacheCapacity);
   ASSERT_EQ(NULL, external_reference_decoder_);
   external_reference_decoder_ = new ExternalReferenceDecoder();
   isolate_->heap()->IterateStrongRoots(this, VISIT_ONLY_STRONG);
+  isolate_->heap()->RepairFreeListsAfterBoot();
   isolate_->heap()->IterateWeakRoots(this, VISIT_ALL);
 
-  isolate_->heap()->set_global_contexts_list(
+  isolate_->heap()->set_native_contexts_list(
       isolate_->heap()->undefined_value());
+
+  // Update data pointers to the external strings containing natives sources.
+  for (int i = 0; i < Natives::GetBuiltinsCount(); i++) {
+    Object* source = isolate_->heap()->natives_source_cache()->get(i);
+    if (!source->IsUndefined()) {
+      ExternalAsciiString::cast(source)->update_data_cache();
+    }
+  }
+
+  // Issue code events for newly deserialized code objects.
+  LOG_CODE_EVENT(isolate_, LogCodeObjects());
+  LOG_CODE_EVENT(isolate_, LogCompiledFunctions());
 }
 
 
 void Deserializer::DeserializePartial(Object** root) {
   isolate_ = Isolate::Current();
-  // Don't GC while deserializing - just expand the heap.
-  AlwaysAllocateScope always_allocate;
-  // Don't use the free lists while deserializing.
-  LinearAllocationScope allocate_linearly;
+  for (int i = NEW_SPACE; i < kNumberOfSpaces; i++) {
+    ASSERT(reservations_[i] != kUninitializedReservation);
+  }
+  isolate_->heap()->ReserveSpace(reservations_, &high_water_[0]);
   if (external_reference_decoder_ == NULL) {
     external_reference_decoder_ = new ExternalReferenceDecoder();
   }
+
+  // Keep track of the code space start and end pointers in case new
+  // code objects were unserialized
+  OldSpace* code_space = isolate_->heap()->code_space();
+  Address start_address = code_space->top();
   VisitPointer(root);
+
+  // There's no code deserialized here. If this assert fires
+  // then that's changed and logging should be added to notify
+  // the profiler et al of the new code.
+  CHECK_EQ(start_address, code_space->top());
 }
 
 
@@ -685,14 +680,12 @@ void Deserializer::VisitPointers(Object** start, Object** end) {
 // This routine writes the new object into the pointer provided and then
 // returns true if the new object was in young space and false otherwise.
 // The reason for this strange interface is that otherwise the object is
-// written very late, which means the ByteArray map is not set up by the
-// time we need to use it to mark the space at the end of a page free (by
-// making it into a byte array).
+// written very late, which means the FreeSpace map is not set up by the
+// time we need to use it to mark the space at the end of a page free.
 void Deserializer::ReadObject(int space_number,
-                              Space* space,
                               Object** write_back) {
   int size = source_->GetInt() << kObjectAlignmentBits;
-  Address address = Allocate(space_number, space, size);
+  Address address = Allocate(space_number, size);
   *write_back = HeapObject::FromAddress(address);
   Object** current = reinterpret_cast<Object**>(address);
   Object** limit = current + (size >> kPointerSizeLog2);
@@ -701,44 +694,24 @@ void Deserializer::ReadObject(int space_number,
   }
   ReadChunk(current, limit, space_number, address);
 #ifdef DEBUG
-  bool is_codespace = (space == HEAP->code_space()) ||
-      ((space == HEAP->lo_space()) && (space_number == kLargeCode));
+  bool is_codespace = (space_number == CODE_SPACE);
   ASSERT(HeapObject::FromAddress(address)->IsCode() == is_codespace);
 #endif
 }
 
-
-// This macro is always used with a constant argument so it should all fold
-// away to almost nothing in the generated code.  It might be nicer to do this
-// with the ternary operator but there are type issues with that.
-#define ASSIGN_DEST_SPACE(space_number)                                        \
-  Space* dest_space;                                                           \
-  if (space_number == NEW_SPACE) {                                             \
-    dest_space = isolate->heap()->new_space();                                \
-  } else if (space_number == OLD_POINTER_SPACE) {                              \
-    dest_space = isolate->heap()->old_pointer_space();                         \
-  } else if (space_number == OLD_DATA_SPACE) {                                 \
-    dest_space = isolate->heap()->old_data_space();                            \
-  } else if (space_number == CODE_SPACE) {                                     \
-    dest_space = isolate->heap()->code_space();                                \
-  } else if (space_number == MAP_SPACE) {                                      \
-    dest_space = isolate->heap()->map_space();                                 \
-  } else if (space_number == CELL_SPACE) {                                     \
-    dest_space = isolate->heap()->cell_space();                                \
-  } else {                                                                     \
-    ASSERT(space_number >= LO_SPACE);                                          \
-    dest_space = isolate->heap()->lo_space();                                  \
-  }
-
-
-static const int kUnknownOffsetFromStart = -1;
-
-
 void Deserializer::ReadChunk(Object** current,
                              Object** limit,
                              int source_space,
-                             Address address) {
+                             Address current_object_address) {
   Isolate* const isolate = isolate_;
+  // Write barrier support costs around 1% in startup time.  In fact there
+  // are no new space objects in current boot snapshots, so it's not needed,
+  // but that may change.
+  bool write_barrier_needed = (current_object_address != NULL &&
+                               source_space != NEW_SPACE &&
+                               source_space != CELL_SPACE &&
+                               source_space != CODE_SPACE &&
+                               source_space != OLD_DATA_SPACE);
   while (current < limit) {
     int data = source_->Get();
     switch (data) {
@@ -749,135 +722,152 @@ void Deserializer::ReadChunk(Object** current,
       ASSERT((within & ~kWhereToPointMask) == 0);                              \
       ASSERT((space_number & ~kSpaceMask) == 0);
 
-#define CASE_BODY(where, how, within, space_number_if_any, offset_from_start)  \
+#define CASE_BODY(where, how, within, space_number_if_any)                     \
       {                                                                        \
         bool emit_write_barrier = false;                                       \
         bool current_was_incremented = false;                                  \
         int space_number =  space_number_if_any == kAnyOldSpace ?              \
                             (data & kSpaceMask) : space_number_if_any;         \
         if (where == kNewObject && how == kPlain && within == kStartOfObject) {\
-          ASSIGN_DEST_SPACE(space_number)                                      \
-          ReadObject(space_number, dest_space, current);                       \
-          emit_write_barrier =                                                 \
-            (space_number == NEW_SPACE && source_space != NEW_SPACE);          \
+          ReadObject(space_number, current);                                   \
+          emit_write_barrier = (space_number == NEW_SPACE);                    \
         } else {                                                               \
           Object* new_object = NULL;  /* May not be a real Object pointer. */  \
           if (where == kNewObject) {                                           \
-            ASSIGN_DEST_SPACE(space_number)                                    \
-            ReadObject(space_number, dest_space, &new_object);                 \
+            ReadObject(space_number, &new_object);                             \
           } else if (where == kRootArray) {                                    \
             int root_id = source_->GetInt();                                   \
-            new_object = isolate->heap()->roots_address()[root_id];            \
+            new_object = isolate->heap()->roots_array_start()[root_id];        \
+            emit_write_barrier = isolate->heap()->InNewSpace(new_object);      \
           } else if (where == kPartialSnapshotCache) {                         \
             int cache_index = source_->GetInt();                               \
             new_object = isolate->serialize_partial_snapshot_cache()           \
                 [cache_index];                                                 \
+            emit_write_barrier = isolate->heap()->InNewSpace(new_object);      \
           } else if (where == kExternalReference) {                            \
+            int skip = source_->GetInt();                                      \
+            current = reinterpret_cast<Object**>(reinterpret_cast<Address>(    \
+                current) + skip);                                              \
             int reference_id = source_->GetInt();                              \
             Address address = external_reference_decoder_->                    \
                 Decode(reference_id);                                          \
             new_object = reinterpret_cast<Object*>(address);                   \
           } else if (where == kBackref) {                                      \
-            emit_write_barrier =                                               \
-              (space_number == NEW_SPACE && source_space != NEW_SPACE);        \
+            emit_write_barrier = (space_number == NEW_SPACE);                  \
             new_object = GetAddressFromEnd(data & kSpaceMask);                 \
           } else {                                                             \
-            ASSERT(where == kFromStart);                                       \
-            if (offset_from_start == kUnknownOffsetFromStart) {                \
-              emit_write_barrier =                                             \
-                (space_number == NEW_SPACE && source_space != NEW_SPACE);      \
-              new_object = GetAddressFromStart(data & kSpaceMask);             \
-            } else {                                                           \
-              Address object_address = pages_[space_number][0] +               \
-                  (offset_from_start << kObjectAlignmentBits);                 \
-              new_object = HeapObject::FromAddress(object_address);            \
-            }                                                                  \
+            ASSERT(where == kBackrefWithSkip);                                 \
+            int skip = source_->GetInt();                                      \
+            current = reinterpret_cast<Object**>(                              \
+                reinterpret_cast<Address>(current) + skip);                    \
+            emit_write_barrier = (space_number == NEW_SPACE);                  \
+            new_object = GetAddressFromEnd(data & kSpaceMask);                 \
           }                                                                    \
-          if (within == kFirstInstruction) {                                   \
-            Code* new_code_object = reinterpret_cast<Code*>(new_object);       \
-            new_object = reinterpret_cast<Object*>(                            \
-                new_code_object->instruction_start());                         \
+          if (within == kInnerPointer) {                                       \
+            if (space_number != CODE_SPACE || new_object->IsCode()) {          \
+              Code* new_code_object = reinterpret_cast<Code*>(new_object);     \
+              new_object = reinterpret_cast<Object*>(                          \
+                  new_code_object->instruction_start());                       \
+            } else {                                                           \
+              ASSERT(space_number == CODE_SPACE);                              \
+              JSGlobalPropertyCell* cell =                                     \
+                  JSGlobalPropertyCell::cast(new_object);                      \
+              new_object = reinterpret_cast<Object*>(                          \
+                  cell->ValueAddress());                                       \
+            }                                                                  \
           }                                                                    \
           if (how == kFromCode) {                                              \
             Address location_of_branch_data =                                  \
                 reinterpret_cast<Address>(current);                            \
-            Assembler::set_target_at(location_of_branch_data,                  \
-                                     reinterpret_cast<Address>(new_object));   \
-            if (within == kFirstInstruction) {                                 \
-              location_of_branch_data += Assembler::kCallTargetSize;           \
-              current = reinterpret_cast<Object**>(location_of_branch_data);   \
-              current_was_incremented = true;                                  \
-            }                                                                  \
+            Assembler::deserialization_set_special_target_at(                  \
+                location_of_branch_data,                                       \
+                reinterpret_cast<Address>(new_object));                        \
+            location_of_branch_data += Assembler::kSpecialTargetSize;          \
+            current = reinterpret_cast<Object**>(location_of_branch_data);     \
+            current_was_incremented = true;                                    \
           } else {                                                             \
             *current = new_object;                                             \
           }                                                                    \
         }                                                                      \
-        if (emit_write_barrier) {                                              \
-          isolate->heap()->RecordWrite(address, static_cast<int>(              \
-              reinterpret_cast<Address>(current) - address));                  \
+        if (emit_write_barrier && write_barrier_needed) {                      \
+          Address current_address = reinterpret_cast<Address>(current);        \
+          isolate->heap()->RecordWrite(                                        \
+              current_object_address,                                          \
+              static_cast<int>(current_address - current_object_address));     \
         }                                                                      \
         if (!current_was_incremented) {                                        \
-          current++;   /* Increment current if it wasn't done above. */        \
+          current++;                                                           \
         }                                                                      \
         break;                                                                 \
       }                                                                        \
-
-// This generates a case and a body for each space.  The large object spaces are
-// very rare in snapshots so they are grouped in one body.
-#define ONE_PER_SPACE(where, how, within)                                      \
-  CASE_STATEMENT(where, how, within, NEW_SPACE)                                \
-  CASE_BODY(where, how, within, NEW_SPACE, kUnknownOffsetFromStart)            \
-  CASE_STATEMENT(where, how, within, OLD_DATA_SPACE)                           \
-  CASE_BODY(where, how, within, OLD_DATA_SPACE, kUnknownOffsetFromStart)       \
-  CASE_STATEMENT(where, how, within, OLD_POINTER_SPACE)                        \
-  CASE_BODY(where, how, within, OLD_POINTER_SPACE, kUnknownOffsetFromStart)    \
-  CASE_STATEMENT(where, how, within, CODE_SPACE)                               \
-  CASE_BODY(where, how, within, CODE_SPACE, kUnknownOffsetFromStart)           \
-  CASE_STATEMENT(where, how, within, CELL_SPACE)                               \
-  CASE_BODY(where, how, within, CELL_SPACE, kUnknownOffsetFromStart)           \
-  CASE_STATEMENT(where, how, within, MAP_SPACE)                                \
-  CASE_BODY(where, how, within, MAP_SPACE, kUnknownOffsetFromStart)            \
-  CASE_STATEMENT(where, how, within, kLargeData)                               \
-  CASE_STATEMENT(where, how, within, kLargeCode)                               \
-  CASE_STATEMENT(where, how, within, kLargeFixedArray)                         \
-  CASE_BODY(where, how, within, kAnyOldSpace, kUnknownOffsetFromStart)
 
 // This generates a case and a body for the new space (which has to do extra
 // write barrier handling) and handles the other spaces with 8 fall-through
 // cases and one body.
 #define ALL_SPACES(where, how, within)                                         \
   CASE_STATEMENT(where, how, within, NEW_SPACE)                                \
-  CASE_BODY(where, how, within, NEW_SPACE, kUnknownOffsetFromStart)            \
+  CASE_BODY(where, how, within, NEW_SPACE)                                     \
   CASE_STATEMENT(where, how, within, OLD_DATA_SPACE)                           \
   CASE_STATEMENT(where, how, within, OLD_POINTER_SPACE)                        \
   CASE_STATEMENT(where, how, within, CODE_SPACE)                               \
   CASE_STATEMENT(where, how, within, CELL_SPACE)                               \
   CASE_STATEMENT(where, how, within, MAP_SPACE)                                \
-  CASE_STATEMENT(where, how, within, kLargeData)                               \
-  CASE_STATEMENT(where, how, within, kLargeCode)                               \
-  CASE_STATEMENT(where, how, within, kLargeFixedArray)                         \
-  CASE_BODY(where, how, within, kAnyOldSpace, kUnknownOffsetFromStart)
+  CASE_BODY(where, how, within, kAnyOldSpace)
 
-#define ONE_PER_CODE_SPACE(where, how, within)                                 \
-  CASE_STATEMENT(where, how, within, CODE_SPACE)                               \
-  CASE_BODY(where, how, within, CODE_SPACE, kUnknownOffsetFromStart)           \
-  CASE_STATEMENT(where, how, within, kLargeCode)                               \
-  CASE_BODY(where, how, within, kLargeCode, kUnknownOffsetFromStart)
+#define FOUR_CASES(byte_code)             \
+  case byte_code:                         \
+  case byte_code + 1:                     \
+  case byte_code + 2:                     \
+  case byte_code + 3:
 
-#define EMIT_COMMON_REFERENCE_PATTERNS(pseudo_space_number,                    \
-                                       space_number,                           \
-                                       offset_from_start)                      \
-  CASE_STATEMENT(kFromStart, kPlain, kStartOfObject, pseudo_space_number)      \
-  CASE_BODY(kFromStart, kPlain, kStartOfObject, space_number, offset_from_start)
+#define SIXTEEN_CASES(byte_code)          \
+  FOUR_CASES(byte_code)                   \
+  FOUR_CASES(byte_code + 4)               \
+  FOUR_CASES(byte_code + 8)               \
+  FOUR_CASES(byte_code + 12)
+
+#define COMMON_RAW_LENGTHS(f)        \
+  f(1)  \
+  f(2)  \
+  f(3)  \
+  f(4)  \
+  f(5)  \
+  f(6)  \
+  f(7)  \
+  f(8)  \
+  f(9)  \
+  f(10) \
+  f(11) \
+  f(12) \
+  f(13) \
+  f(14) \
+  f(15) \
+  f(16) \
+  f(17) \
+  f(18) \
+  f(19) \
+  f(20) \
+  f(21) \
+  f(22) \
+  f(23) \
+  f(24) \
+  f(25) \
+  f(26) \
+  f(27) \
+  f(28) \
+  f(29) \
+  f(30) \
+  f(31)
 
       // We generate 15 cases and bodies that process special tags that combine
       // the raw data tag and the length into one byte.
-#define RAW_CASE(index, size)                                      \
-      case kRawData + index: {                                     \
-        byte* raw_data_out = reinterpret_cast<byte*>(current);     \
-        source_->CopyRaw(raw_data_out, size);                      \
-        current = reinterpret_cast<Object**>(raw_data_out + size); \
-        break;                                                     \
+#define RAW_CASE(index)                                                      \
+      case kRawData + index: {                                               \
+        byte* raw_data_out = reinterpret_cast<byte*>(current);               \
+        source_->CopyRaw(raw_data_out, index * kPointerSize);                \
+        current =                                                            \
+            reinterpret_cast<Object**>(raw_data_out + index * kPointerSize); \
+        break;                                                               \
       }
       COMMON_RAW_LENGTHS(RAW_CASE)
 #undef RAW_CASE
@@ -888,88 +878,130 @@ void Deserializer::ReadChunk(Object** current,
         int size = source_->GetInt();
         byte* raw_data_out = reinterpret_cast<byte*>(current);
         source_->CopyRaw(raw_data_out, size);
-        current = reinterpret_cast<Object**>(raw_data_out + size);
+        break;
+      }
+
+      SIXTEEN_CASES(kRootArrayConstants + kNoSkipDistance)
+      SIXTEEN_CASES(kRootArrayConstants + kNoSkipDistance + 16) {
+        int root_id = RootArrayConstantFromByteCode(data);
+        Object* object = isolate->heap()->roots_array_start()[root_id];
+        ASSERT(!isolate->heap()->InNewSpace(object));
+        *current++ = object;
+        break;
+      }
+
+      SIXTEEN_CASES(kRootArrayConstants + kHasSkipDistance)
+      SIXTEEN_CASES(kRootArrayConstants + kHasSkipDistance + 16) {
+        int root_id = RootArrayConstantFromByteCode(data);
+        int skip = source_->GetInt();
+        current = reinterpret_cast<Object**>(
+            reinterpret_cast<intptr_t>(current) + skip);
+        Object* object = isolate->heap()->roots_array_start()[root_id];
+        ASSERT(!isolate->heap()->InNewSpace(object));
+        *current++ = object;
+        break;
+      }
+
+      case kRepeat: {
+        int repeats = source_->GetInt();
+        Object* object = current[-1];
+        ASSERT(!isolate->heap()->InNewSpace(object));
+        for (int i = 0; i < repeats; i++) current[i] = object;
+        current += repeats;
+        break;
+      }
+
+      STATIC_ASSERT(kRootArrayNumberOfConstantEncodings ==
+                    Heap::kOldSpaceRoots);
+      STATIC_ASSERT(kMaxRepeats == 13);
+      case kConstantRepeat:
+      FOUR_CASES(kConstantRepeat + 1)
+      FOUR_CASES(kConstantRepeat + 5)
+      FOUR_CASES(kConstantRepeat + 9) {
+        int repeats = RepeatsForCode(data);
+        Object* object = current[-1];
+        ASSERT(!isolate->heap()->InNewSpace(object));
+        for (int i = 0; i < repeats; i++) current[i] = object;
+        current += repeats;
         break;
       }
 
       // Deserialize a new object and write a pointer to it to the current
       // object.
-      ONE_PER_SPACE(kNewObject, kPlain, kStartOfObject)
-      // Support for direct instruction pointers in functions
-      ONE_PER_CODE_SPACE(kNewObject, kPlain, kFirstInstruction)
+      ALL_SPACES(kNewObject, kPlain, kStartOfObject)
+      // Support for direct instruction pointers in functions.  It's an inner
+      // pointer because it points at the entry point, not at the start of the
+      // code object.
+      CASE_STATEMENT(kNewObject, kPlain, kInnerPointer, CODE_SPACE)
+      CASE_BODY(kNewObject, kPlain, kInnerPointer, CODE_SPACE)
       // Deserialize a new code object and write a pointer to its first
       // instruction to the current code object.
-      ONE_PER_SPACE(kNewObject, kFromCode, kFirstInstruction)
+      ALL_SPACES(kNewObject, kFromCode, kInnerPointer)
       // Find a recently deserialized object using its offset from the current
       // allocation point and write a pointer to it to the current object.
       ALL_SPACES(kBackref, kPlain, kStartOfObject)
+      ALL_SPACES(kBackrefWithSkip, kPlain, kStartOfObject)
+#if V8_TARGET_ARCH_MIPS
+      // Deserialize a new object from pointer found in code and write
+      // a pointer to it to the current object. Required only for MIPS, and
+      // omitted on the other architectures because it is fully unrolled and
+      // would cause bloat.
+      ALL_SPACES(kNewObject, kFromCode, kStartOfObject)
+      // Find a recently deserialized code object using its offset from the
+      // current allocation point and write a pointer to it to the current
+      // object. Required only for MIPS.
+      ALL_SPACES(kBackref, kFromCode, kStartOfObject)
+      ALL_SPACES(kBackrefWithSkip, kFromCode, kStartOfObject)
+#endif
       // Find a recently deserialized code object using its offset from the
       // current allocation point and write a pointer to its first instruction
       // to the current code object or the instruction pointer in a function
       // object.
-      ALL_SPACES(kBackref, kFromCode, kFirstInstruction)
-      ALL_SPACES(kBackref, kPlain, kFirstInstruction)
-      // Find an already deserialized object using its offset from the start
-      // and write a pointer to it to the current object.
-      ALL_SPACES(kFromStart, kPlain, kStartOfObject)
-      ALL_SPACES(kFromStart, kPlain, kFirstInstruction)
-      // Find an already deserialized code object using its offset from the
-      // start and write a pointer to its first instruction to the current code
-      // object.
-      ALL_SPACES(kFromStart, kFromCode, kFirstInstruction)
-      // Find an already deserialized object at one of the predetermined popular
-      // offsets from the start and write a pointer to it in the current object.
-      COMMON_REFERENCE_PATTERNS(EMIT_COMMON_REFERENCE_PATTERNS)
+      ALL_SPACES(kBackref, kFromCode, kInnerPointer)
+      ALL_SPACES(kBackrefWithSkip, kFromCode, kInnerPointer)
+      ALL_SPACES(kBackref, kPlain, kInnerPointer)
+      ALL_SPACES(kBackrefWithSkip, kPlain, kInnerPointer)
       // Find an object in the roots array and write a pointer to it to the
       // current object.
       CASE_STATEMENT(kRootArray, kPlain, kStartOfObject, 0)
-      CASE_BODY(kRootArray, kPlain, kStartOfObject, 0, kUnknownOffsetFromStart)
+      CASE_BODY(kRootArray, kPlain, kStartOfObject, 0)
       // Find an object in the partial snapshots cache and write a pointer to it
       // to the current object.
       CASE_STATEMENT(kPartialSnapshotCache, kPlain, kStartOfObject, 0)
       CASE_BODY(kPartialSnapshotCache,
                 kPlain,
                 kStartOfObject,
-                0,
-                kUnknownOffsetFromStart)
+                0)
       // Find an code entry in the partial snapshots cache and
       // write a pointer to it to the current object.
-      CASE_STATEMENT(kPartialSnapshotCache, kPlain, kFirstInstruction, 0)
+      CASE_STATEMENT(kPartialSnapshotCache, kPlain, kInnerPointer, 0)
       CASE_BODY(kPartialSnapshotCache,
                 kPlain,
-                kFirstInstruction,
-                0,
-                kUnknownOffsetFromStart)
+                kInnerPointer,
+                0)
       // Find an external reference and write a pointer to it to the current
       // object.
       CASE_STATEMENT(kExternalReference, kPlain, kStartOfObject, 0)
       CASE_BODY(kExternalReference,
                 kPlain,
                 kStartOfObject,
-                0,
-                kUnknownOffsetFromStart)
+                0)
       // Find an external reference and write a pointer to it in the current
       // code object.
       CASE_STATEMENT(kExternalReference, kFromCode, kStartOfObject, 0)
       CASE_BODY(kExternalReference,
                 kFromCode,
                 kStartOfObject,
-                0,
-                kUnknownOffsetFromStart)
+                0)
 
 #undef CASE_STATEMENT
 #undef CASE_BODY
-#undef ONE_PER_SPACE
 #undef ALL_SPACES
-#undef EMIT_COMMON_REFERENCE_PATTERNS
-#undef ASSIGN_DEST_SPACE
 
-      case kNewPage: {
-        int space = source_->Get();
-        pages_[space].Add(last_object_address_);
-        if (space == CODE_SPACE) {
-          CPU::FlushICache(last_object_address_, Page::kPageSize);
-        }
+      case kSkip: {
+        int size = source_->GetInt();
+        current = reinterpret_cast<Object**>(
+            reinterpret_cast<intptr_t>(current) + size);
         break;
       }
 
@@ -994,59 +1026,32 @@ void Deserializer::ReadChunk(Object** current,
         UNREACHABLE();
     }
   }
-  ASSERT_EQ(current, limit);
+  ASSERT_EQ(limit, current);
 }
 
 
 void SnapshotByteSink::PutInt(uintptr_t integer, const char* description) {
-  const int max_shift = ((kPointerSize * kBitsPerByte) / 7) * 7;
-  for (int shift = max_shift; shift > 0; shift -= 7) {
-    if (integer >= static_cast<uintptr_t>(1u) << shift) {
-      Put((static_cast<int>((integer >> shift)) & 0x7f) | 0x80, "IntPart");
-    }
-  }
-  PutSection(static_cast<int>(integer & 0x7f), "IntLastPart");
+  ASSERT(integer < 1 << 22);
+  integer <<= 2;
+  int bytes = 1;
+  if (integer > 0xff) bytes = 2;
+  if (integer > 0xffff) bytes = 3;
+  integer |= bytes;
+  Put(static_cast<int>(integer & 0xff), "IntPart1");
+  if (bytes > 1) Put(static_cast<int>((integer >> 8) & 0xff), "IntPart2");
+  if (bytes > 2) Put(static_cast<int>((integer >> 16) & 0xff), "IntPart3");
 }
 
-#ifdef DEBUG
-
-void Deserializer::Synchronize(const char* tag) {
-  int data = source_->Get();
-  // If this assert fails then that indicates that you have a mismatch between
-  // the number of GC roots when serializing and deserializing.
-  ASSERT_EQ(kSynchronize, data);
-  do {
-    int character = source_->Get();
-    if (character == 0) break;
-    if (FLAG_debug_serialization) {
-      PrintF("%c", character);
-    }
-  } while (true);
-  if (FLAG_debug_serialization) {
-    PrintF("\n");
-  }
-}
-
-
-void Serializer::Synchronize(const char* tag) {
-  sink_->Put(kSynchronize, tag);
-  int character;
-  do {
-    character = *tag++;
-    sink_->PutSection(character, "TagCharacter");
-  } while (character != 0);
-}
-
-#endif
 
 Serializer::Serializer(SnapshotByteSink* sink)
     : sink_(sink),
       current_root_index_(0),
       external_reference_encoder_(new ExternalReferenceEncoder),
-      large_object_total_(0) {
+      root_index_wave_front_(0) {
+  isolate_ = Isolate::Current();
   // The serializer is meant to be used only to generate initial heap images
   // from a context in which there is only one isolate.
-  ASSERT(Isolate::Current()->IsDefaultIsolate());
+  ASSERT(isolate_->IsDefaultIsolate());
   for (int i = 0; i <= LAST_SPACE; i++) {
     fullness_[i] = 0;
   }
@@ -1066,46 +1071,37 @@ void StartupSerializer::SerializeStrongReferences() {
   CHECK(isolate->handle_scope_implementer()->blocks()->is_empty());
   CHECK_EQ(0, isolate->global_handles()->NumberOfWeakHandles());
   // We don't support serializing installed extensions.
-  for (RegisteredExtension* ext = v8::RegisteredExtension::first_extension();
-       ext != NULL;
-       ext = ext->next()) {
-    CHECK_NE(v8::INSTALLED, ext->state());
-  }
+  CHECK(!isolate->has_installed_extensions());
+
   HEAP->IterateStrongRoots(this, VISIT_ONLY_STRONG);
 }
 
 
 void PartialSerializer::Serialize(Object** object) {
   this->VisitPointer(object);
-  Isolate* isolate = Isolate::Current();
-
-  // After we have done the partial serialization the partial snapshot cache
-  // will contain some references needed to decode the partial snapshot.  We
-  // fill it up with undefineds so it has a predictable length so the
-  // deserialization code doesn't need to know the length.
-  for (int index = isolate->serialize_partial_snapshot_cache_length();
-       index < Isolate::kPartialSnapshotCacheCapacity;
-       index++) {
-    isolate->serialize_partial_snapshot_cache()[index] =
-        isolate->heap()->undefined_value();
-    startup_serializer_->VisitPointer(
-        &isolate->serialize_partial_snapshot_cache()[index]);
-  }
-  isolate->set_serialize_partial_snapshot_cache_length(
-      Isolate::kPartialSnapshotCacheCapacity);
+  Pad();
 }
 
 
 void Serializer::VisitPointers(Object** start, Object** end) {
+  Isolate* isolate = Isolate::Current();
+
   for (Object** current = start; current < end; current++) {
-    if ((*current)->IsSmi()) {
-      sink_->Put(kRawData, "RawData");
-      sink_->PutInt(kPointerSize, "length");
+    if (start == isolate->heap()->roots_array_start()) {
+      root_index_wave_front_ =
+          Max(root_index_wave_front_, static_cast<intptr_t>(current - start));
+    }
+    if (reinterpret_cast<Address>(current) ==
+        isolate->heap()->store_buffer()->TopAddress()) {
+      sink_->Put(kSkip, "Skip");
+      sink_->PutInt(kPointerSize, "SkipOneWord");
+    } else if ((*current)->IsSmi()) {
+      sink_->Put(kRawData + 1, "Smi");
       for (int i = 0; i < kPointerSize; i++) {
         sink_->Put(reinterpret_cast<byte*>(current)[i], "Byte");
       }
     } else {
-      SerializeObject(*current, kPlain, kStartOfObject);
+      SerializeObject(*current, kPlain, kStartOfObject, 0);
     }
   }
 }
@@ -1113,26 +1109,29 @@ void Serializer::VisitPointers(Object** start, Object** end) {
 
 // This ensures that the partial snapshot cache keeps things alive during GC and
 // tracks their movement.  When it is called during serialization of the startup
-// snapshot the partial snapshot is empty, so nothing happens.  When the partial
-// (context) snapshot is created, this array is populated with the pointers that
-// the partial snapshot will need. As that happens we emit serialized objects to
-// the startup snapshot that correspond to the elements of this cache array.  On
-// deserialization we therefore need to visit the cache array.  This fills it up
-// with pointers to deserialized objects.
+// snapshot nothing happens.  When the partial (context) snapshot is created,
+// this array is populated with the pointers that the partial snapshot will
+// need. As that happens we emit serialized objects to the startup snapshot
+// that correspond to the elements of this cache array.  On deserialization we
+// therefore need to visit the cache array.  This fills it up with pointers to
+// deserialized objects.
 void SerializerDeserializer::Iterate(ObjectVisitor* visitor) {
+  if (Serializer::enabled()) return;
   Isolate* isolate = Isolate::Current();
-  visitor->VisitPointers(
-      isolate->serialize_partial_snapshot_cache(),
-      &isolate->serialize_partial_snapshot_cache()[
-          isolate->serialize_partial_snapshot_cache_length()]);
-}
-
-
-// When deserializing we need to set the size of the snapshot cache.  This means
-// the root iteration code (above) will iterate over array elements, writing the
-// references to deserialized objects in them.
-void SerializerDeserializer::SetSnapshotCacheSize(int size) {
-  Isolate::Current()->set_serialize_partial_snapshot_cache_length(size);
+  for (int i = 0; ; i++) {
+    if (isolate->serialize_partial_snapshot_cache_length() <= i) {
+      // Extend the array ready to get a value from the visitor when
+      // deserializing.
+      isolate->PushToPartialSnapshotCache(Smi::FromInt(0));
+    }
+    Object** cache = isolate->serialize_partial_snapshot_cache();
+    visitor->VisitPointers(&cache[i], &cache[i + 1]);
+    // Sentinel is the undefined object, which is a root so it will not normally
+    // be found in the cache.
+    if (cache[i] == isolate->heap()->undefined_value()) {
+      break;
+    }
+  }
 }
 
 
@@ -1150,22 +1149,32 @@ int PartialSerializer::PartialSnapshotCacheIndex(HeapObject* heap_object) {
   // then visit the pointer so that it becomes part of the startup snapshot
   // and we can refer to it from the partial snapshot.
   int length = isolate->serialize_partial_snapshot_cache_length();
-  CHECK(length < Isolate::kPartialSnapshotCacheCapacity);
-  isolate->serialize_partial_snapshot_cache()[length] = heap_object;
-  startup_serializer_->VisitPointer(
-      &isolate->serialize_partial_snapshot_cache()[length]);
+  isolate->PushToPartialSnapshotCache(heap_object);
+  startup_serializer_->VisitPointer(reinterpret_cast<Object**>(&heap_object));
   // We don't recurse from the startup snapshot generator into the partial
   // snapshot generator.
-  ASSERT(length == isolate->serialize_partial_snapshot_cache_length());
-  isolate->set_serialize_partial_snapshot_cache_length(length + 1);
+  ASSERT(length == isolate->serialize_partial_snapshot_cache_length() - 1);
   return length;
 }
 
 
-int PartialSerializer::RootIndex(HeapObject* heap_object) {
-  for (int i = 0; i < Heap::kRootListLength; i++) {
-    Object* root = HEAP->roots_address()[i];
-    if (root == heap_object) return i;
+int Serializer::RootIndex(HeapObject* heap_object, HowToCode from) {
+  Heap* heap = HEAP;
+  if (heap->InNewSpace(heap_object)) return kInvalidRootIndex;
+  for (int i = 0; i < root_index_wave_front_; i++) {
+    Object* root = heap->roots_array_start()[i];
+    if (!root->IsSmi() && root == heap_object) {
+#if V8_TARGET_ARCH_MIPS
+      if (from == kFromCode) {
+        // In order to avoid code bloat in the deserializer we don't have
+        // support for the encoding that specifies a particular root should
+        // be written into the lui/ori instructions on MIPS.  Therefore we
+        // should not generate such serialization data for MIPS.
+        return kInvalidRootIndex;
+      }
+#endif
+      return i;
+    }
   }
   return kInvalidRootIndex;
 }
@@ -1179,62 +1188,50 @@ void Serializer::SerializeReferenceToPreviousObject(
     int space,
     int address,
     HowToCode how_to_code,
-    WhereToPoint where_to_point) {
+    WhereToPoint where_to_point,
+    int skip) {
   int offset = CurrentAllocationAddress(space) - address;
-  bool from_start = true;
-  if (SpaceIsPaged(space)) {
-    // For paged space it is simple to encode back from current allocation if
-    // the object is on the same page as the current allocation pointer.
-    if ((CurrentAllocationAddress(space) >> kPageSizeBits) ==
-        (address >> kPageSizeBits)) {
-      from_start = false;
-      address = offset;
-    }
-  } else if (space == NEW_SPACE) {
-    // For new space it is always simple to encode back from current allocation.
-    if (offset < address) {
-      from_start = false;
-      address = offset;
-    }
-  }
-  // If we are actually dealing with real offsets (and not a numbering of
-  // all objects) then we should shift out the bits that are always 0.
-  if (!SpaceIsLarge(space)) address >>= kObjectAlignmentBits;
-  if (from_start) {
-#define COMMON_REFS_CASE(pseudo_space, actual_space, offset)                   \
-    if (space == actual_space && address == offset &&                          \
-        how_to_code == kPlain && where_to_point == kStartOfObject) {           \
-      sink_->Put(kFromStart + how_to_code + where_to_point +                   \
-                 pseudo_space, "RefSer");                                      \
-    } else  /* NOLINT */
-    COMMON_REFERENCE_PATTERNS(COMMON_REFS_CASE)
-#undef COMMON_REFS_CASE
-    {  /* NOLINT */
-      sink_->Put(kFromStart + how_to_code + where_to_point + space, "RefSer");
-      sink_->PutInt(address, "address");
-    }
-  } else {
+  // Shift out the bits that are always 0.
+  offset >>= kObjectAlignmentBits;
+  if (skip == 0) {
     sink_->Put(kBackref + how_to_code + where_to_point + space, "BackRefSer");
-    sink_->PutInt(address, "address");
+  } else {
+    sink_->Put(kBackrefWithSkip + how_to_code + where_to_point + space,
+               "BackRefSerWithSkip");
+    sink_->PutInt(skip, "BackRefSkipDistance");
   }
+  sink_->PutInt(offset, "offset");
 }
 
 
 void StartupSerializer::SerializeObject(
     Object* o,
     HowToCode how_to_code,
-    WhereToPoint where_to_point) {
+    WhereToPoint where_to_point,
+    int skip) {
   CHECK(o->IsHeapObject());
   HeapObject* heap_object = HeapObject::cast(o);
 
+  int root_index;
+  if ((root_index = RootIndex(heap_object, how_to_code)) != kInvalidRootIndex) {
+    PutRoot(root_index, heap_object, how_to_code, where_to_point, skip);
+    return;
+  }
+
   if (address_mapper_.IsMapped(heap_object)) {
-    int space = SpaceOfAlreadySerializedObject(heap_object);
+    int space = SpaceOfObject(heap_object);
     int address = address_mapper_.MappedTo(heap_object);
     SerializeReferenceToPreviousObject(space,
                                        address,
                                        how_to_code,
-                                       where_to_point);
+                                       where_to_point,
+                                       skip);
   } else {
+    if (skip != 0) {
+      sink_->Put(kSkip, "FlushPendingSkip");
+      sink_->PutInt(skip, "SkipDistance");
+    }
+
     // Object has not yet been serialized.  Serialize it here.
     ObjectSerializer object_serializer(this,
                                        heap_object,
@@ -1247,31 +1244,74 @@ void StartupSerializer::SerializeObject(
 
 
 void StartupSerializer::SerializeWeakReferences() {
-  for (int i = Isolate::Current()->serialize_partial_snapshot_cache_length();
-       i < Isolate::kPartialSnapshotCacheCapacity;
-       i++) {
-    sink_->Put(kRootArray + kPlain + kStartOfObject, "RootSerialization");
-    sink_->PutInt(Heap::kUndefinedValueRootIndex, "root_index");
-  }
+  // This phase comes right after the partial serialization (of the snapshot).
+  // After we have done the partial serialization the partial snapshot cache
+  // will contain some references needed to decode the partial snapshot.  We
+  // add one entry with 'undefined' which is the sentinel that the deserializer
+  // uses to know it is done deserializing the array.
+  Isolate* isolate = Isolate::Current();
+  Object* undefined = isolate->heap()->undefined_value();
+  VisitPointer(&undefined);
   HEAP->IterateWeakRoots(this, VISIT_ALL);
+  Pad();
+}
+
+
+void Serializer::PutRoot(int root_index,
+                         HeapObject* object,
+                         SerializerDeserializer::HowToCode how_to_code,
+                         SerializerDeserializer::WhereToPoint where_to_point,
+                         int skip) {
+  if (how_to_code == kPlain &&
+      where_to_point == kStartOfObject &&
+      root_index < kRootArrayNumberOfConstantEncodings &&
+      !HEAP->InNewSpace(object)) {
+    if (skip == 0) {
+      sink_->Put(kRootArrayConstants + kNoSkipDistance + root_index,
+                 "RootConstant");
+    } else {
+      sink_->Put(kRootArrayConstants + kHasSkipDistance + root_index,
+                 "RootConstant");
+      sink_->PutInt(skip, "SkipInPutRoot");
+    }
+  } else {
+    if (skip != 0) {
+      sink_->Put(kSkip, "SkipFromPutRoot");
+      sink_->PutInt(skip, "SkipFromPutRootDistance");
+    }
+    sink_->Put(kRootArray + how_to_code + where_to_point, "RootSerialization");
+    sink_->PutInt(root_index, "root_index");
+  }
 }
 
 
 void PartialSerializer::SerializeObject(
     Object* o,
     HowToCode how_to_code,
-    WhereToPoint where_to_point) {
+    WhereToPoint where_to_point,
+    int skip) {
   CHECK(o->IsHeapObject());
   HeapObject* heap_object = HeapObject::cast(o);
 
+  if (heap_object->IsMap()) {
+    // The code-caches link to context-specific code objects, which
+    // the startup and context serializes cannot currently handle.
+    ASSERT(Map::cast(heap_object)->code_cache() ==
+           heap_object->GetHeap()->raw_unchecked_empty_fixed_array());
+  }
+
   int root_index;
-  if ((root_index = RootIndex(heap_object)) != kInvalidRootIndex) {
-    sink_->Put(kRootArray + how_to_code + where_to_point, "RootSerialization");
-    sink_->PutInt(root_index, "root_index");
+  if ((root_index = RootIndex(heap_object, how_to_code)) != kInvalidRootIndex) {
+    PutRoot(root_index, heap_object, how_to_code, where_to_point, skip);
     return;
   }
 
   if (ShouldBeInThePartialSnapshotCache(heap_object)) {
+    if (skip != 0) {
+      sink_->Put(kSkip, "SkipFromSerializeObject");
+      sink_->PutInt(skip, "SkipDistanceFromSerializeObject");
+    }
+
     int cache_index = PartialSnapshotCacheIndex(heap_object);
     sink_->Put(kPartialSnapshotCache + how_to_code + where_to_point,
                "PartialSnapshotCache");
@@ -1288,13 +1328,18 @@ void PartialSerializer::SerializeObject(
   ASSERT(!heap_object->IsSymbol());
 
   if (address_mapper_.IsMapped(heap_object)) {
-    int space = SpaceOfAlreadySerializedObject(heap_object);
+    int space = SpaceOfObject(heap_object);
     int address = address_mapper_.MappedTo(heap_object);
     SerializeReferenceToPreviousObject(space,
                                        address,
                                        how_to_code,
-                                       where_to_point);
+                                       where_to_point,
+                                       skip);
   } else {
+    if (skip != 0) {
+      sink_->Put(kSkip, "SkipFromSerializeObject");
+      sink_->PutInt(skip, "SkipDistanceFromSerializeObject");
+    }
     // Object has not yet been serialized.  Serialize it here.
     ObjectSerializer serializer(this,
                                 heap_object,
@@ -1318,16 +1363,11 @@ void Serializer::ObjectSerializer::Serialize() {
       SnapshotPositionEvent(object_->address(), sink_->Position()));
 
   // Mark this object as already serialized.
-  bool start_new_page;
-  int offset = serializer_->Allocate(space, size, &start_new_page);
+  int offset = serializer_->Allocate(space, size);
   serializer_->address_mapper()->AddMapping(object_, offset);
-  if (start_new_page) {
-    sink_->Put(kNewPage, "NewPage");
-    sink_->PutSection(space, "NewPageSpace");
-  }
 
   // Serialize the map (first word of the object).
-  serializer_->SerializeObject(object_->map(), kPlain, kStartOfObject);
+  serializer_->SerializeObject(object_->map(), kPlain, kStartOfObject, 0);
 
   // Serialize the rest of the object.
   CHECK_EQ(0, bytes_processed_so_far_);
@@ -1345,21 +1385,59 @@ void Serializer::ObjectSerializer::VisitPointers(Object** start,
     if (current < end) OutputRawData(reinterpret_cast<Address>(current));
 
     while (current < end && !(*current)->IsSmi()) {
-      serializer_->SerializeObject(*current, kPlain, kStartOfObject);
-      bytes_processed_so_far_ += kPointerSize;
-      current++;
+      HeapObject* current_contents = HeapObject::cast(*current);
+      int root_index = serializer_->RootIndex(current_contents, kPlain);
+      // Repeats are not subject to the write barrier so there are only some
+      // objects that can be used in a repeat encoding.  These are the early
+      // ones in the root array that are never in new space.
+      if (current != start &&
+          root_index != kInvalidRootIndex &&
+          root_index < kRootArrayNumberOfConstantEncodings &&
+          current_contents == current[-1]) {
+        ASSERT(!HEAP->InNewSpace(current_contents));
+        int repeat_count = 1;
+        while (current < end - 1 && current[repeat_count] == current_contents) {
+          repeat_count++;
+        }
+        current += repeat_count;
+        bytes_processed_so_far_ += repeat_count * kPointerSize;
+        if (repeat_count > kMaxRepeats) {
+          sink_->Put(kRepeat, "SerializeRepeats");
+          sink_->PutInt(repeat_count, "SerializeRepeats");
+        } else {
+          sink_->Put(CodeForRepeats(repeat_count), "SerializeRepeats");
+        }
+      } else {
+        serializer_->SerializeObject(
+                current_contents, kPlain, kStartOfObject, 0);
+        bytes_processed_so_far_ += kPointerSize;
+        current++;
+      }
     }
   }
+}
+
+
+void Serializer::ObjectSerializer::VisitEmbeddedPointer(RelocInfo* rinfo) {
+  Object** current = rinfo->target_object_address();
+
+  int skip = OutputRawData(rinfo->target_address_address(),
+                           kCanReturnSkipInsteadOfSkipping);
+  HowToCode representation = rinfo->IsCodedSpecially() ? kFromCode : kPlain;
+  serializer_->SerializeObject(*current, representation, kStartOfObject, skip);
+  bytes_processed_so_far_ += rinfo->target_address_size();
 }
 
 
 void Serializer::ObjectSerializer::VisitExternalReferences(Address* start,
                                                            Address* end) {
   Address references_start = reinterpret_cast<Address>(start);
-  OutputRawData(references_start);
+  int skip = OutputRawData(references_start, kCanReturnSkipInsteadOfSkipping);
 
   for (Address* current = start; current < end; current++) {
     sink_->Put(kExternalReference + kPlain + kStartOfObject, "ExternalRef");
+    sink_->PutInt(skip, "SkipB4ExternalRef");
+    skip = 0;
     int reference_id = serializer_->EncodeExternalReference(*current);
     sink_->PutInt(reference_id, "reference id");
   }
@@ -1367,9 +1445,24 @@ void Serializer::ObjectSerializer::VisitExternalReferences(Address* start,
 }
 
 
+void Serializer::ObjectSerializer::VisitExternalReference(RelocInfo* rinfo) {
+  Address references_start = rinfo->target_address_address();
+  int skip = OutputRawData(references_start, kCanReturnSkipInsteadOfSkipping);
+
+  Address* current = rinfo->target_reference_address();
+  int representation = rinfo->IsCodedSpecially() ?
+                       kFromCode + kStartOfObject : kPlain + kStartOfObject;
+  sink_->Put(kExternalReference + representation, "ExternalRef");
+  sink_->PutInt(skip, "SkipB4ExternalRef");
+  int reference_id = serializer_->EncodeExternalReference(*current);
+  sink_->PutInt(reference_id, "reference id");
+  bytes_processed_so_far_ += rinfo->target_address_size();
+}
+
+
 void Serializer::ObjectSerializer::VisitRuntimeEntry(RelocInfo* rinfo) {
   Address target_start = rinfo->target_address_address();
-  OutputRawData(target_start);
+  int skip = OutputRawData(target_start, kCanReturnSkipInsteadOfSkipping);
   Address target = rinfo->target_address();
   uint32_t encoding = serializer_->EncodeExternalReference(target);
   CHECK(target == NULL ? encoding == 0 : encoding != 0);
@@ -1381,6 +1474,7 @@ void Serializer::ObjectSerializer::VisitRuntimeEntry(RelocInfo* rinfo) {
     representation = kStartOfObject + kPlain;
   }
   sink_->Put(kExternalReference + representation, "ExternalReference");
+  sink_->PutInt(skip, "SkipB4ExternalRef");
   sink_->PutInt(encoding, "reference id");
   bytes_processed_so_far_ += rinfo->target_address_size();
 }
@@ -1389,25 +1483,27 @@ void Serializer::ObjectSerializer::VisitRuntimeEntry(RelocInfo* rinfo) {
 void Serializer::ObjectSerializer::VisitCodeTarget(RelocInfo* rinfo) {
   CHECK(RelocInfo::IsCodeTarget(rinfo->rmode()));
   Address target_start = rinfo->target_address_address();
-  OutputRawData(target_start);
+  int skip = OutputRawData(target_start, kCanReturnSkipInsteadOfSkipping);
   Code* target = Code::GetCodeFromTargetAddress(rinfo->target_address());
-  serializer_->SerializeObject(target, kFromCode, kFirstInstruction);
+  serializer_->SerializeObject(target, kFromCode, kInnerPointer, skip);
   bytes_processed_so_far_ += rinfo->target_address_size();
 }
 
 
 void Serializer::ObjectSerializer::VisitCodeEntry(Address entry_address) {
   Code* target = Code::cast(Code::GetObjectFromEntryAddress(entry_address));
-  OutputRawData(entry_address);
-  serializer_->SerializeObject(target, kPlain, kFirstInstruction);
+  int skip = OutputRawData(entry_address, kCanReturnSkipInsteadOfSkipping);
+  serializer_->SerializeObject(target, kPlain, kInnerPointer, skip);
   bytes_processed_so_far_ += kPointerSize;
 }
 
 
 void Serializer::ObjectSerializer::VisitGlobalPropertyCell(RelocInfo* rinfo) {
-  // We shouldn't have any global property cell references in code
-  // objects in the snapshot.
-  UNREACHABLE();
+  ASSERT(rinfo->rmode() == RelocInfo::GLOBAL_PROPERTY_CELL);
+  JSGlobalPropertyCell* cell =
+      JSGlobalPropertyCell::cast(rinfo->target_cell());
+  int skip = OutputRawData(rinfo->pc(), kCanReturnSkipInsteadOfSkipping);
+  serializer_->SerializeObject(cell, kPlain, kInnerPointer, skip);
 }
 
 
@@ -1420,7 +1516,7 @@ void Serializer::ObjectSerializer::VisitExternalAsciiString(
     if (!source->IsUndefined()) {
       ExternalAsciiString* string = ExternalAsciiString::cast(source);
       typedef v8::String::ExternalAsciiStringResource Resource;
-      Resource* resource = string->resource();
+      const Resource* resource = string->resource();
       if (resource == *resource_pointer) {
         sink_->Put(kNativesStringResource, "NativesStringResource");
         sink_->PutSection(i, "NativesStringResourceEnd");
@@ -1435,31 +1531,50 @@ void Serializer::ObjectSerializer::VisitExternalAsciiString(
 }
 
 
-void Serializer::ObjectSerializer::OutputRawData(Address up_to) {
+int Serializer::ObjectSerializer::OutputRawData(
+    Address up_to, Serializer::ObjectSerializer::ReturnSkip return_skip) {
   Address object_start = object_->address();
+  Address base = object_start + bytes_processed_so_far_;
   int up_to_offset = static_cast<int>(up_to - object_start);
-  int skipped = up_to_offset - bytes_processed_so_far_;
+  int to_skip = up_to_offset - bytes_processed_so_far_;
+  int bytes_to_output = to_skip;
+  bytes_processed_so_far_ +=  to_skip;
   // This assert will fail if the reloc info gives us the target_address_address
   // locations in a non-ascending order.  Luckily that doesn't happen.
-  ASSERT(skipped >= 0);
-  if (skipped != 0) {
-    Address base = object_start + bytes_processed_so_far_;
-#define RAW_CASE(index, length)                                                \
-    if (skipped == length) {                                                   \
+  ASSERT(to_skip >= 0);
+  bool outputting_code = false;
+  if (to_skip != 0 && code_object_ && !code_has_been_output_) {
+    // Output the code all at once and fix later.
+    bytes_to_output = object_->Size() + to_skip - bytes_processed_so_far_;
+    outputting_code = true;
+    code_has_been_output_ = true;
+  }
+  if (bytes_to_output != 0 &&
+      (!code_object_ || outputting_code)) {
+#define RAW_CASE(index)                                                        \
+    if (!outputting_code && bytes_to_output == index * kPointerSize &&         \
+        index * kPointerSize == to_skip) {                                     \
       sink_->PutSection(kRawData + index, "RawDataFixed");                     \
+      to_skip = 0;  /* This insn already skips. */                             \
     } else  /* NOLINT */
     COMMON_RAW_LENGTHS(RAW_CASE)
 #undef RAW_CASE
     {  /* NOLINT */
+      // We always end up here if we are outputting the code of a code object.
       sink_->Put(kRawData, "RawData");
-      sink_->PutInt(skipped, "length");
+      sink_->PutInt(bytes_to_output, "length");
     }
-    for (int i = 0; i < skipped; i++) {
+    for (int i = 0; i < bytes_to_output; i++) {
       unsigned int data = base[i];
       sink_->PutSection(data, "Byte");
     }
-    bytes_processed_so_far_ += skipped;
   }
+  if (to_skip != 0 && return_skip == kIgnoringReturn) {
+    sink_->Put(kSkip, "Skip");
+    sink_->PutInt(to_skip, "SkipDistance");
+    to_skip = 0;
+  }
+  return to_skip;
 }
 
 
@@ -1467,15 +1582,7 @@ int Serializer::SpaceOfObject(HeapObject* object) {
   for (int i = FIRST_SPACE; i <= LAST_SPACE; i++) {
     AllocationSpace s = static_cast<AllocationSpace>(i);
     if (HEAP->InSpace(object, s)) {
-      if (i == LO_SPACE) {
-        if (object->IsCode()) {
-          return kLargeCode;
-        } else if (object->IsFixedArray()) {
-          return kLargeFixedArray;
-        } else {
-          return kLargeData;
-        }
-      }
+      ASSERT(i < kNumberOfSpaces);
       return i;
     }
   }
@@ -1484,50 +1591,38 @@ int Serializer::SpaceOfObject(HeapObject* object) {
 }
 
 
-int Serializer::SpaceOfAlreadySerializedObject(HeapObject* object) {
-  for (int i = FIRST_SPACE; i <= LAST_SPACE; i++) {
-    AllocationSpace s = static_cast<AllocationSpace>(i);
-    if (HEAP->InSpace(object, s)) {
-      return i;
-    }
-  }
-  UNREACHABLE();
-  return 0;
-}
-
-
-int Serializer::Allocate(int space, int size, bool* new_page) {
+int Serializer::Allocate(int space, int size) {
   CHECK(space >= 0 && space < kNumberOfSpaces);
-  if (SpaceIsLarge(space)) {
-    // In large object space we merely number the objects instead of trying to
-    // determine some sort of address.
-    *new_page = true;
-    large_object_total_ += size;
-    return fullness_[LO_SPACE]++;
-  }
-  *new_page = false;
-  if (fullness_[space] == 0) {
-    *new_page = true;
-  }
-  if (SpaceIsPaged(space)) {
-    // Paged spaces are a little special.  We encode their addresses as if the
-    // pages were all contiguous and each page were filled up in the range
-    // 0 - Page::kObjectAreaSize.  In practice the pages may not be contiguous
-    // and allocation does not start at offset 0 in the page, but this scheme
-    // means the deserializer can get the page number quickly by shifting the
-    // serialized address.
-    CHECK(IsPowerOf2(Page::kPageSize));
-    int used_in_this_page = (fullness_[space] & (Page::kPageSize - 1));
-    CHECK(size <= Page::kObjectAreaSize);
-    if (used_in_this_page + size > Page::kObjectAreaSize) {
-      *new_page = true;
-      fullness_[space] = RoundUp(fullness_[space], Page::kPageSize);
-    }
-  }
   int allocation_address = fullness_[space];
   fullness_[space] = allocation_address + size;
   return allocation_address;
 }
 
+
+int Serializer::SpaceAreaSize(int space) {
+  if (space == CODE_SPACE) {
+    return isolate_->memory_allocator()->CodePageAreaSize();
+  } else {
+    return Page::kPageSize - Page::kObjectStartOffset;
+  }
+}
+
+
+void Serializer::Pad() {
+  // The non-branching GetInt will read up to 3 bytes too far, so we need
+  // to pad the snapshot to make sure we don't read over the end.
+  for (unsigned i = 0; i < sizeof(int32_t) - 1; i++) {
+    sink_->Put(kNop, "Padding");
+  }
+}
+
+
+bool SnapshotByteSource::AtEOF() {
+  if (0u + length_ - position_ > 2 * sizeof(uint32_t)) return false;
+  for (int x = position_; x < length_; x++) {
+    if (data_[x] != SerializerDeserializer::nop()) return false;
+  }
+  return true;
+}
 
 } }  // namespace v8::internal

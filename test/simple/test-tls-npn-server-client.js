@@ -45,24 +45,30 @@ var serverOptions = {
   NPNProtocols: ['a', 'b', 'c']
 };
 
-var clientsOptions = [{
-  key: serverOptions.key,
-  cert: serverOptions.cert,
-  crl: serverOptions.crl,
-  NPNProtocols: ['a', 'b', 'c']
-},{
-  key: serverOptions.key,
-  cert: serverOptions.cert,
-  crl: serverOptions.crl,
-  NPNProtocols: ['c', 'b', 'e']
-},{
-  key: serverOptions.key,
-  cert: serverOptions.cert,
-  crl: serverOptions.crl,
-  NPNProtocols: ['first-priority-unsupported', 'x', 'y']
-}];
-
 var serverPort = common.PORT;
+
+var clientsOptions = [{
+  port: serverPort,
+  key: serverOptions.key,
+  cert: serverOptions.cert,
+  crl: serverOptions.crl,
+  NPNProtocols: ['a', 'b', 'c'],
+  rejectUnauthorized: false
+},{
+  port: serverPort,
+  key: serverOptions.key,
+  cert: serverOptions.cert,
+  crl: serverOptions.crl,
+  NPNProtocols: ['c', 'b', 'e'],
+  rejectUnauthorized: false
+},{
+  port: serverPort,
+  key: serverOptions.key,
+  cert: serverOptions.cert,
+  crl: serverOptions.crl,
+  NPNProtocols: ['first-priority-unsupported', 'x', 'y'],
+  rejectUnauthorized: false
+}];
 
 var serverResults = [],
     clientsResults = [];
@@ -74,7 +80,7 @@ server.listen(serverPort, startTest);
 
 function startTest() {
   function connectClient(options, callback) {
-    var client = tls.connect(serverPort, 'localhost', options, function() {
+    var client = tls.connect(options, function() {
       clientsResults.push(client.npnProtocol);
       client.destroy();
 

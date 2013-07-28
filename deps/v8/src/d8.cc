@@ -1,4 +1,4 @@
-// Copyright 2011 the V8 project authors. All rights reserved.
+// Copyright 2012 the V8 project authors. All rights reserved.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -26,7 +26,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-#ifdef USING_V8_SHARED  // Defined when linking against shared lib on Windows.
+// Defined when linking against shared lib on Windows.
+#if defined(USING_V8_SHARED) && !defined(V8_SHARED)
 #define V8_SHARED
 #endif
 
@@ -66,11 +67,7 @@
 
 namespace v8 {
 
-
-#ifndef V8_SHARED
 LineEditor *LineEditor::first_ = NULL;
-const char* Shell::kHistoryFileName = ".d8_history";
-const int Shell::kMaxHistoryEntries = 1000;
 
 
 LineEditor::LineEditor(Type type, const char* name)
@@ -96,34 +93,35 @@ LineEditor* LineEditor::Get() {
 class DumbLineEditor: public LineEditor {
  public:
   DumbLineEditor() : LineEditor(LineEditor::DUMB, "dumb") { }
-  virtual i::SmartArrayPointer<char> Prompt(const char* prompt);
+  virtual Handle<String> Prompt(const char* prompt);
 };
 
 
 static DumbLineEditor dumb_line_editor;
 
 
-i::SmartArrayPointer<char> DumbLineEditor::Prompt(const char* prompt) {
-  static const int kBufferSize = 256;
-  char buffer[kBufferSize];
+Handle<String> DumbLineEditor::Prompt(const char* prompt) {
   printf("%s", prompt);
-  char* str = fgets(buffer, kBufferSize, stdin);
-  return i::SmartArrayPointer<char>(str ? i::StrDup(str) : str);
+  return Shell::ReadFromStdin();
 }
 
 
+#ifndef V8_SHARED
 CounterMap* Shell::counter_map_;
 i::OS::MemoryMappedFile* Shell::counters_file_ = NULL;
 CounterCollection Shell::local_counters_;
 CounterCollection* Shell::counters_ = &local_counters_;
 i::Mutex* Shell::context_mutex_(i::OS::CreateMutex());
 Persistent<Context> Shell::utility_context_;
-LineEditor* Shell::console = NULL;
 #endif  // V8_SHARED
 
+LineEditor* Shell::console = NULL;
 Persistent<Context> Shell::evaluation_context_;
 ShellOptions Shell::options;
 const char* Shell::kPrompt = "d8> ";
+
+
+const int MB = 1024 * 1024;
 
 
 #ifndef V8_SHARED
@@ -146,11 +144,11 @@ bool Shell::ExecuteString(Handle<String> source,
                           Handle<Value> name,
                           bool print_result,
                           bool report_exceptions) {
-#ifndef V8_SHARED
+#if !defined(V8_SHARED) && defined(ENABLE_DEBUGGER_SUPPORT)
   bool FLAG_debugger = i::FLAG_debugger;
 #else
   bool FLAG_debugger = false;
-#endif  // V8_SHARED
+#endif  // !V8_SHARED && ENABLE_DEBUGGER_SUPPORT
   HandleScope handle_scope;
   TryCatch try_catch;
   options.script_executed = true;
@@ -178,7 +176,8 @@ bool Shell::ExecuteString(Handle<String> source,
         // If all went well and the result wasn't undefined then print
         // the returned value.
         v8::String::Utf8Value str(result);
-        fwrite(*str, sizeof(**str), str.length(), stdout);
+        size_t count = fwrite(*str, sizeof(**str), str.length(), stdout);
+        (void) count;  // Silence GCC-4.5.x "unused result" warning.
         printf("\n");
       }
       return true;
@@ -201,7 +200,13 @@ Handle<Value> Shell::Write(const Arguments& args) {
     if (i != 0) {
       printf(" ");
     }
-    v8::String::Utf8Value str(args[i]);
+
+    // Explicitly catch potential exceptions in toString().
+    v8::TryCatch try_catch;
+    Handle<String> str_obj = args[i]->ToString();
+    if (try_catch.HasCaught()) return try_catch.ReThrow();
+
+    v8::String::Utf8Value str(str_obj);
     int n = static_cast<int>(fwrite(*str, sizeof(**str), str.length(), stdout));
     if (n != str.length()) {
       printf("Error in fwrite\n");
@@ -237,7 +242,7 @@ Handle<Value> Shell::Read(const Arguments& args) {
 }
 
 
-Handle<Value> Shell::ReadLine(const Arguments& args) {
+Handle<String> Shell::ReadFromStdin() {
   static const int kBufferSize = 256;
   char buffer[kBufferSize];
   Handle<String> accumulator = String::New("");
@@ -246,7 +251,12 @@ Handle<Value> Shell::ReadLine(const Arguments& args) {
     // Continue reading if the line ends with an escape '\\' or the line has
     // not been fully read into the buffer yet (does not end with '\n').
     // If fgets gets an error, just give up.
-    if (fgets(buffer, kBufferSize, stdin) == NULL) return Null();
+    char* input = NULL;
+    {  // Release lock for blocking input.
+      Unlocker unlock(Isolate::GetCurrent());
+      input = fgets(buffer, kBufferSize, stdin);
+    }
+    if (input == NULL) return Handle<String>();
     length = static_cast<int>(strlen(buffer));
     if (length == 0) {
       return accumulator;
@@ -280,61 +290,498 @@ Handle<Value> Shell::Load(const Arguments& args) {
   return Undefined();
 }
 
-
-Handle<Value> Shell::CreateExternalArray(const Arguments& args,
-                                         ExternalArrayType type,
-                                         size_t element_size) {
-  ASSERT(element_size == 1 || element_size == 2 || element_size == 4 ||
-         element_size == 8);
-  if (args.Length() != 1) {
-    return ThrowException(
-        String::New("Array constructor needs one parameter."));
+static int32_t convertToInt(Local<Value> value_in, TryCatch* try_catch) {
+  if (value_in->IsInt32()) {
+    return value_in->Int32Value();
   }
+
+  Local<Value> number = value_in->ToNumber();
+  if (try_catch->HasCaught()) return 0;
+
+  ASSERT(number->IsNumber());
+  Local<Int32> int32 = number->ToInt32();
+  if (try_catch->HasCaught() || int32.IsEmpty()) return 0;
+
+  int32_t value = int32->Int32Value();
+  if (try_catch->HasCaught()) return 0;
+
+  return value;
+}
+
+
+static int32_t convertToUint(Local<Value> value_in, TryCatch* try_catch) {
+  int32_t raw_value = convertToInt(value_in, try_catch);
+  if (try_catch->HasCaught()) return 0;
+
+  if (raw_value < 0) {
+    ThrowException(String::New("Array length must not be negative."));
+    return 0;
+  }
+
   static const int kMaxLength = 0x3fffffff;
 #ifndef V8_SHARED
   ASSERT(kMaxLength == i::ExternalArray::kMaxLength);
 #endif  // V8_SHARED
-  size_t length = 0;
-  if (args[0]->IsUint32()) {
-    length = args[0]->Uint32Value();
-  } else {
-    Local<Number> number = args[0]->ToNumber();
-    if (number.IsEmpty() || !number->IsNumber()) {
-      return ThrowException(String::New("Array length must be a number."));
-    }
-    int32_t raw_length = number->ToInt32()->Int32Value();
-    if (raw_length < 0) {
-      return ThrowException(String::New("Array length must not be negative."));
-    }
-    if (raw_length > static_cast<int32_t>(kMaxLength)) {
-      return ThrowException(
-          String::New("Array length exceeds maximum length."));
-    }
-    length = static_cast<size_t>(raw_length);
+  if (raw_value > static_cast<int32_t>(kMaxLength)) {
+    ThrowException(
+        String::New("Array length exceeds maximum length."));
   }
-  if (length > static_cast<size_t>(kMaxLength)) {
-    return ThrowException(String::New("Array length exceeds maximum length."));
+  return raw_value;
+}
+
+
+// TODO(rossberg): should replace these by proper uses of HasInstance,
+// once we figure out a good way to make the templates global.
+const char kArrayBufferMarkerPropName[] = "d8::_is_array_buffer_";
+const char kArrayMarkerPropName[] = "d8::_is_typed_array_";
+
+
+Handle<Value> Shell::CreateExternalArrayBuffer(Handle<Object> buffer,
+                                               int32_t length) {
+  static const int32_t kMaxSize = 0x7fffffff;
+  // Make sure the total size fits into a (signed) int.
+  if (length < 0 || length > kMaxSize) {
+    return ThrowException(String::New("ArrayBuffer exceeds maximum size (2G)"));
   }
-  void* data = calloc(length, element_size);
+  uint8_t* data = new uint8_t[length];
   if (data == NULL) {
-    return ThrowException(String::New("Memory allocation failed."));
+    return ThrowException(String::New("Memory allocation failed"));
   }
-  Handle<Object> array = Object::New();
-  Persistent<Object> persistent_array = Persistent<Object>::New(array);
+  memset(data, 0, length);
+
+  buffer->SetHiddenValue(String::New(kArrayBufferMarkerPropName), True());
+  Persistent<Object> persistent_array = Persistent<Object>::New(buffer);
   persistent_array.MakeWeak(data, ExternalArrayWeakCallback);
   persistent_array.MarkIndependent();
-  array->SetIndexedPropertiesToExternalArrayData(data, type,
-                                                 static_cast<int>(length));
-  array->Set(String::New("length"),
-             Int32::New(static_cast<int32_t>(length)), ReadOnly);
-  array->Set(String::New("BYTES_PER_ELEMENT"),
-             Int32::New(static_cast<int32_t>(element_size)));
+  V8::AdjustAmountOfExternalAllocatedMemory(length);
+
+  buffer->SetIndexedPropertiesToExternalArrayData(
+      data, v8::kExternalByteArray, length);
+  buffer->Set(String::New("byteLength"), Int32::New(length), ReadOnly);
+
+  return buffer;
+}
+
+
+Handle<Value> Shell::ArrayBuffer(const Arguments& args) {
+  if (!args.IsConstructCall()) {
+    Handle<Value>* rec_args = new Handle<Value>[args.Length()];
+    for (int i = 0; i < args.Length(); ++i) rec_args[i] = args[i];
+    Handle<Value> result = args.Callee()->NewInstance(args.Length(), rec_args);
+    delete[] rec_args;
+    return result;
+  }
+
+  if (args.Length() == 0) {
+    return ThrowException(
+        String::New("ArrayBuffer constructor must have one argument"));
+  }
+  TryCatch try_catch;
+  int32_t length = convertToUint(args[0], &try_catch);
+  if (try_catch.HasCaught()) return try_catch.ReThrow();
+
+  return CreateExternalArrayBuffer(args.This(), length);
+}
+
+
+Handle<Object> Shell::CreateExternalArray(Handle<Object> array,
+                                          Handle<Object> buffer,
+                                          ExternalArrayType type,
+                                          int32_t length,
+                                          int32_t byteLength,
+                                          int32_t byteOffset,
+                                          int32_t element_size) {
+  ASSERT(element_size == 1 || element_size == 2 ||
+         element_size == 4 || element_size == 8);
+  ASSERT(byteLength == length * element_size);
+
+  void* data = buffer->GetIndexedPropertiesExternalArrayData();
+  ASSERT(data != NULL);
+
+  array->SetIndexedPropertiesToExternalArrayData(
+      static_cast<uint8_t*>(data) + byteOffset, type, length);
+  array->SetHiddenValue(String::New(kArrayMarkerPropName), Int32::New(type));
+  array->Set(String::New("byteLength"), Int32::New(byteLength), ReadOnly);
+  array->Set(String::New("byteOffset"), Int32::New(byteOffset), ReadOnly);
+  array->Set(String::New("length"), Int32::New(length), ReadOnly);
+  array->Set(String::New("BYTES_PER_ELEMENT"), Int32::New(element_size));
+  array->Set(String::New("buffer"), buffer, ReadOnly);
+
   return array;
 }
 
 
+Handle<Value> Shell::CreateExternalArray(const Arguments& args,
+                                         ExternalArrayType type,
+                                         int32_t element_size) {
+  if (!args.IsConstructCall()) {
+    Handle<Value>* rec_args = new Handle<Value>[args.Length()];
+    for (int i = 0; i < args.Length(); ++i) rec_args[i] = args[i];
+    Handle<Value> result = args.Callee()->NewInstance(args.Length(), rec_args);
+    delete[] rec_args;
+    return result;
+  }
+
+  TryCatch try_catch;
+  ASSERT(element_size == 1 || element_size == 2 ||
+         element_size == 4 || element_size == 8);
+
+  // All of the following constructors are supported:
+  //   TypedArray(unsigned long length)
+  //   TypedArray(type[] array)
+  //   TypedArray(TypedArray array)
+  //   TypedArray(ArrayBuffer buffer,
+  //              optional unsigned long byteOffset,
+  //              optional unsigned long length)
+  Handle<Object> buffer;
+  int32_t length;
+  int32_t byteLength;
+  int32_t byteOffset;
+  bool init_from_array = false;
+  if (args.Length() == 0) {
+    return ThrowException(
+        String::New("Array constructor must have at least one argument"));
+  }
+  if (args[0]->IsObject() &&
+      !args[0]->ToObject()->GetHiddenValue(
+          String::New(kArrayBufferMarkerPropName)).IsEmpty()) {
+    // Construct from ArrayBuffer.
+    buffer = args[0]->ToObject();
+    int32_t bufferLength =
+        convertToUint(buffer->Get(String::New("byteLength")), &try_catch);
+    if (try_catch.HasCaught()) return try_catch.ReThrow();
+
+    if (args.Length() < 2 || args[1]->IsUndefined()) {
+      byteOffset = 0;
+    } else {
+      byteOffset = convertToUint(args[1], &try_catch);
+      if (try_catch.HasCaught()) return try_catch.ReThrow();
+      if (byteOffset > bufferLength) {
+        return ThrowException(String::New("byteOffset out of bounds"));
+      }
+      if (byteOffset % element_size != 0) {
+        return ThrowException(
+            String::New("byteOffset must be multiple of element size"));
+      }
+    }
+
+    if (args.Length() < 3 || args[2]->IsUndefined()) {
+      byteLength = bufferLength - byteOffset;
+      length = byteLength / element_size;
+      if (byteLength % element_size != 0) {
+        return ThrowException(
+            String::New("buffer size must be multiple of element size"));
+      }
+    } else {
+      length = convertToUint(args[2], &try_catch);
+      if (try_catch.HasCaught()) return try_catch.ReThrow();
+      byteLength = length * element_size;
+      if (byteOffset + byteLength > bufferLength) {
+        return ThrowException(String::New("length out of bounds"));
+      }
+    }
+  } else {
+    if (args[0]->IsObject() &&
+        args[0]->ToObject()->Has(String::New("length"))) {
+      // Construct from array.
+      length = convertToUint(
+          args[0]->ToObject()->Get(String::New("length")), &try_catch);
+      if (try_catch.HasCaught()) return try_catch.ReThrow();
+      init_from_array = true;
+    } else {
+      // Construct from size.
+      length = convertToUint(args[0], &try_catch);
+      if (try_catch.HasCaught()) return try_catch.ReThrow();
+    }
+    byteLength = length * element_size;
+    byteOffset = 0;
+
+    Handle<Object> global = Context::GetCurrent()->Global();
+    Handle<Value> array_buffer = global->Get(String::New("ArrayBuffer"));
+    ASSERT(!try_catch.HasCaught() && array_buffer->IsFunction());
+    Handle<Value> buffer_args[] = { Uint32::New(byteLength) };
+    Handle<Value> result = Handle<Function>::Cast(array_buffer)->NewInstance(
+        1, buffer_args);
+    if (try_catch.HasCaught()) return result;
+    buffer = result->ToObject();
+  }
+
+  Handle<Object> array = CreateExternalArray(
+      args.This(), buffer, type, length, byteLength, byteOffset, element_size);
+
+  if (init_from_array) {
+    Handle<Object> init = args[0]->ToObject();
+    for (int i = 0; i < length; ++i) array->Set(i, init->Get(i));
+  }
+
+  return array;
+}
+
+
+Handle<Value> Shell::ArrayBufferSlice(const Arguments& args) {
+  TryCatch try_catch;
+
+  if (!args.This()->IsObject()) {
+    return ThrowException(
+        String::New("'slice' invoked on non-object receiver"));
+  }
+
+  Local<Object> self = args.This();
+  Local<Value> marker =
+      self->GetHiddenValue(String::New(kArrayBufferMarkerPropName));
+  if (marker.IsEmpty()) {
+    return ThrowException(
+        String::New("'slice' invoked on wrong receiver type"));
+  }
+
+  int32_t length =
+      convertToUint(self->Get(String::New("byteLength")), &try_catch);
+  if (try_catch.HasCaught()) return try_catch.ReThrow();
+
+  if (args.Length() == 0) {
+    return ThrowException(
+        String::New("'slice' must have at least one argument"));
+  }
+  int32_t begin = convertToInt(args[0], &try_catch);
+  if (try_catch.HasCaught()) return try_catch.ReThrow();
+  if (begin < 0) begin += length;
+  if (begin < 0) begin = 0;
+  if (begin > length) begin = length;
+
+  int32_t end;
+  if (args.Length() < 2 || args[1]->IsUndefined()) {
+    end = length;
+  } else {
+    end = convertToInt(args[1], &try_catch);
+    if (try_catch.HasCaught()) return try_catch.ReThrow();
+    if (end < 0) end += length;
+    if (end < 0) end = 0;
+    if (end > length) end = length;
+    if (end < begin) end = begin;
+  }
+
+  Local<Function> constructor = Local<Function>::Cast(self->GetConstructor());
+  Handle<Value> new_args[] = { Uint32::New(end - begin) };
+  Handle<Value> result = constructor->NewInstance(1, new_args);
+  if (try_catch.HasCaught()) return result;
+  Handle<Object> buffer = result->ToObject();
+  uint8_t* dest =
+      static_cast<uint8_t*>(buffer->GetIndexedPropertiesExternalArrayData());
+  uint8_t* src = begin + static_cast<uint8_t*>(
+      self->GetIndexedPropertiesExternalArrayData());
+  memcpy(dest, src, end - begin);
+
+  return buffer;
+}
+
+
+Handle<Value> Shell::ArraySubArray(const Arguments& args) {
+  TryCatch try_catch;
+
+  if (!args.This()->IsObject()) {
+    return ThrowException(
+        String::New("'subarray' invoked on non-object receiver"));
+  }
+
+  Local<Object> self = args.This();
+  Local<Value> marker = self->GetHiddenValue(String::New(kArrayMarkerPropName));
+  if (marker.IsEmpty()) {
+    return ThrowException(
+        String::New("'subarray' invoked on wrong receiver type"));
+  }
+
+  Handle<Object> buffer = self->Get(String::New("buffer"))->ToObject();
+  if (try_catch.HasCaught()) return try_catch.ReThrow();
+  int32_t length =
+      convertToUint(self->Get(String::New("length")), &try_catch);
+  if (try_catch.HasCaught()) return try_catch.ReThrow();
+  int32_t byteOffset =
+      convertToUint(self->Get(String::New("byteOffset")), &try_catch);
+  if (try_catch.HasCaught()) return try_catch.ReThrow();
+  int32_t element_size =
+      convertToUint(self->Get(String::New("BYTES_PER_ELEMENT")), &try_catch);
+  if (try_catch.HasCaught()) return try_catch.ReThrow();
+
+  if (args.Length() == 0) {
+    return ThrowException(
+        String::New("'subarray' must have at least one argument"));
+  }
+  int32_t begin = convertToInt(args[0], &try_catch);
+  if (try_catch.HasCaught()) return try_catch.ReThrow();
+  if (begin < 0) begin += length;
+  if (begin < 0) begin = 0;
+  if (begin > length) begin = length;
+
+  int32_t end;
+  if (args.Length() < 2 || args[1]->IsUndefined()) {
+    end = length;
+  } else {
+    end = convertToInt(args[1], &try_catch);
+    if (try_catch.HasCaught()) return try_catch.ReThrow();
+    if (end < 0) end += length;
+    if (end < 0) end = 0;
+    if (end > length) end = length;
+    if (end < begin) end = begin;
+  }
+
+  length = end - begin;
+  byteOffset += begin * element_size;
+
+  Local<Function> constructor = Local<Function>::Cast(self->GetConstructor());
+  Handle<Value> construct_args[] = {
+    buffer, Uint32::New(byteOffset), Uint32::New(length)
+  };
+  return constructor->NewInstance(3, construct_args);
+}
+
+
+Handle<Value> Shell::ArraySet(const Arguments& args) {
+  TryCatch try_catch;
+
+  if (!args.This()->IsObject()) {
+    return ThrowException(
+        String::New("'set' invoked on non-object receiver"));
+  }
+
+  Local<Object> self = args.This();
+  Local<Value> marker = self->GetHiddenValue(String::New(kArrayMarkerPropName));
+  if (marker.IsEmpty()) {
+    return ThrowException(
+        String::New("'set' invoked on wrong receiver type"));
+  }
+  int32_t length =
+      convertToUint(self->Get(String::New("length")), &try_catch);
+  if (try_catch.HasCaught()) return try_catch.ReThrow();
+  int32_t element_size =
+      convertToUint(self->Get(String::New("BYTES_PER_ELEMENT")), &try_catch);
+  if (try_catch.HasCaught()) return try_catch.ReThrow();
+
+  if (args.Length() == 0) {
+    return ThrowException(
+        String::New("'set' must have at least one argument"));
+  }
+  if (!args[0]->IsObject() ||
+      !args[0]->ToObject()->Has(String::New("length"))) {
+    return ThrowException(
+        String::New("'set' invoked with non-array argument"));
+  }
+  Handle<Object> source = args[0]->ToObject();
+  int32_t source_length =
+      convertToUint(source->Get(String::New("length")), &try_catch);
+  if (try_catch.HasCaught()) return try_catch.ReThrow();
+
+  int32_t offset;
+  if (args.Length() < 2 || args[1]->IsUndefined()) {
+    offset = 0;
+  } else {
+    offset = convertToUint(args[1], &try_catch);
+    if (try_catch.HasCaught()) return try_catch.ReThrow();
+  }
+  if (offset + source_length > length) {
+    return ThrowException(String::New("offset or source length out of bounds"));
+  }
+
+  int32_t source_element_size;
+  if (source->GetHiddenValue(String::New(kArrayMarkerPropName)).IsEmpty()) {
+    source_element_size = 0;
+  } else {
+    source_element_size =
+       convertToUint(source->Get(String::New("BYTES_PER_ELEMENT")), &try_catch);
+    if (try_catch.HasCaught()) return try_catch.ReThrow();
+  }
+
+  if (element_size == source_element_size &&
+      self->GetConstructor()->StrictEquals(source->GetConstructor())) {
+    // Use memmove on the array buffers.
+    Handle<Object> buffer = self->Get(String::New("buffer"))->ToObject();
+    if (try_catch.HasCaught()) return try_catch.ReThrow();
+    Handle<Object> source_buffer =
+        source->Get(String::New("buffer"))->ToObject();
+    if (try_catch.HasCaught()) return try_catch.ReThrow();
+    int32_t byteOffset =
+        convertToUint(self->Get(String::New("byteOffset")), &try_catch);
+    if (try_catch.HasCaught()) return try_catch.ReThrow();
+    int32_t source_byteOffset =
+        convertToUint(source->Get(String::New("byteOffset")), &try_catch);
+    if (try_catch.HasCaught()) return try_catch.ReThrow();
+
+    uint8_t* dest = byteOffset + offset * element_size + static_cast<uint8_t*>(
+        buffer->GetIndexedPropertiesExternalArrayData());
+    uint8_t* src = source_byteOffset + static_cast<uint8_t*>(
+        source_buffer->GetIndexedPropertiesExternalArrayData());
+    memmove(dest, src, source_length * element_size);
+  } else if (source_element_size == 0) {
+    // Source is not a typed array, copy element-wise sequentially.
+    for (int i = 0; i < source_length; ++i) {
+      self->Set(offset + i, source->Get(i));
+      if (try_catch.HasCaught()) return try_catch.ReThrow();
+    }
+  } else {
+    // Need to copy element-wise to make the right conversions.
+    Handle<Object> buffer = self->Get(String::New("buffer"))->ToObject();
+    if (try_catch.HasCaught()) return try_catch.ReThrow();
+    Handle<Object> source_buffer =
+        source->Get(String::New("buffer"))->ToObject();
+    if (try_catch.HasCaught()) return try_catch.ReThrow();
+
+    if (buffer->StrictEquals(source_buffer)) {
+      // Same backing store, need to handle overlap correctly.
+      // This gets a bit tricky in the case of different element sizes
+      // (which, of course, is extremely unlikely to ever occur in practice).
+      int32_t byteOffset =
+          convertToUint(self->Get(String::New("byteOffset")), &try_catch);
+      if (try_catch.HasCaught()) return try_catch.ReThrow();
+      int32_t source_byteOffset =
+          convertToUint(source->Get(String::New("byteOffset")), &try_catch);
+      if (try_catch.HasCaught()) return try_catch.ReThrow();
+
+      // Copy as much as we can from left to right.
+      int i = 0;
+      int32_t next_dest_offset = byteOffset + (offset + 1) * element_size;
+      int32_t next_src_offset = source_byteOffset + source_element_size;
+      while (i < length && next_dest_offset <= next_src_offset) {
+        self->Set(offset + i, source->Get(i));
+        ++i;
+        next_dest_offset += element_size;
+        next_src_offset += source_element_size;
+      }
+      // Of what's left, copy as much as we can from right to left.
+      int j = length - 1;
+      int32_t dest_offset = byteOffset + (offset + j) * element_size;
+      int32_t src_offset = source_byteOffset + j * source_element_size;
+      while (j >= i && dest_offset >= src_offset) {
+        self->Set(offset + j, source->Get(j));
+        --j;
+        dest_offset -= element_size;
+        src_offset -= source_element_size;
+      }
+      // There can be at most 8 entries left in the middle that need buffering
+      // (because the largest element_size is 8 times the smallest).
+      ASSERT(j+1 - i <= 8);
+      Handle<Value> temp[8];
+      for (int k = i; k <= j; ++k) {
+        temp[k - i] = source->Get(k);
+      }
+      for (int k = i; k <= j; ++k) {
+        self->Set(offset + k, temp[k - i]);
+      }
+    } else {
+      // Different backing stores, safe to copy element-wise sequentially.
+      for (int i = 0; i < source_length; ++i)
+        self->Set(offset + i, source->Get(i));
+    }
+  }
+
+  return Undefined();
+}
+
+
 void Shell::ExternalArrayWeakCallback(Persistent<Value> object, void* data) {
-  free(data);
+  HandleScope scope;
+  int32_t length =
+      object->ToObject()->Get(String::New("byteLength"))->Uint32Value();
+  V8::AdjustAmountOfExternalAllocatedMemory(-length);
+  delete[] static_cast<uint8_t*>(data);
   object.Dispose();
 }
 
@@ -355,8 +802,8 @@ Handle<Value> Shell::Int16Array(const Arguments& args) {
 
 
 Handle<Value> Shell::Uint16Array(const Arguments& args) {
-  return CreateExternalArray(args, kExternalUnsignedShortArray,
-                             sizeof(uint16_t));
+  return CreateExternalArray(
+      args, kExternalUnsignedShortArray, sizeof(uint16_t));
 }
 
 
@@ -371,18 +818,18 @@ Handle<Value> Shell::Uint32Array(const Arguments& args) {
 
 
 Handle<Value> Shell::Float32Array(const Arguments& args) {
-  return CreateExternalArray(args, kExternalFloatArray,
-                             sizeof(float));  // NOLINT
+  return CreateExternalArray(
+      args, kExternalFloatArray, sizeof(float));  // NOLINT
 }
 
 
 Handle<Value> Shell::Float64Array(const Arguments& args) {
-  return CreateExternalArray(args, kExternalDoubleArray,
-                             sizeof(double));  // NOLINT
+  return CreateExternalArray(
+      args, kExternalDoubleArray, sizeof(double));  // NOLINT
 }
 
 
-Handle<Value> Shell::PixelArray(const Arguments& args) {
+Handle<Value> Shell::Uint8ClampedArray(const Arguments& args) {
   return CreateExternalArray(args, kExternalPixelArray, sizeof(uint8_t));
 }
 
@@ -410,6 +857,10 @@ Handle<Value> Shell::Version(const Arguments& args) {
 
 void Shell::ReportException(v8::TryCatch* try_catch) {
   HandleScope handle_scope;
+#if !defined(V8_SHARED) && defined(ENABLE_DEBUGGER_SUPPORT)
+  bool enter_context = !Context::InContext();
+  if (enter_context) utility_context_->Enter();
+#endif  // !V8_SHARED && ENABLE_DEBUGGER_SUPPORT
   v8::String::Utf8Value exception(try_catch->Exception());
   const char* exception_string = ToCString(exception);
   Handle<Message> message = try_catch->Message();
@@ -444,6 +895,9 @@ void Shell::ReportException(v8::TryCatch* try_catch) {
     }
   }
   printf("\n");
+#if !defined(V8_SHARED) && defined(ENABLE_DEBUGGER_SUPPORT)
+  if (enter_context) utility_context_->Exit();
+#endif  // !V8_SHARED && ENABLE_DEBUGGER_SUPPORT
 }
 
 
@@ -480,6 +934,12 @@ Handle<Value> Shell::DebugCommandToJSONRequest(Handle<String> command) {
   Handle<Value> argv[kArgc] = { command };
   Handle<Value> val = Handle<Function>::Cast(fun)->Call(global, kArgc, argv);
   return val;
+}
+
+
+void Shell::DispatchDebugMessages() {
+  v8::Context::Scope scope(Shell::evaluation_context_);
+  v8::Debug::ProcessDebugMessages();
 }
 #endif  // ENABLE_DEBUGGER_SUPPORT
 #endif  // V8_SHARED
@@ -594,11 +1054,12 @@ void Shell::InstallUtilityScript() {
   Context::Scope utility_scope(utility_context_);
 
 #ifdef ENABLE_DEBUGGER_SUPPORT
+  if (i::FLAG_debugger) printf("JavaScript debugger enabled\n");
   // Install the debugger object in the utility scope
   i::Debug* debug = i::Isolate::Current()->debug();
   debug->Load();
   i::Handle<i::JSObject> js_debug
-      = i::Handle<i::JSObject>(debug->debug_context()->global());
+      = i::Handle<i::JSObject>(debug->debug_context()->global_object());
   utility_context_->Global()->Set(String::New("$debug"),
                                   Utils::ToLocal(js_debug));
   debug->debug_context()->set_security_token(HEAP->undefined_value());
@@ -663,11 +1124,34 @@ class BZip2Decompressor : public v8::StartupDataDecompressor {
 };
 #endif
 
+
+Handle<FunctionTemplate> Shell::CreateArrayBufferTemplate(
+    InvocationCallback fun) {
+  Handle<FunctionTemplate> buffer_template = FunctionTemplate::New(fun);
+  Local<Template> proto_template = buffer_template->PrototypeTemplate();
+  proto_template->Set(String::New("slice"),
+                      FunctionTemplate::New(ArrayBufferSlice));
+  return buffer_template;
+}
+
+
+Handle<FunctionTemplate> Shell::CreateArrayTemplate(InvocationCallback fun) {
+  Handle<FunctionTemplate> array_template = FunctionTemplate::New(fun);
+  Local<Template> proto_template = array_template->PrototypeTemplate();
+  proto_template->Set(String::New("set"), FunctionTemplate::New(ArraySet));
+  proto_template->Set(String::New("subarray"),
+                      FunctionTemplate::New(ArraySubArray));
+  return array_template;
+}
+
+
 Handle<ObjectTemplate> Shell::CreateGlobalTemplate() {
   Handle<ObjectTemplate> global_template = ObjectTemplate::New();
   global_template->Set(String::New("print"), FunctionTemplate::New(Print));
   global_template->Set(String::New("write"), FunctionTemplate::New(Write));
   global_template->Set(String::New("read"), FunctionTemplate::New(Read));
+  global_template->Set(String::New("readbuffer"),
+                       FunctionTemplate::New(ReadBuffer));
   global_template->Set(String::New("readline"),
                        FunctionTemplate::New(ReadLine));
   global_template->Set(String::New("load"), FunctionTemplate::New(Load));
@@ -679,24 +1163,28 @@ Handle<ObjectTemplate> Shell::CreateGlobalTemplate() {
                        FunctionTemplate::New(DisableProfiler));
 
   // Bind the handlers for external arrays.
+  PropertyAttribute attr =
+      static_cast<PropertyAttribute>(ReadOnly | DontDelete);
+  global_template->Set(String::New("ArrayBuffer"),
+                       CreateArrayBufferTemplate(ArrayBuffer), attr);
   global_template->Set(String::New("Int8Array"),
-                       FunctionTemplate::New(Int8Array));
+                       CreateArrayTemplate(Int8Array), attr);
   global_template->Set(String::New("Uint8Array"),
-                       FunctionTemplate::New(Uint8Array));
+                       CreateArrayTemplate(Uint8Array), attr);
   global_template->Set(String::New("Int16Array"),
-                       FunctionTemplate::New(Int16Array));
+                       CreateArrayTemplate(Int16Array), attr);
   global_template->Set(String::New("Uint16Array"),
-                       FunctionTemplate::New(Uint16Array));
+                       CreateArrayTemplate(Uint16Array), attr);
   global_template->Set(String::New("Int32Array"),
-                       FunctionTemplate::New(Int32Array));
+                       CreateArrayTemplate(Int32Array), attr);
   global_template->Set(String::New("Uint32Array"),
-                       FunctionTemplate::New(Uint32Array));
+                       CreateArrayTemplate(Uint32Array), attr);
   global_template->Set(String::New("Float32Array"),
-                       FunctionTemplate::New(Float32Array));
+                       CreateArrayTemplate(Float32Array), attr);
   global_template->Set(String::New("Float64Array"),
-                       FunctionTemplate::New(Float64Array));
-  global_template->Set(String::New("PixelArray"),
-                       FunctionTemplate::New(PixelArray));
+                       CreateArrayTemplate(Float64Array), attr);
+  global_template->Set(String::New("Uint8ClampedArray"),
+                       CreateArrayTemplate(Uint8ClampedArray), attr);
 
 #ifdef LIVE_OBJECT_LIST
   global_template->Set(String::New("lol_is_enabled"), True());
@@ -729,7 +1217,7 @@ void Shell::Initialize() {
   // Set up counters
   if (i::StrLength(i::FLAG_map_counters) != 0)
     MapCounters(i::FLAG_map_counters);
-  if (i::FLAG_dump_counters) {
+  if (i::FLAG_dump_counters || i::FLAG_track_gc_object_stats) {
     V8::SetCounterFunction(LookupCounter);
     V8::SetCreateHistogramFunction(CreateHistogram);
     V8::SetAddHistogramSampleFunction(AddHistogramSample);
@@ -747,6 +1235,7 @@ void Shell::Initialize() {
   // Start the debugger agent if requested.
   if (i::FLAG_debugger_agent) {
     v8::Debug::EnableAgent("d8 shell", i::FLAG_debugger_port, true);
+    v8::Debug::SetDebugMessageDispatchHandler(DispatchDebugMessages, true);
   }
 #endif  // ENABLE_DEBUGGER_SUPPORT
 #endif  // V8_SHARED
@@ -760,13 +1249,8 @@ Persistent<Context> Shell::CreateEvaluationContext() {
 #endif  // V8_SHARED
   // Initialize the global objects
   Handle<ObjectTemplate> global_template = CreateGlobalTemplate();
-
-  v8::TryCatch try_catch;
   Persistent<Context> context = Context::New(NULL, global_template);
-  if (context.IsEmpty()) {
-    v8::Local<v8::Value> st = try_catch.StackTrace();
-    ASSERT(!context.IsEmpty());
-  }
+  ASSERT(!context.IsEmpty());
   Context::Scope scope(context);
 
 #ifndef V8_SHARED
@@ -797,31 +1281,60 @@ void Shell::Exit(int exit_code) {
 
 
 #ifndef V8_SHARED
+struct CounterAndKey {
+  Counter* counter;
+  const char* key;
+};
+
+
+int CompareKeys(const void* a, const void* b) {
+  return strcmp(static_cast<const CounterAndKey*>(a)->key,
+                static_cast<const CounterAndKey*>(b)->key);
+}
+
+
 void Shell::OnExit() {
   if (console != NULL) console->Close();
   if (i::FLAG_dump_counters) {
-    printf("+----------------------------------------+-------------+\n");
-    printf("| Name                                   | Value       |\n");
-    printf("+----------------------------------------+-------------+\n");
+    int number_of_counters = 0;
     for (CounterMap::Iterator i(counter_map_); i.More(); i.Next()) {
-      Counter* counter = i.CurrentValue();
+      number_of_counters++;
+    }
+    CounterAndKey* counters = new CounterAndKey[number_of_counters];
+    int j = 0;
+    for (CounterMap::Iterator i(counter_map_); i.More(); i.Next(), j++) {
+      counters[j].counter = i.CurrentValue();
+      counters[j].key = i.CurrentKey();
+    }
+    qsort(counters, number_of_counters, sizeof(counters[0]), CompareKeys);
+    printf("+----------------------------------------------------------------+"
+           "-------------+\n");
+    printf("| Name                                                           |"
+           " Value       |\n");
+    printf("+----------------------------------------------------------------+"
+           "-------------+\n");
+    for (j = 0; j < number_of_counters; j++) {
+      Counter* counter = counters[j].counter;
+      const char* key = counters[j].key;
       if (counter->is_histogram()) {
-        printf("| c:%-36s | %11i |\n", i.CurrentKey(), counter->count());
-        printf("| t:%-36s | %11i |\n", i.CurrentKey(), counter->sample_total());
+        printf("| c:%-60s | %11i |\n", key, counter->count());
+        printf("| t:%-60s | %11i |\n", key, counter->sample_total());
       } else {
-        printf("| %-38s | %11i |\n", i.CurrentKey(), counter->count());
+        printf("| %-62s | %11i |\n", key, counter->count());
       }
     }
-    printf("+----------------------------------------+-------------+\n");
+    printf("+----------------------------------------------------------------+"
+           "-------------+\n");
+    delete [] counters;
   }
-  if (counters_file_ != NULL)
-    delete counters_file_;
+  delete counters_file_;
+  delete counter_map_;
 }
 #endif  // V8_SHARED
 
 
 static FILE* FOpen(const char* path, const char* mode) {
-#if (defined(_WIN32) || defined(_WIN64))
+#if defined(_MSC_VER) && (defined(_WIN32) || defined(_WIN64))
   FILE* result;
   if (fopen_s(&result, path, mode) == 0) {
     return result;
@@ -860,6 +1373,33 @@ static char* ReadChars(const char* name, int* size_out) {
   fclose(file);
   *size_out = size;
   return chars;
+}
+
+
+Handle<Value> Shell::ReadBuffer(const Arguments& args) {
+  ASSERT(sizeof(char) == sizeof(uint8_t));  // NOLINT
+  String::Utf8Value filename(args[0]);
+  int length;
+  if (*filename == NULL) {
+    return ThrowException(String::New("Error loading file"));
+  }
+
+  uint8_t* data = reinterpret_cast<uint8_t*>(ReadChars(*filename, &length));
+  if (data == NULL) {
+    return ThrowException(String::New("Error reading file"));
+  }
+  Handle<Object> buffer = Object::New();
+  buffer->SetHiddenValue(String::New(kArrayBufferMarkerPropName), True());
+  Persistent<Object> persistent_buffer = Persistent<Object>::New(buffer);
+  persistent_buffer.MakeWeak(data, ExternalArrayWeakCallback);
+  persistent_buffer.MarkIndependent();
+  V8::AdjustAmountOfExternalAllocatedMemory(length);
+
+  buffer->SetIndexedPropertiesToExternalArrayData(
+      data, kExternalUnsignedByteArray, length);
+  buffer->Set(String::New("byteLength"),
+      Int32::New(static_cast<int32_t>(length)), ReadOnly);
+  return buffer;
 }
 
 
@@ -902,31 +1442,15 @@ void Shell::RunShell() {
   Context::Scope context_scope(evaluation_context_);
   HandleScope outer_scope;
   Handle<String> name = String::New("(d8)");
-#ifndef V8_SHARED
   console = LineEditor::Get();
   printf("V8 version %s [console: %s]\n", V8::GetVersion(), console->name());
-  if (i::FLAG_debugger) {
-    printf("JavaScript debugger enabled\n");
-  }
   console->Open();
   while (true) {
-    i::SmartArrayPointer<char> input = console->Prompt(Shell::kPrompt);
-    if (input.is_empty()) break;
-    console->AddHistory(*input);
     HandleScope inner_scope;
-    ExecuteString(String::New(*input), name, true, true);
+    Handle<String> input = console->Prompt(Shell::kPrompt);
+    if (input.IsEmpty()) break;
+    ExecuteString(input, name, true, true);
   }
-#else
-  printf("V8 version %s [D8 light using shared library]\n", V8::GetVersion());
-  static const int kBufferSize = 256;
-  while (true) {
-    char buffer[kBufferSize];
-    printf("%s", Shell::kPrompt);
-    if (fgets(buffer, kBufferSize, stdin) == NULL) break;
-    HandleScope inner_scope;
-    ExecuteString(String::New(buffer), name, true, true);
-  }
-#endif  // V8_SHARED
   printf("\n");
 }
 
@@ -1039,7 +1563,7 @@ void SourceGroup::Execute() {
 
 Handle<String> SourceGroup::ReadFile(const char* name) {
   int size;
-  const char* chars = ReadChars(name, &size);
+  char* chars = ReadChars(name, &size);
   if (chars == NULL) return Handle<String>();
   Handle<String> result = String::New(chars, size);
   delete[] chars;
@@ -1049,14 +1573,11 @@ Handle<String> SourceGroup::ReadFile(const char* name) {
 
 #ifndef V8_SHARED
 i::Thread::Options SourceGroup::GetThreadOptions() {
-  i::Thread::Options options;
-  options.name = "IsolateThread";
   // On some systems (OSX 10.6) the stack size default is 0.5Mb or less
   // which is not enough to parse the big literal expressions used in tests.
   // The stack size should be at least StackGuard::kLimitSize + some
-  // OS-specific padding for thread startup code.
-  options.stack_size = 2 << 20;  // 2 Mb seems to be enough
-  return options;
+  // OS-specific padding for thread startup code.  2Mbytes seems to be enough.
+  return i::Thread::Options("IsolateThread", 2 * MB);
 }
 
 
@@ -1074,6 +1595,11 @@ void SourceGroup::ExecuteInThread() {
         Execute();
       }
       context.Dispose();
+      if (Shell::options.send_idle_notification) {
+        const int kLongIdlePauseInMs = 1000;
+        V8::ContextDisposedNotification();
+        V8::IdleNotification(kLongIdlePauseInMs);
+      }
     }
     if (done_semaphore_ != NULL) done_semaphore_->Signal();
   } while (!Shell::options.last_run);
@@ -1119,6 +1645,9 @@ bool Shell::SetOptions(int argc, char* argv[]) {
     } else if (strcmp(argv[i], "--test") == 0) {
       options.test_shell = true;
       argv[i] = NULL;
+    } else if (strcmp(argv[i], "--send-idle-notification") == 0) {
+      options.send_idle_notification = true;
+      argv[i] = NULL;
     } else if (strcmp(argv[i], "--preemption") == 0) {
 #ifdef V8_SHARED
       printf("D8 with shared library does not support multi-threading\n");
@@ -1127,7 +1656,7 @@ bool Shell::SetOptions(int argc, char* argv[]) {
       options.use_preemption = true;
       argv[i] = NULL;
 #endif  // V8_SHARED
-    } else if (strcmp(argv[i], "--no-preemption") == 0) {
+    } else if (strcmp(argv[i], "--nopreemption") == 0) {
 #ifdef V8_SHARED
       printf("D8 with shared library does not support multi-threading\n");
       return false;
@@ -1258,15 +1787,28 @@ int Shell::RunMain(int argc, char* argv[]) {
     Locker lock;
     HandleScope scope;
     Persistent<Context> context = CreateEvaluationContext();
+    if (options.last_run) {
+      // Keep using the same context in the interactive shell.
+      evaluation_context_ = context;
+#if !defined(V8_SHARED) && defined(ENABLE_DEBUGGER_SUPPORT)
+      // If the interactive debugger is enabled make sure to activate
+      // it before running the files passed on the command line.
+      if (i::FLAG_debugger) {
+        InstallUtilityScript();
+      }
+#endif  // !V8_SHARED && ENABLE_DEBUGGER_SUPPORT
+    }
     {
       Context::Scope cscope(context);
       options.isolate_sources[0].Execute();
     }
-    if (options.last_run) {
-      // Keep using the same context in the interactive shell
-      evaluation_context_ = context;
-    } else {
+    if (!options.last_run) {
       context.Dispose();
+      if (options.send_idle_notification) {
+        const int kLongIdlePauseInMs = 1000;
+        V8::ContextDisposedNotification();
+        V8::IdleNotification(kLongIdlePauseInMs);
+      }
     }
 
 #ifndef V8_SHARED
@@ -1316,6 +1858,15 @@ int Shell::Main(int argc, char* argv[]) {
     }
     printf("======== Full Deoptimization =======\n");
     Testing::DeoptimizeAll();
+#if !defined(V8_SHARED)
+  } else if (i::FLAG_stress_runs > 0) {
+    int stress_runs = i::FLAG_stress_runs;
+    for (int i = 0; i < stress_runs && result == 0; i++) {
+      printf("============ Run %d/%d ============\n", i + 1, stress_runs);
+      options.last_run = (i == stress_runs - 1);
+      result = RunMain(argc, argv);
+    }
+#endif
   } else {
     result = RunMain(argc, argv);
   }
@@ -1336,9 +1887,11 @@ int Shell::Main(int argc, char* argv[]) {
   if (( options.interactive_shell
       || !options.script_executed )
       && !options.test_shell ) {
-#ifndef V8_SHARED
-    InstallUtilityScript();
-#endif  // V8_SHARED
+#if !defined(V8_SHARED) && defined(ENABLE_DEBUGGER_SUPPORT)
+    if (!i::FLAG_debugger) {
+      InstallUtilityScript();
+    }
+#endif  // !V8_SHARED && ENABLE_DEBUGGER_SUPPORT
     RunShell();
   }
 

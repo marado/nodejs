@@ -95,6 +95,10 @@ class Handle {
 };
 
 
+class DeferredHandles;
+class HandleScopeImplementer;
+
+
 // A stack-allocated class that governs a number of local handles.
 // After a handle scope has been created, all local handles will be
 // allocated within that handle scope until either the handle scope is
@@ -156,8 +160,37 @@ class HandleScope {
   // Zaps the handles in the half-open interval [start, end).
   static void ZapRange(internal::Object** start, internal::Object** end);
 
+  friend class v8::internal::DeferredHandles;
   friend class v8::HandleScope;
+  friend class v8::internal::HandleScopeImplementer;
   friend class v8::ImplementationUtilities;
+  friend class v8::internal::Isolate;
+};
+
+
+class DeferredHandles;
+
+
+class DeferredHandleScope {
+ public:
+  explicit DeferredHandleScope(Isolate* isolate);
+  // The DeferredHandles object returned stores the Handles created
+  // since the creation of this DeferredHandleScope.  The Handles are
+  // alive as long as the DeferredHandles object is alive.
+  DeferredHandles* Detach();
+  ~DeferredHandleScope();
+
+ private:
+  Object** prev_limit_;
+  Object** prev_next_;
+  HandleScopeImplementer* impl_;
+
+#ifdef DEBUG
+  bool handles_detached_;
+  int prev_level_;
+#endif
+
+  friend class HandleScopeImplementer;
 };
 
 
@@ -167,18 +200,6 @@ class HandleScope {
 // an object of expected type, or the handle is an error if running out
 // of space or encountering an internal error.
 
-void NormalizeProperties(Handle<JSObject> object,
-                         PropertyNormalizationMode mode,
-                         int expected_additional_properties);
-Handle<SeededNumberDictionary> NormalizeElements(Handle<JSObject> object);
-void TransformToFastProperties(Handle<JSObject> object,
-                               int unused_property_fields);
-MUST_USE_RESULT Handle<SeededNumberDictionary> SeededNumberDictionarySet(
-    Handle<SeededNumberDictionary> dictionary,
-    uint32_t index,
-    Handle<Object> value,
-    PropertyDetails details);
-
 // Flattens a string.
 void FlattenString(Handle<String> str);
 
@@ -186,11 +207,7 @@ void FlattenString(Handle<String> str);
 // string.
 Handle<String> FlattenGetString(Handle<String> str);
 
-Handle<Object> SetProperty(Handle<JSReceiver> object,
-                           Handle<String> key,
-                           Handle<Object> value,
-                           PropertyAttributes attributes,
-                           StrictModeFlag strict_mode);
+int Utf8Length(Handle<String> str);
 
 Handle<Object> SetProperty(Handle<Object> object,
                            Handle<Object> key,
@@ -203,42 +220,8 @@ Handle<Object> ForceSetProperty(Handle<JSObject> object,
                                 Handle<Object> value,
                                 PropertyAttributes attributes);
 
-Handle<Object> SetNormalizedProperty(Handle<JSObject> object,
-                                     Handle<String> key,
-                                     Handle<Object> value,
-                                     PropertyDetails details);
-
 Handle<Object> ForceDeleteProperty(Handle<JSObject> object,
                                    Handle<Object> key);
-
-Handle<Object> SetLocalPropertyIgnoreAttributes(
-    Handle<JSObject> object,
-    Handle<String> key,
-    Handle<Object> value,
-    PropertyAttributes attributes);
-
-// Used to set local properties on the object we totally control
-// and which therefore has no accessors and alikes.
-void SetLocalPropertyNoThrow(Handle<JSObject> object,
-                             Handle<String> key,
-                             Handle<Object> value,
-                             PropertyAttributes attributes = NONE);
-
-Handle<Object> SetPropertyWithInterceptor(Handle<JSObject> object,
-                                          Handle<String> key,
-                                          Handle<Object> value,
-                                          PropertyAttributes attributes,
-                                          StrictModeFlag strict_mode);
-
-MUST_USE_RESULT Handle<Object> SetElement(Handle<JSObject> object,
-                                          uint32_t index,
-                                          Handle<Object> value,
-                                          StrictModeFlag strict_mode);
-
-Handle<Object> SetOwnElement(Handle<JSObject> object,
-                             uint32_t index,
-                             Handle<Object> value,
-                             StrictModeFlag strict_mode);
 
 Handle<Object> GetProperty(Handle<JSReceiver> obj,
                            const char* name);
@@ -246,34 +229,12 @@ Handle<Object> GetProperty(Handle<JSReceiver> obj,
 Handle<Object> GetProperty(Handle<Object> obj,
                            Handle<Object> key);
 
-Handle<Object> GetProperty(Handle<JSReceiver> obj,
-                           Handle<String> name,
-                           LookupResult* result);
-
-
-Handle<Object> GetElement(Handle<Object> obj,
-                          uint32_t index);
-
 Handle<Object> GetPropertyWithInterceptor(Handle<JSObject> receiver,
                                           Handle<JSObject> holder,
                                           Handle<String> name,
                                           PropertyAttributes* attributes);
 
-Handle<Object> GetPrototype(Handle<Object> obj);
-
 Handle<Object> SetPrototype(Handle<JSObject> obj, Handle<Object> value);
-
-// Return the object's hidden properties object. If the object has no hidden
-// properties and HiddenPropertiesFlag::ALLOW_CREATION is passed, then a new
-// hidden property object will be allocated. Otherwise Heap::undefined_value
-// is returned.
-Handle<Object> GetHiddenProperties(Handle<JSObject> obj,
-                                   JSObject::HiddenPropertiesFlag flag);
-
-int GetIdentityHash(Handle<JSObject> obj);
-
-Handle<Object> DeleteElement(Handle<JSObject> obj, uint32_t index);
-Handle<Object> DeleteProperty(Handle<JSObject> obj, Handle<String> prop);
 
 Handle<Object> LookupSingleCharacterStringFromCode(uint32_t index);
 
@@ -288,7 +249,7 @@ Handle<FixedArray> AddKeysFromJSArray(Handle<FixedArray>,
 // if none exists.
 Handle<JSValue> GetScriptWrapper(Handle<Script> script);
 
-// Script line number computations.
+// Script line number computations. Note that the line number is zero-based.
 void InitScriptLineEnds(Handle<Script> script);
 // For string calculates an array of line end positions. If the string
 // does not end with a new line character, this character may optionally be
@@ -298,21 +259,24 @@ Handle<FixedArray> CalculateLineEnds(Handle<String> string,
 int GetScriptLineNumber(Handle<Script> script, int code_position);
 // The safe version does not make heap allocations but may work much slower.
 int GetScriptLineNumberSafe(Handle<Script> script, int code_position);
+int GetScriptColumnNumber(Handle<Script> script, int code_position);
 
 // Computes the enumerable keys from interceptors. Used for debug mirrors and
 // by GetKeysInFixedArrayFor below.
-v8::Handle<v8::Array> GetKeysForNamedInterceptor(Handle<JSObject> receiver,
+v8::Handle<v8::Array> GetKeysForNamedInterceptor(Handle<JSReceiver> receiver,
                                                  Handle<JSObject> object);
-v8::Handle<v8::Array> GetKeysForIndexedInterceptor(Handle<JSObject> receiver,
+v8::Handle<v8::Array> GetKeysForIndexedInterceptor(Handle<JSReceiver> receiver,
                                                    Handle<JSObject> object);
 
 enum KeyCollectionType { LOCAL_ONLY, INCLUDE_PROTOS };
 
 // Computes the enumerable keys for a JSObject. Used for implementing
 // "for (n in object) { }".
-Handle<FixedArray> GetKeysInFixedArrayFor(Handle<JSObject> object,
-                                          KeyCollectionType type);
-Handle<JSArray> GetKeysFor(Handle<JSObject> object);
+Handle<FixedArray> GetKeysInFixedArrayFor(Handle<JSReceiver> object,
+                                          KeyCollectionType type,
+                                          bool* threw);
+Handle<JSArray> GetKeysFor(Handle<JSReceiver> object, bool* threw);
+Handle<FixedArray> ReduceFixedArrayTo(Handle<FixedArray> array, int length);
 Handle<FixedArray> GetEnumPropertyKeys(Handle<JSObject> object,
                                        bool cache_result);
 
@@ -325,7 +289,6 @@ Handle<String> SubString(Handle<String> str,
                          int start,
                          int end,
                          PretenureFlag pretenure = NOT_TENURED);
-
 
 // Sets the expected number of properties for the function's instances.
 void SetExpectedNofProperties(Handle<JSFunction> func, int nof);
@@ -345,27 +308,15 @@ Handle<JSGlobalProxy> ReinitializeJSGlobalProxy(
 Handle<Object> SetPrototype(Handle<JSFunction> function,
                             Handle<Object> prototype);
 
-Handle<Object> PreventExtensions(Handle<JSObject> object);
+Handle<ObjectHashSet> ObjectHashSetAdd(Handle<ObjectHashSet> table,
+                                       Handle<Object> key);
+
+Handle<ObjectHashSet> ObjectHashSetRemove(Handle<ObjectHashSet> table,
+                                          Handle<Object> key);
 
 Handle<ObjectHashTable> PutIntoObjectHashTable(Handle<ObjectHashTable> table,
-                                               Handle<JSObject> key,
+                                               Handle<Object> key,
                                                Handle<Object> value);
-
-// Does lazy compilation of the given function. Returns true on success and
-// false if the compilation resulted in a stack overflow.
-enum ClearExceptionFlag { KEEP_EXCEPTION, CLEAR_EXCEPTION };
-
-bool EnsureCompiled(Handle<SharedFunctionInfo> shared,
-                    ClearExceptionFlag flag);
-
-bool CompileLazyShared(Handle<SharedFunctionInfo> shared,
-                       ClearExceptionFlag flag);
-
-bool CompileLazy(Handle<JSFunction> function, ClearExceptionFlag flag);
-
-bool CompileOptimized(Handle<JSFunction> function,
-                      int osr_ast_id,
-                      ClearExceptionFlag flag);
 
 class NoHandleAllocation BASE_EMBEDDED {
  public:
@@ -377,6 +328,7 @@ class NoHandleAllocation BASE_EMBEDDED {
   inline ~NoHandleAllocation();
  private:
   int level_;
+  bool active_;
 #endif
 };
 

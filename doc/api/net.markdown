@@ -9,20 +9,19 @@ this module with `require('net');`
 ## net.createServer([options], [connectionListener])
 
 Creates a new TCP server. The `connectionListener` argument is
-automatically set as a listener for the ['connection'](#event_connection_)
-event.
+automatically set as a listener for the ['connection'][] event.
 
 `options` is an object with the following defaults:
 
     { allowHalfOpen: false
     }
 
-If `allowHalfOpen` is `true`, then the socket won't automatically send FIN
+If `allowHalfOpen` is `true`, then the socket won't automatically send a FIN
 packet when the other end of the socket sends a FIN packet. The socket becomes
 non-readable, but still writable. You should call the `end()` method explicitly.
-See ['end'](#event_end_) event for more information.
+See ['end'][] event for more information.
 
-Here is an example of a echo server which listens for connections
+Here is an example of an echo server which listens for connections
 on port 8124:
 
     var net = require('net');
@@ -51,33 +50,38 @@ Use `nc` to connect to a UNIX domain socket server:
 
     nc -U /tmp/echo.sock
 
-## net.connect(arguments...)
-## net.createConnection(arguments...)
+## net.connect(options, [connectionListener])
+## net.createConnection(options, [connectionListener])
 
-Construct a new socket object and opens a socket to the given location. When
-the socket is established the ['connect'](#event_connect_) event will be
-emitted.
+Constructs a new socket object and opens the socket to the given location.
+When the socket is established, the ['connect'][] event will be emitted.
 
-The arguments for these methods change the type of connection:
+For TCP sockets, `options` argument should be an object which specifies:
 
-* `net.connect(port, [host], [connectListener])`
-* `net.createConnection(port, [host], [connectListener])`
+  - `port`: Port the client should connect to (Required).
 
-  Creates a TCP connection to `port` on `host`. If `host` is omitted,
-  `'localhost'` will be assumed.
+  - `host`: Host the client should connect to. Defaults to `'localhost'`.
 
-* `net.connect(path, [connectListener])`
-* `net.createConnection(path, [connectListener])`
+  - `localAddress`: Local interface to bind to for network connections.
 
-  Creates unix socket connection to `path`.
+For UNIX domain sockets, `options` argument should be an object which specifies:
+
+  - `path`: Path the client should connect to (Required).
+
+Common options are:
+
+  - `allowHalfOpen`: if `true`, the socket won't automatically send
+    a FIN packet when the other end of the socket sends a FIN packet.
+    Defaults to `false`.  See ['end'][] event for more information.
 
 The `connectListener` parameter will be added as an listener for the
-['connect'](#event_connect_) event.
+['connect'][] event.
 
 Here is an example of a client of echo server as described previously:
 
     var net = require('net');
-    var client = net.connect(8124, function() { //'connect' listener
+    var client = net.connect({port: 8124},
+        function() { //'connect' listener
       console.log('client connected');
       client.write('world!\r\n');
     });
@@ -92,23 +96,42 @@ Here is an example of a client of echo server as described previously:
 To connect on the socket `/tmp/echo.sock` the second line would just be
 changed to
 
-    var client = net.connect('/tmp/echo.sock', function() { //'connect' listener
+    var client = net.connect({path: '/tmp/echo.sock'},
+
+## net.connect(port, [host], [connectListener])
+## net.createConnection(port, [host], [connectListener])
+
+Creates a TCP connection to `port` on `host`. If `host` is omitted,
+`'localhost'` will be assumed.
+The `connectListener` parameter will be added as an listener for the
+['connect'][] event.
+
+## net.connect(path, [connectListener])
+## net.createConnection(path, [connectListener])
+
+Creates unix socket connection to `path`.
+The `connectListener` parameter will be added as an listener for the
+['connect'][] event.
 
 ## Class: net.Server
 
 This class is used to create a TCP or UNIX server.
 A server is a `net.Socket` that can listen for new incoming connections.
 
-### server.listen(port, [host], [listeningListener])
+### server.listen(port, [host], [backlog], [callback])
 
 Begin accepting connections on the specified `port` and `host`.  If the
 `host` is omitted, the server will accept connections directed to any
 IPv4 address (`INADDR_ANY`). A port value of zero will assign a random port.
 
+Backlog is the maximum length of the queue of pending connections.
+The actual length will be determined by your OS through sysctl settings such as
+`tcp_max_syn_backlog` and `somaxconn` on linux. The default value of this
+parameter is 511 (not 512).
+
 This function is asynchronous.  When the server has been bound,
-['listening'](#event_listening_) event will be emitted.
-the last parameter `listeningListener` will be added as an listener for the
-['listening'](#event_listening_) event.
+['listening'][] event will be emitted.  The last parameter `callback`
+will be added as an listener for the ['listening'][] event.
 
 One issue some users run into is getting `EADDRINUSE` errors. This means that
 another server is already running on the requested port. One way of handling this
@@ -127,27 +150,48 @@ would be to wait a second and then try again. This can be done with
 (Note: All sockets in Node set `SO_REUSEADDR` already)
 
 
-### server.listen(path, [listeningListener])
+### server.listen(path, [callback])
 
 Start a UNIX socket server listening for connections on the given `path`.
 
 This function is asynchronous.  When the server has been bound,
+['listening'][] event will be emitted.  The last parameter `callback`
+will be added as an listener for the ['listening'][] event.
+
+### server.listen(handle, [callback])
+
+* `handle` {Object}
+* `callback` {Function}
+
+The `handle` object can be set to either a server or socket (anything
+with an underlying `_handle` member), or a `{fd: <n>}` object.
+
+This will cause the server to accept connections on the specified
+handle, but it is presumed that the file descriptor or handle has
+already been bound to a port or domain socket.
+
+Listening on a file descriptor is not supported on Windows.
+
+This function is asynchronous.  When the server has been bound,
 ['listening'](#event_listening_) event will be emitted.
-the last parameter `listeningListener` will be added as an listener for the
+the last parameter `callback` will be added as an listener for the
 ['listening'](#event_listening_) event.
 
-### server.close()
+### server.close([callback])
 
-Stops the server from accepting new connections. This function is
-asynchronous, the server is finally closed when the server emits a `'close'`
+Stops the server from accepting new connections and keeps existing
+connections. This function is asynchronous, the server is finally
+closed when all connections are ended and the server emits a `'close'`
+event. Optionally, you can pass a callback to listen for the `'close'`
 event.
-
 
 ### server.address()
 
-Returns the bound address and port of the server as reported by the operating system.
+Returns the bound address, the address family name and port of the server
+as reported by the operating system.
 Useful to find which port was assigned when giving getting an OS-assigned address.
-Returns an object with two properties, e.g. `{"address":"127.0.0.1", "port":2121}`
+Returns an object with three properties, e.g.
+`{ port: 12346, family: 'IPv4', address: '127.0.0.1' }`
 
 Example:
 
@@ -163,17 +207,43 @@ Example:
 
 Don't call `server.address()` until the `'listening'` event has been emitted.
 
+### server.unref()
+
+Calling `unref` on a server will allow the program to exit if this is the only
+active server in the event system. If the server is already `unref`d calling
+`unref` again will have no effect.
+
+### server.ref()
+
+Opposite of `unref`, calling `ref` on a previously `unref`d server will *not*
+let the program exit if it's the only server left (the default behavior). If
+the server is `ref`d calling `ref` again will have no effect.
+
 ### server.maxConnections
 
 Set this property to reject connections when the server's connection count gets
 high.
 
+It is not recommended to use this option once a socket has been sent to a child
+with `child_process.fork()`.
+
 ### server.connections
 
+This function is **deprecated**; please use [server.getConnections()][] instead.
 The number of concurrent connections on the server.
 
+This becomes `null` when sending a socket to a child with
+`child_process.fork()`. To poll forks and get current number of active
+connections use asynchronous `server.getConnections` instead.
 
-`net.Server` is an `EventEmitter` with the following events:
+`net.Server` is an [EventEmitter][] with the following events:
+
+### server.getConnections(callback)
+
+Asynchronously get the number of concurrent connections on the server. Works
+when sockets were sent to forks.
+
+Callback should take two arguments `err` and `count`.
 
 ### Event: 'listening'
 
@@ -188,7 +258,8 @@ Emitted when a new connection is made. `socket` is an instance of
 
 ### Event: 'close'
 
-Emitted when the server closes.
+Emitted when the server closes. Note that if connections exist, this
+event is not emitted until all connections are ended.
 
 ### Event: 'error'
 
@@ -228,16 +299,14 @@ then the socket will be opened as a TCP socket, if `host` is omitted,
 opened as a unix socket to that path.
 
 Normally this method is not needed, as `net.createConnection` opens the
-socket. Use this only if you are implementing a custom Socket or if a
-Socket is closed and you want to reuse it to connect to another server.
+socket. Use this only if you are implementing a custom Socket.
 
-This function is asynchronous. When the ['connect'](#event_connect_) event is
-emitted the socket is established. If there is a problem connecting, the
-`'connect'` event will not be emitted, the `'error'` event will be emitted with
-the exception.
+This function is asynchronous. When the ['connect'][] event is emitted the
+socket is established. If there is a problem connecting, the `'connect'` event
+will not be emitted, the `'error'` event will be emitted with the exception.
 
 The `connectListener` parameter will be added as an listener for the
-['connect'](#event_connect_) event.
+['connect'][] event.
 
 
 ### socket.bufferSize
@@ -261,14 +330,8 @@ Users who experience large or growing `bufferSize` should attempt to
 
 ### socket.setEncoding([encoding])
 
-Sets the encoding (either `'ascii'`, `'utf8'`, or `'base64'`) for data that is
-received. Defaults to `null`.
-
-### socket.setSecure()
-
-This function has been removed in v0.3. It used to upgrade the connection to
-SSL/TLS. See the [TLS section](tls.html#tLS_) for the new API.
-
+Set the encoding for the socket as a Readable Stream. See
+[stream.setEncoding()][] for more information.
 
 ### socket.write(data, [encoding], [callback])
 
@@ -338,9 +401,22 @@ initialDelay will leave the value unchanged from the default
 
 ### socket.address()
 
-Returns the bound address and port of the socket as reported by the operating
-system. Returns an object with two properties, e.g.
-`{"address":"192.168.57.1", "port":62053}`
+Returns the bound address, the address family name and port of the
+socket as reported by the operating system. Returns an object with
+three properties, e.g.
+`{ port: 12346, family: 'IPv4', address: '127.0.0.1' }`
+
+### socket.unref()
+
+Calling `unref` on a socket will allow the program to exit if this is the only
+active socket in the event system. If the socket is already `unref`d calling
+`unref` again will have no effect.
+
+### socket.ref()
+
+Opposite of `unref`, calling `ref` on a previously `unref`d socket will *not*
+let the program exit if it's the only socket left (the default behavior). If
+the socket is `ref`d calling `ref` again will have no effect.
 
 ### socket.remoteAddress
 
@@ -352,6 +428,17 @@ The string representation of the remote IP address. For example,
 The numeric representation of the remote port. For example,
 `80` or `21`.
 
+### socket.localAddress
+
+The string representation of the local IP address the remote client is
+connecting on. For example, if you are listening on `'0.0.0.0'` and the
+client connects on `'192.168.1.1'`, the value would be `'192.168.1.1'`.
+
+### socket.localPort
+
+The numeric representation of the local port. For example,
+`80` or `21`.
+
 ### socket.bytesRead
 
 The amount of received bytes.
@@ -361,7 +448,7 @@ The amount of received bytes.
 The amount of bytes sent.
 
 
-`net.Socket` instances are EventEmitters with the following events:
+`net.Socket` instances are [EventEmitter][] with the following events:
 
 ### Event: 'connect'
 
@@ -374,8 +461,7 @@ See `connect()`.
 
 Emitted when data is received.  The argument `data` will be a `Buffer` or
 `String`.  Encoding of data is set by `socket.setEncoding()`.
-(See the [Readable Stream](stream.html#readable_stream) section for more
-information.)
+(See the [Readable Stream][] section for more information.)
 
 Note that the __data will be lost__ if there is no listener when a `Socket`
 emits a `'data'` event.
@@ -434,3 +520,10 @@ Returns true if input is a version 4 IP address, otherwise returns false.
 
 Returns true if input is a version 6 IP address, otherwise returns false.
 
+['connect']: #net_event_connect
+['connection']: #net_event_connection
+['end']: #net_event_end
+[EventEmitter]: events.html#events_class_events_eventemitter
+['listening']: #net_event_listening
+[Readable Stream]: stream.html#stream_readable_stream
+[stream.setEncoding()]: stream.html#stream_stream_setencoding_encoding

@@ -1,4 +1,4 @@
-// Copyright 2011 the V8 project authors. All rights reserved.
+// Copyright 2012 the V8 project authors. All rights reserved.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -136,21 +136,6 @@ namespace internal {
 #endif
 #endif
 
-// Define unaligned read for the target architectures supporting it.
-#if defined(V8_TARGET_ARCH_X64) || defined(V8_TARGET_ARCH_IA32)
-#define V8_TARGET_CAN_READ_UNALIGNED 1
-#elif V8_TARGET_ARCH_ARM
-// Some CPU-OS combinations allow unaligned access on ARM. We assume
-// that unaligned accesses are not allowed unless the build system
-// defines the CAN_USE_UNALIGNED_ACCESSES macro to be non-zero.
-#if CAN_USE_UNALIGNED_ACCESSES
-#define V8_TARGET_CAN_READ_UNALIGNED 1
-#endif
-#elif V8_TARGET_ARCH_MIPS
-#else
-#error Target architecture is not supported by v8
-#endif
-
 // Support for alternative bool type. This is only enabled if the code is
 // compiled with USE_MYBOOL defined. This catches some nasty type bugs.
 // For instance, 'bool b = "false";' results in b == true! This is a hidden
@@ -175,17 +160,22 @@ typedef byte* Address;
 // than defining __STDC_CONSTANT_MACROS before including <stdint.h>, and it
 // works on compilers that don't have it (like MSVC).
 #if V8_HOST_ARCH_64_BIT
-#ifdef _MSC_VER
+#if defined(_MSC_VER)
 #define V8_UINT64_C(x)  (x ## UI64)
 #define V8_INT64_C(x)   (x ## I64)
 #define V8_INTPTR_C(x)  (x ## I64)
 #define V8_PTR_PREFIX "ll"
-#else  // _MSC_VER
+#elif defined(__MINGW64__)
+#define V8_UINT64_C(x)  (x ## ULL)
+#define V8_INT64_C(x)   (x ## LL)
+#define V8_INTPTR_C(x)  (x ## LL)
+#define V8_PTR_PREFIX "I64"
+#else
 #define V8_UINT64_C(x)  (x ## UL)
 #define V8_INT64_C(x)   (x ## L)
 #define V8_INTPTR_C(x)  (x ## L)
 #define V8_PTR_PREFIX "l"
-#endif  // _MSC_VER
+#endif
 #else  // V8_HOST_ARCH_64_BIT
 #define V8_INTPTR_C(x)  (x)
 #define V8_PTR_PREFIX ""
@@ -198,6 +188,7 @@ typedef byte* Address;
 
 #define V8PRIxPTR V8_PTR_PREFIX "x"
 #define V8PRIdPTR V8_PTR_PREFIX "d"
+#define V8PRIuPTR V8_PTR_PREFIX "u"
 
 // Fix for Mac OS X defining uintptr_t as "unsigned long":
 #if defined(__APPLE__) && defined(__MACH__)
@@ -230,6 +221,9 @@ const int kPointerSize  = sizeof(void*);     // NOLINT
 
 const int kDoubleSizeLog2 = 3;
 
+// Size of the state of a the random number generator.
+const int kRandomStateSize = 2 * kIntSize;
+
 #if V8_HOST_ARCH_64_BIT
 const int kPointerSizeLog2 = 3;
 const intptr_t kIntptrSignBit = V8_INT64_C(0x8000000000000000);
@@ -259,8 +253,9 @@ const int kBinary32ExponentShift = 23;
 // other bits set.
 const uint64_t kQuietNaNMask = static_cast<uint64_t>(0xfff) << 51;
 
-// ASCII/UC16 constants
+// ASCII/UTF-16 constants
 // Code-point values in Unicode 4.0 are 21 bits wide.
+// Code units in UTF-16 are 16 bits wide.
 typedef uint16_t uc16;
 typedef int32_t uc32;
 const int kASCIISize    = kCharSize;
@@ -291,7 +286,7 @@ const uint32_t kMaxAsciiCharCodeU = 0x7fu;
 // The USE(x) template is used to silence C++ compiler warnings
 // issued for (yet) unused variables (typically parameters).
 template <typename T>
-static inline void USE(T) { }
+inline void USE(T) { }
 
 
 // FUNCTION_ADDR(f) gets the address of a C function f.
@@ -336,6 +331,9 @@ F FUNCTION_CAST(Address addr) {
 #define INLINE(header) inline __attribute__((always_inline)) header
 #define NO_INLINE(header) __attribute__((noinline)) header
 #endif
+#elif defined(_MSC_VER) && !defined(DEBUG)
+#define INLINE(header) __forceinline header
+#define NO_INLINE(header) header
 #else
 #define INLINE(header) inline header
 #define NO_INLINE(header) header
@@ -348,12 +346,59 @@ F FUNCTION_CAST(Address addr) {
 #define MUST_USE_RESULT
 #endif
 
+
+// Define DISABLE_ASAN macros.
+#if defined(__has_feature)
+#if __has_feature(address_sanitizer)
+#define DISABLE_ASAN __attribute__((no_address_safety_analysis))
+#endif
+#endif
+
+
+#ifndef DISABLE_ASAN
+#define DISABLE_ASAN
+#endif
+
+
 // -----------------------------------------------------------------------------
 // Forward declarations for frequently used classes
 // (sorted alphabetically)
 
 class FreeStoreAllocationPolicy;
 template <typename T, class P = FreeStoreAllocationPolicy> class List;
+
+// -----------------------------------------------------------------------------
+// Declarations for use in both the preparser and the rest of V8.
+
+// The different language modes that V8 implements. ES5 defines two language
+// modes: an unrestricted mode respectively a strict mode which are indicated by
+// CLASSIC_MODE respectively STRICT_MODE in the enum. The harmony spec drafts
+// for the next ES standard specify a new third mode which is called 'extended
+// mode'. The extended mode is only available if the harmony flag is set. It is
+// based on the 'strict mode' and adds new functionality to it. This means that
+// most of the semantics of these two modes coincide.
+//
+// In the current draft the term 'base code' is used to refer to code that is
+// neither in strict nor extended mode. However, the more distinguishing term
+// 'classic mode' is used in V8 instead to avoid mix-ups.
+
+enum LanguageMode {
+  CLASSIC_MODE,
+  STRICT_MODE,
+  EXTENDED_MODE
+};
+
+
+// The Strict Mode (ECMA-262 5th edition, 4.2.2).
+//
+// This flag is used in the backend to represent the language mode. So far
+// there is no semantic difference between the strict and the extended mode in
+// the backend, so both modes are represented by the kStrictMode value.
+enum StrictModeFlag {
+  kNonStrictMode,
+  kStrictMode
+};
+
 
 } }  // namespace v8::internal
 

@@ -1,4 +1,4 @@
-// Copyright 2011 the V8 project authors. All rights reserved.
+// Copyright 2012 the V8 project authors. All rights reserved.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -53,7 +53,7 @@ namespace internal {
 // code.
 class ArmDebugger {
  public:
-  explicit ArmDebugger(Simulator* sim);
+  explicit ArmDebugger(Simulator* sim) : sim_(sim) { }
   ~ArmDebugger();
 
   void Stop(Instruction* instr);
@@ -82,11 +82,6 @@ class ArmDebugger {
   void UndoBreakpoints();
   void RedoBreakpoints();
 };
-
-
-ArmDebugger::ArmDebugger(Simulator* sim) {
-  sim_ = sim;
-}
 
 
 ArmDebugger::~ArmDebugger() {
@@ -281,7 +276,7 @@ void ArmDebugger::Debug() {
   // make them invisible to all commands.
   UndoBreakpoints();
 
-  while (!done) {
+  while (!done && !sim_->has_bad_pc()) {
     if (last_pc != sim_->get_pc()) {
       disasm::NameConverter converter;
       disasm::Disassembler dasm(converter);
@@ -296,6 +291,13 @@ void ArmDebugger::Debug() {
     if (line == NULL) {
       break;
     } else {
+      char* last_input = sim_->last_debugger_input();
+      if (strcmp(line, "\n") == 0 && last_input != NULL) {
+        line = last_input;
+      } else {
+        // Ownership is transferred to sim_;
+        sim_->set_last_debugger_input(line);
+      }
       // Use sscanf to parse the individual parts of the command line. At the
       // moment no command expects more than two parameters.
       int argc = SScanF(line,
@@ -611,7 +613,6 @@ void ArmDebugger::Debug() {
         PrintF("Unknown command: %s\n", cmd);
       }
     }
-    DeleteArray(line);
   }
 
   // Add all the breakpoints back to stop execution and enter the debugger
@@ -642,6 +643,12 @@ static bool AllOnOnePage(uintptr_t start, int size) {
   intptr_t start_page = (start & ~CachePage::kPageMask);
   intptr_t end_page = ((start + size) & ~CachePage::kPageMask);
   return start_page == end_page;
+}
+
+
+void Simulator::set_last_debugger_input(char* input) {
+  DeleteArray(last_debugger_input_);
+  last_debugger_input_ = input;
 }
 
 
@@ -734,7 +741,7 @@ Simulator::Simulator(Isolate* isolate) : isolate_(isolate) {
     isolate_->set_simulator_i_cache(i_cache_);
   }
   Initialize(isolate);
-  // Setup simulator support first. Some of this information is needed to
+  // Set up simulator support first. Some of this information is needed to
   // setup the architecture state.
   size_t stack_size = 1 * 1024*1024;  // allocate 1MB for stack
   stack_ = reinterpret_cast<char*>(malloc(stack_size));
@@ -743,7 +750,7 @@ Simulator::Simulator(Isolate* isolate) : isolate_(isolate) {
   break_pc_ = NULL;
   break_instr_ = 0;
 
-  // Setup architecture state.
+  // Set up architecture state.
   // All registers are initialized to zero to start with.
   for (int i = 0; i < num_registers; i++) {
     registers_[i] = 0;
@@ -781,6 +788,8 @@ Simulator::Simulator(Isolate* isolate) : isolate_(isolate) {
   registers_[pc] = bad_lr;
   registers_[lr] = bad_lr;
   InitializeCoverage();
+
+  last_debugger_input_ = NULL;
 }
 
 
@@ -936,73 +945,31 @@ unsigned int Simulator::get_s_register(int sreg) const {
 }
 
 
-void Simulator::set_s_register_from_float(int sreg, const float flt) {
-  ASSERT((sreg >= 0) && (sreg < num_s_registers));
-  // Read the bits from the single precision floating point value
-  // into the unsigned integer element of vfp_register[] given by index=sreg.
-  char buffer[sizeof(vfp_register[0])];
-  memcpy(buffer, &flt, sizeof(vfp_register[0]));
-  memcpy(&vfp_register[sreg], buffer, sizeof(vfp_register[0]));
+template<class InputType, int register_size>
+void Simulator::SetVFPRegister(int reg_index, const InputType& value) {
+  ASSERT(reg_index >= 0);
+  if (register_size == 1) ASSERT(reg_index < num_s_registers);
+  if (register_size == 2) ASSERT(reg_index < num_d_registers);
+
+  char buffer[register_size * sizeof(vfp_register[0])];
+  memcpy(buffer, &value, register_size * sizeof(vfp_register[0]));
+  memcpy(&vfp_register[reg_index * register_size], buffer,
+         register_size * sizeof(vfp_register[0]));
 }
 
 
-void Simulator::set_s_register_from_sinteger(int sreg, const int sint) {
-  ASSERT((sreg >= 0) && (sreg < num_s_registers));
-  // Read the bits from the integer value into the unsigned integer element of
-  // vfp_register[] given by index=sreg.
-  char buffer[sizeof(vfp_register[0])];
-  memcpy(buffer, &sint, sizeof(vfp_register[0]));
-  memcpy(&vfp_register[sreg], buffer, sizeof(vfp_register[0]));
-}
+template<class ReturnType, int register_size>
+ReturnType Simulator::GetFromVFPRegister(int reg_index) {
+  ASSERT(reg_index >= 0);
+  if (register_size == 1) ASSERT(reg_index < num_s_registers);
+  if (register_size == 2) ASSERT(reg_index < num_d_registers);
 
-
-void Simulator::set_d_register_from_double(int dreg, const double& dbl) {
-  ASSERT((dreg >= 0) && (dreg < num_d_registers));
-  // Read the bits from the double precision floating point value into the two
-  // consecutive unsigned integer elements of vfp_register[] given by index
-  // 2*sreg and 2*sreg+1.
-  char buffer[2 * sizeof(vfp_register[0])];
-  memcpy(buffer, &dbl, 2 * sizeof(vfp_register[0]));
-  memcpy(&vfp_register[dreg * 2], buffer, 2 * sizeof(vfp_register[0]));
-}
-
-
-float Simulator::get_float_from_s_register(int sreg) {
-  ASSERT((sreg >= 0) && (sreg < num_s_registers));
-
-  float sm_val = 0.0;
-  // Read the bits from the unsigned integer vfp_register[] array
-  // into the single precision floating point value and return it.
-  char buffer[sizeof(vfp_register[0])];
-  memcpy(buffer, &vfp_register[sreg], sizeof(vfp_register[0]));
-  memcpy(&sm_val, buffer, sizeof(vfp_register[0]));
-  return(sm_val);
-}
-
-
-int Simulator::get_sinteger_from_s_register(int sreg) {
-  ASSERT((sreg >= 0) && (sreg < num_s_registers));
-
-  int sm_val = 0;
-  // Read the bits from the unsigned integer vfp_register[] array
-  // into the single precision floating point value and return it.
-  char buffer[sizeof(vfp_register[0])];
-  memcpy(buffer, &vfp_register[sreg], sizeof(vfp_register[0]));
-  memcpy(&sm_val, buffer, sizeof(vfp_register[0]));
-  return(sm_val);
-}
-
-
-double Simulator::get_double_from_d_register(int dreg) {
-  ASSERT((dreg >= 0) && (dreg < num_d_registers));
-
-  double dm_val = 0.0;
-  // Read the bits from the unsigned integer vfp_register[] array
-  // into the double precision floating point value and return it.
-  char buffer[2 * sizeof(vfp_register[0])];
-  memcpy(buffer, &vfp_register[2 * dreg], 2 * sizeof(vfp_register[0]));
-  memcpy(&dm_val, buffer, 2 * sizeof(vfp_register[0]));
-  return(dm_val);
+  ReturnType value = 0;
+  char buffer[register_size * sizeof(vfp_register[0])];
+  memcpy(buffer, &vfp_register[register_size * reg_index],
+         register_size * sizeof(vfp_register[0]));
+  memcpy(&value, buffer, register_size * sizeof(vfp_register[0]));
+  return value;
 }
 
 
@@ -1099,111 +1066,83 @@ void Simulator::TrashCallerSaveRegisters() {
 
 
 int Simulator::ReadW(int32_t addr, Instruction* instr) {
-#if V8_TARGET_CAN_READ_UNALIGNED
-  intptr_t* ptr = reinterpret_cast<intptr_t*>(addr);
-  return *ptr;
-#else
-  if ((addr & 3) == 0) {
+  if (FLAG_enable_unaligned_accesses || (addr & 3) == 0) {
     intptr_t* ptr = reinterpret_cast<intptr_t*>(addr);
     return *ptr;
+  } else {
+    PrintF("Unaligned read at 0x%08x, pc=0x%08" V8PRIxPTR "\n",
+           addr,
+           reinterpret_cast<intptr_t>(instr));
+    UNIMPLEMENTED();
+    return 0;
   }
-  PrintF("Unaligned read at 0x%08x, pc=0x%08" V8PRIxPTR "\n",
-         addr,
-         reinterpret_cast<intptr_t>(instr));
-  UNIMPLEMENTED();
-  return 0;
-#endif
 }
 
 
 void Simulator::WriteW(int32_t addr, int value, Instruction* instr) {
-#if V8_TARGET_CAN_READ_UNALIGNED
-  intptr_t* ptr = reinterpret_cast<intptr_t*>(addr);
-  *ptr = value;
-  return;
-#else
-  if ((addr & 3) == 0) {
+  if (FLAG_enable_unaligned_accesses || (addr & 3) == 0) {
     intptr_t* ptr = reinterpret_cast<intptr_t*>(addr);
     *ptr = value;
-    return;
+  } else {
+    PrintF("Unaligned write at 0x%08x, pc=0x%08" V8PRIxPTR "\n",
+           addr,
+           reinterpret_cast<intptr_t>(instr));
+    UNIMPLEMENTED();
   }
-  PrintF("Unaligned write at 0x%08x, pc=0x%08" V8PRIxPTR "\n",
-         addr,
-         reinterpret_cast<intptr_t>(instr));
-  UNIMPLEMENTED();
-#endif
 }
 
 
 uint16_t Simulator::ReadHU(int32_t addr, Instruction* instr) {
-#if V8_TARGET_CAN_READ_UNALIGNED
-  uint16_t* ptr = reinterpret_cast<uint16_t*>(addr);
-  return *ptr;
-#else
-  if ((addr & 1) == 0) {
+  if (FLAG_enable_unaligned_accesses || (addr & 1) == 0) {
     uint16_t* ptr = reinterpret_cast<uint16_t*>(addr);
     return *ptr;
+  } else {
+    PrintF("Unaligned unsigned halfword read at 0x%08x, pc=0x%08"
+           V8PRIxPTR "\n",
+           addr,
+           reinterpret_cast<intptr_t>(instr));
+    UNIMPLEMENTED();
+    return 0;
   }
-  PrintF("Unaligned unsigned halfword read at 0x%08x, pc=0x%08" V8PRIxPTR "\n",
-         addr,
-         reinterpret_cast<intptr_t>(instr));
-  UNIMPLEMENTED();
-  return 0;
-#endif
 }
 
 
 int16_t Simulator::ReadH(int32_t addr, Instruction* instr) {
-#if V8_TARGET_CAN_READ_UNALIGNED
-  int16_t* ptr = reinterpret_cast<int16_t*>(addr);
-  return *ptr;
-#else
-  if ((addr & 1) == 0) {
+  if (FLAG_enable_unaligned_accesses || (addr & 1) == 0) {
     int16_t* ptr = reinterpret_cast<int16_t*>(addr);
     return *ptr;
+  } else {
+    PrintF("Unaligned signed halfword read at 0x%08x\n", addr);
+    UNIMPLEMENTED();
+    return 0;
   }
-  PrintF("Unaligned signed halfword read at 0x%08x\n", addr);
-  UNIMPLEMENTED();
-  return 0;
-#endif
 }
 
 
 void Simulator::WriteH(int32_t addr, uint16_t value, Instruction* instr) {
-#if V8_TARGET_CAN_READ_UNALIGNED
-  uint16_t* ptr = reinterpret_cast<uint16_t*>(addr);
-  *ptr = value;
-  return;
-#else
-  if ((addr & 1) == 0) {
+  if (FLAG_enable_unaligned_accesses || (addr & 1) == 0) {
     uint16_t* ptr = reinterpret_cast<uint16_t*>(addr);
     *ptr = value;
-    return;
+  } else {
+    PrintF("Unaligned unsigned halfword write at 0x%08x, pc=0x%08"
+           V8PRIxPTR "\n",
+           addr,
+           reinterpret_cast<intptr_t>(instr));
+    UNIMPLEMENTED();
   }
-  PrintF("Unaligned unsigned halfword write at 0x%08x, pc=0x%08" V8PRIxPTR "\n",
-         addr,
-         reinterpret_cast<intptr_t>(instr));
-  UNIMPLEMENTED();
-#endif
 }
 
 
 void Simulator::WriteH(int32_t addr, int16_t value, Instruction* instr) {
-#if V8_TARGET_CAN_READ_UNALIGNED
-  int16_t* ptr = reinterpret_cast<int16_t*>(addr);
-  *ptr = value;
-  return;
-#else
-  if ((addr & 1) == 0) {
+  if (FLAG_enable_unaligned_accesses || (addr & 1) == 0) {
     int16_t* ptr = reinterpret_cast<int16_t*>(addr);
     *ptr = value;
-    return;
+  } else {
+    PrintF("Unaligned halfword write at 0x%08x, pc=0x%08" V8PRIxPTR "\n",
+           addr,
+           reinterpret_cast<intptr_t>(instr));
+    UNIMPLEMENTED();
   }
-  PrintF("Unaligned halfword write at 0x%08x, pc=0x%08" V8PRIxPTR "\n",
-         addr,
-         reinterpret_cast<intptr_t>(instr));
-  UNIMPLEMENTED();
-#endif
 }
 
 
@@ -1232,45 +1171,34 @@ void Simulator::WriteB(int32_t addr, int8_t value) {
 
 
 int32_t* Simulator::ReadDW(int32_t addr) {
-#if V8_TARGET_CAN_READ_UNALIGNED
-  int32_t* ptr = reinterpret_cast<int32_t*>(addr);
-  return ptr;
-#else
-  if ((addr & 3) == 0) {
+  if (FLAG_enable_unaligned_accesses || (addr & 3) == 0) {
     int32_t* ptr = reinterpret_cast<int32_t*>(addr);
     return ptr;
+  } else {
+    PrintF("Unaligned read at 0x%08x\n", addr);
+    UNIMPLEMENTED();
+    return 0;
   }
-  PrintF("Unaligned read at 0x%08x\n", addr);
-  UNIMPLEMENTED();
-  return 0;
-#endif
 }
 
 
 void Simulator::WriteDW(int32_t addr, int32_t value1, int32_t value2) {
-#if V8_TARGET_CAN_READ_UNALIGNED
-  int32_t* ptr = reinterpret_cast<int32_t*>(addr);
-  *ptr++ = value1;
-  *ptr = value2;
-  return;
-#else
-  if ((addr & 3) == 0) {
+  if (FLAG_enable_unaligned_accesses || (addr & 3) == 0) {
     int32_t* ptr = reinterpret_cast<int32_t*>(addr);
     *ptr++ = value1;
     *ptr = value2;
-    return;
+  } else {
+    PrintF("Unaligned write at 0x%08x\n", addr);
+    UNIMPLEMENTED();
   }
-  PrintF("Unaligned write at 0x%08x\n", addr);
-  UNIMPLEMENTED();
-#endif
 }
 
 
 // Returns the limit of the stack area to enable checking for stack overflows.
 uintptr_t Simulator::StackLimit() const {
-  // Leave a safety margin of 256 bytes to prevent overrunning the stack when
+  // Leave a safety margin of 1024 bytes to prevent overrunning the stack when
   // pushing values.
-  return reinterpret_cast<uintptr_t>(stack_) + 256;
+  return reinterpret_cast<uintptr_t>(stack_) + 1024;
 }
 
 
@@ -1618,6 +1546,8 @@ void Simulator::HandleRList(Instruction* instr, bool load) {
   ProcessPUW(instr, num_regs, kPointerSize, &start_address, &end_address);
 
   intptr_t* address = reinterpret_cast<intptr_t*>(start_address);
+  // Catch null pointers a little earlier.
+  ASSERT(start_address > 8191 || start_address < 0);
   int reg = 0;
   while (rlist != 0) {
     if ((rlist & 1) != 0) {
@@ -2017,11 +1947,23 @@ void Simulator::DecodeType01(Instruction* instr) {
               SetNZFlags(alu_out);
             }
           } else {
-            // The MLA instruction description (A 4.1.28) refers to the order
-            // of registers as "Rd, Rm, Rs, Rn". But confusingly it uses the
-            // Rn field to encode the Rd register and the Rd field to encode
-            // the Rn register.
-            Format(instr, "mla'cond's 'rn, 'rm, 'rs, 'rd");
+            int rd = instr->RdValue();
+            int32_t acc_value = get_register(rd);
+            if (instr->Bit(22) == 0) {
+              // The MLA instruction description (A 4.1.28) refers to the order
+              // of registers as "Rd, Rm, Rs, Rn". But confusingly it uses the
+              // Rn field to encode the Rd register and the Rd field to encode
+              // the Rn register.
+              // Format(instr, "mla'cond's 'rn, 'rm, 'rs, 'rd");
+              int32_t mul_out = rm_val * rs_val;
+              int32_t result = acc_value + mul_out;
+              set_register(rn, result);
+            } else {
+              // Format(instr, "mls'cond's 'rn, 'rm, 'rs, 'rd");
+              int32_t mul_out = rm_val * rs_val;
+              int32_t result = acc_value - mul_out;
+              set_register(rn, result);
+            }
           }
         } else {
           // The signed/long multiply instructions use the terms RdHi and RdLo
@@ -2241,6 +2183,8 @@ void Simulator::DecodeType01(Instruction* instr) {
       PrintF("%08x\n", instr->InstructionBits());
       UNIMPLEMENTED();
     }
+  } else if ((type == 1) && instr->IsNopType1()) {
+    // NOP.
   } else {
     int rd = instr->RdValue();
     int rn = instr->RnValue();
@@ -2397,7 +2341,7 @@ void Simulator::DecodeType01(Instruction* instr) {
           // Format(instr, "cmn'cond 'rn, 'imm");
           alu_out = rn_val + shifter_operand;
           SetNZFlags(alu_out);
-          SetCFlag(!CarryFrom(rn_val, shifter_operand));
+          SetCFlag(CarryFrom(rn_val, shifter_operand));
           SetVFlag(OverflowFrom(alu_out, rn_val, shifter_operand, true));
         } else {
           // Other instructions matching this pattern are handled in the
@@ -2577,6 +2521,25 @@ void Simulator::DecodeType3(Instruction* instr) {
       break;
     }
     case db_x: {
+      if (FLAG_enable_sudiv) {
+        if (!instr->HasW()) {
+          if (instr->Bits(5, 4) == 0x1) {
+             if ((instr->Bit(22) == 0x0) && (instr->Bit(20) == 0x1)) {
+               // sdiv (in V8 notation matching ARM ISA format) rn = rm/rs
+               // Format(instr, "'sdiv'cond'b 'rn, 'rm, 'rs);
+               int rm = instr->RmValue();
+               int32_t rm_val = get_register(rm);
+               int rs = instr->RsValue();
+               int32_t rs_val = get_register(rs);
+               int32_t ret_val = 0;
+               ASSERT(rs_val != 0);
+               ret_val = rm_val/rs_val;
+               set_register(rn, ret_val);
+               return;
+             }
+           }
+         }
+       }
       // Format(instr, "'memop'cond'b 'rd, ['rn, -'shift_rm]'w");
       addr = rn_val - shifter_operand;
       if (instr->HasW()) {
@@ -3313,7 +3276,7 @@ void Simulator::Execute() {
 int32_t Simulator::Call(byte* entry, int argument_count, ...) {
   va_list parameters;
   va_start(parameters, argument_count);
-  // Setup arguments
+  // Set up arguments
 
   // First four arguments passed in registers.
   ASSERT(argument_count >= 4);
@@ -3356,7 +3319,7 @@ int32_t Simulator::Call(byte* entry, int argument_count, ...) {
   int32_t r10_val = get_register(r10);
   int32_t r11_val = get_register(r11);
 
-  // Setup the callee-saved registers with a known value. To be able to check
+  // Set up the callee-saved registers with a known value. To be able to check
   // that they are preserved properly across JS execution.
   int32_t callee_saved_value = icount_;
   set_register(r4, callee_saved_value);

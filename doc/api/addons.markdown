@@ -6,30 +6,35 @@ knowledge of several libraries:
 
  - V8 JavaScript, a C++ library. Used for interfacing with JavaScript:
    creating objects, calling functions, etc.  Documented mostly in the
-   `v8.h` header file (`deps/v8/include/v8.h` in the Node source tree),
-   which is also available [online](http://izs.me/v8-docs/main.html).
+   `v8.h` header file (`deps/v8/include/v8.h` in the Node source
+   tree), which is also available
+   [online](http://izs.me/v8-docs/main.html).
 
- - [libuv](https://github.com/joyent/libuv), C event loop library. Anytime one
-   needs to wait for a file descriptor to become readable, wait for a timer, or
-   wait for a signal to received one will need to interface with libuv. That is,
-   if you perform any I/O, libuv will need to be used.
+ - [libuv](https://github.com/joyent/libuv), C event loop library.
+   Anytime one needs to wait for a file descriptor to become readable,
+   wait for a timer, or wait for a signal to be received one will need
+   to interface with libuv. That is, if you perform any I/O, libuv will
+   need to be used.
 
  - Internal Node libraries. Most importantly is the `node::ObjectWrap`
    class which you will likely want to derive from.
 
  - Others. Look in `deps/` for what else is available.
 
-Node statically compiles all its dependencies into the executable. When
-compiling your module, you don't need to worry about linking to any of these
-libraries.
+Node statically compiles all its dependencies into the executable.
+When compiling your module, you don't need to worry about linking to
+any of these libraries.
 
+All of the following examples are available for
+[download](https://github.com/rvagg/node-addon-examples) and may be
+used as a starting-point for your own Addon.
 
 ## Hello world
 
 To get started let's make a small Addon which is the C++ equivalent of
-the following Javascript code:
+the following JavaScript code:
 
-    exports.hello = function() { return 'world'; };
+    module.exports.hello = function() { return 'world'; };
 
 First we create a file `hello.cc`:
 
@@ -43,15 +48,16 @@ First we create a file `hello.cc`:
       return scope.Close(String::New("world"));
     }
 
-    void init(Handle<Object> target) {
-      target->Set(String::NewSymbol("hello"),
+    void init(Handle<Object> exports) {
+      exports->Set(String::NewSymbol("hello"),
           FunctionTemplate::New(Method)->GetFunction());
     }
+
     NODE_MODULE(hello, init)
 
 Note that all Node addons must export an initialization function:
 
-    void Initialize (Handle<Object> target);
+    void Initialize (Handle<Object> exports);
     NODE_MODULE(module_name, Initialize)
 
 There is no semi-colon after `NODE_MODULE` as it's not a function (see `node.h`).
@@ -60,40 +66,38 @@ The `module_name` needs to match the filename of the final binary (minus the
 .node suffix).
 
 The source code needs to be built into `hello.node`, the binary Addon. To
-do this we create a file called `wscript` which is python code and looks
-like this:
+do this we create a file called `binding.gyp` which describes the configuration
+to build your module in a JSON-like format. This file gets compiled by
+[node-gyp](https://github.com/TooTallNate/node-gyp).
 
-    srcdir = '.'
-    blddir = 'build'
-    VERSION = '0.0.1'
+    {
+      "targets": [
+        {
+          "target_name": "hello",
+          "sources": [ "hello.cc" ]
+        }
+      ]
+    }
 
-    def set_options(opt):
-      opt.tool_options('compiler_cxx')
+The next step is to generate the appropriate project build files for the
+current platform. Use `node-gyp configure` for that.
 
-    def configure(conf):
-      conf.check_tool('compiler_cxx')
-      conf.check_tool('node_addon')
+Now you will have either a `Makefile` (on Unix platforms) or a `vcxproj` file
+(on Windows) in the `build/` directory. Next invoke the `node-gyp build`
+command.
 
-    def build(bld):
-      obj = bld.new_task_gen('cxx', 'shlib', 'node_addon')
-      obj.target = 'hello'
-      obj.source = 'hello.cc'
-
-Running `node-waf configure build` will create a file
-`build/default/hello.node` which is our Addon.
-
-`node-waf` is just [WAF](http://code.google.com/p/waf), the python-based build system. `node-waf` is
-provided for the ease of users.
+Now you have your compiled `.node` bindings file! The compiled bindings end up
+in `build/Release/`.
 
 You can now use the binary addon in a Node project `hello.js` by pointing `require` to
-the recently built module:
+the recently built `hello.node` module:
 
     var addon = require('./build/Release/hello');
 
     console.log(addon.hello()); // 'world'
 
 Please see patterns below for further information or
-<https://github.com/pietern/hiredis-node> for an example in production.
+<https://github.com/arturadib/node-qt> for an example in production.
 
 
 ## Addon patterns
@@ -104,29 +108,27 @@ calls, and v8's [Embedder's Guide](http://code.google.com/apis/v8/embed.html)
 for an explanation of several concepts used such as handles, scopes,
 function templates, etc.
 
-To compile these examples, create the `wscript` file below and run
-`node-waf configure build`:
+In order to use these examples you need to compile them using `node-gyp`.
+Create the following `binding.gyp` file:
 
-    srcdir = '.'
-    blddir = 'build'
-    VERSION = '0.0.1'
-
-    def set_options(opt):
-      opt.tool_options('compiler_cxx')
-
-    def configure(conf):
-      conf.check_tool('compiler_cxx')
-      conf.check_tool('node_addon')
-
-    def build(bld):
-      obj = bld.new_task_gen('cxx', 'shlib', 'node_addon')
-      obj.target = 'addon'
-      obj.source = ['addon.cc']
+    {
+      "targets": [
+        {
+          "target_name": "addon",
+          "sources": [ "addon.cc" ]
+        }
+      ]
+    }
 
 In cases where there is more than one `.cc` file, simply add the file name to the
-`obj.source` array, e.g.:
+`sources` array, e.g.:
 
-    obj.source = ['addon.cc', 'myexample.cc']
+    "sources": ["addon.cc", "myexample.cc"]
+
+Now that you have your `binding.gyp` ready, you can configure and build the
+addon:
+
+    $ node-gyp configure build
 
 
 ### Function arguments
@@ -158,8 +160,8 @@ function calls and return a result. This is the main and only needed source
       return scope.Close(num);
     }
 
-    void Init(Handle<Object> target) {
-      target->Set(String::NewSymbol("add"),
+    void Init(Handle<Object> exports) {
+      exports->Set(String::NewSymbol("add"),
           FunctionTemplate::New(Add)->GetFunction());
     }
 
@@ -193,18 +195,23 @@ there. Here's `addon.cc`:
       return scope.Close(Undefined());
     }
 
-    void Init(Handle<Object> target) {
-      target->Set(String::NewSymbol("runCallback"),
+    void Init(Handle<Object> exports, Handle<Object> module) {
+      module->Set(String::NewSymbol("exports"),
           FunctionTemplate::New(RunCallback)->GetFunction());
     }
 
     NODE_MODULE(addon, Init)
 
+Note that this example uses a two-argument form of `Init()` that receives
+the full `module` object as the second argument. This allows the addon
+to completely overwrite `exports` with a single function instead of
+adding the function as a property of `exports`.
+
 To test it run the following JavaScript snippet:
 
     var addon = require('./build/Release/addon');
 
-    addon.runCallback(function(msg){
+    addon(function(msg){
       console.log(msg); // 'hello world'
     });
 
@@ -229,8 +236,8 @@ the string passed to `createObject()`:
       return scope.Close(obj);
     }
 
-    void Init(Handle<Object> target) {
-      target->Set(String::NewSymbol("createObject"),
+    void Init(Handle<Object> exports, Handle<Object> module) {
+      module->Set(String::NewSymbol("exports"),
           FunctionTemplate::New(CreateObject)->GetFunction());
     }
 
@@ -240,8 +247,8 @@ To test it in JavaScript:
 
     var addon = require('./build/Release/addon');
 
-    var obj1 = addon.createObject('hello');
-    var obj2 = addon.createObject('world');
+    var obj1 = addon('hello');
+    var obj2 = addon('world');
     console.log(obj1.msg+' '+obj2.msg); // 'hello world'
 
 
@@ -270,8 +277,8 @@ wraps a C++ function:
       return scope.Close(fn);
     }
 
-    void Init(Handle<Object> target) {
-      target->Set(String::NewSymbol("createFunction"),
+    void Init(Handle<Object> exports, Handle<Object> module) {
+      module->Set(String::NewSymbol("exports"),
           FunctionTemplate::New(CreateFunction)->GetFunction());
     }
 
@@ -282,7 +289,7 @@ To test:
 
     var addon = require('./build/Release/addon');
 
-    var fn = addon.createFunction();
+    var fn = addon();
     console.log(fn()); // 'hello world'
 
 
@@ -298,8 +305,8 @@ module `addon.cc`:
 
     using namespace v8;
 
-    void InitAll(Handle<Object> target) {
-      MyObject::Init(target);
+    void InitAll(Handle<Object> exports) {
+      MyObject::Init(exports);
     }
 
     NODE_MODULE(addon, InitAll)
@@ -313,7 +320,7 @@ Then in `myobject.h` make your wrapper inherit from `node::ObjectWrap`:
 
     class MyObject : public node::ObjectWrap {
      public:
-      static void Init(v8::Handle<v8::Object> target);
+      static void Init(v8::Handle<v8::Object> exports);
 
      private:
       MyObject();
@@ -339,7 +346,7 @@ prototype:
     MyObject::MyObject() {};
     MyObject::~MyObject() {};
 
-    void MyObject::Init(Handle<Object> target) {
+    void MyObject::Init(Handle<Object> exports) {
       // Prepare constructor template
       Local<FunctionTemplate> tpl = FunctionTemplate::New(New);
       tpl->SetClassName(String::NewSymbol("MyObject"));
@@ -349,7 +356,7 @@ prototype:
           FunctionTemplate::New(PlusOne)->GetFunction());
 
       Persistent<Function> constructor = Persistent<Function>::New(tpl->GetFunction());
-      target->Set(String::NewSymbol("MyObject"), constructor);
+      exports->Set(String::NewSymbol("MyObject"), constructor);
     }
 
     Handle<Value> MyObject::New(const Arguments& args) {
@@ -403,10 +410,10 @@ Let's register our `createObject` method in `addon.cc`:
       return scope.Close(MyObject::NewInstance(args));
     }
 
-    void InitAll(Handle<Object> target) {
+    void InitAll(Handle<Object> exports, Handle<Object> module) {
       MyObject::Init();
 
-      target->Set(String::NewSymbol("createObject"),
+      module->Set(String::NewSymbol("exports"),
           FunctionTemplate::New(CreateObject)->GetFunction());
     }
 
@@ -494,14 +501,14 @@ The implementation is similar to the above in `myobject.cc`:
 
 Test it with:
 
-    var addon = require('./build/Release/addon');
+    var createObject = require('./build/Release/addon');
 
-    var obj = addon.createObject(10);
+    var obj = createObject(10);
     console.log( obj.plusOne() ); // 11
     console.log( obj.plusOne() ); // 12
     console.log( obj.plusOne() ); // 13
 
-    var obj2 = addon.createObject(20);
+    var obj2 = createObject(20);
     console.log( obj2.plusOne() ); // 21
     console.log( obj2.plusOne() ); // 22
     console.log( obj2.plusOne() ); // 23
@@ -537,13 +544,13 @@ In the following `addon.cc` we introduce a function `add()` that can take on two
       return scope.Close(Number::New(sum));
     }
 
-    void InitAll(Handle<Object> target) {
+    void InitAll(Handle<Object> exports) {
       MyObject::Init();
 
-      target->Set(String::NewSymbol("createObject"),
+      exports->Set(String::NewSymbol("createObject"),
           FunctionTemplate::New(CreateObject)->GetFunction());
 
-      target->Set(String::NewSymbol("add"),
+      exports->Set(String::NewSymbol("add"),
           FunctionTemplate::New(Add)->GetFunction());
     }
 

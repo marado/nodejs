@@ -6,9 +6,6 @@ This module contains utilities for handling and transforming file
 paths.  Almost all these methods perform only string transformations.
 The file system is not consulted to check whether paths are valid.
 
-`path.exists` and `path.existsSync` are the exceptions, and should
-logically be found in the fs module as they do access the file system.
-
 Use `require('path')` to use this module.  The following methods are provided:
 
 ## path.normalize(p)
@@ -17,7 +14,7 @@ Normalize a string path, taking care of `'..'` and `'.'` parts.
 
 When multiple slashes are found, they're replaced by a single one;
 when the path contains a trailing slash, it is preserved.
-On windows backslashes are used. 
+On Windows backslashes are used.
 
 Example:
 
@@ -28,7 +25,9 @@ Example:
 ## path.join([path1], [path2], [...])
 
 Join all arguments together and normalize the resulting path.
-Non-string arguments are ignored.
+
+Arguments must be strings.  In v0.8, non-string arguments were
+silently ignored.  In v0.10 and up, an exception is thrown.
 
 Example:
 
@@ -37,8 +36,8 @@ Example:
     '/foo/bar/baz/asdf'
 
     path.join('foo', {}, 'bar')
-    // returns
-    'foo/bar'
+    // throws exception
+    TypeError: Arguments to path.join must be strings
 
 ## path.resolve([from ...], to)
 
@@ -47,7 +46,7 @@ Resolves `to` to an absolute path.
 If `to` isn't already absolute `from` arguments are prepended in right to left
 order, until an absolute path is found. If after using all `from` paths still
 no absolute path is found, the current working directory is used as well. The
-resulting path is normalized, and trailing slashes are removed unless the path 
+resulting path is normalized, and trailing slashes are removed unless the path
 gets resolved to the root directory. Non-string arguments are ignored.
 
 Another way to think of it is as a sequence of `cd` commands in a shell.
@@ -142,16 +141,40 @@ an empty string.  Examples:
     // returns
     ''
 
-## path.exists(p, [callback])
+## path.sep
 
-Test whether or not the given path exists by checking with the file system.
-Then call the `callback` argument with either true or false.  Example:
+The platform-specific file separator. `'\\'` or `'/'`.
 
-    path.exists('/etc/passwd', function (exists) {
-      util.debug(exists ? "it's there" : "no passwd!");
-    });
+An example on *nix:
 
+    'foo/bar/baz'.split(path.sep)
+    // returns
+    ['foo', 'bar', 'baz']
 
-## path.existsSync(p)
+An example on Windows:
 
-Synchronous version of `path.exists`.
+    'foo\\bar\\baz'.split(path.sep)
+    // returns
+    ['foo', 'bar', 'baz']
+
+## path.delimiter
+
+The platform-specific path delimiter, `;` or `':'`.
+
+An example on *nix:
+
+    console.log(process.env.PATH)
+    // '/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin'
+
+    process.env.PATH.split(path.delimiter)
+    // returns
+    ['/usr/bin', '/bin', '/usr/sbin', '/sbin', '/usr/local/bin']
+
+An example on Windows:
+
+    console.log(process.env.PATH)
+    // 'C:\Windows\system32;C:\Windows;C:\Program Files\nodejs\'
+
+    process.env.PATH.split(path.delimiter)
+    // returns
+    ['C:\Windows\system32', 'C:\Windows', 'C:\Program Files\nodejs\']

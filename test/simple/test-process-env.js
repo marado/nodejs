@@ -22,8 +22,9 @@
 // first things first, set the timezone; see tzset(3)
 process.env.TZ = 'Europe/Amsterdam';
 
-assert = require('assert');
-spawn = require('child_process').spawn;
+var common = require('../common');
+var assert = require('assert');
+var spawn = require('child_process').spawn;
 
 /* For the moment we are not going to support setting the timezone via the
  * environment variables. The problem is that various V8 platform backends
@@ -46,8 +47,18 @@ if (process.argv[2] == 'you-are-the-child') {
   // failed assertion results in process exiting with status code 1
   assert.equal(false, 'NODE_PROCESS_ENV_DELETED' in process.env);
   assert.equal(42, process.env.NODE_PROCESS_ENV);
+  assert.equal('asdf', process.env.hasOwnProperty);
+  var hasOwnProperty = Object.prototype.hasOwnProperty;
+  var has = hasOwnProperty.call(process.env, 'hasOwnProperty');
+  assert.equal(true, has);
   process.exit(0);
 } else {
+  assert.equal(Object.prototype.hasOwnProperty, process.env.hasOwnProperty);
+  var has = process.env.hasOwnProperty('hasOwnProperty');
+  assert.equal(false, has);
+
+  process.env.hasOwnProperty = 'asdf';
+
   process.env.NODE_PROCESS_ENV = 42;
   assert.equal(42, process.env.NODE_PROCESS_ENV);
 
@@ -57,7 +68,7 @@ if (process.argv[2] == 'you-are-the-child') {
   delete process.env.NODE_PROCESS_ENV_DELETED;
   assert.equal(false, 'NODE_PROCESS_ENV_DELETED' in process.env);
 
-  child = spawn(process.argv[0], [process.argv[1], 'you-are-the-child']);
+  var child = spawn(process.argv[0], [process.argv[1], 'you-are-the-child']);
   child.stdout.on('data', function(data) { console.log(data.toString()); });
   child.stderr.on('data', function(data) { console.log(data.toString()); });
   child.on('exit', function(statusCode) {

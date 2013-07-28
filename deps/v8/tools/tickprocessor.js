@@ -1,4 +1,4 @@
-// Copyright 2009 the V8 project authors. All rights reserved.
+// Copyright 2012 the V8 project authors. All rights reserved.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -146,7 +146,12 @@ SnapshotLogProcessor.prototype.getSerializedEntryName = function(pos) {
 
 
 function TickProcessor(
-    cppEntriesProvider, separateIc, ignoreUnknown, stateFilter, snapshotLogProcessor) {
+    cppEntriesProvider,
+    separateIc,
+    callGraphSize,
+    ignoreUnknown,
+    stateFilter,
+    snapshotLogProcessor) {
   LogReader.call(this, {
       'shared-library': { parsers: [null, parseInt, parseInt],
           processor: this.processSharedLibrary },
@@ -181,6 +186,7 @@ function TickProcessor(
       'end-code-region': null });
 
   this.cppEntriesProvider_ = cppEntriesProvider;
+  this.callGraphSize_ = callGraphSize;
   this.ignoreUnknown_ = ignoreUnknown;
   this.stateFilter_ = stateFilter;
   this.snapshotLogProcessor_ = snapshotLogProcessor;
@@ -240,6 +246,7 @@ TickProcessor.CodeTypes = {
 
 TickProcessor.CALL_PROFILE_CUTOFF_PCT = 2.0;
 
+TickProcessor.CALL_GRAPH_SIZE = 5;
 
 /**
  * @override
@@ -535,7 +542,7 @@ TickProcessor.prototype.printHeavyProfile = function(profile, opt_indent) {
           padLeft(rec.parentTotalPercent.toFixed(1), 5) + '%  ' +
           indentStr + rec.internalFuncName);
     // Limit backtrace depth.
-    if (indent < 10) {
+    if (indent < 2 * self.callGraphSize_) {
       self.printHeavyProfile(rec.children, indent + 2);
     }
     // Delimit top-level functions.
@@ -601,10 +608,11 @@ CppEntriesProvider.prototype.parseNextLine = function() {
 };
 
 
-function UnixCppEntriesProvider(nmExec) {
+function UnixCppEntriesProvider(nmExec, targetRootFS) {
   this.symbols = [];
   this.parsePos = 0;
   this.nmExec = nmExec;
+  this.targetRootFS = targetRootFS;
   this.FUNC_RE = /^([0-9a-fA-F]{8,16}) ([0-9a-fA-F]{8,16} )?[tTwW] (.*)$/;
 };
 inherits(UnixCppEntriesProvider, CppEntriesProvider);
@@ -612,6 +620,7 @@ inherits(UnixCppEntriesProvider, CppEntriesProvider);
 
 UnixCppEntriesProvider.prototype.loadSymbols = function(libName) {
   this.parsePos = 0;
+  libName = this.targetRootFS + libName;
   try {
     this.symbols = [
       os.system(this.nmExec, ['-C', '-n', '-S', libName], -1, -1),
@@ -649,8 +658,8 @@ UnixCppEntriesProvider.prototype.parseNextLine = function() {
 };
 
 
-function MacCppEntriesProvider(nmExec) {
-  UnixCppEntriesProvider.call(this, nmExec);
+function MacCppEntriesProvider(nmExec, targetRootFS) {
+  UnixCppEntriesProvider.call(this, nmExec, targetRootFS);
   // Note an empty group. It is required, as UnixCppEntriesProvider expects 3 groups.
   this.FUNC_RE = /^([0-9a-fA-F]{8,16}) ()[iItT] (.*)$/;
 };
@@ -659,6 +668,7 @@ inherits(MacCppEntriesProvider, UnixCppEntriesProvider);
 
 MacCppEntriesProvider.prototype.loadSymbols = function(libName) {
   this.parsePos = 0;
+  libName = this.targetRootFS + libName;
   try {
     this.symbols = [os.system(this.nmExec, ['-n', '-f', libName], -1, -1), ''];
   } catch (e) {
@@ -668,7 +678,8 @@ MacCppEntriesProvider.prototype.loadSymbols = function(libName) {
 };
 
 
-function WindowsCppEntriesProvider() {
+function WindowsCppEntriesProvider(_ignored_nmExec, targetRootFS) {
+  this.targetRootFS = targetRootFS;
   this.symbols = '';
   this.parsePos = 0;
 };
@@ -691,6 +702,7 @@ WindowsCppEntriesProvider.EXE_IMAGE_BASE = 0x00400000;
 
 
 WindowsCppEntriesProvider.prototype.loadSymbols = function(libName) {
+  libName = this.targetRootFS + libName;
   var fileNameFields = libName.match(WindowsCppEntriesProvider.FILENAME_RE);
   if (!fileNameFields) return;
   var mapFileName = fileNameFields[1] + '.map';
@@ -764,6 +776,8 @@ function ArgumentsProcessor(args) {
         'Show only ticks from OTHER VM state'],
     '-e': ['stateFilter', TickProcessor.VmStates.EXTERNAL,
         'Show only ticks from EXTERNAL VM state'],
+    '--call-graph-size': ['callGraphSize', TickProcessor.CALL_GRAPH_SIZE,
+        'Set the call graph size'],
     '--ignore-unknown': ['ignoreUnknown', true,
         'Exclude ticks of unknown code entries from processing'],
     '--separate-ic': ['separateIc', true,
@@ -776,6 +790,8 @@ function ArgumentsProcessor(args) {
         'Specify that we are running on Mac OS X platform'],
     '--nm': ['nm', 'nm',
         'Specify the \'nm\' executable to use (e.g. --nm=/my_dir/nm)'],
+    '--target': ['targetRootFS', '',
+        'Specify the target root directory for cross environment'],
     '--snapshot-log': ['snapshotLogFileName', 'snapshot.log',
         'Specify snapshot log file to use (e.g. --snapshot-log=snapshot.log)']
   };
@@ -792,8 +808,10 @@ ArgumentsProcessor.DEFAULTS = {
   snapshotLogFileName: null,
   platform: 'unix',
   stateFilter: null,
+  callGraphSize: 5,
   ignoreUnknown: false,
   separateIc: false,
+  targetRootFS: '',
   nm: 'nm'
 };
 
