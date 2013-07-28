@@ -20,7 +20,7 @@ Last-Update: 2013-07-28
 -    size = fs.fstatSync(fd).size;
 +    var st = fs.fstatSync(fd);
 +    // some platforms do not throw EISDIR.
-+    if (st.isDirectory()) throw errnoException('EISDIR', 'read');
++    if (st.isDirectory && st.isDirectory()) throw errnoException('EISDIR', 'read');
 +    size = st.size;
      threw = false;
    } finally {
