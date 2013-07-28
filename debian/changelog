@@ -8,6 +8,7 @@ nodejs (0.10.13~dfsg1-2) unstable; urgency=low
     + Add patch 1001 readFile not throwing EISDIR on some archs.
     + Add patches 1002, 1003 to fix bugs in unit tests.
     + Set gyp flavor in rules file using --dest-os switch.
+  * Restrict make check target in rules to avoid the call to jslint.
 
   [ Jonas Smedegaard ]
   * Make ~dfsg version suffix only optionally numbered.
@@ -20,7 +21,7 @@ nodejs (0.10.13~dfsg1-2) unstable; urgency=low
   * Rewrite short and long descriptions based on upstream texts.
   * Bump standards-version to 3.9.4.
 
- -- Jérémy Lal <kapouer@melix.org>  Sun, 28 Jul 2013 18:18:37 +0200
+ -- Jérémy Lal <kapouer@melix.org>  Sun, 28 Jul 2013 18:50:13 +0200
 
 nodejs (0.10.13~dfsg1-1) experimental; urgency=low
 
