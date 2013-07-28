@@ -3,3 +3,4 @@
 2005_expected_failing_tests.patch
 2010_fix_makefile_missing_zlib.patch
 2012_kfreebsd.patch
+1001_readfile_eisdir.patch
