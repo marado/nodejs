@@ -9,10 +9,10 @@ Description: Expected failing tests
  to see what happens.
 Forwarded: not-needed
 Author: Jérémy Lal <kapouer@melix.org>
-Last-Update: 2013-03-16
+Last-Update: 2013-07-29
 --- a/test/simple/simple.status
 +++ b/test/simple/simple.status
-@@ -1 +1,25 @@
+@@ -1 +1,34 @@
  prefix simple
 +
 +# only fail when some network resources are not available
@@ -21,10 +21,19 @@ Last-Update: 2013-03-16
 +test-dgram-multicast-multi-process: PASS || FAIL
 +test-dgram-broadcast-multi-process: PASS || FAIL
 +test-net-listen-fd0: PASS || FAIL
++test-child-process-fork-dgram: PASS || FAIL
++test-cluster-dgram-1: PASS || FAIL
++test-cluster-dgram-2: PASS || FAIL
++test-dgram-bind: PASS || FAIL
++test-dgram-bind-default-address: PASS || FAIL
++test-dgram-implicit-bind: PASS || FAIL
++test-dgram-listen-after-bind: PASS || FAIL
++test-dgram-multicast-setTTL: PASS || FAIL
++test-dgram-pingpong: PASS || FAIL
++test-dgram-udp4: PASS || FAIL
++test-dgram-unref: PASS || FAIL
++test-tls-client-destroy-soon: PASS || FAIL
 +
-+# sometimes these tests TIMEOUT or FAIL
-+# test-dgram-pingpong: PASS || FAIL || TIMEOUT
-+# test-stream-pipe-multi: PASS || TIMEOUT
 +
 +# http://bugs.debian.org/660802
 +# test-cluster-kill-workers: PASS || FAIL
