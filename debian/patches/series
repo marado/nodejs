@@ -2,6 +2,7 @@
 2004_relax_failing_test.patch
 2005_expected_failing_tests.patch
 2010_fix_makefile_missing_zlib.patch
+2011_mipsel.patch
 2012_kfreebsd.patch
 1001_readfile_eisdir.patch
 1002_increase_timeout_in_test.patch
