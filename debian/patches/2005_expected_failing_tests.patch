@@ -12,13 +12,12 @@ Author: Jérémy Lal <kapouer@melix.org>
 Last-Update: 2013-07-29
 --- a/test/simple/simple.status
 +++ b/test/simple/simple.status
-@@ -1 +1,34 @@
+@@ -1 +1,33 @@
  prefix simple
 +
 +# only fail when some network resources are not available
 +test-http-dns-fail: PASS || FAIL
 +test-net-connect-timeout: PASS || FAIL
-+test-dgram-multicast-multi-process: PASS || FAIL
 +test-dgram-broadcast-multi-process: PASS || FAIL
 +test-net-listen-fd0: PASS || FAIL
 +test-child-process-fork-dgram: PASS || FAIL
