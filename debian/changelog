@@ -1,10 +1,10 @@
-nodejs (0.10.15~dfsg1-1) UNRELEASED; urgency=low
+nodejs (0.10.15~dfsg1-1) unstable; urgency=low
 
   * Upstream update.
   * kfreebsd build: uv need -ldl.
   * Update 2005 patch, allow 12 udp4 tests to fail on buildd servers.
 
- -- Jérémy Lal <kapouer@melix.org>  Mon, 29 Jul 2013 00:57:16 +0200
+ -- Jérémy Lal <kapouer@melix.org>  Mon, 29 Jul 2013 17:58:09 +0200
 
 nodejs (0.10.13~dfsg1-2) unstable; urgency=low
 
