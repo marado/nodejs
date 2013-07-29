@@ -199,9 +199,11 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/fixtures/throws_error1.js
  test/fixtures/throws_error2.js
  test/fixtures/throws_error3.js
+ test/internet/test-dgram-multicast-multi-process.js
  test/internet/test-dns.js
  test/internet/test-http-dns-fail.js
  test/internet/test-net-connect-timeout.js
+ test/internet/test-net-connect-unref.js
  test/message/2100bytes.js
  test/message/error_exit.js
  test/message/eval_messages.js
@@ -353,7 +355,6 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-dgram-close.js
  test/simple/test-dgram-implicit-bind.js
  test/simple/test-dgram-listen-after-bind.js
- test/simple/test-dgram-multicast-multi-process.js
  test/simple/test-dgram-multicast-setTTL.js
  test/simple/test-dgram-oob-buffer.js
  test/simple/test-dgram-pingpong.js
@@ -592,7 +593,6 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-net-connect-handle-econnrefused.js
  test/simple/test-net-connect-immediate-finish.js
  test/simple/test-net-connect-options.js
- test/simple/test-net-connect-unref.js
  test/simple/test-net-create-connection.js
  test/simple/test-net-dns-error.js
  test/simple/test-net-during-close.js
@@ -900,7 +900,6 @@ Files: AUTHORS
  benchmark/tls/tls-connect.js
  common.gypi
  configure
- debian/NEWS
  debian/README.source
  debian/TODO
  debian/compat
@@ -920,11 +919,15 @@ Files: AUTHORS
  debian/nodejs.manpages
  debian/nodejs.postinst
  debian/nodejs.prerm
+ debian/patches/1001_readfile_eisdir.patch
+ debian/patches/1002_increase_timeout_in_test.patch
+ debian/patches/1003_test_disable_chunked_response.patch
  debian/patches/2001_FHS_and_rename_to_nodejs.patch
  debian/patches/2004_relax_failing_test.patch
  debian/patches/2005_expected_failing_tests.patch
  debian/patches/2010_fix_makefile_missing_zlib.patch
  debian/patches/2011_enable_mipsel_build.patch
+ debian/patches/2012_kfreebsd.patch
  debian/patches/series
  debian/source/format
  debian/watch
@@ -1030,7 +1033,6 @@ Files: AUTHORS
  doc/api/timers.markdown
  doc/api/tls.json
  doc/api/tls.markdown
- doc/api/tracing.json
  doc/api/tty.json
  doc/api/tty.markdown
  doc/api/url.json
@@ -1115,6 +1117,8 @@ Files: AUTHORS
  doc/blog/release/v0.10.10.md
  doc/blog/release/v0.10.11.md
  doc/blog/release/v0.10.12.md
+ doc/blog/release/v0.10.13.md
+ doc/blog/release/v0.10.14.md
  doc/blog/release/v0.10.2.md
  doc/blog/release/v0.10.3.md
  doc/blog/release/v0.10.4.md
@@ -1127,6 +1131,7 @@ Files: AUTHORS
  doc/blog/release/v0.11.1.md
  doc/blog/release/v0.11.2.md
  doc/blog/release/v0.11.3.md
+ doc/blog/release/v0.11.4.md
  doc/blog/release/v0.6.20.md
  doc/blog/release/v0.8.1.md
  doc/blog/release/v0.8.10.md
@@ -1366,8 +1371,10 @@ Files: AUTHORS
  tools/doc/package.json
  tools/email-footer.md
  tools/genv8constants.py
+ tools/getnextnodeversion.py
  tools/getnodeisrelease.py
  tools/getnodeversion.py
+ tools/getprevnodeversion.py
  tools/gyp_node
  tools/install.py
  tools/license2rtf.js
@@ -2187,7 +2194,7 @@ Files: doc/api/_toc.html
  doc/api/util.html
  doc/api/vm.html
  doc/api/zlib.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.13/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.15/LICENSE">license</a>.</p>
 License: UNKNOWN
  FIXME
 
@@ -2536,26 +2543,21 @@ Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/
 License: UNKNOWN
  FIXME
 
-Files: doc/api/tracing.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.13-pre/LICENSE">license</a>.</p>
-License: UNKNOWN
- FIXME
-
 Files: doc/api/net.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.13/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.15/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
 License: UNKNOWN
  FIXME
 
 Files: doc/api/all.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.13/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.15/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
   { return c.indexOf(line) == 0 })
 License: UNKNOWN
  FIXME
 
 Files: doc/api/readline.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.13/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.15/LICENSE">license</a>.</p>
   { return c.indexOf(line) == 0 })
 License: UNKNOWN
  FIXME
