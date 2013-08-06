@@ -1,18 +1,17 @@
 Description: Expected failing tests
  There are three categories of failing tests:
- 1 - because of build server without external network access
+ 1 - because the test only fails on a buildd server.
  2 - the test itself is buggy (race condition under heavy load,
-     problem with the external command that is called)
- 3 - the test is legitimately failing, but no one knows why and
-     that prevents the package from being updated.
- Some of these test may not fail with nodejs 0.8.x. Disable them
- to see what happens.
+     problem with the external command that is called) and the
+     cause of the failure is a timeout.
+ 3 - the test is legitimately failing, but providing nodejs binary
+     will help fixing it, rather than not.
 Forwarded: not-needed
 Author: Jérémy Lal <kapouer@melix.org>
-Last-Update: 2013-07-29
+Last-Update: 2013-08-06
 --- a/test/simple/simple.status
 +++ b/test/simple/simple.status
-@@ -1 +1,33 @@
+@@ -1 +1,42 @@
  prefix simple
 +
 +# only fail when some network resources are not available
@@ -42,7 +41,16 @@ Last-Update: 2013-07-29
 +# Let it fail until the real cause if found.
 +test-tls-server-verify: PASS || FAIL
 +
-+# https://buildd.debian.org/status/fetch.php?pkg=nodejs&arch=armhf&ver=0.6.19~dfsg1-1&stamp=1339013006
-+# test-debugger-repl-utf8: PASS || TIMEOUT
-+# test-debugger-repl: PASS || TIMEOUT
++# debugger tests can timeout or fail on buildd
++test-debugger-repl-utf8: PASS || TIMEOUT
++test-debugger-repl: PASS || FAIL
 +test-debugger-client: PASS || FAIL
++test-debugger-repl-restart: PASS || FAIL
++
++# https://buildd.debian.org/status/fetch.php?pkg=nodejs&arch=armel&ver=0.10.15~dfsg1-1&stamp=1375130627
++test-debugger-repl-break-in-module: PASS || FAIL
++
++
++# https://buildd.debian.org/status/fetch.php?pkg=nodejs&arch=i386&ver=0.10.15~dfsg1-1&stamp=1375127251
++test-child-process-fork-net2: PASS || TIMEOUT
++
