@@ -1,3 +1,10 @@
+nodejs (0.10.15~dfsg1-2) UNRELEASED; urgency=low
+
+  * Update 2005 patch, allow several tests to fail because of inner
+    timeouts or race conditions on slow buildd servers. 
+
+ -- Jérémy Lal <kapouer@melix.org>  Fri, 09 Aug 2013 20:53:59 +0200
+
 nodejs (0.10.15~dfsg1-1) unstable; urgency=low
 
   * Upstream update.
