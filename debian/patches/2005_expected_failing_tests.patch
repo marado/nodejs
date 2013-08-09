@@ -38,7 +38,7 @@ Last-Update: 2013-08-09
 +test-http-end-throw-socket-handling: PASS || FAIL
 +test-http-exit-delay: PASS || FAIL
 +test-net-GH-5504: PASS || FAIL
-+test-net-server-unref: PASS || FAIL
++test-net-server-unref: PASS || FAIL
 +test-net-settimeout: PASS || FAIL
 +test-next-tick-error-spin: PASS || FAIL
 +test-pipe-unref: PASS || FAIL
