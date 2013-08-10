@@ -1,3 +1,9 @@
+nodejs (0.10.15~dfsg1-3) unstable; urgency=low
+
+  * Update 2005 patch, test-stdout-close-unref can fail. 
+
+ -- Jérémy Lal <kapouer@melix.org>  Sat, 10 Aug 2013 09:36:11 +0200
+
 nodejs (0.10.15~dfsg1-2) unstable; urgency=low
 
   * Update 2005 patch, allow several tests to fail because of inner
