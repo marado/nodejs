@@ -9,10 +9,10 @@ Author: Jérémy Lal <kapouer@melix.org>
 Last-Update: 2013-08-09
 --- a/test/simple/simple.status
 +++ b/test/simple/simple.status
-@@ -1 +1,52 @@
+@@ -1 +1,53 @@
  prefix simple
 +
-+# only fail when some network resources are not available
++# only fail when some resources are not available
 +test-http-dns-fail: PASS || FAIL
 +test-net-connect-timeout: PASS || FAIL
 +test-dgram-broadcast-multi-process: PASS || FAIL
@@ -29,6 +29,7 @@ Last-Update: 2013-08-09
 +test-dgram-udp4: PASS || FAIL
 +test-dgram-unref: PASS || FAIL
 +test-tls-client-destroy-soon: PASS || FAIL
++test-stdout-close-unref: PASS || FAIL
 +
 +# slow platform - plain TIMEOUT of FAIL because of timeouts
 +# i manually checked those tests pass when timeouts are raised.
