@@ -1,8 +1,9 @@
 nodejs (0.10.15~dfsg1-3) unstable; urgency=low
 
-  * Update 2005 patch, test-stdout-close-unref can fail. 
+  * Update 2005 patch, test-stdout-close-unref and
+    test-tls-zero-clear-in can fail on buildd.
 
- -- Jérémy Lal <kapouer@melix.org>  Sat, 10 Aug 2013 09:36:11 +0200
+ -- Jérémy Lal <kapouer@melix.org>  Sat, 10 Aug 2013 09:47:34 +0200
 
 nodejs (0.10.15~dfsg1-2) unstable; urgency=low
 
