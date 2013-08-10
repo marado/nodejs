@@ -9,7 +9,7 @@ Author: Jérémy Lal <kapouer@melix.org>
 Last-Update: 2013-08-09
 --- a/test/simple/simple.status
 +++ b/test/simple/simple.status
-@@ -1 +1,53 @@
+@@ -1 +1,54 @@
  prefix simple
 +
 +# only fail when some resources are not available
@@ -45,6 +45,7 @@ Last-Update: 2013-08-09
 +test-pipe-unref: PASS || FAIL
 +test-stream2-readable-empty-buffer-no-eof: PASS || FAIL
 +test-tls-fast-writing: PASS || FAIL
++test-tls-zero-clear-in: PASS || FAIL
 +test-next-tick-starvation: PASS || FAIL
 +test-child-process-fork-net2: PASS || TIMEOUT
 +# this one is tricky but falls nonetheless in this category
