@@ -922,11 +922,13 @@ Files: AUTHORS
  debian/patches/1001_readfile_eisdir.patch
  debian/patches/1002_increase_timeout_in_test.patch
  debian/patches/1003_test_disable_chunked_response.patch
+ debian/patches/1004_test_writeNaN.patch
  debian/patches/2001_FHS_and_rename_to_nodejs.patch
  debian/patches/2004_relax_failing_test.patch
  debian/patches/2005_expected_failing_tests.patch
  debian/patches/2010_fix_makefile_missing_zlib.patch
  debian/patches/2011_enable_mipsel_build.patch
+ debian/patches/2011_mipsel.patch
  debian/patches/2012_kfreebsd.patch
  debian/patches/series
  debian/source/format
@@ -2519,6 +2521,12 @@ Copyright: 1996-1999, Internet Software Consortium
 License: ISC
  FIXME
 
+Files: deps/v8/benchmarks/v8-logo.png
+Copyright: í$9‡½ 1¨uîºº¶•ˆìœÚè’³Ôa×ş<mÛÒ¸ÛÑ8î„¢ÚºöØPH}m@[¼s~8D<lRv´ò®å8yvCO[ÈwŒ‘&rõ¸ï‡7rbÿDÍ
+  æĞ_Çñ-8CÅXçy¦Ç-G™üâìB³ß çöŞ¡qÌ^;(Œ°ÂÔÆ0ÒnÉŒ’ªÎ6ÆPâ\×äš5{“;BGòg91dø¹ö{Ù+GD+aÈ®í~-
+License: UNKNOWN
+ FIXME
+
 Files: deps/v8/benchmarks/earley-boyer.js
 Copyright: != -1 || // ID-char
   { return c.val; }
@@ -2567,6 +2575,11 @@ Copyright: <a href="http://joyent.com/">Joyent, Inc</a>., Node.js is a <a href="
 License: UNKNOWN
  FIXME
 
+Files: doc/mac_osx_nodejs_installer_logo.png
+Copyright: =ÏFÎy›²—*é,n°aæ,¿ÜÑf¸à9\9rµ"¢¤GjŒ&Ã³íú’5—AÆo.l)BRÆZi«½$±OùÖ·|Ük§ÿ9™o‘ê)ÚÚ·õ°­LØ“´ó¾Ê2ó—	~í“N¤Eş‰~|õÌ
+License: UNKNOWN
+ FIXME
+
 Files: tools/doc/node_modules/marked/README.md
 Copyright: 2011-2012, Christopher Jeffrey. (MIT License)
 License: UNKNOWN
@@ -2574,6 +2587,22 @@ License: UNKNOWN
 
 Files: tools/doc/node_modules/marked/lib/marked.js
 Copyright: 2011-2012, Christopher Jeffrey. (MIT Licensed)
+License: UNKNOWN
+ FIXME
+
+Files: debian/changelog
+Copyright: Joyent
+  field
+  file:
+  file: add test/*/testcfg.py files
+  for doc/sh* files (shjs)
+  hints
+  is easier to maintain
+  mark and
+  statement
+  to ngx-queue.h, as given by upstream
+  use Source field to document dfsg-repackaging
+  years
 License: UNKNOWN
  FIXME
 
