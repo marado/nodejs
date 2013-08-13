@@ -1,3 +1,10 @@
+nodejs (0.10.15~dfsg1-4) UNRELEASED; urgency=low
+
+  * Update 2005 patch, adding a handful of tests that can fail on
+    slow platforms.
+
+ -- Jérémy Lal <kapouer@melix.org>  Tue, 13 Aug 2013 23:04:43 +0200
+
 nodejs (0.10.15~dfsg1-3) unstable; urgency=low
 
   * Update 2005 patch, test-stdout-close-unref and
