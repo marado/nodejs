@@ -1,9 +1,11 @@
-nodejs (0.10.15~dfsg1-4) UNRELEASED; urgency=low
+nodejs (0.10.15~dfsg1-4) unstable; urgency=low
 
   * Update 2005 patch, adding a handful of tests that can fail on
     slow platforms.
+  * Add 1004 patch to fix test failures when writing NaN to buffer
+    on mipsel.
 
- -- Jérémy Lal <kapouer@melix.org>  Tue, 13 Aug 2013 23:04:43 +0200
+ -- Jérémy Lal <kapouer@melix.org>  Tue, 13 Aug 2013 23:59:17 +0200
 
 nodejs (0.10.15~dfsg1-3) unstable; urgency=low
 
