@@ -11,7 +11,7 @@ Author: Jérémy Lal <kapouer@melix.org>
 Last-Update: 2013-08-13
 --- a/test/simple/simple.status
 +++ b/test/simple/simple.status
-@@ -1 +1,70 @@
+@@ -1 +1,71 @@
  prefix simple
 +
 +# only fail when some resources are not available
@@ -30,6 +30,7 @@ Last-Update: 2013-08-13
 +test-dgram-pingpong: PASS || FAIL
 +test-dgram-udp4: PASS || FAIL
 +test-dgram-unref: PASS || FAIL
++test-dgram-send-bad-arguments: PASS || FAIL
 +test-tls-client-destroy-soon: PASS || FAIL
 +test-stdout-close-unref: PASS || FAIL
 +
