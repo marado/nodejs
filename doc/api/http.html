@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>HTTP Node.js v0.10.15 Manual &amp; Documentation</title>
+  <title>HTTP Node.js v0.10.17 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/http.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.15 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.17 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -479,7 +479,7 @@ here if you need to send multiple headers with the same name.
 
 </p>
 <h3>response.sendDate<span><a class="mark" href="#http_response_senddate" id="http_response_senddate">#</a></span></h3>
-<p>When true, the Date header will be automatically generated and sent in 
+<p>When true, the Date header will be automatically generated and sent in
 the response if it is not already present in the headers. Defaults to true.
 
 </p>
@@ -708,17 +708,17 @@ pool you can do something along the lines of:
   // Do stuff
 })</code></pre>
 <h3>agent.maxSockets<span><a class="mark" href="#http_agent_maxsockets" id="http_agent_maxsockets">#</a></span></h3>
-<p>By default set to 5. Determines how many concurrent sockets the agent can have 
+<p>By default set to 5. Determines how many concurrent sockets the agent can have
 open per host.
 
 </p>
 <h3>agent.sockets<span><a class="mark" href="#http_agent_sockets" id="http_agent_sockets">#</a></span></h3>
-<p>An object which contains arrays of sockets currently in use by the Agent. Do not 
+<p>An object which contains arrays of sockets currently in use by the Agent. Do not
 modify.
 
 </p>
 <h3>agent.requests<span><a class="mark" href="#http_agent_requests" id="http_agent_requests">#</a></span></h3>
-<p>An object which contains queues of requests that have not yet been assigned to 
+<p>An object which contains queues of requests that have not yet been assigned to
 sockets. Do not modify.
 
 </p>
@@ -751,7 +751,9 @@ entirely discarded.  However, if you add a <code>&#39;response&#39;</code> event
 then you <strong>must</strong> consume the data from the response object, either by
 calling <code>response.read()</code> whenever there is a <code>&#39;readable&#39;</code> event, or
 by adding a <code>&#39;data&#39;</code> handler, or by calling the <code>.resume()</code> method.
-Until the data is consumed, the <code>&#39;end&#39;</code> event will not fire.
+Until the data is consumed, the <code>&#39;end&#39;</code> event will not fire.  Also, until
+the data is read it will consume memory that can eventually lead to a
+&#39;process out of memory&#39; error.
 
 </p>
 <p>Note: Node does not check whether Content-Length and the length of the body
@@ -1090,7 +1092,7 @@ authentication details.
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.15/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.17/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>About this Documentation Node.js v0.10.15 Manual &amp; Documentation</title>
+  <title>About this Documentation Node.js v0.10.17 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/all.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.15 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.17 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -144,6 +144,7 @@
 <li><a href="#all_process_stdin">process.stdin</a></li>
 <li><a href="#all_process_argv">process.argv</a></li>
 <li><a href="#all_process_execpath">process.execPath</a></li>
+<li><a href="#all_process_execargv">process.execArgv</a></li>
 <li><a href="#all_process_abort">process.abort()</a></li>
 <li><a href="#all_process_chdir_directory">process.chdir(directory)</a></li>
 <li><a href="#all_process_cwd">process.cwd()</a></li>
@@ -227,6 +228,8 @@
 <li><a href="#all_example_1">Example</a></li>
 </ul>
 </li>
+<li><a href="#all_domain_enter">domain.enter()</a></li>
+<li><a href="#all_domain_exit">domain.exit()</a></li>
 <li><a href="#all_domain_dispose">domain.dispose()</a></li>
 </ul>
 </li>
@@ -2750,6 +2753,27 @@ process.argv.forEach(function(val, index, array) {
 
 </p>
 <pre><code>/usr/local/bin/node</code></pre>
+<h2>process.execArgv<span><a class="mark" href="#all_process_execargv" id="all_process_execargv">#</a></span></h2>
+<p>This is the set of node-specific command line options from the
+executable that started the process.  These options do not show up in
+<code>process.argv</code>, and do not include the node executable, the name of
+the script, or any options following the script name. These options
+are useful in order to spawn child processes with the same execution
+environment as the parent.
+
+</p>
+<p>Example:
+
+</p>
+<pre><code>$ node --harmony script.js --version</code></pre>
+<p>results in process.execArgv:
+
+</p>
+<pre><code>[&#39;--harmony&#39;]</code></pre>
+<p>and process.argv:
+
+</p>
+<pre><code>[&#39;/usr/local/bin/node&#39;, &#39;script.js&#39;, &#39;--version&#39;]</code></pre>
 <h2>process.abort()<span><a class="mark" href="#all_process_abort" id="all_process_abort">#</a></span></h2>
 <p>This causes node to emit an abort. This will cause node to exit and
 generate a core file.
@@ -3885,6 +3909,45 @@ d.on(&#39;error&#39;, function(er) {
   // if we throw it now, it will crash the program
   // with the normal line number and stack message.
 });</code></pre>
+<h3>domain.enter()<span><a class="mark" href="#all_domain_enter" id="all_domain_enter">#</a></span></h3>
+<p>The <code>enter</code> method is plumbing used by the <code>run</code>, <code>bind</code>, and <code>intercept</code>
+methods to set the active domain. It sets <code>domain.active</code> and <code>process.domain</code>
+to the domain, and implicitly pushes the domain onto the domain stack managed
+by the domain module (see <code>domain.exit()</code> for details on the domain stack). The
+call to <code>enter</code> delimits the beginning of a chain of asynchronous calls and I/O
+operations bound to a domain.
+
+</p>
+<p>Calling <code>enter</code> changes only the active domain, and does not alter the domain
+itself. <code>Enter</code> and <code>exit</code> can be called an arbitrary number of times on a
+single domain.
+
+</p>
+<p>If the domain on which <code>enter</code> is called has been disposed, <code>enter</code> will return
+without setting the domain.
+
+</p>
+<h3>domain.exit()<span><a class="mark" href="#all_domain_exit" id="all_domain_exit">#</a></span></h3>
+<p>The <code>exit</code> method exits the current domain, popping it off the domain stack.
+Any time execution is going to switch to the context of a different chain of
+asynchronous calls, it&#39;s important to ensure that the current domain is exited.
+The call to <code>exit</code> delimits either the end of or an interruption to the chain
+of asynchronous calls and I/O operations bound to a domain.
+
+</p>
+<p>If there are multiple, nested domains bound to the current execution context,
+<code>exit</code> will exit any domains nested within this domain.
+
+</p>
+<p>Calling <code>exit</code> changes only the active domain, and does not alter the domain
+itself. <code>Enter</code> and <code>exit</code> can be called an arbitrary number of times on a
+single domain.
+
+</p>
+<p>If the domain on which <code>exit</code> is called has been disposed, <code>exit</code> will return
+without exiting the domain.
+
+</p>
 <h3>domain.dispose()<span><a class="mark" href="#all_domain_dispose" id="all_domain_dispose">#</a></span></h3>
 <p>The dispose method destroys a domain, and makes a best effort attempt to
 clean up any and all IO that is associated with the domain.  Streams are
@@ -5732,8 +5795,8 @@ connected in some way to the input, such as a <a href="zlib.html">zlib</a> strea
 <p>There is no requirement that the output be the same size as the input,
 the same number of chunks, or arrive at the same time.  For example, a
 Hash stream will only ever have a single chunk of output which is
-provided when the input is ended.  A zlib stream will either produce
-much smaller or much larger than its input.
+provided when the input is ended.  A zlib stream will produce output
+that is either much smaller or much larger than its input.
 
 </p>
 <p>Rather than implement the <a href="#stream_readable_read_size_1"><code>_read()</code></a> and <a href="#stream_writable_write_chunk_encoding_callback_1"><code>_write()</code></a> methods, Transform
@@ -5834,7 +5897,7 @@ approach.
 
 </p>
 <pre><code class="javascript">var util = require(&#39;util&#39;);
-var Transform = require(&#39;stream&#39;).Transform);
+var Transform = require(&#39;stream&#39;).Transform;
 util.inherits(SimpleProtocol, Transform);
 
 function SimpleProtocol(options) {
@@ -7626,7 +7689,7 @@ An exception occurs if the file does not exist.</p>
 system to bypass the local file system cache.</p>
 <p>This is primarily useful for opening files on NFS mounts as it allows you to
 skip the potentially stale local cache. It has a very real impact on I/O
-performance so don&#39;t use this mode unless you need it.</p>
+performance so don&#39;t use this flag unless you need it.</p>
 <p>Note that this doesn&#39;t turn <code>fs.open()</code> into a synchronous blocking call.
 If that&#39;s what you want then you should be using <code>fs.openSync()</code></p>
 </li>
@@ -7636,30 +7699,35 @@ synchronously. See notes for <code>&#39;rs&#39;</code> about using this with cau
 <li><p><code>&#39;w&#39;</code> - Open file for writing.
 The file is created (if it does not exist) or truncated (if it exists).</p>
 </li>
-<li><p><code>&#39;wx&#39;</code> - Like <code>&#39;w&#39;</code> but opens the file in exclusive mode.</p>
+<li><p><code>&#39;wx&#39;</code> - Like <code>&#39;w&#39;</code> but fails if <code>path</code> exists.</p>
 </li>
 <li><p><code>&#39;w+&#39;</code> - Open file for reading and writing.
 The file is created (if it does not exist) or truncated (if it exists).</p>
 </li>
-<li><p><code>&#39;wx+&#39;</code> - Like <code>&#39;w+&#39;</code> but opens the file in exclusive mode.</p>
+<li><p><code>&#39;wx+&#39;</code> - Like <code>&#39;w+&#39;</code> but fails if <code>path</code> exists.</p>
 </li>
 <li><p><code>&#39;a&#39;</code> - Open file for appending.
 The file is created if it does not exist.</p>
 </li>
-<li><p><code>&#39;ax&#39;</code> - Like <code>&#39;a&#39;</code> but opens the file in exclusive mode.</p>
+<li><p><code>&#39;ax&#39;</code> - Like <code>&#39;a&#39;</code> but fails if <code>path</code> exists.</p>
 </li>
 <li><p><code>&#39;a+&#39;</code> - Open file for reading and appending.
 The file is created if it does not exist.</p>
 </li>
-<li><p><code>&#39;ax+&#39;</code> - Like <code>&#39;a+&#39;</code> but opens the file in exclusive mode.</p>
+<li><p><code>&#39;ax+&#39;</code> - Like <code>&#39;a+&#39;</code> but fails if <code>path</code> exists.</p>
 </li>
 </ul>
-<p><code>mode</code> defaults to <code>0666</code>. The callback gets two arguments <code>(err, fd)</code>.
+<p><code>mode</code> sets the file mode (permission and sticky bits), but only if the file was
+created. It defaults to <code>0666</code>, readable and writeable.
 
 </p>
-<p>Exclusive mode (<code>O_EXCL</code>) ensures that <code>path</code> is newly created. <code>fs.open()</code>
-fails if a file by that name already exists. On POSIX systems, symlinks are
-not followed. Exclusive mode may or may not work with network file systems.
+<p>The callback gets two arguments <code>(err, fd)</code>.
+
+</p>
+<p>The exclusive flag <code>&#39;x&#39;</code> (<code>O_EXCL</code> flag in open(2)) ensures that <code>path</code> is newly
+created. On POSIX systems, <code>path</code> is considered to exist even if it is a symlink
+to a non-existent file. The exclusive flag may or may not work with network file
+systems.
 
 </p>
 <p>On Linux, positional writes don&#39;t work when the file is opened in append mode.
@@ -7668,7 +7736,7 @@ the end of the file.
 
 </p>
 <h2>fs.openSync(path, flags, [mode])<span><a class="mark" href="#all_fs_opensync_path_flags_mode" id="all_fs_opensync_path_flags_mode">#</a></span></h2>
-<p>Synchronous open(2).
+<p>Synchronous version of <code>fs.open()</code>.
 
 </p>
 <h2>fs.utimes(path, atime, mtime, callback)<span><a class="mark" href="#all_fs_utimes_path_atime_mtime_callback" id="all_fs_utimes_path_atime_mtime_callback">#</a></span></h2>
@@ -7729,7 +7797,7 @@ the end of the file.
 <p><code>buffer</code> is the buffer that the data will be written to.
 
 </p>
-<p><code>offset</code> is offset within the buffer where reading will start.
+<p><code>offset</code> is the offset in the buffer to start writing at.
 
 </p>
 <p><code>length</code> is an integer specifying the number of bytes to read.
@@ -8975,14 +9043,23 @@ informing the source that the data did not reach its intended recipient).
 <div class="signature"><ul>
 <li><code>port</code> Integer</li>
 <li><code>address</code> String, Optional</li>
-<li><code>callback</code> Function, Optional</li>
+<li><code>callback</code> Function with no parameters, Optional. Callback when
+binding is done.</li>
 </div></ul>
-<p>For UDP sockets, listen for datagrams on a named <code>port</code> and optional <code>address</code>.
-If <code>address</code> is not specified, the OS will try to listen on all addresses.
+<p>For UDP sockets, listen for datagrams on a named <code>port</code> and optional
+<code>address</code>. If <code>address</code> is not specified, the OS will try to listen on
+all addresses.  After binding is done, a &quot;listening&quot; event is emitted
+and the <code>callback</code>(if specified) is called. Specifying both a
+&quot;listening&quot; event listener and <code>callback</code> is not harmful but not very
+useful.
 
 </p>
-<p>The <code>callback</code> argument, if provided, is added as a one-shot <code>&#39;listening&#39;</code>
-event listener.
+<p>A bound datagram socket keeps the node process running to receive
+datagrams.
+
+</p>
+<p>If binding fails, an &quot;error&quot; event is generated. In rare case (e.g.
+binding a closed socket), an <code>Error</code> may be thrown by this method.
 
 </p>
 <p>Example of a UDP server listening on port 41234:
@@ -8991,6 +9068,11 @@ event listener.
 <pre><code>var dgram = require(&quot;dgram&quot;);
 
 var server = dgram.createSocket(&quot;udp4&quot;);
+
+server.on(&quot;error&quot;, function (err) {
+  console.log(&quot;server error:\n&quot; + err.stack);
+  server.close();
+});
 
 server.on(&quot;message&quot;, function (msg, rinfo) {
   console.log(&quot;server got: &quot; + msg + &quot; from &quot; +
@@ -9607,7 +9689,7 @@ here if you need to send multiple headers with the same name.
 
 </p>
 <h3>response.sendDate<span><a class="mark" href="#all_response_senddate" id="all_response_senddate">#</a></span></h3>
-<p>When true, the Date header will be automatically generated and sent in 
+<p>When true, the Date header will be automatically generated and sent in
 the response if it is not already present in the headers. Defaults to true.
 
 </p>
@@ -9836,17 +9918,17 @@ pool you can do something along the lines of:
   // Do stuff
 })</code></pre>
 <h3>agent.maxSockets<span><a class="mark" href="#all_agent_maxsockets" id="all_agent_maxsockets">#</a></span></h3>
-<p>By default set to 5. Determines how many concurrent sockets the agent can have 
+<p>By default set to 5. Determines how many concurrent sockets the agent can have
 open per host.
 
 </p>
 <h3>agent.sockets<span><a class="mark" href="#all_agent_sockets" id="all_agent_sockets">#</a></span></h3>
-<p>An object which contains arrays of sockets currently in use by the Agent. Do not 
+<p>An object which contains arrays of sockets currently in use by the Agent. Do not
 modify.
 
 </p>
 <h3>agent.requests<span><a class="mark" href="#all_agent_requests" id="all_agent_requests">#</a></span></h3>
-<p>An object which contains queues of requests that have not yet been assigned to 
+<p>An object which contains queues of requests that have not yet been assigned to
 sockets. Do not modify.
 
 </p>
@@ -9879,7 +9961,9 @@ entirely discarded.  However, if you add a <code>&#39;response&#39;</code> event
 then you <strong>must</strong> consume the data from the response object, either by
 calling <code>response.read()</code> whenever there is a <code>&#39;readable&#39;</code> event, or
 by adding a <code>&#39;data&#39;</code> handler, or by calling the <code>.resume()</code> method.
-Until the data is consumed, the <code>&#39;end&#39;</code> event will not fire.
+Until the data is consumed, the <code>&#39;end&#39;</code> event will not fire.  Also, until
+the data is read it will consume memory that can eventually lead to a
+&#39;process out of memory&#39; error.
 
 </p>
 <p>Note: Node does not check whether Content-Length and the length of the body
@@ -13384,7 +13468,7 @@ worker.on(&#39;exit&#39;, function(code, signal) {
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.15/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.17/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

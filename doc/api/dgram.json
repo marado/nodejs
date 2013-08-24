@@ -170,10 +170,10 @@
                       "desc": "String"
                     },
                     {
-                      "textRaw": "`callback` Function, Optional ",
+                      "textRaw": "`callback` Function with no parameters, Optional. Callback when binding is done. ",
                       "name": "callback",
-                      "optional": true,
-                      "desc": "Function"
+                      "desc": "Function with no parameters, Optional. Callback when binding is done.",
+                      "optional": true
                     }
                   ]
                 },
@@ -193,7 +193,7 @@
                   ]
                 }
               ],
-              "desc": "<p>For UDP sockets, listen for datagrams on a named <code>port</code> and optional <code>address</code>.\nIf <code>address</code> is not specified, the OS will try to listen on all addresses.\n\n</p>\n<p>The <code>callback</code> argument, if provided, is added as a one-shot <code>&#39;listening&#39;</code>\nevent listener.\n\n</p>\n<p>Example of a UDP server listening on port 41234:\n\n</p>\n<pre><code>var dgram = require(&quot;dgram&quot;);\n\nvar server = dgram.createSocket(&quot;udp4&quot;);\n\nserver.on(&quot;message&quot;, function (msg, rinfo) {\n  console.log(&quot;server got: &quot; + msg + &quot; from &quot; +\n    rinfo.address + &quot;:&quot; + rinfo.port);\n});\n\nserver.on(&quot;listening&quot;, function () {\n  var address = server.address();\n  console.log(&quot;server listening &quot; +\n      address.address + &quot;:&quot; + address.port);\n});\n\nserver.bind(41234);\n// server listening 0.0.0.0:41234</code></pre>\n"
+              "desc": "<p>For UDP sockets, listen for datagrams on a named <code>port</code> and optional\n<code>address</code>. If <code>address</code> is not specified, the OS will try to listen on\nall addresses.  After binding is done, a &quot;listening&quot; event is emitted\nand the <code>callback</code>(if specified) is called. Specifying both a\n&quot;listening&quot; event listener and <code>callback</code> is not harmful but not very\nuseful.\n\n</p>\n<p>A bound datagram socket keeps the node process running to receive\ndatagrams.\n\n</p>\n<p>If binding fails, an &quot;error&quot; event is generated. In rare case (e.g.\nbinding a closed socket), an <code>Error</code> may be thrown by this method.\n\n</p>\n<p>Example of a UDP server listening on port 41234:\n\n</p>\n<pre><code>var dgram = require(&quot;dgram&quot;);\n\nvar server = dgram.createSocket(&quot;udp4&quot;);\n\nserver.on(&quot;error&quot;, function (err) {\n  console.log(&quot;server error:\\n&quot; + err.stack);\n  server.close();\n});\n\nserver.on(&quot;message&quot;, function (msg, rinfo) {\n  console.log(&quot;server got: &quot; + msg + &quot; from &quot; +\n    rinfo.address + &quot;:&quot; + rinfo.port);\n});\n\nserver.on(&quot;listening&quot;, function () {\n  var address = server.address();\n  console.log(&quot;server listening &quot; +\n      address.address + &quot;:&quot; + address.port);\n});\n\nserver.bind(41234);\n// server listening 0.0.0.0:41234</code></pre>\n"
             },
             {
               "textRaw": "socket.close()",

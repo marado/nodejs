@@ -577,7 +577,7 @@
             {
               "textRaw": "response.sendDate",
               "name": "sendDate",
-              "desc": "<p>When true, the Date header will be automatically generated and sent in \nthe response if it is not already present in the headers. Defaults to true.\n\n</p>\n<p>This should only be disabled for testing; HTTP requires the Date header\nin responses.\n\n</p>\n"
+              "desc": "<p>When true, the Date header will be automatically generated and sent in\nthe response if it is not already present in the headers. Defaults to true.\n\n</p>\n<p>This should only be disabled for testing; HTTP requires the Date header\nin responses.\n\n</p>\n"
             }
           ]
         },
@@ -590,17 +590,17 @@
             {
               "textRaw": "agent.maxSockets",
               "name": "maxSockets",
-              "desc": "<p>By default set to 5. Determines how many concurrent sockets the agent can have \nopen per host.\n\n</p>\n"
+              "desc": "<p>By default set to 5. Determines how many concurrent sockets the agent can have\nopen per host.\n\n</p>\n"
             },
             {
               "textRaw": "agent.sockets",
               "name": "sockets",
-              "desc": "<p>An object which contains arrays of sockets currently in use by the Agent. Do not \nmodify.\n\n</p>\n"
+              "desc": "<p>An object which contains arrays of sockets currently in use by the Agent. Do not\nmodify.\n\n</p>\n"
             },
             {
               "textRaw": "agent.requests",
               "name": "requests",
-              "desc": "<p>An object which contains queues of requests that have not yet been assigned to \nsockets. Do not modify.\n\n</p>\n"
+              "desc": "<p>An object which contains queues of requests that have not yet been assigned to\nsockets. Do not modify.\n\n</p>\n"
             }
           ]
         },
@@ -608,7 +608,7 @@
           "textRaw": "Class: http.ClientRequest",
           "type": "class",
           "name": "http.ClientRequest",
-          "desc": "<p>This object is created internally and returned from <code>http.request()</code>.  It\nrepresents an <em>in-progress</em> request whose header has already been queued.  The\nheader is still mutable using the <code>setHeader(name, value)</code>, <code>getHeader(name)</code>,\n<code>removeHeader(name)</code> API.  The actual header will be sent along with the first\ndata chunk or when closing the connection.\n\n</p>\n<p>To get the response, add a listener for <code>&#39;response&#39;</code> to the request object.\n<code>&#39;response&#39;</code> will be emitted from the request object when the response\nheaders have been received.  The <code>&#39;response&#39;</code> event is executed with one\nargument which is an instance of <code>http.IncomingMessage</code>.\n\n</p>\n<p>During the <code>&#39;response&#39;</code> event, one can add listeners to the\nresponse object; particularly to listen for the <code>&#39;data&#39;</code> event.\n\n</p>\n<p>If no <code>&#39;response&#39;</code> handler is added, then the response will be\nentirely discarded.  However, if you add a <code>&#39;response&#39;</code> event handler,\nthen you <strong>must</strong> consume the data from the response object, either by\ncalling <code>response.read()</code> whenever there is a <code>&#39;readable&#39;</code> event, or\nby adding a <code>&#39;data&#39;</code> handler, or by calling the <code>.resume()</code> method.\nUntil the data is consumed, the <code>&#39;end&#39;</code> event will not fire.\n\n</p>\n<p>Note: Node does not check whether Content-Length and the length of the body\nwhich has been transmitted are equal or not.\n\n</p>\n<p>The request implements the [Writable Stream][] interface. This is an\n[EventEmitter][] with the following events:\n\n</p>\n",
+          "desc": "<p>This object is created internally and returned from <code>http.request()</code>.  It\nrepresents an <em>in-progress</em> request whose header has already been queued.  The\nheader is still mutable using the <code>setHeader(name, value)</code>, <code>getHeader(name)</code>,\n<code>removeHeader(name)</code> API.  The actual header will be sent along with the first\ndata chunk or when closing the connection.\n\n</p>\n<p>To get the response, add a listener for <code>&#39;response&#39;</code> to the request object.\n<code>&#39;response&#39;</code> will be emitted from the request object when the response\nheaders have been received.  The <code>&#39;response&#39;</code> event is executed with one\nargument which is an instance of <code>http.IncomingMessage</code>.\n\n</p>\n<p>During the <code>&#39;response&#39;</code> event, one can add listeners to the\nresponse object; particularly to listen for the <code>&#39;data&#39;</code> event.\n\n</p>\n<p>If no <code>&#39;response&#39;</code> handler is added, then the response will be\nentirely discarded.  However, if you add a <code>&#39;response&#39;</code> event handler,\nthen you <strong>must</strong> consume the data from the response object, either by\ncalling <code>response.read()</code> whenever there is a <code>&#39;readable&#39;</code> event, or\nby adding a <code>&#39;data&#39;</code> handler, or by calling the <code>.resume()</code> method.\nUntil the data is consumed, the <code>&#39;end&#39;</code> event will not fire.  Also, until\nthe data is read it will consume memory that can eventually lead to a\n&#39;process out of memory&#39; error.\n\n</p>\n<p>Note: Node does not check whether Content-Length and the length of the body\nwhich has been transmitted are equal or not.\n\n</p>\n<p>The request implements the [Writable Stream][] interface. This is an\n[EventEmitter][] with the following events:\n\n</p>\n",
           "events": [
             {
               "textRaw": "Event 'response'",

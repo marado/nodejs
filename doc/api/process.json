@@ -56,6 +56,11 @@
           "desc": "<p>This is the absolute pathname of the executable that started the process.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>/usr/local/bin/node</code></pre>\n"
         },
         {
+          "textRaw": "process.execArgv",
+          "name": "execArgv",
+          "desc": "<p>This is the set of node-specific command line options from the\nexecutable that started the process.  These options do not show up in\n<code>process.argv</code>, and do not include the node executable, the name of\nthe script, or any options following the script name. These options\nare useful in order to spawn child processes with the same execution\nenvironment as the parent.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>$ node --harmony script.js --version</code></pre>\n<p>results in process.execArgv:\n\n</p>\n<pre><code>[&#39;--harmony&#39;]</code></pre>\n<p>and process.argv:\n\n</p>\n<pre><code>[&#39;/usr/local/bin/node&#39;, &#39;script.js&#39;, &#39;--version&#39;]</code></pre>\n"
+        },
+        {
           "textRaw": "process.env",
           "name": "env",
           "desc": "<p>An object containing the user environment. See environ(7).\n\n\n</p>\n"
