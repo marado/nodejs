@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>process Node.js v0.10.15 Manual &amp; Documentation</title>
+  <title>process Node.js v0.10.17 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/process.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.15 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.17 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -54,6 +54,7 @@
 <li><a href="#process_process_stdin">process.stdin</a></li>
 <li><a href="#process_process_argv">process.argv</a></li>
 <li><a href="#process_process_execpath">process.execPath</a></li>
+<li><a href="#process_process_execargv">process.execArgv</a></li>
 <li><a href="#process_process_abort">process.abort()</a></li>
 <li><a href="#process_process_chdir_directory">process.chdir(directory)</a></li>
 <li><a href="#process_process_cwd">process.cwd()</a></li>
@@ -261,6 +262,27 @@ process.argv.forEach(function(val, index, array) {
 
 </p>
 <pre><code>/usr/local/bin/node</code></pre>
+<h2>process.execArgv<span><a class="mark" href="#process_process_execargv" id="process_process_execargv">#</a></span></h2>
+<p>This is the set of node-specific command line options from the
+executable that started the process.  These options do not show up in
+<code>process.argv</code>, and do not include the node executable, the name of
+the script, or any options following the script name. These options
+are useful in order to spawn child processes with the same execution
+environment as the parent.
+
+</p>
+<p>Example:
+
+</p>
+<pre><code>$ node --harmony script.js --version</code></pre>
+<p>results in process.execArgv:
+
+</p>
+<pre><code>[&#39;--harmony&#39;]</code></pre>
+<p>and process.argv:
+
+</p>
+<pre><code>[&#39;/usr/local/bin/node&#39;, &#39;script.js&#39;, &#39;--version&#39;]</code></pre>
 <h2>process.abort()<span><a class="mark" href="#process_process_abort" id="process_process_abort">#</a></span></h2>
 <p>This causes node to emit an abort. This will cause node to exit and
 generate a core file.
@@ -673,7 +695,7 @@ setTimeout(function() {
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.15/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.17/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

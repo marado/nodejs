@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Stream Node.js v0.10.15 Manual &amp; Documentation</title>
+  <title>Stream Node.js v0.10.17 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/stream.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.15 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.17 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -1172,8 +1172,8 @@ connected in some way to the input, such as a <a href="zlib.html">zlib</a> strea
 <p>There is no requirement that the output be the same size as the input,
 the same number of chunks, or arrive at the same time.  For example, a
 Hash stream will only ever have a single chunk of output which is
-provided when the input is ended.  A zlib stream will either produce
-much smaller or much larger than its input.
+provided when the input is ended.  A zlib stream will produce output
+that is either much smaller or much larger than its input.
 
 </p>
 <p>Rather than implement the <a href="#stream_readable_read_size_1"><code>_read()</code></a> and <a href="#stream_writable_write_chunk_encoding_callback_1"><code>_write()</code></a> methods, Transform
@@ -1274,7 +1274,7 @@ approach.
 
 </p>
 <pre><code class="javascript">var util = require(&#39;util&#39;);
-var Transform = require(&#39;stream&#39;).Transform);
+var Transform = require(&#39;stream&#39;).Transform;
 util.inherits(SimpleProtocol, Transform);
 
 function SimpleProtocol(options) {
@@ -1613,7 +1613,7 @@ modify them.
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.15/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.17/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>
