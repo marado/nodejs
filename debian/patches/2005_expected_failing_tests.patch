@@ -8,10 +8,10 @@ Description: Expected failing tests
      on debian, but it doesn't affect the quality of nodejs (openssl).
 Forwarded: not-needed
 Author: Jérémy Lal <kapouer@melix.org>
-Last-Update: 2013-08-13
+Last-Update: 2013-08-29
 --- a/test/simple/simple.status
 +++ b/test/simple/simple.status
-@@ -1 +1,71 @@
+@@ -1 +1,72 @@
  prefix simple
 +
 +# only fail when some resources are not available
@@ -51,6 +51,7 @@ Last-Update: 2013-08-13
 +test-tls-zero-clear-in: PASS || FAIL
 +test-next-tick-starvation: PASS || FAIL
 +test-child-process-fork-net2: PASS || TIMEOUT
++test-signal-unregister: PASS || FAIL
 +# this one is tricky but falls nonetheless in this category
 +test-timers-unref: PASS || FAIL
 +
