@@ -1,3 +1,9 @@
+nodejs (0.10.17~dfsg1-2) unstable; urgency=low
+
+  * Update 2005 patch with new failing-on-slow-platforms tests.
+
+ -- Jérémy Lal <kapouer@melix.org>  Sat, 31 Aug 2013 09:45:06 +0200
+
 nodejs (0.10.17~dfsg1-1) unstable; urgency=low
 
   * Upstream update.
