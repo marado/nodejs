@@ -26,6 +26,7 @@ Description: evented I/O for V8 javascript (development files)
  This package is needed to build plugins.
 
 Package: nodejs
+Priority: optional
 Architecture: any
 Depends: ${shlibs:Depends},
  ${misc:Depends}
