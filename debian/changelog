@@ -1,3 +1,9 @@
+nodejs (0.10.19~dfsg1-1) UNRELEASED; urgency=low
+
+  * Upstream update. 
+
+ -- Jérémy Lal <kapouer@melix.org>  Fri, 27 Sep 2013 11:12:15 +0200
+
 nodejs (0.10.18~dfsg1-1) unstable; urgency=low
 
   * Upstream update. 
