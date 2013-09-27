@@ -23,9 +23,9 @@
         },
         {
           "textRaw": "Signal Events",
-          "name": "SIGINT, SIGUSR1, etc.",
+          "name": "SIGINT, SIGHUP, etc.",
           "type": "event",
-          "desc": "<p>Emitted when the processes receives a signal. See sigaction(2) for a list of\nstandard POSIX signal names such as SIGINT, SIGUSR1, etc.\n\n</p>\n<p>Example of listening for <code>SIGINT</code>:\n\n</p>\n<pre><code>// Start reading from stdin so we don&#39;t exit.\nprocess.stdin.resume();\n\nprocess.on(&#39;SIGINT&#39;, function() {\n  console.log(&#39;Got SIGINT.  Press Control-D to exit.&#39;);\n});</code></pre>\n<p>An easy way to send the <code>SIGINT</code> signal is with <code>Control-C</code> in most terminal\nprograms.\n\n\n</p>\n",
+          "desc": "<p>Emitted when the processes receives a signal. See sigaction(2) for a list of\nstandard POSIX signal names such as SIGINT, SIGHUP, etc.\n\n</p>\n<p>Example of listening for <code>SIGINT</code>:\n\n</p>\n<pre><code>// Start reading from stdin so we don&#39;t exit.\nprocess.stdin.resume();\n\nprocess.on(&#39;SIGINT&#39;, function() {\n  console.log(&#39;Got SIGINT.  Press Control-D to exit.&#39;);\n});</code></pre>\n<p>An easy way to send the <code>SIGINT</code> signal is with <code>Control-C</code> in most terminal\nprograms.\n\n</p>\n<p>Note: SIGUSR1 is reserved by node.js to kickstart the debugger.  It&#39;s possible\nto install a listener but that won&#39;t stop the debugger from starting.\n\n</p>\n",
           "params": []
         }
       ],
@@ -261,7 +261,7 @@
           "textRaw": "process.kill(pid, [signal])",
           "type": "method",
           "name": "kill",
-          "desc": "<p>Send a signal to a process. <code>pid</code> is the process id and <code>signal</code> is the\nstring describing the signal to send.  Signal names are strings like\n&#39;SIGINT&#39; or &#39;SIGUSR1&#39;.  If omitted, the signal will be &#39;SIGTERM&#39;.\nSee kill(2) for more information.\n\n</p>\n<p>Note that just because the name of this function is <code>process.kill</code>, it is\nreally just a signal sender, like the <code>kill</code> system call.  The signal sent\nmay do something other than kill the target process.\n\n</p>\n<p>Example of sending a signal to yourself:\n\n</p>\n<pre><code>process.on(&#39;SIGHUP&#39;, function() {\n  console.log(&#39;Got SIGHUP signal.&#39;);\n});\n\nsetTimeout(function() {\n  console.log(&#39;Exiting.&#39;);\n  process.exit(0);\n}, 100);\n\nprocess.kill(process.pid, &#39;SIGHUP&#39;);</code></pre>\n",
+          "desc": "<p>Send a signal to a process. <code>pid</code> is the process id and <code>signal</code> is the\nstring describing the signal to send.  Signal names are strings like\n&#39;SIGINT&#39; or &#39;SIGHUP&#39;.  If omitted, the signal will be &#39;SIGTERM&#39;.\nSee kill(2) for more information.\n\n</p>\n<p>Note that just because the name of this function is <code>process.kill</code>, it is\nreally just a signal sender, like the <code>kill</code> system call.  The signal sent\nmay do something other than kill the target process.\n\n</p>\n<p>Example of sending a signal to yourself:\n\n</p>\n<pre><code>process.on(&#39;SIGHUP&#39;, function() {\n  console.log(&#39;Got SIGHUP signal.&#39;);\n});\n\nsetTimeout(function() {\n  console.log(&#39;Exiting.&#39;);\n  process.exit(0);\n}, 100);\n\nprocess.kill(process.pid, &#39;SIGHUP&#39;);</code></pre>\n<p>Note: SIGUSR1 is reserved by node.js.  It can be used to kickstart the\ndebugger.\n\n</p>\n",
           "signatures": [
             {
               "params": [

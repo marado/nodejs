@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>About this Documentation Node.js v0.10.18 Manual &amp; Documentation</title>
+  <title>About this Documentation Node.js v0.10.19 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/all.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.18 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.19 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -2645,10 +2645,10 @@ Nine out of ten times nothing happens - but the 10th time, your system is bust.
 </p>
 <h2>Signal Events<span><a class="mark" href="#all_signal_events" id="all_signal_events">#</a></span></h2>
 <!--type=event-->
-<!--name=SIGINT, SIGUSR1, etc.-->
+<!--name=SIGINT, SIGHUP, etc.-->
 
 <p>Emitted when the processes receives a signal. See sigaction(2) for a list of
-standard POSIX signal names such as SIGINT, SIGUSR1, etc.
+standard POSIX signal names such as SIGINT, SIGHUP, etc.
 
 </p>
 <p>Example of listening for <code>SIGINT</code>:
@@ -2663,6 +2663,9 @@ process.on(&#39;SIGINT&#39;, function() {
 <p>An easy way to send the <code>SIGINT</code> signal is with <code>Control-C</code> in most terminal
 programs.
 
+</p>
+<p>Note: SIGUSR1 is reserved by node.js to kickstart the debugger.  It&#39;s possible
+to install a listener but that won&#39;t stop the debugger from starting.
 
 </p>
 <h2>process.stdout<span><a class="mark" href="#all_process_stdout" id="all_process_stdout">#</a></span></h2>
@@ -2969,7 +2972,7 @@ the &quot;config.gypi&quot; file that was produced when running the <code>./conf
 <h2>process.kill(pid, [signal])<span><a class="mark" href="#all_process_kill_pid_signal" id="all_process_kill_pid_signal">#</a></span></h2>
 <p>Send a signal to a process. <code>pid</code> is the process id and <code>signal</code> is the
 string describing the signal to send.  Signal names are strings like
-&#39;SIGINT&#39; or &#39;SIGUSR1&#39;.  If omitted, the signal will be &#39;SIGTERM&#39;.
+&#39;SIGINT&#39; or &#39;SIGHUP&#39;.  If omitted, the signal will be &#39;SIGTERM&#39;.
 See kill(2) for more information.
 
 </p>
@@ -2991,6 +2994,10 @@ setTimeout(function() {
 }, 100);
 
 process.kill(process.pid, &#39;SIGHUP&#39;);</code></pre>
+<p>Note: SIGUSR1 is reserved by node.js.  It can be used to kickstart the
+debugger.
+
+</p>
 <h2>process.pid<span><a class="mark" href="#all_process_pid" id="all_process_pid">#</a></span></h2>
 <p>The PID of the process.
 
@@ -6883,9 +6890,9 @@ PEM format. (Required)</p>
 <li><p><code>cert</code>: A string or <code>Buffer</code> containing the certificate key of the server in
 PEM format. (Required)</p>
 </li>
-<li><p><code>ca</code>: An array of strings or <code>Buffer</code>s of trusted certificates. If this is
-omitted several well known &quot;root&quot; CAs will be used, like VeriSign.
-These are used to authorize connections.</p>
+<li><p><code>ca</code>: An array of strings or <code>Buffer</code>s of trusted certificates in PEM
+format. If this is omitted several well known &quot;root&quot; CAs will be used,
+like VeriSign. These are used to authorize connections.</p>
 </li>
 <li><p><code>crl</code> : Either a string or list of strings of PEM encoded CRLs (Certificate
 Revocation List)</p>
@@ -7039,16 +7046,16 @@ PEM format.</p>
 <li><p><code>cert</code>: A string or <code>Buffer</code> containing the certificate key of the client in
 PEM format.</p>
 </li>
-<li><p><code>ca</code>: An array of strings or <code>Buffer</code>s of trusted certificates. If this is
-omitted several well known &quot;root&quot; CAs will be used, like VeriSign.
-These are used to authorize connections.</p>
+<li><p><code>ca</code>: An array of strings or <code>Buffer</code>s of trusted certificates in PEM
+format. If this is omitted several well known &quot;root&quot; CAs will be used,
+like VeriSign. These are used to authorize connections.</p>
 </li>
 <li><p><code>rejectUnauthorized</code>: If <code>true</code>, the server certificate is verified against
 the list of supplied CAs. An <code>&#39;error&#39;</code> event is emitted if verification
 fails. Default: <code>true</code>.</p>
 </li>
-<li><p><code>NPNProtocols</code>: An array of string or <code>Buffer</code> containing supported NPN
-protocols. <code>Buffer</code> should have following format: <code>0x05hello0x05world</code>,
+<li><p><code>NPNProtocols</code>: An array of strings or <code>Buffer</code>s containing supported NPN
+protocols. <code>Buffer</code>s should have following format: <code>0x05hello0x05world</code>,
 where first byte is next protocol name&#39;s length. (Passing array should
 usually be much simpler: <code>[&#39;hello&#39;, &#39;world&#39;]</code>.)</p>
 </li>
@@ -13466,7 +13473,7 @@ worker.on(&#39;exit&#39;, function(code, signal) {
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.18/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.19/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>
