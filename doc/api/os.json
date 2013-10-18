@@ -100,7 +100,7 @@
           "textRaw": "os.loadavg()",
           "type": "method",
           "name": "loadavg",
-          "desc": "<p>Returns an array containing the 1, 5, and 15 minute load averages.\n\n</p>\n",
+          "desc": "<p>Returns an array containing the 1, 5, and 15 minute load averages.\n\n</p>\n<p>The load average is a measure of system activity, calculated by the operating\nsystem and expressed as a fractional number.  As a rule of thumb, the load\naverage should ideally be less than the number of logical CPUs in the system.\n\n</p>\n<p>The load average is a very UNIX-y concept; there is no real equivalent on\nWindows platforms.  That is why this function always returns <code>[0, 0, 0]</code> on\nWindows.\n\n</p>\n",
           "signatures": [
             {
               "params": []

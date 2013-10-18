@@ -1474,7 +1474,7 @@
           "textRaw": "fs.exists(path, callback)",
           "type": "method",
           "name": "exists",
-          "desc": "<p>Test whether or not the given path exists by checking with the file system.\nThen call the <code>callback</code> argument with either true or false.  Example:\n\n</p>\n<pre><code>fs.exists(&#39;/etc/passwd&#39;, function (exists) {\n  util.debug(exists ? &quot;it&#39;s there&quot; : &quot;no passwd!&quot;);\n});</code></pre>\n",
+          "desc": "<p>Test whether or not the given path exists by checking with the file system.\nThen call the <code>callback</code> argument with either true or false.  Example:\n\n</p>\n<pre><code>fs.exists(&#39;/etc/passwd&#39;, function (exists) {\n  util.debug(exists ? &quot;it&#39;s there&quot; : &quot;no passwd!&quot;);\n});</code></pre>\n<p><code>fs.exists()</code> is an anachronism and exists only for historical reasons.\nThere should almost never be a reason to use it in your own code.\n\n</p>\n<p>In particular, checking if a file exists before opening it is an anti-pattern\nthat leaves you vulnerable to race conditions: another process may remove the\nfile between the calls to <code>fs.exists()</code> and <code>fs.open()</code>.  Just open the file\nand handle the error when it&#39;s not there.\n\n</p>\n",
           "signatures": [
             {
               "params": [
