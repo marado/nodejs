@@ -8,10 +8,10 @@ Description: Expected failing tests
      on debian, but it doesn't affect the quality of nodejs (openssl).
 Forwarded: not-needed
 Author: Jérémy Lal <kapouer@melix.org>
-Last-Update: 2013-08-29
+Last-Update: 2013-10-19
 --- a/test/simple/simple.status
 +++ b/test/simple/simple.status
-@@ -1 +1,72 @@
+@@ -1 +1,73 @@
  prefix simple
 +
 +# only fail when some resources are not available
@@ -41,6 +41,7 @@ Last-Update: 2013-08-29
 +test-http-client-timeout-with-data: PASS || FAIL
 +test-http-end-throw-socket-handling: PASS || FAIL
 +test-http-exit-delay: PASS || FAIL
++test-http-pipeline-flood: PASS || FAIL
 +test-net-GH-5504: PASS || FAIL
 +test-net-server-unref: PASS || FAIL
 +test-net-settimeout: PASS || FAIL
