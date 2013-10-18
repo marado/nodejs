@@ -1,3 +1,10 @@
+nodejs (0.10.21~dfsg1-1) unstable; urgency=low
+
+  * Upstream update.
+  * Update 2005 patch, allow test-http-pipeline-flood to fail.
+
+ -- Jérémy Lal <kapouer@melix.org>  Sat, 19 Oct 2013 01:26:18 +0200
+
 nodejs (0.10.20~dfsg1-1) unstable; urgency=low
 
   * Upstream update. 
