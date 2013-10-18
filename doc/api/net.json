@@ -238,7 +238,7 @@
           "textRaw": "Class: net.Server",
           "type": "class",
           "name": "net.Server",
-          "desc": "<p>This class is used to create a TCP or UNIX server.\nA server is a <code>net.Socket</code> that can listen for new incoming connections.\n\n</p>\n",
+          "desc": "<p>This class is used to create a TCP or UNIX server.\n\n</p>\n",
           "methods": [
             {
               "textRaw": "server.listen(port, [host], [backlog], [callback])",

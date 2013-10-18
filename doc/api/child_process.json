@@ -26,7 +26,7 @@
               "type": "event",
               "name": "exit",
               "params": [],
-              "desc": "<p>This event is emitted after the child process ends. If the process terminated\nnormally, <code>code</code> is the final exit code of the process, otherwise <code>null</code>. If\nthe process terminated due to receipt of a signal, <code>signal</code> is the string name\nof the signal, otherwise <code>null</code>.\n\n</p>\n<p>Note that the child process stdio streams might still be open.\n\n</p>\n<p>See <code>waitpid(2)</code>.\n\n</p>\n"
+              "desc": "<p>This event is emitted after the child process ends. If the process terminated\nnormally, <code>code</code> is the final exit code of the process, otherwise <code>null</code>. If\nthe process terminated due to receipt of a signal, <code>signal</code> is the string name\nof the signal, otherwise <code>null</code>.\n\n</p>\n<p>Note that the child process stdio streams might still be open.\n\n</p>\n<p>Also, note that node establishes signal handlers for <code>&#39;SIGINT&#39;</code> and <code>&#39;SIGTERM</code>&#39;,\nso it will not terminate due to receipt of those signals, it will exit.\n\n</p>\n<p>See <code>waitpid(2)</code>.\n\n</p>\n"
             },
             {
               "textRaw": "Event: 'close'",
@@ -39,7 +39,7 @@
               "textRaw": "Event: 'disconnect'",
               "type": "event",
               "name": "disconnect",
-              "desc": "<p>This event is emitted after using the <code>.disconnect()</code> method in the parent or\nin the child. After disconnecting it is no longer possible to send messages.\nAn alternative way to check if you can send messages is to see if the\n<code>child.connected</code> property is <code>true</code>.\n\n</p>\n",
+              "desc": "<p>This event is emitted after calling the <code>.disconnect()</code> method in the parent\nor in the child. After disconnecting it is no longer possible to send messages,\nand the <code>.connected</code> property is false.\n\n</p>\n",
               "params": []
             },
             {
@@ -70,6 +70,12 @@
               "textRaw": "`pid` {Integer} ",
               "name": "pid",
               "desc": "<p>The PID of the child process.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>var spawn = require(&#39;child_process&#39;).spawn,\n    grep  = spawn(&#39;grep&#39;, [&#39;ssh&#39;]);\n\nconsole.log(&#39;Spawned child pid: &#39; + grep.pid);\ngrep.stdin.end();</code></pre>\n"
+            },
+            {
+              "textRaw": "`connected` {Boolean} Set to false after `.disconnect' is called ",
+              "name": "connected",
+              "desc": "<p>If <code>.connected</code> is false, it is no longer possible to send messages.\n\n</p>\n",
+              "shortDesc": "Set to false after `.disconnect' is called"
             }
           ],
           "methods": [
@@ -137,7 +143,7 @@
               "textRaw": "child.disconnect()",
               "type": "method",
               "name": "disconnect",
-              "desc": "<p>To close the IPC connection between parent and child use the\n<code>child.disconnect()</code> method. This allows the child to exit gracefully since\nthere is no IPC channel keeping it alive. When calling this method the\n<code>disconnect</code> event will be emitted in both parent and child, and the\n<code>connected</code> flag will be set to <code>false</code>. Please note that you can also call\n<code>process.disconnect()</code> in the child process.\n\n</p>\n",
+              "desc": "<p>Close the IPC channel between parent and child, allowing the child to exit\ngracefully once there are no other connections keeping it alive. After calling\nthis method the <code>.connected</code> flag will be set to <code>false</code> in both the parent and\nchild, and it is no longer possible to send messages.\n\n</p>\n<p>The &#39;disconnect&#39; event will be emitted when there are no messages in the process\nof being received, most likely immediately.\n\n</p>\n<p>Note that you can also call <code>process.disconnect()</code> in the child process.\n\n</p>\n",
               "signatures": [
                 {
                   "params": []
@@ -289,7 +295,7 @@
                       "type": "Number"
                     },
                     {
-                      "textRaw": "`maxBuffer` {Number} (Default: 200*1024) ",
+                      "textRaw": "`maxBuffer` {Number} (Default: `200*1024`) ",
                       "name": "maxBuffer",
                       "default": "200*1024",
                       "type": "Number"
@@ -459,7 +465,7 @@
           "desc": "<p>This is similar to <code>child_process.exec()</code> except it does not execute a\nsubshell but rather the specified file directly. This makes it slightly\nleaner than <code>child_process.exec</code>. It has the same options.\n\n\n</p>\n"
         },
         {
-          "textRaw": "child\\_process.fork(modulePath, [args], [options])",
+          "textRaw": "child_process.fork(modulePath, [args], [options])",
           "type": "method",
           "name": "fork",
           "signatures": [
@@ -509,6 +515,12 @@
                       "name": "execPath",
                       "type": "String",
                       "desc": "Executable used to create the child process"
+                    },
+                    {
+                      "textRaw": "`silent` {Boolean} If true, prevent stdout and stderr in the spawned node process from being associated with the parent's (default is false) ",
+                      "name": "silent",
+                      "type": "Boolean",
+                      "desc": "If true, prevent stdout and stderr in the spawned node process from being associated with the parent's (default is false)"
                     }
                   ],
                   "name": "options",
@@ -533,7 +545,7 @@
               ]
             }
           ],
-          "desc": "<p>This is a special case of the <code>spawn()</code> functionality for spawning Node\nprocesses. In addition to having all the methods in a normal ChildProcess\ninstance, the returned object has a communication channel built-in. See\n<code>child.send(message, [sendHandle])</code> for details.\n\n</p>\n<p>By default the spawned Node process will have the stdout, stderr associated\nwith the parent&#39;s. To change this behavior set the <code>silent</code> property in the\n<code>options</code> object to <code>true</code>.\n\n</p>\n<p>The child process does not automatically exit once it&#39;s done, you need to call\n<code>process.exit()</code> explicitly. This limitation may be lifted in the future.\n\n</p>\n<p>These child Nodes are still whole new instances of V8. Assume at least 30ms\nstartup and 10mb memory for each new Node. That is, you cannot create many\nthousands of them.\n\n</p>\n<p>The <code>execPath</code> property in the <code>options</code> object allows for a process to be\ncreated for the child rather than the current <code>node</code> executable. This should be\ndone with care and by default will talk over the fd represented an\nenvironmental variable <code>NODE_CHANNEL_FD</code> on the child process. The input and\noutput on this fd is expected to be line delimited JSON objects.\n\n</p>\n"
+          "desc": "<p>This is a special case of the <code>spawn()</code> functionality for spawning Node\nprocesses. In addition to having all the methods in a normal ChildProcess\ninstance, the returned object has a communication channel built-in. See\n<code>child.send(message, [sendHandle])</code> for details.\n\n</p>\n<p>These child Nodes are still whole new instances of V8. Assume at least 30ms\nstartup and 10mb memory for each new Node. That is, you cannot create many\nthousands of them.\n\n</p>\n<p>The <code>execPath</code> property in the <code>options</code> object allows for a process to be\ncreated for the child rather than the current <code>node</code> executable. This should be\ndone with care and by default will talk over the fd represented an\nenvironmental variable <code>NODE_CHANNEL_FD</code> on the child process. The input and\noutput on this fd is expected to be line delimited JSON objects.\n\n</p>\n"
         }
       ],
       "type": "module",
