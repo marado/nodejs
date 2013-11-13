@@ -334,7 +334,7 @@
               "textRaw": "hash.update(data, [input_encoding])",
               "type": "method",
               "name": "update",
-              "desc": "<p>Updates the hash content with the given <code>data</code>, the encoding of which\nis given in <code>input_encoding</code> and can be <code>&#39;utf8&#39;</code>, <code>&#39;ascii&#39;</code> or\n<code>&#39;binary&#39;</code>.  If no encoding is provided, then a buffer is expected.\n\n</p>\n<p>This can be called many times with new data as it is streamed.\n\n</p>\n",
+              "desc": "<p>Updates the hash content with the given <code>data</code>, the encoding of which\nis given in <code>input_encoding</code> and can be <code>&#39;utf8&#39;</code>, <code>&#39;ascii&#39;</code> or\n<code>&#39;binary&#39;</code>.  If no encoding is provided, then a buffer is expected.\nIf <code>data</code> is a <code>Buffer</code> then <code>input_encoding</code> is ignored.\n\n</p>\n<p>This can be called many times with new data as it is streamed.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -416,7 +416,7 @@
               "textRaw": "cipher.update(data, [input_encoding], [output_encoding])",
               "type": "method",
               "name": "update",
-              "desc": "<p>Updates the cipher with <code>data</code>, the encoding of which is given in\n<code>input_encoding</code> and can be <code>&#39;utf8&#39;</code>, <code>&#39;ascii&#39;</code> or <code>&#39;binary&#39;</code>.  If no\nencoding is provided, then a buffer is expected.\n\n</p>\n<p>The <code>output_encoding</code> specifies the output format of the enciphered\ndata, and can be <code>&#39;binary&#39;</code>, <code>&#39;base64&#39;</code> or <code>&#39;hex&#39;</code>.  If no encoding is\nprovided, then a buffer is returned.\n\n</p>\n<p>Returns the enciphered contents, and can be called many times with new\ndata as it is streamed.\n\n</p>\n",
+              "desc": "<p>Updates the cipher with <code>data</code>, the encoding of which is given in\n<code>input_encoding</code> and can be <code>&#39;utf8&#39;</code>, <code>&#39;ascii&#39;</code> or <code>&#39;binary&#39;</code>.  If no\nencoding is provided, then a buffer is expected.\nIf <code>data</code> is a <code>Buffer</code> then <code>input_encoding</code> is ignored.\n\n</p>\n<p>The <code>output_encoding</code> specifies the output format of the enciphered\ndata, and can be <code>&#39;binary&#39;</code>, <code>&#39;base64&#39;</code> or <code>&#39;hex&#39;</code>.  If no encoding is\nprovided, then a buffer is returned.\n\n</p>\n<p>Returns the enciphered contents, and can be called many times with new\ndata as it is streamed.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -479,7 +479,7 @@
               "textRaw": "decipher.update(data, [input_encoding], [output_encoding])",
               "type": "method",
               "name": "update",
-              "desc": "<p>Updates the decipher with <code>data</code>, which is encoded in <code>&#39;binary&#39;</code>,\n<code>&#39;base64&#39;</code> or <code>&#39;hex&#39;</code>.  If no encoding is provided, then a buffer is\nexpected.\n\n</p>\n<p>The <code>output_decoding</code> specifies in what format to return the\ndeciphered plaintext: <code>&#39;binary&#39;</code>, <code>&#39;ascii&#39;</code> or <code>&#39;utf8&#39;</code>.  If no\nencoding is provided, then a buffer is returned.\n\n</p>\n",
+              "desc": "<p>Updates the decipher with <code>data</code>, which is encoded in <code>&#39;binary&#39;</code>,\n<code>&#39;base64&#39;</code> or <code>&#39;hex&#39;</code>.  If no encoding is provided, then a buffer is\nexpected.\nIf <code>data</code> is a <code>Buffer</code> then <code>input_encoding</code> is ignored.\n\n</p>\n<p>The <code>output_decoding</code> specifies in what format to return the\ndeciphered plaintext: <code>&#39;binary&#39;</code>, <code>&#39;ascii&#39;</code> or <code>&#39;utf8&#39;</code>.  If no\nencoding is provided, then a buffer is returned.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [

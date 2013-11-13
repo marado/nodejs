@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>About this Documentation Node.js v0.10.21 Manual &amp; Documentation</title>
+  <title>About this Documentation Node.js v0.10.22 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/all.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.21 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.22 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -106,7 +106,10 @@
 </ul>
 </li>
 <li><a href="#all_the_module_object">The <code>module</code> Object</a><ul>
-<li><a href="#all_module_exports">module.exports</a></li>
+<li><a href="#all_module_exports">module.exports</a><ul>
+<li><a href="#all_exports_alias">exports alias</a></li>
+</ul>
+</li>
 <li><a href="#all_module_require_id">module.require(id)</a></li>
 <li><a href="#all_module_id">module.id</a></li>
 <li><a href="#all_module_filename">module.filename</a></li>
@@ -1225,8 +1228,11 @@ to that module file.
 <li>{Object}</li>
 </ul>
 <p>A reference to the current module. In particular
-<code>module.exports</code> is the same as the <code>exports</code> object.
-<code>module</code> isn&#39;t actually a global but rather local to each module.
+<code>module.exports</code> is used for defining what a module exports and makes
+available through <code>require()</code>.
+
+</p>
+<p><code>module</code> isn&#39;t actually a global but rather local to each module.
 
 </p>
 <p>See the <a href="modules.html">module system documentation</a> for more information.
@@ -1235,11 +1241,12 @@ to that module file.
 <h2>exports<span><a class="mark" href="#all_exports" id="all_exports">#</a></span></h2>
 <!-- type=var -->
 
-<p>A reference to the <code>module.exports</code> object which is shared between all
-instances of the current module and made accessible through <code>require()</code>.
+<p>A reference to the <code>module.exports</code> that is shorter to type.
 See <a href="modules.html">module system documentation</a> for details on when to use <code>exports</code> and
 when to use <code>module.exports</code>.
-<code>exports</code> isn&#39;t actually a global but rather local to each module.
+
+</p>
+<p><code>exports</code> isn&#39;t actually a global but rather local to each module.
 
 </p>
 <p>See the <a href="modules.html">module system documentation</a> for more information.
@@ -1458,29 +1465,37 @@ exports.circumference = function (r) {
   return 2 * PI * r;
 };</code></pre>
 <p>The module <code>circle.js</code> has exported the functions <code>area()</code> and
-<code>circumference()</code>.  To export an object, add to the special <code>exports</code>
-object.
+<code>circumference()</code>.  To add functions and objects to the root of your module,
+you can add them to the special <code>exports</code> object.
 
 </p>
-<p>Note that <code>exports</code> is a reference to <code>module.exports</code> making it suitable
-for augmentation only. If you are exporting a single item such as a
-constructor you will want to use <code>module.exports</code> directly instead.
+<p>Variables local to the module will be private, as though the module was wrapped
+in a function. In this example the variable <code>PI</code> is private to <code>circle.js</code>.
 
 </p>
-<pre><code>function MyConstructor (opts) {
-  //...
-}
-
-// BROKEN: Does not modify exports
-exports = MyConstructor;
-
-// exports the constructor properly
-module.exports = MyConstructor;</code></pre>
-<p>Variables
-local to the module will be private. In this example the variable <code>PI</code> is
-private to <code>circle.js</code>.
+<p>If you want the root of your module&#39;s export to be a function (such as a
+constructor) or if you want to export a complete object in one assignment
+instead of building it one property at a time, assign it to <code>module.exports</code>
+instead of <code>exports</code>.
 
 </p>
+<p>Below, <code>bar.js</code> makes use of the <code>square</code> module, which exports a constructor:
+
+</p>
+<pre><code>var square = require(&#39;./square.js&#39;);
+var mySquare = square(2);
+console.log(&#39;The area of my square is &#39; + mySquare.area());</code></pre>
+<p>The <code>square</code> module is defined in <code>square.js</code>:
+
+</p>
+<pre><code>// assigning to exports will not modify module, must use module.exports
+module.exports = function(width) {
+  return {
+    area: function() {
+      return width * width;
+    }
+  };
+}</code></pre>
 <p>The module system is implemented in the <code>require(&quot;module&quot;)</code> module.
 
 </p>
@@ -1686,9 +1701,9 @@ would resolve to different files.
 <li>{Object}</li>
 </ul>
 <p>In each module, the <code>module</code> free variable is a reference to the object
-representing the current module.  In particular
-<code>module.exports</code> is accessible via the <code>exports</code> module-global.
-<code>module</code> isn&#39;t actually a global but rather local to each module.
+representing the current module.  For convenience, <code>module.exports</code> is
+also accessible via the <code>exports</code> module-global. <code>module</code> isn&#39;t actually
+a global but rather local to each module.
 
 </p>
 <h3>module.exports<span><a class="mark" href="#all_module_exports" id="all_module_exports">#</a></span></h3>
@@ -1696,9 +1711,13 @@ representing the current module.  In particular
 <li><span class="type">Object</span></li>
 </div></ul>
 <p>The <code>module.exports</code> object is created by the Module system. Sometimes this is not
-acceptable, many want their module to be an instance of some class. To do this
-assign the desired export object to <code>module.exports</code>. For example suppose we
-were making a module called <code>a.js</code>
+acceptable; many want their module to be an instance of some class. To do this
+assign the desired export object to <code>module.exports</code>. Note that assigning the
+desired object to <code>exports</code> will simply rebind the local <code>exports</code> variable,
+which is probably not what you want to do.
+
+</p>
+<p>For example suppose we were making a module called <code>a.js</code>
 
 </p>
 <pre><code>var EventEmitter = require(&#39;events&#39;).EventEmitter;
@@ -1732,6 +1751,30 @@ done in any callbacks.  This does not work:
 </p>
 <pre><code>var x = require(&#39;./x&#39;);
 console.log(x.a);</code></pre>
+<h4>exports alias<span><a class="mark" href="#all_exports_alias" id="all_exports_alias">#</a></span></h4>
+<p>The <code>exports</code> variable that is available within a module starts as a reference
+to <code>module.exports</code>. As with any variable, if you assign a new value to it, it
+is no longer bound to the previous value.
+
+</p>
+<p>To illustrate the behaviour, imagine this hypothetical implementation of
+<code>require()</code>:
+
+</p>
+<pre><code>function require(...) {
+  // ...
+  function (module, exports) {
+    // Your module code here
+    exports = some_func;        // re-assigns exports, exports is no longer
+                                // a shortcut, and nothing is exported.
+    module.exports = some_func; // makes your module export 0
+  } (module, module.exports);
+  return module;
+}</code></pre>
+<p>As a guideline, if the relationship between <code>exports</code> and <code>module.exports</code>
+seems like magic to you, ignore <code>exports</code> and only use <code>module.exports</code>.
+
+</p>
 <h3>module.require(id)<span><a class="mark" href="#all_module_require_id" id="all_module_require_id">#</a></span></h3>
 <div class="signature"><ul>
 <li><code>id</code> <span class="type">String</span></li>
@@ -2696,10 +2739,36 @@ process.on(&#39;SIGINT&#39;, function() {
 programs.
 
 </p>
-<p>Note: SIGUSR1 is reserved by node.js to kickstart the debugger.  It&#39;s possible
-to install a listener but that won&#39;t stop the debugger from starting.
+<p>Note:
 
 </p>
+<ul>
+<li><code>SIGUSR1</code> is reserved by node.js to start the debugger.  It&#39;s possible to
+install a listener but that won&#39;t stop the debugger from starting.</li>
+<li><code>SIGTERM</code> and <code>SIGINT</code> have default handlers on non-Windows platforms that resets
+the terminal mode before exiting with code <code>128 + signal number</code>. If one of
+these signals has a listener installed, its default behaviour will be removed
+(node will no longer exit).</li>
+<li><code>SIGPIPE</code> is ignored by default, it can have a listener installed.</li>
+<li><code>SIGHUP</code> is generated on Windows when the console window is closed, and on other
+platforms under various similar conditions, see signal(7). It can have a
+listener installed, however node will be unconditionally terminated by Windows
+about 10 seconds later. On non-Windows platforms, the default behaviour of
+<code>SIGHUP</code> is to terminate node, but once a listener has been installed its
+default behaviour will be removed.</li>
+<li><code>SIGTERM</code> is not supported on Windows, it can be listened on.</li>
+<li><code>SIGINT</code> is supported on all platforms, and can usually be generated with
+<code>CTRL+C</code> (though this may be configurable). It is not generated when terminal
+raw mode is enabled.</li>
+<li><code>SIGBREAK</code> is delivered on Windows when <code>CTRL+BREAK</code> is pressed, on non-Windows
+platforms it can be listened on, but there is no way to send or generate it.</li>
+<li><code>SIGWINCH</code> is delivered when the console has been resized. On Windows, this will
+only happen on write to the console when the cursor is being moved, or when a
+readable tty is used in raw mode.</li>
+<li><code>SIGKILL</code> cannot have a listener installed, it will unconditionally terminate
+node on all platforms.</li>
+<li><code>SIGSTOP</code> cannot have a listener installed.</li>
+</ul>
 <h2>process.stdout<span><a class="mark" href="#all_process_stdout" id="all_process_stdout">#</a></span></h2>
 <p>A <code>Writable Stream</code> to <code>stdout</code>.
 
@@ -5616,7 +5685,7 @@ resource.  Default=16kb</li>
 strings using the specified encoding.  Default=null</li>
 <li><code>objectMode</code> <span class="type">Boolean</span> Whether this stream should behave
 as a stream of objects. Meaning that stream.read(n) returns
-a single value instead of a Buffer of size n</li>
+a single value instead of a Buffer of size n.  Default=false</li>
 </ul>
 </li>
 </div></ul>
@@ -6360,6 +6429,7 @@ digest.  The legacy <code>update</code> and <code>digest</code> methods are also
 <p>Updates the hash content with the given <code>data</code>, the encoding of which
 is given in <code>input_encoding</code> and can be <code>&#39;utf8&#39;</code>, <code>&#39;ascii&#39;</code> or
 <code>&#39;binary&#39;</code>.  If no encoding is provided, then a buffer is expected.
+If <code>data</code> is a <code>Buffer</code> then <code>input_encoding</code> is ignored.
 
 </p>
 <p>This can be called many times with new data as it is streamed.
@@ -6462,6 +6532,7 @@ methods are also supported.
 <p>Updates the cipher with <code>data</code>, the encoding of which is given in
 <code>input_encoding</code> and can be <code>&#39;utf8&#39;</code>, <code>&#39;ascii&#39;</code> or <code>&#39;binary&#39;</code>.  If no
 encoding is provided, then a buffer is expected.
+If <code>data</code> is a <code>Buffer</code> then <code>input_encoding</code> is ignored.
 
 </p>
 <p>The <code>output_encoding</code> specifies the output format of the enciphered
@@ -6519,6 +6590,7 @@ plain-text data on the the readable side.  The legacy <code>update</code> and
 <p>Updates the decipher with <code>data</code>, which is encoded in <code>&#39;binary&#39;</code>,
 <code>&#39;base64&#39;</code> or <code>&#39;hex&#39;</code>.  If no encoding is provided, then a buffer is
 expected.
+If <code>data</code> is a <code>Buffer</code> then <code>input_encoding</code> is ignored.
 
 </p>
 <p>The <code>output_decoding</code> specifies in what format to return the
@@ -7626,8 +7698,8 @@ the completion callback.
 <h2>fs.symlink(srcpath, dstpath, [type], callback)<span><a class="mark" href="#all_fs_symlink_srcpath_dstpath_type_callback" id="all_fs_symlink_srcpath_dstpath_type_callback">#</a></span></h2>
 <p>Asynchronous symlink(2). No arguments other than a possible exception are given
 to the completion callback.
-<code>type</code> argument can be either <code>&#39;dir&#39;</code>, <code>&#39;file&#39;</code>, or <code>&#39;junction&#39;</code> (default is <code>&#39;file&#39;</code>).  It is only 
-used on Windows (ignored on other platforms).
+The <code>type</code> argument can be set to <code>&#39;dir&#39;</code>, <code>&#39;file&#39;</code>, or <code>&#39;junction&#39;</code> (default
+is <code>&#39;file&#39;</code>) and is only available on Windows (ignored on other platforms).
 Note that Windows junction points require the destination path to be absolute.  When using
 <code>&#39;junction&#39;</code>, the <code>destination</code> argument will automatically be normalized to absolute path.
 
@@ -9028,22 +9100,28 @@ on this socket.
 <li><code>buf</code> Buffer object.  Message to be sent</li>
 <li><code>offset</code> Integer. Offset in the buffer where the message starts.</li>
 <li><code>length</code> Integer. Number of bytes in the message.</li>
-<li><code>port</code> Integer. destination port</li>
-<li><code>address</code> String. destination IP</li>
-<li><code>callback</code> Function. Callback when message is done being delivered.
-Optional.</li>
+<li><code>port</code> Integer. Destination port.</li>
+<li><code>address</code> String. Destination hostname or IP address.</li>
+<li><code>callback</code> Function. Called when the message has been sent. Optional.</li>
 </div></ul>
-<p>For UDP sockets, the destination port and IP address must be specified.  A string
-may be supplied for the <code>address</code> parameter, and it will be resolved with DNS.  An
-optional callback may be specified to detect any DNS errors and when <code>buf</code> may be
-re-used.  Note that DNS lookups will delay the time that a send takes place, at
-least until the next tick.  The only way to know for sure that a send has taken place
-is to use the callback.
+<p>For UDP sockets, the destination port and address must be specified.  A string
+may be supplied for the <code>address</code> parameter, and it will be resolved with DNS.
 
 </p>
-<p>If the socket has not been previously bound with a call to <code>bind</code>, it&#39;s
-assigned a random port number and bound to the &quot;all interfaces&quot; address
-(0.0.0.0 for <code>udp4</code> sockets, ::0 for <code>udp6</code> sockets).
+<p>If the address is omitted or is an empty string, <code>&#39;0.0.0.0&#39;</code> or <code>&#39;::0&#39;</code> is used
+instead.  Depending on the network configuration, those defaults may or may not
+work; it&#39;s best to be explicit about the destination address.
+
+</p>
+<p>If the socket has not been previously bound with a call to <code>bind</code>, it gets
+assigned a random port number and is bound to the &quot;all interfaces&quot; address
+(<code>&#39;0.0.0.0&#39;</code> for <code>udp4</code> sockets, <code>&#39;::0&#39;</code> for <code>udp6</code> sockets.)
+
+</p>
+<p>An optional callback may be specified to detect DNS errors or for determining
+when it&#39;s safe to reuse the <code>buf</code> object.  Note that DNS lookups delay the time
+to send for at least one tick.  The only way to know for sure that the datagram
+has been sent is by using a callback.
 
 </p>
 <p>Example of sending a UDP packet to a random port on <code>localhost</code>;
@@ -13158,7 +13236,7 @@ on more than one address.
 
 </p>
 <ul>
-<li>`4&#39; (TCPv4)</li>
+<li><code>4</code> (TCPv4)</li>
 <li><code>6</code> (TCPv6)</li>
 <li><code>-1</code> (unix domain socket)</li>
 <li><code>&quot;udp4&quot;</code> or <code>&quot;udp6&quot;</code> (UDP v4 or v6)</li>
@@ -13610,7 +13688,7 @@ worker.on(&#39;exit&#39;, function(code, signal) {
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.21/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.22/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

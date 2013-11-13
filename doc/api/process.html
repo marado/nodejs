@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>process Node.js v0.10.21 Manual &amp; Documentation</title>
+  <title>process Node.js v0.10.22 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/process.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.21 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.22 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -173,10 +173,36 @@ process.on(&#39;SIGINT&#39;, function() {
 programs.
 
 </p>
-<p>Note: SIGUSR1 is reserved by node.js to kickstart the debugger.  It&#39;s possible
-to install a listener but that won&#39;t stop the debugger from starting.
+<p>Note:
 
 </p>
+<ul>
+<li><code>SIGUSR1</code> is reserved by node.js to start the debugger.  It&#39;s possible to
+install a listener but that won&#39;t stop the debugger from starting.</li>
+<li><code>SIGTERM</code> and <code>SIGINT</code> have default handlers on non-Windows platforms that resets
+the terminal mode before exiting with code <code>128 + signal number</code>. If one of
+these signals has a listener installed, its default behaviour will be removed
+(node will no longer exit).</li>
+<li><code>SIGPIPE</code> is ignored by default, it can have a listener installed.</li>
+<li><code>SIGHUP</code> is generated on Windows when the console window is closed, and on other
+platforms under various similar conditions, see signal(7). It can have a
+listener installed, however node will be unconditionally terminated by Windows
+about 10 seconds later. On non-Windows platforms, the default behaviour of
+<code>SIGHUP</code> is to terminate node, but once a listener has been installed its
+default behaviour will be removed.</li>
+<li><code>SIGTERM</code> is not supported on Windows, it can be listened on.</li>
+<li><code>SIGINT</code> is supported on all platforms, and can usually be generated with
+<code>CTRL+C</code> (though this may be configurable). It is not generated when terminal
+raw mode is enabled.</li>
+<li><code>SIGBREAK</code> is delivered on Windows when <code>CTRL+BREAK</code> is pressed, on non-Windows
+platforms it can be listened on, but there is no way to send or generate it.</li>
+<li><code>SIGWINCH</code> is delivered when the console has been resized. On Windows, this will
+only happen on write to the console when the cursor is being moved, or when a
+readable tty is used in raw mode.</li>
+<li><code>SIGKILL</code> cannot have a listener installed, it will unconditionally terminate
+node on all platforms.</li>
+<li><code>SIGSTOP</code> cannot have a listener installed.</li>
+</ul>
 <h2>process.stdout<span><a class="mark" href="#process_process_stdout" id="process_process_stdout">#</a></span></h2>
 <p>A <code>Writable Stream</code> to <code>stdout</code>.
 
@@ -702,7 +728,7 @@ setTimeout(function() {
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.21/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.22/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>
