@@ -572,6 +572,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-https-localaddress.js
  test/simple/test-https-no-reader.js
  test/simple/test-https-pfx.js
+ test/simple/test-https-req-split.js
  test/simple/test-https-simple.js
  test/simple/test-https-socket-options.js
  test/simple/test-https-strict.js
@@ -955,7 +956,7 @@ Files: AUTHORS
  deps/uv/ChangeLog
  deps/uv/README.md
  deps/uv/common.gypi
- deps/uv/gyp_uv
+ deps/uv/gyp_uv.py
  deps/uv/test/fixtures/load_error.node
  deps/uv/uv.gyp
  deps/uv/vcbuild.bat
@@ -1138,6 +1139,7 @@ Files: AUTHORS
  doc/blog/release/v0.10.19.md
  doc/blog/release/v0.10.2.md
  doc/blog/release/v0.10.20.md
+ doc/blog/release/v0.10.21.md
  doc/blog/release/v0.10.3.md
  doc/blog/release/v0.10.4.md
  doc/blog/release/v0.10.5.md
@@ -1153,6 +1155,7 @@ Files: AUTHORS
  doc/blog/release/v0.11.5.md
  doc/blog/release/v0.11.6.md
  doc/blog/release/v0.11.7.md
+ doc/blog/release/v0.11.8.md
  doc/blog/release/v0.6.20.md
  doc/blog/release/v0.8.1.md
  doc/blog/release/v0.8.10.md
@@ -1172,6 +1175,7 @@ Files: AUTHORS
  doc/blog/release/v0.8.23.md
  doc/blog/release/v0.8.24.md
  doc/blog/release/v0.8.25.md
+ doc/blog/release/v0.8.26.md
  doc/blog/release/v0.8.3.md
  doc/blog/release/v0.8.4.md
  doc/blog/release/v0.8.5.md
@@ -1211,6 +1215,7 @@ Files: AUTHORS
  doc/blog/video/bert-belder-libuv-lxjs-2012.md
  doc/blog/video/bryan-cantrill-instrumenting-the-real-time-web.md
  doc/blog/video/welcome-to-the-node-blog.md
+ doc/blog/vulnerability/http-server-pipeline-flood-dos.md
  doc/blog/vulnerability/http-server-security-vulnerability-please-upgrade-to-0-6-17.md
  doc/changelog-head.html
  doc/cla.html
@@ -1398,7 +1403,7 @@ Files: AUTHORS
  tools/getnodeversion.py
  tools/getprevnodeversion.py
  tools/getstability.py
- tools/gyp_node
+ tools/gyp_node.py
  tools/install.py
  tools/license2rtf.js
  tools/msvs/msi/WixUI_en-us.wxl
@@ -1966,7 +1971,6 @@ Files: deps/v8/LICENSE
  test/pummel/testcfg.py
  test/simple/testcfg.py
  tools/js2c.py
- tools/test.py
 Copyright: 2006-2008, the V8 project authors.
   2006-2009, the V8 project authors.
   2006-2011, the V8 project authors.
@@ -2148,6 +2152,7 @@ Files: deps/http_parser/LICENSE-MIT
  deps/uv/test/test-stdio-over-pipes.c
  deps/uv/test/test-tcp-bind-error.c
  deps/uv/test/test-tcp-bind6-error.c
+ deps/uv/test/test-tcp-close-accept.c
  deps/uv/test/test-tcp-close-while-connecting.c
  deps/uv/test/test-tcp-close.c
  deps/uv/test/test-tcp-connect-error-after-write.c
@@ -2177,6 +2182,7 @@ Files: deps/http_parser/LICENSE-MIT
  deps/uv/test/test-udp-send-and-recv.c
  deps/uv/test/test-util.c
  deps/uv/test/test-walk-handles.c
+ deps/uv/test/test-watcher-cross-stop.c
  tools/doc/LICENSE
 Copyright: Joyent, Inc. and other Node contributors.
 License: Expat
@@ -2218,7 +2224,7 @@ Files: doc/api/_toc.html
  doc/api/util.html
  doc/api/vm.html
  doc/api/zlib.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.21/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.22/LICENSE">license</a>.</p>
 License: UNKNOWN
  FIXME
 
@@ -2300,12 +2306,6 @@ Copyright: Igor Sysoev
 License: UNKNOWN
  FIXME
 
-Files: doc/api/all.json
- doc/api/readline.json
-Copyright: { return c.indexOf(line) == 0 })\n // show all completions if none found\n return [hits.length ? hits : completions, line
-License: UNKNOWN
- FIXME
-
 Files: deps/uv/include/uv-private/stdint-msvc2008.h
 Copyright: 2006-2008, Alexander Chemeris
 License: BSD-2-clause
@@ -2338,6 +2338,12 @@ Copyright: 2011, the V8 project authors.
 License: BSD-3-clause
  FIXME
 
+Files: tools/cpplint.py
+Copyright: 2009, Google Inc.
+  [year
+License: BSD-3-clause
+ FIXME
+
 Files: deps/v8/tools/js2c.py
 Copyright: 2011, Google Inc.
   2012, the V8 project authors.
@@ -2350,13 +2356,6 @@ Copyright: 2012, the V8 project authors.
 License: BSD-3-clause
  FIXME
 
-Files: tools/cpplint.py
-Copyright: [year
-  message appears at the top of the file."""
-  message found. '
-License: BSD-3-clause
- FIXME
-
 Files: deps/v8/PRESUBMIT.py
 Copyright: 2012, the V8 project authors.
   header and trailing whitespaces check failed"))
@@ -2364,8 +2363,7 @@ License: BSD-3-clause
  FIXME
 
 Files: deps/v8/tools/presubmit.py
-Copyright: 2012, the V8 project authors.
-  header and trailing whitespaces check..."
+Copyright: header and trailing whitespaces check..."
   header." % name
 License: BSD-3-clause
  FIXME
@@ -2379,6 +2377,11 @@ License: BSD-3-clause
 Files: deps/v8/src/char-predicates-inl.h
 Copyright: 2011, the V8 project authors.
   || IsInRange(AsciiAlphaToLower, 'a', 'f');
+License: BSD-3-clause
+ FIXME
+
+Files: tools/test.py
+Copyright: 2008, the V8 project authors. /
 License: BSD-3-clause
  FIXME
 
@@ -2517,20 +2520,20 @@ License: UNKNOWN
  FIXME
 
 Files: doc/api/net.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.21/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.22/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
 License: UNKNOWN
  FIXME
 
 Files: doc/api/all.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.21/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.22/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
   { return c.indexOf(line) == 0 })
 License: UNKNOWN
  FIXME
 
 Files: doc/api/readline.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.21/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.22/LICENSE">license</a>.</p>
   { return c.indexOf(line) == 0 })
 License: UNKNOWN
  FIXME
@@ -2575,6 +2578,12 @@ Copyright: { //&#39;connection&#39; listener\n console.log(&#39;server connected
 License: UNKNOWN
  FIXME
 
+Files: doc/api/all.json
+Copyright: { //&#39;connection&#39; listener\n console.log(&#39;server connected&#39;);\n c.on(&#39;end&#39;, function() {\n console.log(&#39;server disconnected&#39;);\n });\n c.write(&#39;hello\\r\\n&#39;);\n c.pipe;\n});\nserver.listen(8124, function() { //&#39;listening&#39; listener\n console.log(&#39;server bound&#39;);\n});</code></pre>\n<p>Test this by using <code>telnet</code>:\n\n</p>\n<pre><code>telnet localhost 8124</code></pre>\n<p>To listen on the socket <code>/tmp/echo.sock</code> the third line from the last would\njust be changed to\n\n</p>\n<pre><code>server.listen(&#39;/tmp/echo.sock&#39;, function() { //&#39;listening&#39; listener</code></pre>\n<p>Use <code>nc</code> to connect to a UNIX domain socket server:\n\n</p>\n<pre><code>nc -U /tmp/echo.sock</code></pre>\n"
+  { return c.indexOf(line) == 0 })\n // show all completions if none found\n return [hits.length ? hits : completions, line
+License: UNKNOWN
+ FIXME
+
 Files: doc/api/net.markdown
 Copyright: { //'connection' listener
 License: UNKNOWN
@@ -2582,6 +2591,11 @@ License: UNKNOWN
 
 Files: doc/api/readline.markdown
 Copyright: { return c.indexOf(line) == 0 })
+License: UNKNOWN
+ FIXME
+
+Files: doc/api/readline.json
+Copyright: { return c.indexOf(line) == 0 })\n // show all completions if none found\n return [hits.length ? hits : completions, line
 License: UNKNOWN
  FIXME
 
