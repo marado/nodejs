@@ -259,7 +259,7 @@
               "textRaw": "Signal Events",
               "name": "SIGINT, SIGHUP, etc.",
               "type": "event",
-              "desc": "<p>Emitted when the processes receives a signal. See sigaction(2) for a list of\nstandard POSIX signal names such as SIGINT, SIGHUP, etc.\n\n</p>\n<p>Example of listening for <code>SIGINT</code>:\n\n</p>\n<pre><code>// Start reading from stdin so we don&#39;t exit.\nprocess.stdin.resume();\n\nprocess.on(&#39;SIGINT&#39;, function() {\n  console.log(&#39;Got SIGINT.  Press Control-D to exit.&#39;);\n});</code></pre>\n<p>An easy way to send the <code>SIGINT</code> signal is with <code>Control-C</code> in most terminal\nprograms.\n\n</p>\n<p>Note: SIGUSR1 is reserved by node.js to kickstart the debugger.  It&#39;s possible\nto install a listener but that won&#39;t stop the debugger from starting.\n\n</p>\n",
+              "desc": "<p>Emitted when the processes receives a signal. See sigaction(2) for a list of\nstandard POSIX signal names such as SIGINT, SIGHUP, etc.\n\n</p>\n<p>Example of listening for <code>SIGINT</code>:\n\n</p>\n<pre><code>// Start reading from stdin so we don&#39;t exit.\nprocess.stdin.resume();\n\nprocess.on(&#39;SIGINT&#39;, function() {\n  console.log(&#39;Got SIGINT.  Press Control-D to exit.&#39;);\n});</code></pre>\n<p>An easy way to send the <code>SIGINT</code> signal is with <code>Control-C</code> in most terminal\nprograms.\n\n</p>\n<p>Note:\n\n</p>\n<ul>\n<li><code>SIGUSR1</code> is reserved by node.js to start the debugger.  It&#39;s possible to\ninstall a listener but that won&#39;t stop the debugger from starting.</li>\n<li><code>SIGTERM</code> and <code>SIGINT</code> have default handlers on non-Windows platforms that resets\nthe terminal mode before exiting with code <code>128 + signal number</code>. If one of\nthese signals has a listener installed, its default behaviour will be removed\n(node will no longer exit).</li>\n<li><code>SIGPIPE</code> is ignored by default, it can have a listener installed.</li>\n<li><code>SIGHUP</code> is generated on Windows when the console window is closed, and on other\nplatforms under various similar conditions, see signal(7). It can have a\nlistener installed, however node will be unconditionally terminated by Windows\nabout 10 seconds later. On non-Windows platforms, the default behaviour of\n<code>SIGHUP</code> is to terminate node, but once a listener has been installed its\ndefault behaviour will be removed.</li>\n<li><code>SIGTERM</code> is not supported on Windows, it can be listened on.</li>\n<li><code>SIGINT</code> is supported on all platforms, and can usually be generated with\n<code>CTRL+C</code> (though this may be configurable). It is not generated when terminal\nraw mode is enabled.</li>\n<li><code>SIGBREAK</code> is delivered on Windows when <code>CTRL+BREAK</code> is pressed, on non-Windows\nplatforms it can be listened on, but there is no way to send or generate it.</li>\n<li><code>SIGWINCH</code> is delivered when the console has been resized. On Windows, this will\nonly happen on write to the console when the cursor is being moved, or when a\nreadable tty is used in raw mode.</li>\n<li><code>SIGKILL</code> cannot have a listener installed, it will unconditionally terminate\nnode on all platforms.</li>\n<li><code>SIGSTOP</code> cannot have a listener installed.</li>\n</ul>\n",
               "params": []
             }
           ],
@@ -627,13 +627,13 @@
           "textRaw": "module",
           "name": "module",
           "type": "var",
-          "desc": "<p>A reference to the current module. In particular\n<code>module.exports</code> is the same as the <code>exports</code> object.\n<code>module</code> isn&#39;t actually a global but rather local to each module.\n\n</p>\n<p>See the [module system documentation][] for more information.\n\n</p>\n"
+          "desc": "<p>A reference to the current module. In particular\n<code>module.exports</code> is used for defining what a module exports and makes\navailable through <code>require()</code>.\n\n</p>\n<p><code>module</code> isn&#39;t actually a global but rather local to each module.\n\n</p>\n<p>See the [module system documentation][] for more information.\n\n</p>\n"
         },
         {
           "textRaw": "exports",
           "name": "exports",
           "type": "var",
-          "desc": "<p>A reference to the <code>module.exports</code> object which is shared between all\ninstances of the current module and made accessible through <code>require()</code>.\nSee [module system documentation][] for details on when to use <code>exports</code> and\nwhen to use <code>module.exports</code>.\n<code>exports</code> isn&#39;t actually a global but rather local to each module.\n\n</p>\n<p>See the [module system documentation][] for more information.\n\n</p>\n<p>See the [module section][] for more information.\n\n</p>\n"
+          "desc": "<p>A reference to the <code>module.exports</code> that is shorter to type.\nSee [module system documentation][] for details on when to use <code>exports</code> and\nwhen to use <code>module.exports</code>.\n\n</p>\n<p><code>exports</code> isn&#39;t actually a global but rather local to each module.\n\n</p>\n<p>See the [module system documentation][] for more information.\n\n</p>\n<p>See the [module section][] for more information.\n\n</p>\n"
         }
       ],
       "methods": [
@@ -973,7 +973,7 @@
           "textRaw": "Signal Events",
           "name": "SIGINT, SIGHUP, etc.",
           "type": "event",
-          "desc": "<p>Emitted when the processes receives a signal. See sigaction(2) for a list of\nstandard POSIX signal names such as SIGINT, SIGHUP, etc.\n\n</p>\n<p>Example of listening for <code>SIGINT</code>:\n\n</p>\n<pre><code>// Start reading from stdin so we don&#39;t exit.\nprocess.stdin.resume();\n\nprocess.on(&#39;SIGINT&#39;, function() {\n  console.log(&#39;Got SIGINT.  Press Control-D to exit.&#39;);\n});</code></pre>\n<p>An easy way to send the <code>SIGINT</code> signal is with <code>Control-C</code> in most terminal\nprograms.\n\n</p>\n<p>Note: SIGUSR1 is reserved by node.js to kickstart the debugger.  It&#39;s possible\nto install a listener but that won&#39;t stop the debugger from starting.\n\n</p>\n",
+          "desc": "<p>Emitted when the processes receives a signal. See sigaction(2) for a list of\nstandard POSIX signal names such as SIGINT, SIGHUP, etc.\n\n</p>\n<p>Example of listening for <code>SIGINT</code>:\n\n</p>\n<pre><code>// Start reading from stdin so we don&#39;t exit.\nprocess.stdin.resume();\n\nprocess.on(&#39;SIGINT&#39;, function() {\n  console.log(&#39;Got SIGINT.  Press Control-D to exit.&#39;);\n});</code></pre>\n<p>An easy way to send the <code>SIGINT</code> signal is with <code>Control-C</code> in most terminal\nprograms.\n\n</p>\n<p>Note:\n\n</p>\n<ul>\n<li><code>SIGUSR1</code> is reserved by node.js to start the debugger.  It&#39;s possible to\ninstall a listener but that won&#39;t stop the debugger from starting.</li>\n<li><code>SIGTERM</code> and <code>SIGINT</code> have default handlers on non-Windows platforms that resets\nthe terminal mode before exiting with code <code>128 + signal number</code>. If one of\nthese signals has a listener installed, its default behaviour will be removed\n(node will no longer exit).</li>\n<li><code>SIGPIPE</code> is ignored by default, it can have a listener installed.</li>\n<li><code>SIGHUP</code> is generated on Windows when the console window is closed, and on other\nplatforms under various similar conditions, see signal(7). It can have a\nlistener installed, however node will be unconditionally terminated by Windows\nabout 10 seconds later. On non-Windows platforms, the default behaviour of\n<code>SIGHUP</code> is to terminate node, but once a listener has been installed its\ndefault behaviour will be removed.</li>\n<li><code>SIGTERM</code> is not supported on Windows, it can be listened on.</li>\n<li><code>SIGINT</code> is supported on all platforms, and can usually be generated with\n<code>CTRL+C</code> (though this may be configurable). It is not generated when terminal\nraw mode is enabled.</li>\n<li><code>SIGBREAK</code> is delivered on Windows when <code>CTRL+BREAK</code> is pressed, on non-Windows\nplatforms it can be listened on, but there is no way to send or generate it.</li>\n<li><code>SIGWINCH</code> is delivered when the console has been resized. On Windows, this will\nonly happen on write to the console when the cursor is being moved, or when a\nreadable tty is used in raw mode.</li>\n<li><code>SIGKILL</code> cannot have a listener installed, it will unconditionally terminate\nnode on all platforms.</li>\n<li><code>SIGSTOP</code> cannot have a listener installed.</li>\n</ul>\n",
           "params": []
         }
       ],
@@ -1341,13 +1341,13 @@
       "textRaw": "module",
       "name": "module",
       "type": "var",
-      "desc": "<p>A reference to the current module. In particular\n<code>module.exports</code> is the same as the <code>exports</code> object.\n<code>module</code> isn&#39;t actually a global but rather local to each module.\n\n</p>\n<p>See the [module system documentation][] for more information.\n\n</p>\n"
+      "desc": "<p>A reference to the current module. In particular\n<code>module.exports</code> is used for defining what a module exports and makes\navailable through <code>require()</code>.\n\n</p>\n<p><code>module</code> isn&#39;t actually a global but rather local to each module.\n\n</p>\n<p>See the [module system documentation][] for more information.\n\n</p>\n"
     },
     {
       "textRaw": "exports",
       "name": "exports",
       "type": "var",
-      "desc": "<p>A reference to the <code>module.exports</code> object which is shared between all\ninstances of the current module and made accessible through <code>require()</code>.\nSee [module system documentation][] for details on when to use <code>exports</code> and\nwhen to use <code>module.exports</code>.\n<code>exports</code> isn&#39;t actually a global but rather local to each module.\n\n</p>\n<p>See the [module system documentation][] for more information.\n\n</p>\n<p>See the [module section][] for more information.\n\n</p>\n"
+      "desc": "<p>A reference to the <code>module.exports</code> that is shorter to type.\nSee [module system documentation][] for details on when to use <code>exports</code> and\nwhen to use <code>module.exports</code>.\n\n</p>\n<p><code>exports</code> isn&#39;t actually a global but rather local to each module.\n\n</p>\n<p>See the [module system documentation][] for more information.\n\n</p>\n<p>See the [module section][] for more information.\n\n</p>\n"
     }
   ],
   "methods": [
@@ -1562,7 +1562,7 @@
       "name": "module",
       "stability": 5,
       "stabilityText": "Locked",
-      "desc": "<p>Node has a simple module loading system.  In Node, files and modules are in\none-to-one correspondence.  As an example, <code>foo.js</code> loads the module\n<code>circle.js</code> in the same directory.\n\n</p>\n<p>The contents of <code>foo.js</code>:\n\n</p>\n<pre><code>var circle = require(&#39;./circle.js&#39;);\nconsole.log( &#39;The area of a circle of radius 4 is &#39;\n           + circle.area(4));</code></pre>\n<p>The contents of <code>circle.js</code>:\n\n</p>\n<pre><code>var PI = Math.PI;\n\nexports.area = function (r) {\n  return PI * r * r;\n};\n\nexports.circumference = function (r) {\n  return 2 * PI * r;\n};</code></pre>\n<p>The module <code>circle.js</code> has exported the functions <code>area()</code> and\n<code>circumference()</code>.  To export an object, add to the special <code>exports</code>\nobject.\n\n</p>\n<p>Note that <code>exports</code> is a reference to <code>module.exports</code> making it suitable\nfor augmentation only. If you are exporting a single item such as a\nconstructor you will want to use <code>module.exports</code> directly instead.\n\n</p>\n<pre><code>function MyConstructor (opts) {\n  //...\n}\n\n// BROKEN: Does not modify exports\nexports = MyConstructor;\n\n// exports the constructor properly\nmodule.exports = MyConstructor;</code></pre>\n<p>Variables\nlocal to the module will be private. In this example the variable <code>PI</code> is\nprivate to <code>circle.js</code>.\n\n</p>\n<p>The module system is implemented in the <code>require(&quot;module&quot;)</code> module.\n\n</p>\n",
+      "desc": "<p>Node has a simple module loading system.  In Node, files and modules are in\none-to-one correspondence.  As an example, <code>foo.js</code> loads the module\n<code>circle.js</code> in the same directory.\n\n</p>\n<p>The contents of <code>foo.js</code>:\n\n</p>\n<pre><code>var circle = require(&#39;./circle.js&#39;);\nconsole.log( &#39;The area of a circle of radius 4 is &#39;\n           + circle.area(4));</code></pre>\n<p>The contents of <code>circle.js</code>:\n\n</p>\n<pre><code>var PI = Math.PI;\n\nexports.area = function (r) {\n  return PI * r * r;\n};\n\nexports.circumference = function (r) {\n  return 2 * PI * r;\n};</code></pre>\n<p>The module <code>circle.js</code> has exported the functions <code>area()</code> and\n<code>circumference()</code>.  To add functions and objects to the root of your module,\nyou can add them to the special <code>exports</code> object.\n\n</p>\n<p>Variables local to the module will be private, as though the module was wrapped\nin a function. In this example the variable <code>PI</code> is private to <code>circle.js</code>.\n\n</p>\n<p>If you want the root of your module&#39;s export to be a function (such as a\nconstructor) or if you want to export a complete object in one assignment\ninstead of building it one property at a time, assign it to <code>module.exports</code>\ninstead of <code>exports</code>.\n\n</p>\n<p>Below, <code>bar.js</code> makes use of the <code>square</code> module, which exports a constructor:\n\n</p>\n<pre><code>var square = require(&#39;./square.js&#39;);\nvar mySquare = square(2);\nconsole.log(&#39;The area of my square is &#39; + mySquare.area());</code></pre>\n<p>The <code>square</code> module is defined in <code>square.js</code>:\n\n</p>\n<pre><code>// assigning to exports will not modify module, must use module.exports\nmodule.exports = function(width) {\n  return {\n    area: function() {\n      return width * width;\n    }\n  };\n}</code></pre>\n<p>The module system is implemented in the <code>require(&quot;module&quot;)</code> module.\n\n</p>\n",
       "miscs": [
         {
           "textRaw": "Cycles",
@@ -1638,12 +1638,21 @@
           "textRaw": "The `module` Object",
           "name": "module",
           "type": "var",
-          "desc": "<p>In each module, the <code>module</code> free variable is a reference to the object\nrepresenting the current module.  In particular\n<code>module.exports</code> is accessible via the <code>exports</code> module-global.\n<code>module</code> isn&#39;t actually a global but rather local to each module.\n\n</p>\n",
+          "desc": "<p>In each module, the <code>module</code> free variable is a reference to the object\nrepresenting the current module.  For convenience, <code>module.exports</code> is\nalso accessible via the <code>exports</code> module-global. <code>module</code> isn&#39;t actually\na global but rather local to each module.\n\n</p>\n",
           "properties": [
             {
               "textRaw": "`exports` {Object} ",
               "name": "exports",
-              "desc": "<p>The <code>module.exports</code> object is created by the Module system. Sometimes this is not\nacceptable, many want their module to be an instance of some class. To do this\nassign the desired export object to <code>module.exports</code>. For example suppose we\nwere making a module called <code>a.js</code>\n\n</p>\n<pre><code>var EventEmitter = require(&#39;events&#39;).EventEmitter;\n\nmodule.exports = new EventEmitter();\n\n// Do some work, and after some time emit\n// the &#39;ready&#39; event from the module itself.\nsetTimeout(function() {\n  module.exports.emit(&#39;ready&#39;);\n}, 1000);</code></pre>\n<p>Then in another file we could do\n\n</p>\n<pre><code>var a = require(&#39;./a&#39;);\na.on(&#39;ready&#39;, function() {\n  console.log(&#39;module a is ready&#39;);\n});</code></pre>\n<p>Note that assignment to <code>module.exports</code> must be done immediately. It cannot be\ndone in any callbacks.  This does not work:\n\n</p>\n<p>x.js:\n\n</p>\n<pre><code>setTimeout(function() {\n  module.exports = { a: &quot;hello&quot; };\n}, 0);</code></pre>\n<p>y.js:\n\n</p>\n<pre><code>var x = require(&#39;./x&#39;);\nconsole.log(x.a);</code></pre>\n"
+              "desc": "<p>The <code>module.exports</code> object is created by the Module system. Sometimes this is not\nacceptable; many want their module to be an instance of some class. To do this\nassign the desired export object to <code>module.exports</code>. Note that assigning the\ndesired object to <code>exports</code> will simply rebind the local <code>exports</code> variable,\nwhich is probably not what you want to do.\n\n</p>\n<p>For example suppose we were making a module called <code>a.js</code>\n\n</p>\n<pre><code>var EventEmitter = require(&#39;events&#39;).EventEmitter;\n\nmodule.exports = new EventEmitter();\n\n// Do some work, and after some time emit\n// the &#39;ready&#39; event from the module itself.\nsetTimeout(function() {\n  module.exports.emit(&#39;ready&#39;);\n}, 1000);</code></pre>\n<p>Then in another file we could do\n\n</p>\n<pre><code>var a = require(&#39;./a&#39;);\na.on(&#39;ready&#39;, function() {\n  console.log(&#39;module a is ready&#39;);\n});</code></pre>\n<p>Note that assignment to <code>module.exports</code> must be done immediately. It cannot be\ndone in any callbacks.  This does not work:\n\n</p>\n<p>x.js:\n\n</p>\n<pre><code>setTimeout(function() {\n  module.exports = { a: &quot;hello&quot; };\n}, 0);</code></pre>\n<p>y.js:\n\n</p>\n<pre><code>var x = require(&#39;./x&#39;);\nconsole.log(x.a);</code></pre>\n",
+              "modules": [
+                {
+                  "textRaw": "exports alias",
+                  "name": "exports_alias",
+                  "desc": "<p>The <code>exports</code> variable that is available within a module starts as a reference\nto <code>module.exports</code>. As with any variable, if you assign a new value to it, it\nis no longer bound to the previous value.\n\n</p>\n<p>To illustrate the behaviour, imagine this hypothetical implementation of\n<code>require()</code>:\n\n</p>\n<pre><code>function require(...) {\n  // ...\n  function (module, exports) {\n    // Your module code here\n    exports = some_func;        // re-assigns exports, exports is no longer\n                                // a shortcut, and nothing is exported.\n    module.exports = some_func; // makes your module export 0\n  } (module, module.exports);\n  return module;\n}</code></pre>\n<p>As a guideline, if the relationship between <code>exports</code> and <code>module.exports</code>\nseems like magic to you, ignore <code>exports</code> and only use <code>module.exports</code>.\n\n</p>\n",
+                  "type": "module",
+                  "displayName": "exports alias"
+                }
+              ]
             },
             {
               "textRaw": "`id` {String} ",
@@ -5088,10 +5097,10 @@
                               "desc": "If specified, then buffers will be decoded to strings using the specified encoding.  Default=null"
                             },
                             {
-                              "textRaw": "`objectMode` {Boolean} Whether this stream should behave as a stream of objects. Meaning that stream.read(n) returns a single value instead of a Buffer of size n ",
+                              "textRaw": "`objectMode` {Boolean} Whether this stream should behave as a stream of objects. Meaning that stream.read(n) returns a single value instead of a Buffer of size n.  Default=false ",
                               "name": "objectMode",
                               "type": "Boolean",
-                              "desc": "Whether this stream should behave as a stream of objects. Meaning that stream.read(n) returns a single value instead of a Buffer of size n"
+                              "desc": "Whether this stream should behave as a stream of objects. Meaning that stream.read(n) returns a single value instead of a Buffer of size n.  Default=false"
                             }
                           ],
                           "name": "options",
@@ -5502,10 +5511,10 @@
                           "desc": "If specified, then buffers will be decoded to strings using the specified encoding.  Default=null"
                         },
                         {
-                          "textRaw": "`objectMode` {Boolean} Whether this stream should behave as a stream of objects. Meaning that stream.read(n) returns a single value instead of a Buffer of size n ",
+                          "textRaw": "`objectMode` {Boolean} Whether this stream should behave as a stream of objects. Meaning that stream.read(n) returns a single value instead of a Buffer of size n.  Default=false ",
                           "name": "objectMode",
                           "type": "Boolean",
-                          "desc": "Whether this stream should behave as a stream of objects. Meaning that stream.read(n) returns a single value instead of a Buffer of size n"
+                          "desc": "Whether this stream should behave as a stream of objects. Meaning that stream.read(n) returns a single value instead of a Buffer of size n.  Default=false"
                         }
                       ],
                       "name": "options",
@@ -5931,7 +5940,7 @@
               "textRaw": "hash.update(data, [input_encoding])",
               "type": "method",
               "name": "update",
-              "desc": "<p>Updates the hash content with the given <code>data</code>, the encoding of which\nis given in <code>input_encoding</code> and can be <code>&#39;utf8&#39;</code>, <code>&#39;ascii&#39;</code> or\n<code>&#39;binary&#39;</code>.  If no encoding is provided, then a buffer is expected.\n\n</p>\n<p>This can be called many times with new data as it is streamed.\n\n</p>\n",
+              "desc": "<p>Updates the hash content with the given <code>data</code>, the encoding of which\nis given in <code>input_encoding</code> and can be <code>&#39;utf8&#39;</code>, <code>&#39;ascii&#39;</code> or\n<code>&#39;binary&#39;</code>.  If no encoding is provided, then a buffer is expected.\nIf <code>data</code> is a <code>Buffer</code> then <code>input_encoding</code> is ignored.\n\n</p>\n<p>This can be called many times with new data as it is streamed.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -6013,7 +6022,7 @@
               "textRaw": "cipher.update(data, [input_encoding], [output_encoding])",
               "type": "method",
               "name": "update",
-              "desc": "<p>Updates the cipher with <code>data</code>, the encoding of which is given in\n<code>input_encoding</code> and can be <code>&#39;utf8&#39;</code>, <code>&#39;ascii&#39;</code> or <code>&#39;binary&#39;</code>.  If no\nencoding is provided, then a buffer is expected.\n\n</p>\n<p>The <code>output_encoding</code> specifies the output format of the enciphered\ndata, and can be <code>&#39;binary&#39;</code>, <code>&#39;base64&#39;</code> or <code>&#39;hex&#39;</code>.  If no encoding is\nprovided, then a buffer is returned.\n\n</p>\n<p>Returns the enciphered contents, and can be called many times with new\ndata as it is streamed.\n\n</p>\n",
+              "desc": "<p>Updates the cipher with <code>data</code>, the encoding of which is given in\n<code>input_encoding</code> and can be <code>&#39;utf8&#39;</code>, <code>&#39;ascii&#39;</code> or <code>&#39;binary&#39;</code>.  If no\nencoding is provided, then a buffer is expected.\nIf <code>data</code> is a <code>Buffer</code> then <code>input_encoding</code> is ignored.\n\n</p>\n<p>The <code>output_encoding</code> specifies the output format of the enciphered\ndata, and can be <code>&#39;binary&#39;</code>, <code>&#39;base64&#39;</code> or <code>&#39;hex&#39;</code>.  If no encoding is\nprovided, then a buffer is returned.\n\n</p>\n<p>Returns the enciphered contents, and can be called many times with new\ndata as it is streamed.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -6076,7 +6085,7 @@
               "textRaw": "decipher.update(data, [input_encoding], [output_encoding])",
               "type": "method",
               "name": "update",
-              "desc": "<p>Updates the decipher with <code>data</code>, which is encoded in <code>&#39;binary&#39;</code>,\n<code>&#39;base64&#39;</code> or <code>&#39;hex&#39;</code>.  If no encoding is provided, then a buffer is\nexpected.\n\n</p>\n<p>The <code>output_decoding</code> specifies in what format to return the\ndeciphered plaintext: <code>&#39;binary&#39;</code>, <code>&#39;ascii&#39;</code> or <code>&#39;utf8&#39;</code>.  If no\nencoding is provided, then a buffer is returned.\n\n</p>\n",
+              "desc": "<p>Updates the decipher with <code>data</code>, which is encoded in <code>&#39;binary&#39;</code>,\n<code>&#39;base64&#39;</code> or <code>&#39;hex&#39;</code>.  If no encoding is provided, then a buffer is\nexpected.\nIf <code>data</code> is a <code>Buffer</code> then <code>input_encoding</code> is ignored.\n\n</p>\n<p>The <code>output_decoding</code> specifies in what format to return the\ndeciphered plaintext: <code>&#39;binary&#39;</code>, <code>&#39;ascii&#39;</code> or <code>&#39;utf8&#39;</code>.  If no\nencoding is provided, then a buffer is returned.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -7318,7 +7327,7 @@
           "textRaw": "fs.symlink(srcpath, dstpath, [type], callback)",
           "type": "method",
           "name": "symlink",
-          "desc": "<p>Asynchronous symlink(2). No arguments other than a possible exception are given\nto the completion callback.\n<code>type</code> argument can be either <code>&#39;dir&#39;</code>, <code>&#39;file&#39;</code>, or <code>&#39;junction&#39;</code> (default is <code>&#39;file&#39;</code>).  It is only \nused on Windows (ignored on other platforms).\nNote that Windows junction points require the destination path to be absolute.  When using\n<code>&#39;junction&#39;</code>, the <code>destination</code> argument will automatically be normalized to absolute path.\n\n</p>\n",
+          "desc": "<p>Asynchronous symlink(2). No arguments other than a possible exception are given\nto the completion callback.\nThe <code>type</code> argument can be set to <code>&#39;dir&#39;</code>, <code>&#39;file&#39;</code>, or <code>&#39;junction&#39;</code> (default\nis <code>&#39;file&#39;</code>) and is only available on Windows (ignored on other platforms).\nNote that Windows junction points require the destination path to be absolute.  When using\n<code>&#39;junction&#39;</code>, the <code>destination</code> argument will automatically be normalized to absolute path.\n\n</p>\n",
           "signatures": [
             {
               "params": [
@@ -9455,19 +9464,19 @@
                       "desc": "Integer. Number of bytes in the message."
                     },
                     {
-                      "textRaw": "`port` Integer. destination port ",
+                      "textRaw": "`port` Integer. Destination port. ",
                       "name": "port",
-                      "desc": "Integer. destination port"
+                      "desc": "Integer. Destination port."
                     },
                     {
-                      "textRaw": "`address` String. destination IP ",
+                      "textRaw": "`address` String. Destination hostname or IP address. ",
                       "name": "address",
-                      "desc": "String. destination IP"
+                      "desc": "String. Destination hostname or IP address."
                     },
                     {
-                      "textRaw": "`callback` Function. Callback when message is done being delivered. Optional. ",
+                      "textRaw": "`callback` Function. Called when the message has been sent. Optional. ",
                       "name": "callback",
-                      "desc": "Function. Callback when message is done being delivered. Optional.",
+                      "desc": "Function. Called when the message has been sent. Optional.",
                       "optional": true
                     }
                   ]
@@ -9496,7 +9505,7 @@
                   ]
                 }
               ],
-              "desc": "<p>For UDP sockets, the destination port and IP address must be specified.  A string\nmay be supplied for the <code>address</code> parameter, and it will be resolved with DNS.  An\noptional callback may be specified to detect any DNS errors and when <code>buf</code> may be\nre-used.  Note that DNS lookups will delay the time that a send takes place, at\nleast until the next tick.  The only way to know for sure that a send has taken place\nis to use the callback.\n\n</p>\n<p>If the socket has not been previously bound with a call to <code>bind</code>, it&#39;s\nassigned a random port number and bound to the &quot;all interfaces&quot; address\n(0.0.0.0 for <code>udp4</code> sockets, ::0 for <code>udp6</code> sockets).\n\n</p>\n<p>Example of sending a UDP packet to a random port on <code>localhost</code>;\n\n</p>\n<pre><code>var dgram = require(&#39;dgram&#39;);\nvar message = new Buffer(&quot;Some bytes&quot;);\nvar client = dgram.createSocket(&quot;udp4&quot;);\nclient.send(message, 0, message.length, 41234, &quot;localhost&quot;, function(err, bytes) {\n  client.close();\n});</code></pre>\n<p><strong>A Note about UDP datagram size</strong>\n\n</p>\n<p>The maximum size of an <code>IPv4/v6</code> datagram depends on the <code>MTU</code> (<em>Maximum Transmission Unit</em>)\nand on the <code>Payload Length</code> field size.\n\n</p>\n<ul>\n<li><p>The <code>Payload Length</code> field is <code>16 bits</code> wide, which means that a normal payload\ncannot be larger than 64K octets including internet header and data\n(65,507 bytes = 65,535 − 8 bytes UDP header − 20 bytes IP header);\nthis is generally true for loopback interfaces, but such long datagrams\nare impractical for most hosts and networks.</p>\n</li>\n<li><p>The <code>MTU</code> is the largest size a given link layer technology can support for datagrams.\nFor any link, <code>IPv4</code> mandates a minimum <code>MTU</code> of <code>68</code> octets, while the recommended <code>MTU</code>\nfor IPv4 is <code>576</code> (typically recommended as the <code>MTU</code> for dial-up type applications),\nwhether they arrive whole or in fragments.</p>\n<p>For <code>IPv6</code>, the minimum <code>MTU</code> is <code>1280</code> octets, however, the mandatory minimum\nfragment reassembly buffer size is <code>1500</code> octets.\nThe value of <code>68</code> octets is very small, since most current link layer technologies have\na minimum <code>MTU</code> of <code>1500</code> (like Ethernet).</p>\n</li>\n</ul>\n<p>Note that it&#39;s impossible to know in advance the MTU of each link through which\na packet might travel, and that generally sending a datagram greater than\nthe (receiver) <code>MTU</code> won&#39;t work (the packet gets silently dropped, without\ninforming the source that the data did not reach its intended recipient).\n\n</p>\n"
+              "desc": "<p>For UDP sockets, the destination port and address must be specified.  A string\nmay be supplied for the <code>address</code> parameter, and it will be resolved with DNS.\n\n</p>\n<p>If the address is omitted or is an empty string, <code>&#39;0.0.0.0&#39;</code> or <code>&#39;::0&#39;</code> is used\ninstead.  Depending on the network configuration, those defaults may or may not\nwork; it&#39;s best to be explicit about the destination address.\n\n</p>\n<p>If the socket has not been previously bound with a call to <code>bind</code>, it gets\nassigned a random port number and is bound to the &quot;all interfaces&quot; address\n(<code>&#39;0.0.0.0&#39;</code> for <code>udp4</code> sockets, <code>&#39;::0&#39;</code> for <code>udp6</code> sockets.)\n\n</p>\n<p>An optional callback may be specified to detect DNS errors or for determining\nwhen it&#39;s safe to reuse the <code>buf</code> object.  Note that DNS lookups delay the time\nto send for at least one tick.  The only way to know for sure that the datagram\nhas been sent is by using a callback.\n\n</p>\n<p>Example of sending a UDP packet to a random port on <code>localhost</code>;\n\n</p>\n<pre><code>var dgram = require(&#39;dgram&#39;);\nvar message = new Buffer(&quot;Some bytes&quot;);\nvar client = dgram.createSocket(&quot;udp4&quot;);\nclient.send(message, 0, message.length, 41234, &quot;localhost&quot;, function(err, bytes) {\n  client.close();\n});</code></pre>\n<p><strong>A Note about UDP datagram size</strong>\n\n</p>\n<p>The maximum size of an <code>IPv4/v6</code> datagram depends on the <code>MTU</code> (<em>Maximum Transmission Unit</em>)\nand on the <code>Payload Length</code> field size.\n\n</p>\n<ul>\n<li><p>The <code>Payload Length</code> field is <code>16 bits</code> wide, which means that a normal payload\ncannot be larger than 64K octets including internet header and data\n(65,507 bytes = 65,535 − 8 bytes UDP header − 20 bytes IP header);\nthis is generally true for loopback interfaces, but such long datagrams\nare impractical for most hosts and networks.</p>\n</li>\n<li><p>The <code>MTU</code> is the largest size a given link layer technology can support for datagrams.\nFor any link, <code>IPv4</code> mandates a minimum <code>MTU</code> of <code>68</code> octets, while the recommended <code>MTU</code>\nfor IPv4 is <code>576</code> (typically recommended as the <code>MTU</code> for dial-up type applications),\nwhether they arrive whole or in fragments.</p>\n<p>For <code>IPv6</code>, the minimum <code>MTU</code> is <code>1280</code> octets, however, the mandatory minimum\nfragment reassembly buffer size is <code>1500</code> octets.\nThe value of <code>68</code> octets is very small, since most current link layer technologies have\na minimum <code>MTU</code> of <code>1500</code> (like Ethernet).</p>\n</li>\n</ul>\n<p>Note that it&#39;s impossible to know in advance the MTU of each link through which\na packet might travel, and that generally sending a datagram greater than\nthe (receiver) <code>MTU</code> won&#39;t work (the packet gets silently dropped, without\ninforming the source that the data did not reach its intended recipient).\n\n</p>\n"
             },
             {
               "textRaw": "socket.bind(port, [address], [callback])",
@@ -13022,7 +13031,7 @@
           "type": "event",
           "name": "listening",
           "params": [],
-          "desc": "<p>After calling <code>listen()</code> from a worker, when the &#39;listening&#39; event is emitted on\nthe server, a listening event will also be emitted on <code>cluster</code> in the master.\n\n</p>\n<p>The event handler is executed with two arguments, the <code>worker</code> contains the worker\nobject and the <code>address</code> object contains the following connection properties:\n<code>address</code>, <code>port</code> and <code>addressType</code>. This is very useful if the worker is listening\non more than one address.\n\n</p>\n<pre><code>cluster.on(&#39;listening&#39;, function(worker, address) {\n  console.log(&quot;A worker is now connected to &quot; + address.address + &quot;:&quot; + address.port);\n});</code></pre>\n<p>The <code>addressType</code> is one of:\n\n</p>\n<ul>\n<li>`4&#39; (TCPv4)</li>\n<li><code>6</code> (TCPv6)</li>\n<li><code>-1</code> (unix domain socket)</li>\n<li><code>&quot;udp4&quot;</code> or <code>&quot;udp6&quot;</code> (UDP v4 or v6)</li>\n</ul>\n"
+          "desc": "<p>After calling <code>listen()</code> from a worker, when the &#39;listening&#39; event is emitted on\nthe server, a listening event will also be emitted on <code>cluster</code> in the master.\n\n</p>\n<p>The event handler is executed with two arguments, the <code>worker</code> contains the worker\nobject and the <code>address</code> object contains the following connection properties:\n<code>address</code>, <code>port</code> and <code>addressType</code>. This is very useful if the worker is listening\non more than one address.\n\n</p>\n<pre><code>cluster.on(&#39;listening&#39;, function(worker, address) {\n  console.log(&quot;A worker is now connected to &quot; + address.address + &quot;:&quot; + address.port);\n});</code></pre>\n<p>The <code>addressType</code> is one of:\n\n</p>\n<ul>\n<li><code>4</code> (TCPv4)</li>\n<li><code>6</code> (TCPv6)</li>\n<li><code>-1</code> (unix domain socket)</li>\n<li><code>&quot;udp4&quot;</code> or <code>&quot;udp6&quot;</code> (UDP v4 or v6)</li>\n</ul>\n"
         },
         {
           "textRaw": "Event: 'disconnect'",

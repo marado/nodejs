@@ -519,7 +519,7 @@
           "textRaw": "fs.symlink(srcpath, dstpath, [type], callback)",
           "type": "method",
           "name": "symlink",
-          "desc": "<p>Asynchronous symlink(2). No arguments other than a possible exception are given\nto the completion callback.\n<code>type</code> argument can be either <code>&#39;dir&#39;</code>, <code>&#39;file&#39;</code>, or <code>&#39;junction&#39;</code> (default is <code>&#39;file&#39;</code>).  It is only \nused on Windows (ignored on other platforms).\nNote that Windows junction points require the destination path to be absolute.  When using\n<code>&#39;junction&#39;</code>, the <code>destination</code> argument will automatically be normalized to absolute path.\n\n</p>\n",
+          "desc": "<p>Asynchronous symlink(2). No arguments other than a possible exception are given\nto the completion callback.\nThe <code>type</code> argument can be set to <code>&#39;dir&#39;</code>, <code>&#39;file&#39;</code>, or <code>&#39;junction&#39;</code> (default\nis <code>&#39;file&#39;</code>) and is only available on Windows (ignored on other platforms).\nNote that Windows junction points require the destination path to be absolute.  When using\n<code>&#39;junction&#39;</code>, the <code>destination</code> argument will automatically be normalized to absolute path.\n\n</p>\n",
           "signatures": [
             {
               "params": [

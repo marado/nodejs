@@ -847,10 +847,10 @@
                               "desc": "If specified, then buffers will be decoded to strings using the specified encoding.  Default=null"
                             },
                             {
-                              "textRaw": "`objectMode` {Boolean} Whether this stream should behave as a stream of objects. Meaning that stream.read(n) returns a single value instead of a Buffer of size n ",
+                              "textRaw": "`objectMode` {Boolean} Whether this stream should behave as a stream of objects. Meaning that stream.read(n) returns a single value instead of a Buffer of size n.  Default=false ",
                               "name": "objectMode",
                               "type": "Boolean",
-                              "desc": "Whether this stream should behave as a stream of objects. Meaning that stream.read(n) returns a single value instead of a Buffer of size n"
+                              "desc": "Whether this stream should behave as a stream of objects. Meaning that stream.read(n) returns a single value instead of a Buffer of size n.  Default=false"
                             }
                           ],
                           "name": "options",
@@ -1261,10 +1261,10 @@
                           "desc": "If specified, then buffers will be decoded to strings using the specified encoding.  Default=null"
                         },
                         {
-                          "textRaw": "`objectMode` {Boolean} Whether this stream should behave as a stream of objects. Meaning that stream.read(n) returns a single value instead of a Buffer of size n ",
+                          "textRaw": "`objectMode` {Boolean} Whether this stream should behave as a stream of objects. Meaning that stream.read(n) returns a single value instead of a Buffer of size n.  Default=false ",
                           "name": "objectMode",
                           "type": "Boolean",
-                          "desc": "Whether this stream should behave as a stream of objects. Meaning that stream.read(n) returns a single value instead of a Buffer of size n"
+                          "desc": "Whether this stream should behave as a stream of objects. Meaning that stream.read(n) returns a single value instead of a Buffer of size n.  Default=false"
                         }
                       ],
                       "name": "options",
