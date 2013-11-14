@@ -1,3 +1,9 @@
+nodejs (0.10.22~dfsg1-2) UNRELEASED; urgency=low
+
+  * Update 2005 patch, allow test-cluster-dgram-2 to time out. 
+
+ -- Jérémy Lal <kapouer@melix.org>  Thu, 14 Nov 2013 09:55:26 +0100
+
 nodejs (0.10.22~dfsg1-1) unstable; urgency=low
 
   * Upstream update. 
