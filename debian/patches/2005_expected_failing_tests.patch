@@ -8,7 +8,7 @@ Description: Expected failing tests
      on debian, but it doesn't affect the quality of nodejs (openssl).
 Forwarded: not-needed
 Author: Jérémy Lal <kapouer@melix.org>
-Last-Update: 2013-10-19
+Last-Update: 2013-11-14
 --- a/test/simple/simple.status
 +++ b/test/simple/simple.status
 @@ -1 +1,73 @@
@@ -21,7 +21,7 @@ Last-Update: 2013-10-19
 +test-net-listen-fd0: PASS || FAIL
 +test-child-process-fork-dgram: PASS || FAIL
 +test-cluster-dgram-1: PASS || FAIL
-+test-cluster-dgram-2: PASS || FAIL
++test-cluster-dgram-2: PASS || TIMEOUT || FAIL
 +test-dgram-bind: PASS || FAIL
 +test-dgram-bind-default-address: PASS || FAIL
 +test-dgram-implicit-bind: PASS || FAIL
