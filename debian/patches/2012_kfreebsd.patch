@@ -52,15 +52,15 @@ Last-Update: 2013-07-23
  /* This function is not execve-safe, there is a race window
 --- a/deps/uv/src/unix/fs.c
 +++ b/deps/uv/src/unix/fs.c
-@@ -39,7 +39,7 @@
+@@ -37,7 +37,7 @@
+ #include <utime.h>
+ #include <poll.h>
  
- #if defined(__linux__) || defined(__sun)
+-#if defined(__linux__) || defined(__sun)
++#if defined(__linux__) || defined(__sun) || defined(__FreeBSD_kernel__)
  # include <sys/sendfile.h>
--#elif defined(__APPLE__) || defined(__FreeBSD__)
-+#elif defined(__APPLE__) || defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
+ #elif defined(__APPLE__) || defined(__FreeBSD__)
  # include <sys/socket.h>
- # include <sys/uio.h>
- #endif
 @@ -165,6 +165,7 @@
  #elif defined(__APPLE__)                                                      \
      || defined(__DragonFly__)                                                 \
@@ -69,24 +69,6 @@ Last-Update: 2013-07-23
      || defined(__sun)
    struct timeval tv[2];
    tv[0].tv_sec  = req->atime;
-@@ -427,7 +428,7 @@
- 
-     return -1;
-   }
--#elif defined(__FreeBSD__) || defined(__APPLE__)
-+#elif defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__APPLE__)
-   {
-     off_t len;
-     ssize_t r;
-@@ -437,7 +438,7 @@
-      * number of bytes have been sent, we don't consider it an error.
-      */
- 
--#if defined(__FreeBSD__)
-+#if defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
-     len = 0;
-     r = sendfile(in_fd, out_fd, req->off, req->len, NULL, &len, 0);
- #else
 --- a/deps/uv/test/test-embed.c
 +++ b/deps/uv/test/test-embed.c
 @@ -29,6 +29,7 @@
