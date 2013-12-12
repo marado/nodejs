@@ -19,47 +19,40 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-var common = require('../common');
+if (!process.versions.openssl) {
+  console.error('Skipping because node compiled without OpenSSL.');
+  process.exit(0);
+}
+
 var assert = require('assert');
-var events = require('events');
+var fs = require('fs');
+var net = require('net');
+var tls = require('tls');
 
-var e = new events.EventEmitter();
-var times_hello_emited = 0;
+var common = require('../common');
 
-e.once('hello', function(a, b) {
-  times_hello_emited++;
+var ended = 0;
+
+var server = tls.createServer({
+  key: fs.readFileSync(common.fixturesDir + '/keys/agent1-key.pem'),
+  cert: fs.readFileSync(common.fixturesDir + '/keys/agent1-cert.pem')
+}, function(c) {
+  // Send close-notify without shutting down TCP socket
+  if (c.pair.ssl.shutdown() !== 1)
+    c.pair.ssl.shutdown();
+}).listen(common.PORT, function() {
+  var c = tls.connect(common.PORT, {
+    rejectUnauthorized: false
+  }, function() {
+    // Ensure that we receive 'end' event anyway
+    c.on('end', function() {
+      ended++;
+      c.destroy();
+      server.close();
+    });
+  });
 });
-
-e.emit('hello', 'a', 'b');
-e.emit('hello', 'a', 'b');
-e.emit('hello', 'a', 'b');
-e.emit('hello', 'a', 'b');
-
-var remove = function() {
-  assert.fail(1, 0, 'once->foo should not be emitted', '!');
-};
-
-e.once('foo', remove);
-e.removeListener('foo', remove);
-e.emit('foo');
 
 process.on('exit', function() {
-  assert.equal(1, times_hello_emited);
-});
-
-var times_recurse_emitted = 0;
-
-e.once('e', function() {
-	e.emit('e');
-	times_recurse_emitted++;
-});
-
-e.once('e', function() {
-	times_recurse_emitted++;
-});
-
-e.emit('e');
-
-process.on('exit', function() {
-  assert.equal(2, times_recurse_emitted);
+  assert.equal(ended, 1);
 });

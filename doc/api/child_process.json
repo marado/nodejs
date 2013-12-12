@@ -19,7 +19,7 @@
               "type": "event",
               "name": "error",
               "params": [],
-              "desc": "<p>Emitted when:\n\n</p>\n<ol>\n<li>The process could not be spawned, or</li>\n<li>The process could not be killed, or</li>\n<li>Sending a message to the child process failed for whatever reason.</li>\n</ol>\n<p>See also <a href=\"#child_process_child_kill_signal\"><code>ChildProcess#kill()</code></a> and\n<a href=\"#child_process_child_send_message_sendhandle\"><code>ChildProcess#send()</code></a>.\n\n</p>\n"
+              "desc": "<p>Emitted when:\n\n</p>\n<ol>\n<li>The process could not be spawned, or</li>\n<li>The process could not be killed, or</li>\n<li>Sending a message to the child process failed for whatever reason.</li>\n</ol>\n<p>Note that the <code>exit</code>-event may or may not fire after an error has occured. If\nyou are listening on both events to fire a function, remember to guard against\ncalling your function twice.\n\n</p>\n<p>See also <a href=\"#child_process_child_kill_signal\"><code>ChildProcess#kill()</code></a> and\n<a href=\"#child_process_child_send_message_sendhandle\"><code>ChildProcess#send()</code></a>.\n\n</p>\n"
             },
             {
               "textRaw": "Event:  'exit'",
@@ -515,6 +515,13 @@
                       "name": "execPath",
                       "type": "String",
                       "desc": "Executable used to create the child process"
+                    },
+                    {
+                      "textRaw": "`execArgv` {Array} List of string arguments passed to the executable (Default: `process.execArgv`) ",
+                      "name": "execArgv",
+                      "default": "process.execArgv",
+                      "type": "Array",
+                      "desc": "List of string arguments passed to the executable"
                     },
                     {
                       "textRaw": "`silent` {Boolean} If true, prevent stdout and stderr in the spawned node process from being associated with the parent's (default is false) ",

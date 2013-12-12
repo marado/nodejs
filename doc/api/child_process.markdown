@@ -36,6 +36,10 @@ Emitted when:
 2. The process could not be killed, or
 3. Sending a message to the child process failed for whatever reason.
 
+Note that the `exit`-event may or may not fire after an error has occured. If
+you are listening on both events to fire a function, remember to guard against
+calling your function twice.
+
 See also [`ChildProcess#kill()`](#child_process_child_kill_signal) and
 [`ChildProcess#send()`](#child_process_child_send_message_sendhandle).
 
@@ -551,6 +555,8 @@ leaner than `child_process.exec`. It has the same options.
   * `env` {Object} Environment key-value pairs
   * `encoding` {String} (Default: 'utf8')
   * `execPath` {String} Executable used to create the child process
+  * `execArgv` {Array} List of string arguments passed to the executable
+    (Default: `process.execArgv`)
   * `silent` {Boolean} If true, prevent stdout and stderr in the spawned node
     process from being associated with the parent's (default is false)
 * Return: ChildProcess object

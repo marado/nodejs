@@ -374,7 +374,7 @@
               "textRaw": "Event: 'finish'",
               "type": "event",
               "name": "finish",
-              "desc": "<p>When the [<code>end()</code>][] method has been called, and all data has been flushed\nto the underlying system, this event is emitted.\n\n</p>\n<pre><code class=\"javascript\">var writer = getWritableStreamSomehow();\nfor (var i = 0; i &lt; 100; i ++) {\n  writer.write(&#39;hello, #&#39; + i + &#39;!\\n&#39;);\n}\nwriter.end(&#39;this is the end\\n&#39;);\nwrite.on(&#39;finish&#39;, function() {\n  console.error(&#39;all writes are now complete.&#39;);\n});</code></pre>\n",
+              "desc": "<p>When the [<code>end()</code>][] method has been called, and all data has been flushed\nto the underlying system, this event is emitted.\n\n</p>\n<pre><code class=\"javascript\">var writer = getWritableStreamSomehow();\nfor (var i = 0; i &lt; 100; i ++) {\n  writer.write(&#39;hello, #&#39; + i + &#39;!\\n&#39;);\n}\nwriter.end(&#39;this is the end\\n&#39;);\nwriter.on(&#39;finish&#39;, function() {\n  console.error(&#39;all writes are now complete.&#39;);\n});</code></pre>\n",
               "params": []
             },
             {
@@ -390,6 +390,13 @@
               "name": "unpipe",
               "params": [],
               "desc": "<p>This is emitted whenever the [<code>unpipe()</code>][] method is called on a\nreadable stream, removing this writable from its set of destinations.\n\n</p>\n<pre><code class=\"javascript\">var writer = getWritableStreamSomehow();\nvar reader = getReadableStreamSomehow();\nwriter.on(&#39;unpipe&#39;, function(src) {\n  console.error(&#39;something has stopped piping into the writer&#39;);\n  assert.equal(src, reader);\n});\nreader.pipe(writer);\nreader.unpipe(writer);</code></pre>\n"
+            },
+            {
+              "textRaw": "Event: 'error'",
+              "type": "event",
+              "name": "error",
+              "desc": "<p>Emitted if there was an error when writing or piping data.\n\n</p>\n",
+              "params": []
             }
           ]
         },
@@ -779,7 +786,7 @@
                   "textRaw": "Event: 'finish'",
                   "type": "event",
                   "name": "finish",
-                  "desc": "<p>When the [<code>end()</code>][] method has been called, and all data has been flushed\nto the underlying system, this event is emitted.\n\n</p>\n<pre><code class=\"javascript\">var writer = getWritableStreamSomehow();\nfor (var i = 0; i &lt; 100; i ++) {\n  writer.write(&#39;hello, #&#39; + i + &#39;!\\n&#39;);\n}\nwriter.end(&#39;this is the end\\n&#39;);\nwrite.on(&#39;finish&#39;, function() {\n  console.error(&#39;all writes are now complete.&#39;);\n});</code></pre>\n",
+                  "desc": "<p>When the [<code>end()</code>][] method has been called, and all data has been flushed\nto the underlying system, this event is emitted.\n\n</p>\n<pre><code class=\"javascript\">var writer = getWritableStreamSomehow();\nfor (var i = 0; i &lt; 100; i ++) {\n  writer.write(&#39;hello, #&#39; + i + &#39;!\\n&#39;);\n}\nwriter.end(&#39;this is the end\\n&#39;);\nwriter.on(&#39;finish&#39;, function() {\n  console.error(&#39;all writes are now complete.&#39;);\n});</code></pre>\n",
                   "params": []
                 },
                 {
@@ -795,6 +802,13 @@
                   "name": "unpipe",
                   "params": [],
                   "desc": "<p>This is emitted whenever the [<code>unpipe()</code>][] method is called on a\nreadable stream, removing this writable from its set of destinations.\n\n</p>\n<pre><code class=\"javascript\">var writer = getWritableStreamSomehow();\nvar reader = getReadableStreamSomehow();\nwriter.on(&#39;unpipe&#39;, function(src) {\n  console.error(&#39;something has stopped piping into the writer&#39;);\n  assert.equal(src, reader);\n});\nreader.pipe(writer);\nreader.unpipe(writer);</code></pre>\n"
+                },
+                {
+                  "textRaw": "Event: 'error'",
+                  "type": "event",
+                  "name": "error",
+                  "desc": "<p>Emitted if there was an error when writing or piping data.\n\n</p>\n",
+                  "params": []
                 }
               ]
             },

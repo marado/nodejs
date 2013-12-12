@@ -100,8 +100,9 @@ Returned by `crypto.createHash`.
 
 Updates the hash content with the given `data`, the encoding of which
 is given in `input_encoding` and can be `'utf8'`, `'ascii'` or
-`'binary'`.  If no encoding is provided, then a buffer is expected.
-If `data` is a `Buffer` then `input_encoding` is ignored.
+`'binary'`.  If no encoding is provided and the input is a string an
+encoding of `'binary'` is enforced. If `data` is a `Buffer` then
+`input_encoding` is ignored.
 
 This can be called many times with new data as it is streamed.
 
@@ -465,7 +466,13 @@ Generates cryptographically strong pseudo-random data. Usage:
       console.log('Have %d bytes of random data: %s', buf.length, buf);
     } catch (ex) {
       // handle error
+      // most likely, entropy sources are drained
     }
+
+NOTE: Will throw error or invoke callback with error, if there is not enough
+accumulated entropy to generate cryptographically strong data. In other words,
+`crypto.randomBytes` without callback will not block even if all entropy sources
+are drained.
 
 ## crypto.pseudoRandomBytes(size, [callback])
 

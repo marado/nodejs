@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Child Process Node.js v0.10.22 Manual &amp; Documentation</title>
+  <title>Child Process Node.js v0.10.23 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/child_process.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.22 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.23 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -119,6 +119,11 @@ which can be piped to and from.
 <li>The process could not be killed, or</li>
 <li>Sending a message to the child process failed for whatever reason.</li>
 </ol>
+<p>Note that the <code>exit</code>-event may or may not fire after an error has occured. If
+you are listening on both events to fire a function, remember to guard against
+calling your function twice.
+
+</p>
 <p>See also <a href="#child_process_child_kill_signal"><code>ChildProcess#kill()</code></a> and
 <a href="#child_process_child_send_message_sendhandle"><code>ChildProcess#send()</code></a>.
 
@@ -683,6 +688,8 @@ leaner than <code>child_process.exec</code>. It has the same options.
 <li><code>env</code> <span class="type">Object</span> Environment key-value pairs</li>
 <li><code>encoding</code> <span class="type">String</span> (Default: &#39;utf8&#39;)</li>
 <li><code>execPath</code> <span class="type">String</span> Executable used to create the child process</li>
+<li><code>execArgv</code> <span class="type">Array</span> List of string arguments passed to the executable
+(Default: <code>process.execArgv</code>)</li>
 <li><code>silent</code> <span class="type">Boolean</span> If true, prevent stdout and stderr in the spawned node
 process from being associated with the parent&#39;s (default is false)</li>
 </ul>
@@ -726,7 +733,7 @@ output on this fd is expected to be line delimited JSON objects.
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.22/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.23/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>
