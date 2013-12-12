@@ -784,6 +784,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-tls-client-reject.js
  test/simple/test-tls-client-resume.js
  test/simple/test-tls-client-verify.js
+ test/simple/test-tls-close-notify.js
  test/simple/test-tls-connect-given-socket.js
  test/simple/test-tls-connect-pipe.js
  test/simple/test-tls-connect-simple.js
@@ -793,6 +794,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-tls-handshake-nohang.js
  test/simple/test-tls-hello-parser-failure.js
  test/simple/test-tls-honorcipherorder.js
+ test/simple/test-tls-interleave.js
  test/simple/test-tls-invalid-key.js
  test/simple/test-tls-junk-closes-server.js
  test/simple/test-tls-npn-server-client.js
@@ -1060,6 +1062,7 @@ Files: AUTHORS
  doc/api_assets/style.css
  doc/blog/README.md
  doc/blog/Uncategorized/an-easy-way-to-build-scalable-network-programs.md
+ doc/blog/Uncategorized/bnoordhuis-departure.md
  doc/blog/Uncategorized/development-environment.md
  doc/blog/Uncategorized/evolving-the-node-js-brand.md
  doc/blog/Uncategorized/growing-up.md
@@ -1079,6 +1082,7 @@ Files: AUTHORS
  doc/blog/feature/streams2.md
  doc/blog/module/multi-server-continuous-deployment-with-fleet.md
  doc/blog/module/service-logging-in-json-with-bunyan.md
+ doc/blog/npm/2013-outage-postmortem.md
  doc/blog/npm/managing-node-js-dependencies-with-shrinkwrap.md
  doc/blog/npm/npm-1-0-global-vs-local-installation.md
  doc/blog/npm/npm-1-0-link.md
@@ -1140,6 +1144,7 @@ Files: AUTHORS
  doc/blog/release/v0.10.2.md
  doc/blog/release/v0.10.20.md
  doc/blog/release/v0.10.21.md
+ doc/blog/release/v0.10.22.md
  doc/blog/release/v0.10.3.md
  doc/blog/release/v0.10.4.md
  doc/blog/release/v0.10.5.md
@@ -1156,6 +1161,7 @@ Files: AUTHORS
  doc/blog/release/v0.11.6.md
  doc/blog/release/v0.11.7.md
  doc/blog/release/v0.11.8.md
+ doc/blog/release/v0.11.9.md
  doc/blog/release/v0.6.20.md
  doc/blog/release/v0.8.1.md
  doc/blog/release/v0.8.10.md
@@ -1931,7 +1937,6 @@ Files: deps/v8/LICENSE
  deps/v8/tools/status-file-converter.py
  deps/v8/tools/test-server.py
  deps/v8/tools/test-wrapper-gypbuild.py
- deps/v8/tools/test.py
  deps/v8/tools/testrunner/__init__.py
  deps/v8/tools/testrunner/local/__init__.py
  deps/v8/tools/testrunner/local/commands.py
@@ -1971,6 +1976,7 @@ Files: deps/v8/LICENSE
  test/pummel/testcfg.py
  test/simple/testcfg.py
  tools/js2c.py
+ tools/test.py
 Copyright: 2006-2008, the V8 project authors.
   2006-2009, the V8 project authors.
   2006-2011, the V8 project authors.
@@ -2112,6 +2118,7 @@ Files: deps/http_parser/LICENSE-MIT
  deps/uv/test/test-delayed-accept.c
  deps/uv/test/test-dlerror.c
  deps/uv/test/test-embed.c
+ deps/uv/test/test-emfile.c
  deps/uv/test/test-error.c
  deps/uv/test/test-fail-always.c
  deps/uv/test/test-fs-event.c
@@ -2224,7 +2231,7 @@ Files: doc/api/_toc.html
  doc/api/util.html
  doc/api/vm.html
  doc/api/zlib.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.22/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.23/LICENSE">license</a>.</p>
 License: UNKNOWN
  FIXME
 
@@ -2341,6 +2348,8 @@ License: BSD-3-clause
 Files: tools/cpplint.py
 Copyright: 2009, Google Inc.
   [year
+  message appears at the top of the file."""
+  message found. '
 License: BSD-3-clause
  FIXME
 
@@ -2363,7 +2372,8 @@ License: BSD-3-clause
  FIXME
 
 Files: deps/v8/tools/presubmit.py
-Copyright: header and trailing whitespaces check..."
+Copyright: 2012, the V8 project authors.
+  header and trailing whitespaces check..."
   header." % name
 License: BSD-3-clause
  FIXME
@@ -2380,8 +2390,8 @@ Copyright: 2011, the V8 project authors.
 License: BSD-3-clause
  FIXME
 
-Files: tools/test.py
-Copyright: 2008, the V8 project authors. /
+Files: deps/v8/tools/test.py
+Copyright: 2012, the V8 project authors. /
 License: BSD-3-clause
  FIXME
 
@@ -2520,20 +2530,20 @@ License: UNKNOWN
  FIXME
 
 Files: doc/api/net.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.22/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.23/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
 License: UNKNOWN
  FIXME
 
 Files: doc/api/all.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.22/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.23/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
   { return c.indexOf(line) == 0 })
 License: UNKNOWN
  FIXME
 
 Files: doc/api/readline.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.22/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.23/LICENSE">license</a>.</p>
   { return c.indexOf(line) == 0 })
 License: UNKNOWN
  FIXME
