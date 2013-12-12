@@ -21,6 +21,13 @@
           "name": "settings",
           "options": [
             {
+              "textRaw": "`execArgv` {Array} list of string arguments passed to the node executable.  (Default=`process.execArgv`) ",
+              "name": "execArgv",
+              "default": "process.execArgv",
+              "type": "Array",
+              "desc": "list of string arguments passed to the node executable."
+            },
+            {
               "textRaw": "`exec` {String} file path to worker file.  (Default=`process.argv[1]`) ",
               "name": "exec",
               "default": "process.argv[1]",

@@ -21,45 +21,49 @@
 
 var common = require('../common');
 var assert = require('assert');
-var events = require('events');
 
-var e = new events.EventEmitter();
-var times_hello_emited = 0;
+var tls = require('tls');
+var fs = require('fs');
 
-e.once('hello', function(a, b) {
-  times_hello_emited++;
+var PORT = common.PORT;
+var dir = common.fixturesDir;
+var options = { key: fs.readFileSync(dir + '/test_key.pem'),
+                cert: fs.readFileSync(dir + '/test_cert.pem'),
+                ca: [ fs.readFileSync(dir + '/test_ca.pem') ] };
+
+var writes = [
+  'some server data',
+  'and a separate packet',
+  'and one more',
+];
+var receivedWrites = 0;
+
+var server = tls.createServer(options, function(c) {
+  writes.forEach(function(str) {
+    c.write(str);
+  });
+}).listen(PORT, function() {
+  var c = tls.connect(PORT, { rejectUnauthorized: false }, function() {
+    c.write('some client data');
+    c.on('readable', function() {
+      var data = c.read();
+      if (data === null)
+        return;
+
+      data = data.toString();
+      while (data.length !== 0) {
+        assert.strictEqual(data.indexOf(writes[receivedWrites]), 0);
+        data = data.slice(writes[receivedWrites].length);
+
+        if (++receivedWrites === writes.length) {
+          c.end();
+          server.close();
+        }
+      }
+    });
+  });
 });
-
-e.emit('hello', 'a', 'b');
-e.emit('hello', 'a', 'b');
-e.emit('hello', 'a', 'b');
-e.emit('hello', 'a', 'b');
-
-var remove = function() {
-  assert.fail(1, 0, 'once->foo should not be emitted', '!');
-};
-
-e.once('foo', remove);
-e.removeListener('foo', remove);
-e.emit('foo');
 
 process.on('exit', function() {
-  assert.equal(1, times_hello_emited);
-});
-
-var times_recurse_emitted = 0;
-
-e.once('e', function() {
-	e.emit('e');
-	times_recurse_emitted++;
-});
-
-e.once('e', function() {
-	times_recurse_emitted++;
-});
-
-e.emit('e');
-
-process.on('exit', function() {
-  assert.equal(2, times_recurse_emitted);
+  assert.equal(receivedWrites, writes.length);
 });

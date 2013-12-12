@@ -495,7 +495,7 @@
               "textRaw": "process.kill(pid, [signal])",
               "type": "method",
               "name": "kill",
-              "desc": "<p>Send a signal to a process. <code>pid</code> is the process id and <code>signal</code> is the\nstring describing the signal to send.  Signal names are strings like\n&#39;SIGINT&#39; or &#39;SIGHUP&#39;.  If omitted, the signal will be &#39;SIGTERM&#39;.\nSee kill(2) for more information.\n\n</p>\n<p>Note that just because the name of this function is <code>process.kill</code>, it is\nreally just a signal sender, like the <code>kill</code> system call.  The signal sent\nmay do something other than kill the target process.\n\n</p>\n<p>Example of sending a signal to yourself:\n\n</p>\n<pre><code>process.on(&#39;SIGHUP&#39;, function() {\n  console.log(&#39;Got SIGHUP signal.&#39;);\n});\n\nsetTimeout(function() {\n  console.log(&#39;Exiting.&#39;);\n  process.exit(0);\n}, 100);\n\nprocess.kill(process.pid, &#39;SIGHUP&#39;);</code></pre>\n<p>Note: SIGUSR1 is reserved by node.js.  It can be used to kickstart the\ndebugger.\n\n</p>\n",
+              "desc": "<p>Send a signal to a process. <code>pid</code> is the process id and <code>signal</code> is the\nstring describing the signal to send.  Signal names are strings like\n&#39;SIGINT&#39; or &#39;SIGHUP&#39;.  If omitted, the signal will be &#39;SIGTERM&#39;.\nSee kill(2) for more information.\n\n</p>\n<p>Will throw an error if target does not exist, and as a special case, a signal of\n<code>0</code> can be used to test for the existence of a process.\n\n</p>\n<p>Note that just because the name of this function is <code>process.kill</code>, it is\nreally just a signal sender, like the <code>kill</code> system call.  The signal sent\nmay do something other than kill the target process.\n\n</p>\n<p>Example of sending a signal to yourself:\n\n</p>\n<pre><code>process.on(&#39;SIGHUP&#39;, function() {\n  console.log(&#39;Got SIGHUP signal.&#39;);\n});\n\nsetTimeout(function() {\n  console.log(&#39;Exiting.&#39;);\n  process.exit(0);\n}, 100);\n\nprocess.kill(process.pid, &#39;SIGHUP&#39;);</code></pre>\n<p>Note: When SIGUSR1 is received by Node.js it starts the debugger, see\n<a href=\"#process_signal_events\">Signal Events</a>.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -1209,7 +1209,7 @@
           "textRaw": "process.kill(pid, [signal])",
           "type": "method",
           "name": "kill",
-          "desc": "<p>Send a signal to a process. <code>pid</code> is the process id and <code>signal</code> is the\nstring describing the signal to send.  Signal names are strings like\n&#39;SIGINT&#39; or &#39;SIGHUP&#39;.  If omitted, the signal will be &#39;SIGTERM&#39;.\nSee kill(2) for more information.\n\n</p>\n<p>Note that just because the name of this function is <code>process.kill</code>, it is\nreally just a signal sender, like the <code>kill</code> system call.  The signal sent\nmay do something other than kill the target process.\n\n</p>\n<p>Example of sending a signal to yourself:\n\n</p>\n<pre><code>process.on(&#39;SIGHUP&#39;, function() {\n  console.log(&#39;Got SIGHUP signal.&#39;);\n});\n\nsetTimeout(function() {\n  console.log(&#39;Exiting.&#39;);\n  process.exit(0);\n}, 100);\n\nprocess.kill(process.pid, &#39;SIGHUP&#39;);</code></pre>\n<p>Note: SIGUSR1 is reserved by node.js.  It can be used to kickstart the\ndebugger.\n\n</p>\n",
+          "desc": "<p>Send a signal to a process. <code>pid</code> is the process id and <code>signal</code> is the\nstring describing the signal to send.  Signal names are strings like\n&#39;SIGINT&#39; or &#39;SIGHUP&#39;.  If omitted, the signal will be &#39;SIGTERM&#39;.\nSee kill(2) for more information.\n\n</p>\n<p>Will throw an error if target does not exist, and as a special case, a signal of\n<code>0</code> can be used to test for the existence of a process.\n\n</p>\n<p>Note that just because the name of this function is <code>process.kill</code>, it is\nreally just a signal sender, like the <code>kill</code> system call.  The signal sent\nmay do something other than kill the target process.\n\n</p>\n<p>Example of sending a signal to yourself:\n\n</p>\n<pre><code>process.on(&#39;SIGHUP&#39;, function() {\n  console.log(&#39;Got SIGHUP signal.&#39;);\n});\n\nsetTimeout(function() {\n  console.log(&#39;Exiting.&#39;);\n  process.exit(0);\n}, 100);\n\nprocess.kill(process.pid, &#39;SIGHUP&#39;);</code></pre>\n<p>Note: When SIGUSR1 is received by Node.js it starts the debugger, see\n<a href=\"#process_signal_events\">Signal Events</a>.\n\n</p>\n",
           "signatures": [
             {
               "params": [
@@ -4624,7 +4624,7 @@
               "textRaw": "Event: 'finish'",
               "type": "event",
               "name": "finish",
-              "desc": "<p>When the [<code>end()</code>][] method has been called, and all data has been flushed\nto the underlying system, this event is emitted.\n\n</p>\n<pre><code class=\"javascript\">var writer = getWritableStreamSomehow();\nfor (var i = 0; i &lt; 100; i ++) {\n  writer.write(&#39;hello, #&#39; + i + &#39;!\\n&#39;);\n}\nwriter.end(&#39;this is the end\\n&#39;);\nwrite.on(&#39;finish&#39;, function() {\n  console.error(&#39;all writes are now complete.&#39;);\n});</code></pre>\n",
+              "desc": "<p>When the [<code>end()</code>][] method has been called, and all data has been flushed\nto the underlying system, this event is emitted.\n\n</p>\n<pre><code class=\"javascript\">var writer = getWritableStreamSomehow();\nfor (var i = 0; i &lt; 100; i ++) {\n  writer.write(&#39;hello, #&#39; + i + &#39;!\\n&#39;);\n}\nwriter.end(&#39;this is the end\\n&#39;);\nwriter.on(&#39;finish&#39;, function() {\n  console.error(&#39;all writes are now complete.&#39;);\n});</code></pre>\n",
               "params": []
             },
             {
@@ -4640,6 +4640,13 @@
               "name": "unpipe",
               "params": [],
               "desc": "<p>This is emitted whenever the [<code>unpipe()</code>][] method is called on a\nreadable stream, removing this writable from its set of destinations.\n\n</p>\n<pre><code class=\"javascript\">var writer = getWritableStreamSomehow();\nvar reader = getReadableStreamSomehow();\nwriter.on(&#39;unpipe&#39;, function(src) {\n  console.error(&#39;something has stopped piping into the writer&#39;);\n  assert.equal(src, reader);\n});\nreader.pipe(writer);\nreader.unpipe(writer);</code></pre>\n"
+            },
+            {
+              "textRaw": "Event: 'error'",
+              "type": "event",
+              "name": "error",
+              "desc": "<p>Emitted if there was an error when writing or piping data.\n\n</p>\n",
+              "params": []
             }
           ]
         },
@@ -5029,7 +5036,7 @@
                   "textRaw": "Event: 'finish'",
                   "type": "event",
                   "name": "finish",
-                  "desc": "<p>When the [<code>end()</code>][] method has been called, and all data has been flushed\nto the underlying system, this event is emitted.\n\n</p>\n<pre><code class=\"javascript\">var writer = getWritableStreamSomehow();\nfor (var i = 0; i &lt; 100; i ++) {\n  writer.write(&#39;hello, #&#39; + i + &#39;!\\n&#39;);\n}\nwriter.end(&#39;this is the end\\n&#39;);\nwrite.on(&#39;finish&#39;, function() {\n  console.error(&#39;all writes are now complete.&#39;);\n});</code></pre>\n",
+                  "desc": "<p>When the [<code>end()</code>][] method has been called, and all data has been flushed\nto the underlying system, this event is emitted.\n\n</p>\n<pre><code class=\"javascript\">var writer = getWritableStreamSomehow();\nfor (var i = 0; i &lt; 100; i ++) {\n  writer.write(&#39;hello, #&#39; + i + &#39;!\\n&#39;);\n}\nwriter.end(&#39;this is the end\\n&#39;);\nwriter.on(&#39;finish&#39;, function() {\n  console.error(&#39;all writes are now complete.&#39;);\n});</code></pre>\n",
                   "params": []
                 },
                 {
@@ -5045,6 +5052,13 @@
                   "name": "unpipe",
                   "params": [],
                   "desc": "<p>This is emitted whenever the [<code>unpipe()</code>][] method is called on a\nreadable stream, removing this writable from its set of destinations.\n\n</p>\n<pre><code class=\"javascript\">var writer = getWritableStreamSomehow();\nvar reader = getReadableStreamSomehow();\nwriter.on(&#39;unpipe&#39;, function(src) {\n  console.error(&#39;something has stopped piping into the writer&#39;);\n  assert.equal(src, reader);\n});\nreader.pipe(writer);\nreader.unpipe(writer);</code></pre>\n"
+                },
+                {
+                  "textRaw": "Event: 'error'",
+                  "type": "event",
+                  "name": "error",
+                  "desc": "<p>Emitted if there was an error when writing or piping data.\n\n</p>\n",
+                  "params": []
                 }
               ]
             },
@@ -5894,7 +5908,7 @@
           "textRaw": "crypto.randomBytes(size, [callback])",
           "type": "method",
           "name": "randomBytes",
-          "desc": "<p>Generates cryptographically strong pseudo-random data. Usage:\n\n</p>\n<pre><code>// async\ncrypto.randomBytes(256, function(ex, buf) {\n  if (ex) throw ex;\n  console.log(&#39;Have %d bytes of random data: %s&#39;, buf.length, buf);\n});\n\n// sync\ntry {\n  var buf = crypto.randomBytes(256);\n  console.log(&#39;Have %d bytes of random data: %s&#39;, buf.length, buf);\n} catch (ex) {\n  // handle error\n}</code></pre>\n",
+          "desc": "<p>Generates cryptographically strong pseudo-random data. Usage:\n\n</p>\n<pre><code>// async\ncrypto.randomBytes(256, function(ex, buf) {\n  if (ex) throw ex;\n  console.log(&#39;Have %d bytes of random data: %s&#39;, buf.length, buf);\n});\n\n// sync\ntry {\n  var buf = crypto.randomBytes(256);\n  console.log(&#39;Have %d bytes of random data: %s&#39;, buf.length, buf);\n} catch (ex) {\n  // handle error\n  // most likely, entropy sources are drained\n}</code></pre>\n<p>NOTE: Will throw error or invoke callback with error, if there is not enough\naccumulated entropy to generate cryptographically strong data. In other words,\n<code>crypto.randomBytes</code> without callback will not block even if all entropy sources\nare drained.\n\n</p>\n",
           "signatures": [
             {
               "params": [
@@ -5940,7 +5954,7 @@
               "textRaw": "hash.update(data, [input_encoding])",
               "type": "method",
               "name": "update",
-              "desc": "<p>Updates the hash content with the given <code>data</code>, the encoding of which\nis given in <code>input_encoding</code> and can be <code>&#39;utf8&#39;</code>, <code>&#39;ascii&#39;</code> or\n<code>&#39;binary&#39;</code>.  If no encoding is provided, then a buffer is expected.\nIf <code>data</code> is a <code>Buffer</code> then <code>input_encoding</code> is ignored.\n\n</p>\n<p>This can be called many times with new data as it is streamed.\n\n</p>\n",
+              "desc": "<p>Updates the hash content with the given <code>data</code>, the encoding of which\nis given in <code>input_encoding</code> and can be <code>&#39;utf8&#39;</code>, <code>&#39;ascii&#39;</code> or\n<code>&#39;binary&#39;</code>.  If no encoding is provided and the input is a string an\nencoding of <code>&#39;binary&#39;</code> is enforced. If <code>data</code> is a <code>Buffer</code> then\n<code>input_encoding</code> is ignored.\n\n</p>\n<p>This can be called many times with new data as it is streamed.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -8612,7 +8626,7 @@
           "textRaw": "net.connect(options, [connectionListener])",
           "type": "method",
           "name": "connect",
-          "desc": "<p>Constructs a new socket object and opens the socket to the given location.\nWhen the socket is established, the [&#39;connect&#39;][] event will be emitted.\n\n</p>\n<p>For TCP sockets, <code>options</code> argument should be an object which specifies:\n\n</p>\n<ul>\n<li><p><code>port</code>: Port the client should connect to (Required).</p>\n</li>\n<li><p><code>host</code>: Host the client should connect to. Defaults to <code>&#39;localhost&#39;</code>.</p>\n</li>\n<li><p><code>localAddress</code>: Local interface to bind to for network connections.</p>\n</li>\n</ul>\n<p>For UNIX domain sockets, <code>options</code> argument should be an object which specifies:\n\n</p>\n<ul>\n<li><code>path</code>: Path the client should connect to (Required).</li>\n</ul>\n<p>Common options are:\n\n</p>\n<ul>\n<li><code>allowHalfOpen</code>: if <code>true</code>, the socket won&#39;t automatically send\na FIN packet when the other end of the socket sends a FIN packet.\nDefaults to <code>false</code>.  See [&#39;end&#39;][] event for more information.</li>\n</ul>\n<p>The <code>connectListener</code> parameter will be added as an listener for the\n[&#39;connect&#39;][] event.\n\n</p>\n<p>Here is an example of a client of echo server as described previously:\n\n</p>\n<pre><code>var net = require(&#39;net&#39;);\nvar client = net.connect({port: 8124},\n    function() { //&#39;connect&#39; listener\n  console.log(&#39;client connected&#39;);\n  client.write(&#39;world!\\r\\n&#39;);\n});\nclient.on(&#39;data&#39;, function(data) {\n  console.log(data.toString());\n  client.end();\n});\nclient.on(&#39;end&#39;, function() {\n  console.log(&#39;client disconnected&#39;);\n});</code></pre>\n<p>To connect on the socket <code>/tmp/echo.sock</code> the second line would just be\nchanged to\n\n</p>\n<pre><code>var client = net.connect({path: &#39;/tmp/echo.sock&#39;},</code></pre>\n",
+          "desc": "<p>Constructs a new socket object and opens the socket to the given location.\nWhen the socket is established, the [&#39;connect&#39;][] event will be emitted.\n\n</p>\n<p>For TCP sockets, <code>options</code> argument should be an object which specifies:\n\n</p>\n<ul>\n<li><p><code>port</code>: Port the client should connect to (Required).</p>\n</li>\n<li><p><code>host</code>: Host the client should connect to. Defaults to <code>&#39;localhost&#39;</code>.</p>\n</li>\n<li><p><code>localAddress</code>: Local interface to bind to for network connections.</p>\n</li>\n</ul>\n<p>For UNIX domain sockets, <code>options</code> argument should be an object which specifies:\n\n</p>\n<ul>\n<li><code>path</code>: Path the client should connect to (Required).</li>\n</ul>\n<p>Common options are:\n\n</p>\n<ul>\n<li><code>allowHalfOpen</code>: if <code>true</code>, the socket won&#39;t automatically send\na FIN packet when the other end of the socket sends a FIN packet.\nDefaults to <code>false</code>.  See [&#39;end&#39;][] event for more information.</li>\n</ul>\n<p>The <code>connectListener</code> parameter will be added as an listener for the\n[&#39;connect&#39;][] event.\n\n</p>\n<p>Here is an example of a client of echo server as described previously:\n\n</p>\n<pre><code>var net = require(&#39;net&#39;);\nvar client = net.connect({port: 8124},\n    function() { //&#39;connect&#39; listener\n  console.log(&#39;client connected&#39;);\n  client.write(&#39;world!\\r\\n&#39;);\n});\nclient.on(&#39;data&#39;, function(data) {\n  console.log(data.toString());\n  client.end();\n});\nclient.on(&#39;end&#39;, function() {\n  console.log(&#39;client disconnected&#39;);\n});</code></pre>\n<p>To connect on the socket <code>/tmp/echo.sock</code> the second line would just be\nchanged to\n\n</p>\n<pre><code>var client = net.connect({path: &#39;/tmp/echo.sock&#39;});</code></pre>\n",
           "signatures": [
             {
               "params": [
@@ -8642,7 +8656,7 @@
           "textRaw": "net.createConnection(options, [connectionListener])",
           "type": "method",
           "name": "createConnection",
-          "desc": "<p>Constructs a new socket object and opens the socket to the given location.\nWhen the socket is established, the [&#39;connect&#39;][] event will be emitted.\n\n</p>\n<p>For TCP sockets, <code>options</code> argument should be an object which specifies:\n\n</p>\n<ul>\n<li><p><code>port</code>: Port the client should connect to (Required).</p>\n</li>\n<li><p><code>host</code>: Host the client should connect to. Defaults to <code>&#39;localhost&#39;</code>.</p>\n</li>\n<li><p><code>localAddress</code>: Local interface to bind to for network connections.</p>\n</li>\n</ul>\n<p>For UNIX domain sockets, <code>options</code> argument should be an object which specifies:\n\n</p>\n<ul>\n<li><code>path</code>: Path the client should connect to (Required).</li>\n</ul>\n<p>Common options are:\n\n</p>\n<ul>\n<li><code>allowHalfOpen</code>: if <code>true</code>, the socket won&#39;t automatically send\na FIN packet when the other end of the socket sends a FIN packet.\nDefaults to <code>false</code>.  See [&#39;end&#39;][] event for more information.</li>\n</ul>\n<p>The <code>connectListener</code> parameter will be added as an listener for the\n[&#39;connect&#39;][] event.\n\n</p>\n<p>Here is an example of a client of echo server as described previously:\n\n</p>\n<pre><code>var net = require(&#39;net&#39;);\nvar client = net.connect({port: 8124},\n    function() { //&#39;connect&#39; listener\n  console.log(&#39;client connected&#39;);\n  client.write(&#39;world!\\r\\n&#39;);\n});\nclient.on(&#39;data&#39;, function(data) {\n  console.log(data.toString());\n  client.end();\n});\nclient.on(&#39;end&#39;, function() {\n  console.log(&#39;client disconnected&#39;);\n});</code></pre>\n<p>To connect on the socket <code>/tmp/echo.sock</code> the second line would just be\nchanged to\n\n</p>\n<pre><code>var client = net.connect({path: &#39;/tmp/echo.sock&#39;},</code></pre>\n",
+          "desc": "<p>Constructs a new socket object and opens the socket to the given location.\nWhen the socket is established, the [&#39;connect&#39;][] event will be emitted.\n\n</p>\n<p>For TCP sockets, <code>options</code> argument should be an object which specifies:\n\n</p>\n<ul>\n<li><p><code>port</code>: Port the client should connect to (Required).</p>\n</li>\n<li><p><code>host</code>: Host the client should connect to. Defaults to <code>&#39;localhost&#39;</code>.</p>\n</li>\n<li><p><code>localAddress</code>: Local interface to bind to for network connections.</p>\n</li>\n</ul>\n<p>For UNIX domain sockets, <code>options</code> argument should be an object which specifies:\n\n</p>\n<ul>\n<li><code>path</code>: Path the client should connect to (Required).</li>\n</ul>\n<p>Common options are:\n\n</p>\n<ul>\n<li><code>allowHalfOpen</code>: if <code>true</code>, the socket won&#39;t automatically send\na FIN packet when the other end of the socket sends a FIN packet.\nDefaults to <code>false</code>.  See [&#39;end&#39;][] event for more information.</li>\n</ul>\n<p>The <code>connectListener</code> parameter will be added as an listener for the\n[&#39;connect&#39;][] event.\n\n</p>\n<p>Here is an example of a client of echo server as described previously:\n\n</p>\n<pre><code>var net = require(&#39;net&#39;);\nvar client = net.connect({port: 8124},\n    function() { //&#39;connect&#39; listener\n  console.log(&#39;client connected&#39;);\n  client.write(&#39;world!\\r\\n&#39;);\n});\nclient.on(&#39;data&#39;, function(data) {\n  console.log(data.toString());\n  client.end();\n});\nclient.on(&#39;end&#39;, function() {\n  console.log(&#39;client disconnected&#39;);\n});</code></pre>\n<p>To connect on the socket <code>/tmp/echo.sock</code> the second line would just be\nchanged to\n\n</p>\n<pre><code>var client = net.connect({path: &#39;/tmp/echo.sock&#39;});</code></pre>\n",
           "signatures": [
             {
               "params": [
@@ -9018,7 +9032,7 @@
               "textRaw": "new net.Socket([options])",
               "type": "method",
               "name": "Socket",
-              "desc": "<p>Construct a new socket object.\n\n</p>\n<p><code>options</code> is an object with the following defaults:\n\n</p>\n<pre><code>{ fd: null\n  type: null\n  allowHalfOpen: false\n}</code></pre>\n<p><code>fd</code> allows you to specify the existing file descriptor of socket. <code>type</code>\nspecified underlying protocol. It can be <code>&#39;tcp4&#39;</code>, <code>&#39;tcp6&#39;</code>, or <code>&#39;unix&#39;</code>.\nAbout <code>allowHalfOpen</code>, refer to <code>createServer()</code> and <code>&#39;end&#39;</code> event.\n\n</p>\n",
+              "desc": "<p>Construct a new socket object.\n\n</p>\n<p><code>options</code> is an object with the following defaults:\n\n</p>\n<pre><code>{ fd: null\n  allowHalfOpen: false,\n  readable: false,\n  writable: false\n}</code></pre>\n<p><code>fd</code> allows you to specify the existing file descriptor of socket.\nSet <code>readable</code> and/or <code>writable</code> to <code>true</code> to allow reads and/or writes on this\nsocket (NOTE: Works only when <code>fd</code> is passed).\nAbout <code>allowHalfOpen</code>, refer to <code>createServer()</code> and <code>&#39;end&#39;</code> event.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -9770,7 +9784,7 @@
       "name": "dns",
       "stability": 3,
       "stabilityText": "Stable",
-      "desc": "<p>Use <code>require(&#39;dns&#39;)</code> to access this module. All methods in the dns module\nuse C-Ares except for <code>dns.lookup</code> which uses <code>getaddrinfo(3)</code> in a thread\npool. C-Ares is much faster than <code>getaddrinfo</code> but the system resolver is\nmore constant with how other programs operate. When a user does\n<code>net.connect(80, &#39;google.com&#39;)</code> or <code>http.get({ host: &#39;google.com&#39; })</code> the\n<code>dns.lookup</code> method is used. Users who need to do a large number of lookups\nquickly should use the methods that go through C-Ares.\n\n</p>\n<p>Here is an example which resolves <code>&#39;www.google.com&#39;</code> then reverse\nresolves the IP addresses which are returned.\n\n</p>\n<pre><code>var dns = require(&#39;dns&#39;);\n\ndns.resolve4(&#39;www.google.com&#39;, function (err, addresses) {\n  if (err) throw err;\n\n  console.log(&#39;addresses: &#39; + JSON.stringify(addresses));\n\n  addresses.forEach(function (a) {\n    dns.reverse(a, function (err, domains) {\n      if (err) {\n        throw err;\n      }\n\n      console.log(&#39;reverse for &#39; + a + &#39;: &#39; + JSON.stringify(domains));\n    });\n  });\n});</code></pre>\n",
+      "desc": "<p>Use <code>require(&#39;dns&#39;)</code> to access this module. All methods in the dns module\nuse C-Ares except for <code>dns.lookup</code> which uses <code>getaddrinfo(3)</code> in a thread\npool. C-Ares is much faster than <code>getaddrinfo</code> but the system resolver is\nmore consistent with how other programs operate. When a user does\n<code>net.connect(80, &#39;google.com&#39;)</code> or <code>http.get({ host: &#39;google.com&#39; })</code> the\n<code>dns.lookup</code> method is used. Users who need to do a large number of lookups\nquickly should use the methods that go through C-Ares.\n\n</p>\n<p>Here is an example which resolves <code>&#39;www.google.com&#39;</code> then reverse\nresolves the IP addresses which are returned.\n\n</p>\n<pre><code>var dns = require(&#39;dns&#39;);\n\ndns.resolve4(&#39;www.google.com&#39;, function (err, addresses) {\n  if (err) throw err;\n\n  console.log(&#39;addresses: &#39; + JSON.stringify(addresses));\n\n  addresses.forEach(function (a) {\n    dns.reverse(a, function (err, domains) {\n      if (err) {\n        throw err;\n      }\n\n      console.log(&#39;reverse for &#39; + a + &#39;: &#39; + JSON.stringify(domains));\n    });\n  });\n});</code></pre>\n",
       "methods": [
         {
           "textRaw": "dns.lookup(domain, [family], callback)",
@@ -10114,10 +10128,10 @@
           ]
         },
         {
-          "textRaw": "http.request(options, callback)",
+          "textRaw": "http.request(options, [callback])",
           "type": "method",
           "name": "request",
-          "desc": "<p>Node maintains several connections per server to make HTTP requests.\nThis function allows one to transparently issue requests.\n\n</p>\n<p><code>options</code> can be an object or a string. If <code>options</code> is a string, it is\nautomatically parsed with [url.parse()][].\n\n</p>\n<p>Options:\n\n</p>\n<ul>\n<li><code>host</code>: A domain name or IP address of the server to issue the request to.\nDefaults to <code>&#39;localhost&#39;</code>.</li>\n<li><code>hostname</code>: To support <code>url.parse()</code> <code>hostname</code> is preferred over <code>host</code></li>\n<li><code>port</code>: Port of remote server. Defaults to 80.</li>\n<li><code>localAddress</code>: Local interface to bind for network connections.</li>\n<li><code>socketPath</code>: Unix Domain Socket (use one of host:port or socketPath)</li>\n<li><code>method</code>: A string specifying the HTTP request method. Defaults to <code>&#39;GET&#39;</code>.</li>\n<li><code>path</code>: Request path. Defaults to <code>&#39;/&#39;</code>. Should include query string if any.\nE.G. <code>&#39;/index.html?page=12&#39;</code></li>\n<li><code>headers</code>: An object containing request headers.</li>\n<li><code>auth</code>: Basic authentication i.e. <code>&#39;user:password&#39;</code> to compute an\nAuthorization header.</li>\n<li><code>agent</code>: Controls [Agent][] behavior. When an Agent is used request will\ndefault to <code>Connection: keep-alive</code>. Possible values:<ul>\n<li><code>undefined</code> (default): use [global Agent][] for this host and port.</li>\n<li><code>Agent</code> object: explicitly use the passed in <code>Agent</code>.</li>\n<li><code>false</code>: opts out of connection pooling with an Agent, defaults request to\n<code>Connection: close</code>.</li>\n</ul>\n</li>\n</ul>\n<p><code>http.request()</code> returns an instance of the [http.ClientRequest][]\nclass. The <code>ClientRequest</code> instance is a writable stream. If one needs to\nupload a file with a POST request, then write to the <code>ClientRequest</code> object.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>var options = {\n  hostname: &#39;www.google.com&#39;,\n  port: 80,\n  path: &#39;/upload&#39;,\n  method: &#39;POST&#39;\n};\n\nvar req = http.request(options, function(res) {\n  console.log(&#39;STATUS: &#39; + res.statusCode);\n  console.log(&#39;HEADERS: &#39; + JSON.stringify(res.headers));\n  res.setEncoding(&#39;utf8&#39;);\n  res.on(&#39;data&#39;, function (chunk) {\n    console.log(&#39;BODY: &#39; + chunk);\n  });\n});\n\nreq.on(&#39;error&#39;, function(e) {\n  console.log(&#39;problem with request: &#39; + e.message);\n});\n\n// write data to request body\nreq.write(&#39;data\\n&#39;);\nreq.write(&#39;data\\n&#39;);\nreq.end();</code></pre>\n<p>Note that in the example <code>req.end()</code> was called. With <code>http.request()</code> one\nmust always call <code>req.end()</code> to signify that you&#39;re done with the request -\neven if there is no data being written to the request body.\n\n</p>\n<p>If any error is encountered during the request (be that with DNS resolution,\nTCP level errors, or actual HTTP parse errors) an <code>&#39;error&#39;</code> event is emitted\non the returned request object.\n\n</p>\n<p>There are a few special headers that should be noted.\n\n</p>\n<ul>\n<li><p>Sending a &#39;Connection: keep-alive&#39; will notify Node that the connection to\nthe server should be persisted until the next request.</p>\n</li>\n<li><p>Sending a &#39;Content-length&#39; header will disable the default chunked encoding.</p>\n</li>\n<li><p>Sending an &#39;Expect&#39; header will immediately send the request headers.\nUsually, when sending &#39;Expect: 100-continue&#39;, you should both set a timeout\nand listen for the <code>continue</code> event. See RFC2616 Section 8.2.3 for more\ninformation.</p>\n</li>\n<li><p>Sending an Authorization header will override using the <code>auth</code> option\nto compute basic authentication.</p>\n</li>\n</ul>\n",
+          "desc": "<p>Node maintains several connections per server to make HTTP requests.\nThis function allows one to transparently issue requests.\n\n</p>\n<p><code>options</code> can be an object or a string. If <code>options</code> is a string, it is\nautomatically parsed with [url.parse()][].\n\n</p>\n<p>Options:\n\n</p>\n<ul>\n<li><code>host</code>: A domain name or IP address of the server to issue the request to.\nDefaults to <code>&#39;localhost&#39;</code>.</li>\n<li><code>hostname</code>: To support <code>url.parse()</code> <code>hostname</code> is preferred over <code>host</code></li>\n<li><code>port</code>: Port of remote server. Defaults to 80.</li>\n<li><code>localAddress</code>: Local interface to bind for network connections.</li>\n<li><code>socketPath</code>: Unix Domain Socket (use one of host:port or socketPath)</li>\n<li><code>method</code>: A string specifying the HTTP request method. Defaults to <code>&#39;GET&#39;</code>.</li>\n<li><code>path</code>: Request path. Defaults to <code>&#39;/&#39;</code>. Should include query string if any.\nE.G. <code>&#39;/index.html?page=12&#39;</code></li>\n<li><code>headers</code>: An object containing request headers.</li>\n<li><code>auth</code>: Basic authentication i.e. <code>&#39;user:password&#39;</code> to compute an\nAuthorization header.</li>\n<li><code>agent</code>: Controls [Agent][] behavior. When an Agent is used request will\ndefault to <code>Connection: keep-alive</code>. Possible values:<ul>\n<li><code>undefined</code> (default): use [global Agent][] for this host and port.</li>\n<li><code>Agent</code> object: explicitly use the passed in <code>Agent</code>.</li>\n<li><code>false</code>: opts out of connection pooling with an Agent, defaults request to\n<code>Connection: close</code>.</li>\n</ul>\n</li>\n</ul>\n<p>The optional <code>callback</code> parameter will be added as a one time listener for\nthe [&#39;response&#39;][] event.\n\n</p>\n<p><code>http.request()</code> returns an instance of the [http.ClientRequest][]\nclass. The <code>ClientRequest</code> instance is a writable stream. If one needs to\nupload a file with a POST request, then write to the <code>ClientRequest</code> object.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>var options = {\n  hostname: &#39;www.google.com&#39;,\n  port: 80,\n  path: &#39;/upload&#39;,\n  method: &#39;POST&#39;\n};\n\nvar req = http.request(options, function(res) {\n  console.log(&#39;STATUS: &#39; + res.statusCode);\n  console.log(&#39;HEADERS: &#39; + JSON.stringify(res.headers));\n  res.setEncoding(&#39;utf8&#39;);\n  res.on(&#39;data&#39;, function (chunk) {\n    console.log(&#39;BODY: &#39; + chunk);\n  });\n});\n\nreq.on(&#39;error&#39;, function(e) {\n  console.log(&#39;problem with request: &#39; + e.message);\n});\n\n// write data to request body\nreq.write(&#39;data\\n&#39;);\nreq.write(&#39;data\\n&#39;);\nreq.end();</code></pre>\n<p>Note that in the example <code>req.end()</code> was called. With <code>http.request()</code> one\nmust always call <code>req.end()</code> to signify that you&#39;re done with the request -\neven if there is no data being written to the request body.\n\n</p>\n<p>If any error is encountered during the request (be that with DNS resolution,\nTCP level errors, or actual HTTP parse errors) an <code>&#39;error&#39;</code> event is emitted\non the returned request object.\n\n</p>\n<p>There are a few special headers that should be noted.\n\n</p>\n<ul>\n<li><p>Sending a &#39;Connection: keep-alive&#39; will notify Node that the connection to\nthe server should be persisted until the next request.</p>\n</li>\n<li><p>Sending a &#39;Content-length&#39; header will disable the default chunked encoding.</p>\n</li>\n<li><p>Sending an &#39;Expect&#39; header will immediately send the request headers.\nUsually, when sending &#39;Expect: 100-continue&#39;, you should both set a timeout\nand listen for the <code>continue</code> event. See RFC2616 Section 8.2.3 for more\ninformation.</p>\n</li>\n<li><p>Sending an Authorization header will override using the <code>auth</code> option\nto compute basic authentication.</p>\n</li>\n</ul>\n",
           "signatures": [
             {
               "params": [
@@ -10125,14 +10139,15 @@
                   "name": "options"
                 },
                 {
-                  "name": "callback"
+                  "name": "callback",
+                  "optional": true
                 }
               ]
             }
           ]
         },
         {
-          "textRaw": "http.get(options, callback)",
+          "textRaw": "http.get(options, [callback])",
           "type": "method",
           "name": "get",
           "desc": "<p>Since most requests are GET requests without bodies, Node provides this\nconvenience method. The only difference between this method and <code>http.request()</code>\nis that it sets the method to GET and calls <code>req.end()</code> automatically.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>http.get(&quot;http://www.google.com/index.html&quot;, function(res) {\n  console.log(&quot;Got response: &quot; + res.statusCode);\n}).on(&#39;error&#39;, function(e) {\n  console.log(&quot;Got error: &quot; + e.message);\n});</code></pre>\n",
@@ -10143,7 +10158,8 @@
                   "name": "options"
                 },
                 {
-                  "name": "callback"
+                  "name": "callback",
+                  "optional": true
                 }
               ]
             }
@@ -10362,6 +10378,13 @@
               "type": "event",
               "name": "close",
               "desc": "<p><code>function () { }</code>\n\n</p>\n<p>Indicates that the underlying connection was terminated before\n[response.end()][] was called or able to flush.\n\n</p>\n",
+              "params": []
+            },
+            {
+              "textRaw": "Event: 'finish'",
+              "type": "event",
+              "name": "finish",
+              "desc": "<p><code>function () { }</code>\n\n</p>\n<p>Emitted when the response has been sent. More specifically, this event is\nemitted when the last segment of the response headers and body have been\nhanded off to the operating system for transmission over the network. It\ndoes not imply that the client has received anything yet.\n\n</p>\n<p>After this event, no more events will be emitted on the response object.\n\n</p>\n",
               "params": []
             }
           ],
@@ -11552,7 +11575,7 @@
               "type": "event",
               "name": "error",
               "params": [],
-              "desc": "<p>Emitted when:\n\n</p>\n<ol>\n<li>The process could not be spawned, or</li>\n<li>The process could not be killed, or</li>\n<li>Sending a message to the child process failed for whatever reason.</li>\n</ol>\n<p>See also <a href=\"#child_process_child_kill_signal\"><code>ChildProcess#kill()</code></a> and\n<a href=\"#child_process_child_send_message_sendhandle\"><code>ChildProcess#send()</code></a>.\n\n</p>\n"
+              "desc": "<p>Emitted when:\n\n</p>\n<ol>\n<li>The process could not be spawned, or</li>\n<li>The process could not be killed, or</li>\n<li>Sending a message to the child process failed for whatever reason.</li>\n</ol>\n<p>Note that the <code>exit</code>-event may or may not fire after an error has occured. If\nyou are listening on both events to fire a function, remember to guard against\ncalling your function twice.\n\n</p>\n<p>See also <a href=\"#child_process_child_kill_signal\"><code>ChildProcess#kill()</code></a> and\n<a href=\"#child_process_child_send_message_sendhandle\"><code>ChildProcess#send()</code></a>.\n\n</p>\n"
             },
             {
               "textRaw": "Event:  'exit'",
@@ -12048,6 +12071,13 @@
                       "name": "execPath",
                       "type": "String",
                       "desc": "Executable used to create the child process"
+                    },
+                    {
+                      "textRaw": "`execArgv` {Array} List of string arguments passed to the executable (Default: `process.execArgv`) ",
+                      "name": "execArgv",
+                      "default": "process.execArgv",
+                      "type": "Array",
+                      "desc": "List of string arguments passed to the executable"
                     },
                     {
                       "textRaw": "`silent` {Boolean} If true, prevent stdout and stderr in the spawned node process from being associated with the parent's (default is false) ",
@@ -12966,6 +12996,13 @@
           "textRaw": "`settings` {Object} ",
           "name": "settings",
           "options": [
+            {
+              "textRaw": "`execArgv` {Array} list of string arguments passed to the node executable.  (Default=`process.execArgv`) ",
+              "name": "execArgv",
+              "default": "process.execArgv",
+              "type": "Array",
+              "desc": "list of string arguments passed to the node executable."
+            },
             {
               "textRaw": "`exec` {String} file path to worker file.  (Default=`process.argv[1]`) ",
               "name": "exec",

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Cluster Node.js v0.10.22 Manual &amp; Documentation</title>
+  <title>Cluster Node.js v0.10.23 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/cluster.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.22 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.23 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -184,6 +184,8 @@ the worker pool for your application&#39;s needs.
 <h2>cluster.settings<span><a class="mark" href="#cluster_cluster_settings" id="cluster_cluster_settings">#</a></span></h2>
 <div class="signature"><ul>
 <li><span class="type">Object</span><ul>
+<li><code>execArgv</code> <span class="type">Array</span> list of string arguments passed to the node executable. 
+(Default=<code>process.execArgv</code>)</li>
 <li><code>exec</code> <span class="type">String</span> file path to worker file.  (Default=<code>process.argv[1]</code>)</li>
 <li><code>args</code> <span class="type">Array</span> string arguments passed to worker.
 (Default=<code>process.argv.slice(2)</code>)</li>
@@ -728,7 +730,7 @@ worker.on(&#39;exit&#39;, function(code, signal) {
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.22/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.23/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>
