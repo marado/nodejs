@@ -1,3 +1,10 @@
+nodejs (0.10.23~dfsg1-1) unstable; urgency=medium
+
+  * Upstream update.
+  * Refresh patches, remove 1005 patch, applied upstream.
+
+ -- Jérémy Lal <kapouer@melix.org>  Thu, 12 Dec 2013 23:04:07 +0100
+
 nodejs (0.10.22~dfsg1-2) unstable; urgency=low
 
   * Update 2005 patch, allow test-cluster-dgram-2 to time out.
