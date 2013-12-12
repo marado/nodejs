@@ -152,7 +152,7 @@ Last-Update: 2013-07-23
              '-lkstat',
 --- a/common.gypi
 +++ b/common.gypi
-@@ -159,7 +159,7 @@
+@@ -161,7 +161,7 @@
            'BUILDING_UV_SHARED=1',
          ],
        }],
@@ -161,7 +161,7 @@ Last-Update: 2013-07-23
          'cflags': [ '-Wall', '-Wextra', '-Wno-unused-parameter', '-pthread', ],
          'cflags_cc': [ '-fno-rtti', '-fno-exceptions' ],
          'ldflags': [ '-pthread', '-rdynamic' ],
-@@ -223,7 +223,7 @@
+@@ -225,7 +225,7 @@
            }],
          ],
        }],
