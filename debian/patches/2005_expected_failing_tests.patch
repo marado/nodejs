@@ -11,7 +11,7 @@ Author: Jérémy Lal <kapouer@melix.org>
 Last-Update: 2013-11-14
 --- a/test/simple/simple.status
 +++ b/test/simple/simple.status
-@@ -1 +1,73 @@
+@@ -1 +1,74 @@
  prefix simple
 +
 +# only fail when some resources are not available
@@ -39,6 +39,7 @@ Last-Update: 2013-11-14
 +test-cluster-disconnect: PASS || TIMEOUT
 +test-force-repl: PASS || FAIL
 +test-http-client-timeout-with-data: PASS || FAIL
++test-http-client-timeout-event: PASS || FAIL
 +test-http-end-throw-socket-handling: PASS || FAIL
 +test-http-exit-delay: PASS || FAIL
 +test-http-pipeline-flood: PASS || FAIL
