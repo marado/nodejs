@@ -1,9 +1,11 @@
 nodejs (0.10.23~dfsg1-2) unstable; urgency=medium
 
   * Add 2013 patch, remove --no-parallel option incompatible with
-    gyp < r1773. Was breaking kfreebsd builds as side-effect. 
+    gyp < r1773. Was breaking kfreebsd builds as side-effect.
+  * Empty DEB_CONFIGURE_NORMAL_ARGS without quotes because
+    configure assumes it is a path argument.
 
- -- Jérémy Lal <kapouer@melix.org>  Sat, 14 Dec 2013 01:11:45 +0100
+ -- Jérémy Lal <kapouer@melix.org>  Sat, 14 Dec 2013 01:52:05 +0100
 
 nodejs (0.10.23~dfsg1-1) unstable; urgency=medium
 
