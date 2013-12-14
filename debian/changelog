@@ -1,3 +1,10 @@
+nodejs (0.10.23~dfsg1-2) unstable; urgency=medium
+
+  * Add 2013 patch, remove --no-parallel option incompatible with
+    gyp < r1773. Was breaking kfreebsd builds as side-effect. 
+
+ -- Jérémy Lal <kapouer@melix.org>  Sat, 14 Dec 2013 01:11:45 +0100
+
 nodejs (0.10.23~dfsg1-1) unstable; urgency=medium
 
   * Upstream update.
