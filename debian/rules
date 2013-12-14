@@ -45,7 +45,7 @@ CDBS_DEPENDS_nodejs-dev = $(deps)
 # suppress checking binary files, to not upset dpkg-source
 DEB_COPYRIGHT_CHECK_IGNORE_REGEX = ^(doc/trademark-policy\.pdf|doc/mac_osx_nodejs_installer_logo\.png|doc/.*-white-stripe\.jpg|favicon\.ico|deps/v8/benchmarks/v8-logo\.png|test/fixtures/person\.jpg.*|src/res/node\.ico|debian/(changelog|copyright(|_hints|_newhints)))$
 
-DEB_CONFIGURE_NORMAL_ARGS = ""
+DEB_CONFIGURE_NORMAL_ARGS =
 DEB_CONFIGURE_EXTRA_FLAGS = --without-npm --shared-v8 --without-snapshot --shared-cares --shared-openssl --shared-zlib --prefix=/usr
 
 DEB_DESTDIR = $(CURDIR)/debian/tmp
