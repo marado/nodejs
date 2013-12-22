@@ -91,7 +91,7 @@ Last-Update: 2013-07-23
  #  define HAVE_KQUEUE 1
 --- a/tools/install.py
 +++ b/tools/install.py
-@@ -126,7 +126,7 @@
+@@ -134,7 +134,7 @@
    # with dtrace support now (oracle's "unbreakable" linux)
    action(['src/node.d'], 'lib/dtrace/')
  
