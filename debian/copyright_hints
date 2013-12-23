@@ -943,6 +943,7 @@ Files: AUTHORS
  debian/patches/2011_enable_mipsel_build.patch
  debian/patches/2011_mipsel.patch
  debian/patches/2012_kfreebsd.patch
+ debian/patches/2013_gyp_noparallel_compat.patch
  debian/patches/series
  debian/source/format
  debian/watch
@@ -1145,6 +1146,7 @@ Files: AUTHORS
  doc/blog/release/v0.10.20.md
  doc/blog/release/v0.10.21.md
  doc/blog/release/v0.10.22.md
+ doc/blog/release/v0.10.23.md
  doc/blog/release/v0.10.3.md
  doc/blog/release/v0.10.4.md
  doc/blog/release/v0.10.5.md
@@ -1976,7 +1978,6 @@ Files: deps/v8/LICENSE
  test/pummel/testcfg.py
  test/simple/testcfg.py
  tools/js2c.py
- tools/test.py
 Copyright: 2006-2008, the V8 project authors.
   2006-2009, the V8 project authors.
   2006-2011, the V8 project authors.
@@ -2231,7 +2232,7 @@ Files: doc/api/_toc.html
  doc/api/util.html
  doc/api/vm.html
  doc/api/zlib.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.23/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.24/LICENSE">license</a>.</p>
 License: UNKNOWN
  FIXME
 
@@ -2282,6 +2283,13 @@ Copyright: 2000-2007, Julian Seward.
 License: BSD-3-clause
  FIXME
 
+Files: deps/v8/tools/test.py
+ tools/test.py
+Copyright: 2008, the V8 project authors. /
+  2012, the V8 project authors. /
+License: BSD-3-clause
+ FIXME
+
 Files: src/v8_typed_array.cc
  src/v8_typed_array.h
 Copyright: Dean McNamee <dean@gmail.com>, 2011
@@ -2313,6 +2321,12 @@ Copyright: Igor Sysoev
 License: UNKNOWN
  FIXME
 
+Files: doc/api/all.json
+ doc/api/readline.json
+Copyright: { return c.indexOf(line) == 0 })\n // show all completions if none found\n return [hits.length ? hits : completions, line
+License: UNKNOWN
+ FIXME
+
 Files: deps/uv/include/uv-private/stdint-msvc2008.h
 Copyright: 2006-2008, Alexander Chemeris
 License: BSD-2-clause
@@ -2321,6 +2335,11 @@ License: BSD-2-clause
 Files: deps/v8/LICENSE.strongtalk
 Copyright: 1994-2006, Sun Microsystems Inc
 License: BSD-2-clause
+ FIXME
+
+Files: deps/v8/tools/presubmit.py
+Copyright: 
+License: BSD-3-clause
  FIXME
 
 Files: deps/v8/src/scanner.cc
@@ -2348,8 +2367,7 @@ License: BSD-3-clause
 Files: tools/cpplint.py
 Copyright: 2009, Google Inc.
   [year
-  message appears at the top of the file."""
-  message found. '
+  line was found
 License: BSD-3-clause
  FIXME
 
@@ -2371,13 +2389,6 @@ Copyright: 2012, the V8 project authors.
 License: BSD-3-clause
  FIXME
 
-Files: deps/v8/tools/presubmit.py
-Copyright: 2012, the V8 project authors.
-  header and trailing whitespaces check..."
-  header." % name
-License: BSD-3-clause
- FIXME
-
 Files: deps/v8/tools/generate-ten-powers.scm
 Copyright: 2010, the V8 project authors.
   2010, the V8 project authors.")
@@ -2387,11 +2398,6 @@ License: BSD-3-clause
 Files: deps/v8/src/char-predicates-inl.h
 Copyright: 2011, the V8 project authors.
   || IsInRange(AsciiAlphaToLower, 'a', 'f');
-License: BSD-3-clause
- FIXME
-
-Files: deps/v8/tools/test.py
-Copyright: 2012, the V8 project authors. /
 License: BSD-3-clause
  FIXME
 
@@ -2530,20 +2536,20 @@ License: UNKNOWN
  FIXME
 
 Files: doc/api/net.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.23/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.24/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
 License: UNKNOWN
  FIXME
 
 Files: doc/api/all.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.23/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.24/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
   { return c.indexOf(line) == 0 })
 License: UNKNOWN
  FIXME
 
 Files: doc/api/readline.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.23/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.24/LICENSE">license</a>.</p>
   { return c.indexOf(line) == 0 })
 License: UNKNOWN
  FIXME
@@ -2588,12 +2594,6 @@ Copyright: { //&#39;connection&#39; listener\n console.log(&#39;server connected
 License: UNKNOWN
  FIXME
 
-Files: doc/api/all.json
-Copyright: { //&#39;connection&#39; listener\n console.log(&#39;server connected&#39;);\n c.on(&#39;end&#39;, function() {\n console.log(&#39;server disconnected&#39;);\n });\n c.write(&#39;hello\\r\\n&#39;);\n c.pipe;\n});\nserver.listen(8124, function() { //&#39;listening&#39; listener\n console.log(&#39;server bound&#39;);\n});</code></pre>\n<p>Test this by using <code>telnet</code>:\n\n</p>\n<pre><code>telnet localhost 8124</code></pre>\n<p>To listen on the socket <code>/tmp/echo.sock</code> the third line from the last would\njust be changed to\n\n</p>\n<pre><code>server.listen(&#39;/tmp/echo.sock&#39;, function() { //&#39;listening&#39; listener</code></pre>\n<p>Use <code>nc</code> to connect to a UNIX domain socket server:\n\n</p>\n<pre><code>nc -U /tmp/echo.sock</code></pre>\n"
-  { return c.indexOf(line) == 0 })\n // show all completions if none found\n return [hits.length ? hits : completions, line
-License: UNKNOWN
- FIXME
-
 Files: doc/api/net.markdown
 Copyright: { //'connection' listener
 License: UNKNOWN
@@ -2601,11 +2601,6 @@ License: UNKNOWN
 
 Files: doc/api/readline.markdown
 Copyright: { return c.indexOf(line) == 0 })
-License: UNKNOWN
- FIXME
-
-Files: doc/api/readline.json
-Copyright: { return c.indexOf(line) == 0 })\n // show all completions if none found\n return [hits.length ? hits : completions, line
 License: UNKNOWN
  FIXME
 
