@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Child Process Node.js v0.10.24 Manual &amp; Documentation</title>
+  <title>Child Process Node.js v0.10.25 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/child_process.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.24 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.25 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -68,7 +68,7 @@
 </li>
 <li><a href="#child_process_child_process_spawn_command_args_options">child_process.spawn(command, [args], [options])</a></li>
 <li><a href="#child_process_child_process_exec_command_options_callback">child_process.exec(command, [options], callback)</a></li>
-<li><a href="#child_process_child_process_execfile_file_args_options_callback">child_process.execFile(file, args, options, callback)</a></li>
+<li><a href="#child_process_child_process_execfile_file_args_options_callback">child_process.execFile(file, [args], [options], [callback])</a></li>
 <li><a href="#child_process_child_process_fork_modulepath_args_options">child_process.fork(modulePath, [args], [options])</a></li>
 </ul>
 </li>
@@ -298,6 +298,12 @@ process.send({ foo: &#39;bar&#39; });</code></pre>
 will emit objects each time it receives a message on its channel.
 
 </p>
+<p>Please note that the <code>send()</code> method on both the parent and child are
+synchronous - sending large chunks of data is not advised (pipes can be used
+instead, see
+<a href="#child_process_child_process_spawn_command_args_options"><code>child_process.spawn</code></a>).
+
+</p>
 <p>There is a special case when sending a <code>{cmd: &#39;NODE_foo&#39;}</code> message. All messages
 containing a <code>NODE_</code> prefix in its <code>cmd</code> property will not be emitted in
 the <code>message</code> event, since they are internal messages used by node core.
@@ -521,7 +527,9 @@ ignored node will open <code>/dev/null</code> and attach it to the child&#39;s f
 <li><code>Stream</code> object - Share a readable or writable stream that refers to a tty,
 file, socket, or a pipe with the child process. The stream&#39;s underlying
 file descriptor is duplicated in the child process to the fd that 
-corresponds to the index in the <code>stdio</code> array.</li>
+corresponds to the index in the <code>stdio</code> array. Note that the stream must
+have an underlying descriptor (file streams do not until the <code>&#39;open&#39;</code>
+event has occurred).</li>
 <li>Positive integer - The integer value is interpreted as a file descriptor 
 that is is currently open in the parent process. It is shared with the child
 process, similar to how <code>Stream</code> objects can be shared.</li>
@@ -652,7 +660,7 @@ the child process is killed.
 
 
 </p>
-<h2>child_process.execFile(file, args, options, callback)<span><a class="mark" href="#child_process_child_process_execfile_file_args_options_callback" id="child_process_child_process_execfile_file_args_options_callback">#</a></span></h2>
+<h2>child_process.execFile(file, [args], [options], [callback])<span><a class="mark" href="#child_process_child_process_execfile_file_args_options_callback" id="child_process_child_process_execfile_file_args_options_callback">#</a></span></h2>
 <div class="signature"><ul>
 <li><code>file</code> <span class="type">String</span> The filename of the program to run</li>
 <li><code>args</code> <span class="type">Array</span> List of string arguments</li>
@@ -690,8 +698,10 @@ leaner than <code>child_process.exec</code>. It has the same options.
 <li><code>execPath</code> <span class="type">String</span> Executable used to create the child process</li>
 <li><code>execArgv</code> <span class="type">Array</span> List of string arguments passed to the executable
 (Default: <code>process.execArgv</code>)</li>
-<li><code>silent</code> <span class="type">Boolean</span> If true, prevent stdout and stderr in the spawned node
-process from being associated with the parent&#39;s (default is false)</li>
+<li><code>silent</code> <span class="type">Boolean</span> If true, stdin, stdout, and stderr of the child will be
+piped to the parent, otherwise they will be inherited from the parent, see
+the &quot;pipe&quot; and &quot;inherit&quot; options for <code>spawn()</code>&#39;s <code>stdio</code> for more details
+(default is false)</li>
 </ul>
 </li>
 <li>Return: ChildProcess object</li>
@@ -733,7 +743,7 @@ output on this fd is expected to be line delimited JSON objects.
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.24/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.25/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

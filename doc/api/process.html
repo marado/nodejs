@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>process Node.js v0.10.24 Manual &amp; Documentation</title>
+  <title>process Node.js v0.10.25 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/process.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.24 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.25 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -97,20 +97,23 @@ It is an instance of <a href="events.html#events_class_events_eventemitter">Even
 
 </p>
 <h2>Event: &#39;exit&#39;<span><a class="mark" href="#process_event_exit" id="process_event_exit">#</a></span></h2>
-<p>Emitted when the process is about to exit.  This is a good hook to perform
-constant time checks of the module&#39;s state (like for unit tests).  The main
-event loop will no longer be run after the &#39;exit&#39; callback finishes, so
-timers may not be scheduled.
+<p>Emitted when the process is about to exit. There is no way to prevent the
+exiting of the event loop at this point, and once all <code>exit</code> listeners have
+finished running the process will exit. Therefore you <strong>must</strong> only perform
+<strong>synchronous</strong> operations in this handler. This is a good hook to perform
+checks on the module&#39;s state (like for unit tests). The callback takes one
+argument, the code the process is exiting with.
 
 </p>
 <p>Example of listening for <code>exit</code>:
 
 </p>
-<pre><code>process.on(&#39;exit&#39;, function() {
+<pre><code>process.on(&#39;exit&#39;, function(code) {
+  // do *NOT* do this
   setTimeout(function() {
     console.log(&#39;This will not run&#39;);
   }, 0);
-  console.log(&#39;About to exit.&#39;);
+  console.log(&#39;About to exit with code:&#39;, code);
 });</code></pre>
 <h2>Event: &#39;uncaughtException&#39;<span><a class="mark" href="#process_event_uncaughtexception" id="process_event_uncaughtexception">#</a></span></h2>
 <p>Emitted when an exception bubbles all the way back to the event loop. If a
@@ -191,9 +194,9 @@ about 10 seconds later. On non-Windows platforms, the default behaviour of
 <code>SIGHUP</code> is to terminate node, but once a listener has been installed its
 default behaviour will be removed.</li>
 <li><code>SIGTERM</code> is not supported on Windows, it can be listened on.</li>
-<li><code>SIGINT</code> is supported on all platforms, and can usually be generated with
-<code>CTRL+C</code> (though this may be configurable). It is not generated when terminal
-raw mode is enabled.</li>
+<li><code>SIGINT</code> from the terminal is supported on all platforms, and can usually be
+generated with <code>CTRL+C</code> (though this may be configurable). It is not generated
+when terminal raw mode is enabled.</li>
 <li><code>SIGBREAK</code> is delivered on Windows when <code>CTRL+BREAK</code> is pressed, on non-Windows
 platforms it can be listened on, but there is no way to send or generate it.</li>
 <li><code>SIGWINCH</code> is delivered when the console has been resized. On Windows, this will
@@ -203,6 +206,13 @@ readable tty is used in raw mode.</li>
 node on all platforms.</li>
 <li><code>SIGSTOP</code> cannot have a listener installed.</li>
 </ul>
+<p>Note that Windows does not support sending Signals, but node offers some
+emulation with <code>process.kill()</code>, and <code>child_process.kill()</code>:
+- Sending signal <code>0</code> can be used to search for the existence of a process
+- Sending <code>SIGINT</code>, <code>SIGTERM</code>, and <code>SIGKILL</code> cause the unconditional exit of the
+  target process.
+
+</p>
 <h2>process.stdout<span><a class="mark" href="#process_process_stdout" id="process_process_stdout">#</a></span></h2>
 <p>A <code>Writable Stream</code> to <code>stdout</code>.
 
@@ -508,7 +518,7 @@ the &quot;config.gypi&quot; file that was produced when running the <code>./conf
 <p>Send a signal to a process. <code>pid</code> is the process id and <code>signal</code> is the
 string describing the signal to send.  Signal names are strings like
 &#39;SIGINT&#39; or &#39;SIGHUP&#39;.  If omitted, the signal will be &#39;SIGTERM&#39;.
-See kill(2) for more information.
+See <a href="#process_signal_events">Signal Events</a> and kill(2) for more information.
 
 </p>
 <p>Will throw an error if target does not exist, and as a special case, a signal of
@@ -732,7 +742,7 @@ setTimeout(function() {
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.24/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.25/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>
