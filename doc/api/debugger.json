@@ -55,7 +55,7 @@
         {
           "textRaw": "Advanced Usage",
           "name": "advanced_usage",
-          "desc": "<p>The V8 debugger can be enabled and accessed either by starting Node with\nthe <code>--debug</code> command-line flag or by signaling an existing Node process\nwith <code>SIGUSR1</code>.\n\n</p>\n<p>Once a process has been set in debug mode with this it can be connected to\nwith the node debugger. Either connect to the <code>pid</code> or the URI to the debugger.\nThe syntax is:\n\n</p>\n<ul>\n<li><code>node debug -p &lt;pid&gt;</code> - Connects to the process via the <code>pid</code></li>\n<li>`node debug <URI> - Connects to the process via the URI such as localhost:5858</li>\n</ul>\n",
+          "desc": "<p>The V8 debugger can be enabled and accessed either by starting Node with\nthe <code>--debug</code> command-line flag or by signaling an existing Node process\nwith <code>SIGUSR1</code>.\n\n</p>\n<p>Once a process has been set in debug mode with this it can be connected to\nwith the node debugger. Either connect to the <code>pid</code> or the URI to the debugger.\nThe syntax is:\n\n</p>\n<ul>\n<li><code>node debug -p &lt;pid&gt;</code> - Connects to the process via the <code>pid</code></li>\n<li><code>node debug &lt;URI&gt;</code> - Connects to the process via the URI such as localhost:5858</li>\n</ul>\n",
           "type": "misc",
           "displayName": "Advanced Usage"
         }

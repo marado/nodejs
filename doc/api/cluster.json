@@ -78,7 +78,7 @@
           "type": "event",
           "name": "fork",
           "params": [],
-          "desc": "<p>When a new worker is forked the cluster module will emit a &#39;fork&#39; event.\nThis can be used to log worker activity, and create you own timeout.\n\n</p>\n<pre><code>var timeouts = [];\nfunction errorMsg() {\n  console.error(&quot;Something must be wrong with the connection ...&quot;);\n}\n\ncluster.on(&#39;fork&#39;, function(worker) {\n  timeouts[worker.id] = setTimeout(errorMsg, 2000);\n});\ncluster.on(&#39;listening&#39;, function(worker, address) {\n  clearTimeout(timeouts[worker.id]);\n});\ncluster.on(&#39;exit&#39;, function(worker, code, signal) {\n  clearTimeout(timeouts[worker.id]);\n  errorMsg();\n});</code></pre>\n"
+          "desc": "<p>When a new worker is forked the cluster module will emit a &#39;fork&#39; event.\nThis can be used to log worker activity, and create your own timeout.\n\n</p>\n<pre><code>var timeouts = [];\nfunction errorMsg() {\n  console.error(&quot;Something must be wrong with the connection ...&quot;);\n}\n\ncluster.on(&#39;fork&#39;, function(worker) {\n  timeouts[worker.id] = setTimeout(errorMsg, 2000);\n});\ncluster.on(&#39;listening&#39;, function(worker, address) {\n  clearTimeout(timeouts[worker.id]);\n});\ncluster.on(&#39;exit&#39;, function(worker, code, signal) {\n  clearTimeout(timeouts[worker.id]);\n  errorMsg();\n});</code></pre>\n"
         },
         {
           "textRaw": "Event: 'online'",
