@@ -1,8 +1,8 @@
-nodejs (0.10.25~dfsg1-1) UNRELEASED; urgency=medium
+nodejs (0.10.25~dfsg1-1) unstable; urgency=medium
 
   * Upstream update 
 
- -- Jérémy Lal <kapouer@melix.org>  Fri, 24 Jan 2014 15:12:14 +0100
+ -- Jérémy Lal <kapouer@melix.org>  Fri, 24 Jan 2014 15:45:29 +0100
 
 nodejs (0.10.24~dfsg1-1) unstable; urgency=medium
 
