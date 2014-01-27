@@ -3,6 +3,7 @@ Upstream-Name: Node
 Source: http://nodejs.org/
  Repackaged to exclude non-DFSG files in
  ./deps/npm/html/static/webfonts
+ ./doc/sh_javascript.min.js
  Conveniently, remove unused software to simplify this file maintenance:
  ./deps/npm/
  ./deps/openssl/

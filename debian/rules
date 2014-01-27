@@ -11,6 +11,7 @@ DEB_UPSTREAM_TARBALL_BASENAME = node-v$(DEB_UPSTREAM_TARBALL_VERSION)
 # ./deps/npm contains some non-DFSG files, repackaging is needed.
 # Conveniently, remove unused software to ease debian/copyright maintenance.
 DEB_UPSTREAM_REPACKAGE_EXCLUDES += \
+./doc/sh_javascript.min.js \
 ./deps/npm/ \
 ./deps/openssl/ \
 ./deps/zlib/ \
