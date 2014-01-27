@@ -1,3 +1,13 @@
+nodejs (0.10.25~dfsg2-1) unstable; urgency=medium
+
+  * Exclude doc/sh_javascript.min.js, closes: #736779.
+  * Add 1005 patch to include a non-minified version of
+    doc/sh_javascript.min.js, and update path in debian/copyright.
+  * Update 2005 patch, allow test-abort-fatal-error to fail,
+    closes: #736576.
+
+ -- Jérémy Lal <kapouer@melix.org>  Mon, 27 Jan 2014 09:58:56 +0100
+
 nodejs (0.10.25~dfsg1-1) unstable; urgency=medium
 
   * Upstream update 
