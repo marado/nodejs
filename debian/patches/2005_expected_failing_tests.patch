@@ -56,7 +56,7 @@ Last-Update: 2014-01-27
 +test-signal-unregister: PASS || FAIL
 +# this one is tricky but falls nonetheless in this category
 +test-timers-unref: PASS || FAIL
-+test-abort-fatal-error: PASS || FAIL
++test-abort-fatal-error: PASS || TIMEOUT
 +
 +# ultra slow platform doesn't fail when timeouts are raised.
 +# manually checked on qemu-mipsel
