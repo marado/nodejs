@@ -119,6 +119,7 @@ License: public-domain
 
 Files: doc/sh_main.js
  doc/sh_javascript.min.js
+ debian/patches/1005_restore_sh_javascript_nonminified.patch
  doc/sh.css
  doc/api_assets/sh.css
  doc/api/assets/sh.css
