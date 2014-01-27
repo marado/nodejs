@@ -9,3 +9,4 @@
 1002_increase_timeout_in_test.patch
 1003_test_disable_chunked_response.patch
 1004_test_writeNaN.patch
+1005_restore_sh_javascript_nonminified.patch
