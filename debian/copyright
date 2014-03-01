@@ -1,21 +1,25 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: Node
-Source: http://nodejs.org/
- Repackaged to exclude non-DFSG files in
- ./deps/npm/html/static/webfonts
- ./doc/sh_javascript.min.js
- Conveniently, remove unused software to simplify this file maintenance:
- ./deps/npm/
- ./deps/openssl/
- ./deps/zlib/
- ./deps/cares/
- ./test/gc/node_modules/
- ./tools/blog/
- ./tools/gyp/
- ./tools/closure_linter/
- ./tools/msvs/genfiles/
- ./tools/wrk/
 Upstream-Contact: https://github.com/joyent/node/issues
+Source: http://nodejs.org/
+ Repackaged to exclude non-DFSG files:
+  deps/npm/html/static/webfonts
+  doc/sh_javascript.min.js
+ other files being excluded to ease copyright maintenance.
+Files-Excluded:
+ deps/npm/html/static/webfonts
+ doc/sh_javascript.min.js
+ deps/npm/
+ deps/openssl/
+ deps/zlib/
+ deps/cares/
+ test/gc/node_modules/
+ tools/blog/
+ tools/gyp/
+ tools/closure_linter/
+ tools/msvs/genfiles/
+ tools/wrk/
+
 
 Files: *
 Copyright: Joyent, Inc. and other Node contributors.
