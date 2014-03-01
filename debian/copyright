@@ -3,18 +3,15 @@ Upstream-Name: Node
 Upstream-Contact: https://github.com/joyent/node/issues
 Source: http://nodejs.org/
  Repackaged to exclude non-DFSG files:
-  deps/npm/html/static/webfonts
   doc/sh_javascript.min.js
  other files being excluded to ease copyright maintenance.
 Files-Excluded:
- deps/npm/html/static/webfonts
  doc/sh_javascript.min.js
  deps/npm/
  deps/openssl/
  deps/zlib/
  deps/cares/
  test/gc/node_modules/
- tools/blog/
  tools/gyp/
  tools/closure_linter/
  tools/msvs/genfiles/
