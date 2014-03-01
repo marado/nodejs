@@ -128,8 +128,6 @@ Files: doc/sh_main.js
 Copyright: 2007, 2008 gnombat@users.sourceforge.net
 License: GPL-3
 Comment:
- License:
- .
  License: http://shjs.sourceforge.net/doc/gplv3.html
 
 Files: lib/assert.js
@@ -332,7 +330,7 @@ License: BSD-4-clause~author
     be misrepresented as being the original software.
  .
  4. The name of the author may not be used to endorse or promote
-    products derived from this software without specific prior written 
+    products derived from this software without specific prior written
     permission.
  .
  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
