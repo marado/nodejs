@@ -599,7 +599,7 @@
             {
               "textRaw": "agent.maxSockets",
               "name": "maxSockets",
-              "desc": "<p>By default set to 5. Determines how many concurrent sockets the agent can have\nopen per host.\n\n</p>\n"
+              "desc": "<p>By default set to 5. Determines how many concurrent sockets the agent can have\nopen per origin. Origin is either a &#39;host:port&#39; or &#39;host:port:localAddress&#39;\ncombination.\n\n</p>\n"
             },
             {
               "textRaw": "agent.sockets",

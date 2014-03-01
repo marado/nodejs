@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Readline Node.js v0.10.25 Manual &amp; Documentation</title>
+  <title>Readline Node.js v0.10.26 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/readline.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.25 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.26 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -68,6 +68,10 @@
 </ul>
 </li>
 <li><a href="#readline_example_tiny_cli">Example: Tiny CLI</a></li>
+<li><a href="#readline_readline_cursorto_stream_x_y">readline.cursorTo(stream, x, y)</a></li>
+<li><a href="#readline_readline_movecursor_stream_dx_dy">readline.moveCursor(stream, dx, dy)</a></li>
+<li><a href="#readline_readline_clearline_stream_dir">readline.clearLine(stream, dir)</a></li>
+<li><a href="#readline_readline_clearscreendown_stream">readline.clearScreenDown(stream)</a></li>
 </ul>
 </li>
 </ul>
@@ -116,7 +120,7 @@ treated like a TTY, and have ANSI/VT100 escape codes written to it.
 Defaults to checking <code>isTTY</code> on the <code>output</code> stream upon instantiation.</p>
 </li>
 </ul>
-<p>The <code>completer</code> function is given a the current line entered by the user, and
+<p>The <code>completer</code> function is given the current line entered by the user, and
 is supposed to return an Array with 2 entries:
 
 </p>
@@ -378,6 +382,27 @@ rl.on(&#39;line&#39;, function(line) {
   console.log(&#39;Have a great day!&#39;);
   process.exit(0);
 });</code></pre>
+<h2>readline.cursorTo(stream, x, y)<span><a class="mark" href="#readline_readline_cursorto_stream_x_y" id="readline_readline_cursorto_stream_x_y">#</a></span></h2>
+<p>Move cursor to the specified position in a given TTY stream.
+
+</p>
+<h2>readline.moveCursor(stream, dx, dy)<span><a class="mark" href="#readline_readline_movecursor_stream_dx_dy" id="readline_readline_movecursor_stream_dx_dy">#</a></span></h2>
+<p>Move cursor relative to it&#39;s current position in a given TTY stream.
+
+</p>
+<h2>readline.clearLine(stream, dir)<span><a class="mark" href="#readline_readline_clearline_stream_dir" id="readline_readline_clearline_stream_dir">#</a></span></h2>
+<p>Clears current line of given TTY stream in a specified direction.
+<code>dir</code> should have one of following values:
+
+</p>
+<ul>
+<li><code>-1</code> - to the left from cursor</li>
+<li><code>1</code> - to the right from cursor</li>
+<li><code>0</code> - the entire line</li>
+</ul>
+<h2>readline.clearScreenDown(stream)<span><a class="mark" href="#readline_readline_clearscreendown_stream" id="readline_readline_clearscreendown_stream">#</a></span></h2>
+<p>Clears the screen from the current position of the cursor down.
+</p>
 
           </div>
         </div>
@@ -397,7 +422,7 @@ rl.on(&#39;line&#39;, function(line) {
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.25/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.26/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

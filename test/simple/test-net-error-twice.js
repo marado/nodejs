@@ -19,22 +19,35 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-var repl = require('./helper-debugger-repl.js');
+var common = require('../common');
+var assert = require('assert');
+var net = require('net');
 
-repl.startDebugger('breakpoints.js');
-var linesWithBreakpoint = [
-    /1/, /2/, /3/, /4/, /5/, /\* 6/
-];
-// We slice here, because addTest will change the given array.
-repl.addTest('sb(6)', linesWithBreakpoint.slice());
+var buf = new Buffer(2 * 1024 * 1024);
 
-var initialLines = repl.initialLines.slice()
-initialLines.splice(2, 0, /Restoring/, /Warning/);
+buf.fill(0x62);
 
-// Restart the debugged script
-repl.addTest('restart', [
-  /terminated/,
-].concat(initialLines));
+var errs = [];
 
-repl.addTest('list(5)', linesWithBreakpoint);
-repl.addTest('quit', []);
+var srv = net.createServer(function onConnection(conn) {
+  conn.write(buf);
+  conn.on('error', function (err) {
+    errs.push(err);
+    if (errs.length > 1 && errs[0] === errs[1])
+      assert(false, "We should not be emitting the same error twice");
+  });
+  conn.on('close', function() {
+    srv.unref();
+  });
+}).listen(common.PORT, function () {
+  var client = net.connect({ port: common.PORT });
+
+  client.on('connect', function () {
+    client.destroy();
+  });
+});
+
+process.on('exit', function() {
+  console.log(errs);
+  assert.equal(errs.length, 1);
+});

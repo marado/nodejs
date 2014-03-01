@@ -19,22 +19,23 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-var repl = require('./helper-debugger-repl.js');
+var common = require('../common');
+var assert = require('assert');
+var net = require('net');
 
-repl.startDebugger('breakpoints.js');
-var linesWithBreakpoint = [
-    /1/, /2/, /3/, /4/, /5/, /\* 6/
-];
-// We slice here, because addTest will change the given array.
-repl.addTest('sb(6)', linesWithBreakpoint.slice());
+process.stdout.write('hello world\r\n');
 
-var initialLines = repl.initialLines.slice()
-initialLines.splice(2, 0, /Restoring/, /Warning/);
+var stdin = process.openStdin();
 
-// Restart the debugged script
-repl.addTest('restart', [
-  /terminated/,
-].concat(initialLines));
+stdin.on('data', function(data) {
+  process.stdout.write(data.toString());
+});
 
-repl.addTest('list(5)', linesWithBreakpoint);
-repl.addTest('quit', []);
+stdin.on('end', function() {
+  // If stdin's fd will be closed - createServer may get it
+  var server = net.createServer(function() {
+  }).listen(common.PORT, function() {
+    assert(typeof server._handle.fd !== 'number' || server._handle.fd > 2);
+    server.close();
+  });
+});
