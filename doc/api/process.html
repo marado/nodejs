@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>process Node.js v0.10.25 Manual &amp; Documentation</title>
+  <title>process Node.js v0.10.26 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/process.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.25 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.26 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -224,11 +224,18 @@ emulation with <code>process.kill()</code>, and <code>child_process.kill()</code
   process.stdout.write(d + &#39;\n&#39;);
 };</code></pre>
 <p><code>process.stderr</code> and <code>process.stdout</code> are unlike other streams in Node in
-that writes to them are usually blocking.  They are blocking in the case
-that they refer to regular files or TTY file descriptors. In the case they
-refer to pipes, they are non-blocking like other streams.
+that writes to them are usually blocking.
 
 </p>
+<ul>
+<li>They are blocking in the case that they refer to regular files or TTY file
+descriptors.</li>
+<li>In the case they refer to pipes:<ul>
+<li>They are blocking in Linux/Unix.</li>
+<li>They are non-blocking like other streams in Windows.</li>
+</ul>
+</li>
+</ul>
 <p>To check if Node is being run in a TTY context, read the <code>isTTY</code> property
 on <code>process.stderr</code>, <code>process.stdout</code>, or <code>process.stdin</code>:
 
@@ -250,30 +257,52 @@ false</code></pre>
 
 </p>
 <p><code>process.stderr</code> and <code>process.stdout</code> are unlike other streams in Node in
-that writes to them are usually blocking.  They are blocking in the case
-that they refer to regular files or TTY file descriptors. In the case they
-refer to pipes, they are non-blocking like other streams.
-
+that writes to them are usually blocking.
 
 </p>
+<ul>
+<li>They are blocking in the case that they refer to regular files or TTY file
+descriptors.</li>
+<li>In the case they refer to pipes:<ul>
+<li>They are blocking in Linux/Unix.</li>
+<li>They are non-blocking like other streams in Windows.</li>
+</ul>
+</li>
+</ul>
 <h2>process.stdin<span><a class="mark" href="#process_process_stdin" id="process_process_stdin">#</a></span></h2>
-<p>A <code>Readable Stream</code> for stdin. The stdin stream is paused by default, so one
-must call <code>process.stdin.resume()</code> to read from it.
+<p>A <code>Readable Stream</code> for stdin. 
 
 </p>
 <p>Example of opening standard input and listening for both events:
 
 </p>
-<pre><code>process.stdin.resume();
-process.stdin.setEncoding(&#39;utf8&#39;);
+<pre><code>process.stdin.setEncoding(&#39;utf8&#39;);
 
-process.stdin.on(&#39;data&#39;, function(chunk) {
-  process.stdout.write(&#39;data: &#39; + chunk);
+process.stdin.on(&#39;readable&#39;, function(chunk) {
+  var chunk = process.stdin.read();
+  if (chunk !== null) {
+    process.stdout.write(&#39;data: &#39; + chunk);
+  }
 });
 
 process.stdin.on(&#39;end&#39;, function() {
   process.stdout.write(&#39;end&#39;);
 });</code></pre>
+<p>As a Stream, <code>process.stdin</code> can also be used in &quot;old&quot; mode that is compatible
+with scripts written for node prior v0.10.
+For more information see
+<a href="stream.html#stream_compatibility_with_older_node_versions">Stream compatibility</a>.
+
+</p>
+<p>In &quot;old&quot; Streams mode the stdin stream is paused by default, so one
+must call <code>process.stdin.resume()</code> to read from it. Note also that calling
+<code>process.stdin.resume()</code> itself would switch stream to &quot;old&quot; mode.
+
+</p>
+<p>If you are starting a new project you should prefer a more recent &quot;new&quot; Streams
+mode over &quot;old&quot; one.
+
+</p>
 <h2>process.argv<span><a class="mark" href="#process_process_argv" id="process_process_argv">#</a></span></h2>
 <p>An array containing the command line arguments.  The first element will be
 &#39;node&#39;, the second element will be the name of the JavaScript file.  The
@@ -742,7 +771,7 @@ setTimeout(function() {
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.25/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.26/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

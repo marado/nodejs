@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Timers Node.js v0.10.25 Manual &amp; Documentation</title>
+  <title>Timers Node.js v0.10.26 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/timers.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.25 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.26 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -47,13 +47,13 @@
             <ul>
 <li><a href="#timers_timers">Timers</a><ul>
 <li><a href="#timers_settimeout_callback_delay_arg">setTimeout(callback, delay, [arg], [...])</a></li>
-<li><a href="#timers_cleartimeout_timeoutid">clearTimeout(timeoutId)</a></li>
+<li><a href="#timers_cleartimeout_timeoutobject">clearTimeout(timeoutObject)</a></li>
 <li><a href="#timers_setinterval_callback_delay_arg">setInterval(callback, delay, [arg], [...])</a></li>
-<li><a href="#timers_clearinterval_intervalid">clearInterval(intervalId)</a></li>
+<li><a href="#timers_clearinterval_intervalobject">clearInterval(intervalObject)</a></li>
 <li><a href="#timers_unref">unref()</a></li>
 <li><a href="#timers_ref">ref()</a></li>
 <li><a href="#timers_setimmediate_callback_arg">setImmediate(callback, [arg], [...])</a></li>
-<li><a href="#timers_clearimmediate_immediateid">clearImmediate(immediateId)</a></li>
+<li><a href="#timers_clearimmediate_immediateobject">clearImmediate(immediateObject)</a></li>
 </ul>
 </li>
 </ul>
@@ -68,7 +68,7 @@ this module in order to use them.
 </p>
 <h2>setTimeout(callback, delay, [arg], [...])<span><a class="mark" href="#timers_settimeout_callback_delay_arg" id="timers_settimeout_callback_delay_arg">#</a></span></h2>
 <p>To schedule execution of a one-time <code>callback</code> after <code>delay</code> milliseconds. Returns a
-<code>timeoutId</code> for possible use with <code>clearTimeout()</code>. Optionally you can
+<code>timeoutObject</code> for possible use with <code>clearTimeout()</code>. Optionally you can
 also pass arguments to the callback.
 
 </p>
@@ -78,17 +78,17 @@ the callback will fire, nor of the ordering things will fire in. The callback wi
 be called as close as possible to the time specified.
 
 </p>
-<h2>clearTimeout(timeoutId)<span><a class="mark" href="#timers_cleartimeout_timeoutid" id="timers_cleartimeout_timeoutid">#</a></span></h2>
+<h2>clearTimeout(timeoutObject)<span><a class="mark" href="#timers_cleartimeout_timeoutobject" id="timers_cleartimeout_timeoutobject">#</a></span></h2>
 <p>Prevents a timeout from triggering.
 
 </p>
 <h2>setInterval(callback, delay, [arg], [...])<span><a class="mark" href="#timers_setinterval_callback_delay_arg" id="timers_setinterval_callback_delay_arg">#</a></span></h2>
 <p>To schedule the repeated execution of <code>callback</code> every <code>delay</code> milliseconds.
-Returns a <code>intervalId</code> for possible use with <code>clearInterval()</code>. Optionally
+Returns a <code>intervalObject</code> for possible use with <code>clearInterval()</code>. Optionally
 you can also pass arguments to the callback.
 
 </p>
-<h2>clearInterval(intervalId)<span><a class="mark" href="#timers_clearinterval_intervalid" id="timers_clearinterval_intervalid">#</a></span></h2>
+<h2>clearInterval(intervalObject)<span><a class="mark" href="#timers_clearinterval_intervalobject" id="timers_clearinterval_intervalobject">#</a></span></h2>
 <p>Stops a interval from triggering.
 
 </p>
@@ -113,7 +113,7 @@ request the timer hold the program open. If the timer is already <code>ref</code
 <h2>setImmediate(callback, [arg], [...])<span><a class="mark" href="#timers_setimmediate_callback_arg" id="timers_setimmediate_callback_arg">#</a></span></h2>
 <p>To schedule the &quot;immediate&quot; execution of <code>callback</code> after I/O events
 callbacks and before <code>setTimeout</code> and <code>setInterval</code> . Returns an
-<code>immediateId</code> for possible use with <code>clearImmediate()</code>. Optionally you
+<code>immediateObject</code> for possible use with <code>clearImmediate()</code>. Optionally you
 can also pass arguments to the callback.
 
 </p>
@@ -125,7 +125,7 @@ not being starved. While order is preserved for execution, other I/O events may
 fire between any two scheduled immediate callbacks.
 
 </p>
-<h2>clearImmediate(immediateId)<span><a class="mark" href="#timers_clearimmediate_immediateid" id="timers_clearimmediate_immediateid">#</a></span></h2>
+<h2>clearImmediate(immediateObject)<span><a class="mark" href="#timers_clearimmediate_immediateobject" id="timers_clearimmediate_immediateobject">#</a></span></h2>
 <p>Stops an immediate from triggering.
 </p>
 
@@ -147,7 +147,7 @@ fire between any two scheduled immediate callbacks.
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.25/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.26/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

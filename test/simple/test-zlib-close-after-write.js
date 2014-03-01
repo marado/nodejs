@@ -19,22 +19,20 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-var repl = require('./helper-debugger-repl.js');
+var common = require('../common.js');
+var assert = require('assert');
+var zlib = require('zlib');
 
-repl.startDebugger('breakpoints.js');
-var linesWithBreakpoint = [
-    /1/, /2/, /3/, /4/, /5/, /\* 6/
-];
-// We slice here, because addTest will change the given array.
-repl.addTest('sb(6)', linesWithBreakpoint.slice());
+var closed = false;
 
-var initialLines = repl.initialLines.slice()
-initialLines.splice(2, 0, /Restoring/, /Warning/);
+zlib.gzip('hello', function(err, out) {
+  var unzip = zlib.createGunzip();
+  unzip.write(out);
+  unzip.close(function() {
+    closed = true;
+  });
+});
 
-// Restart the debugged script
-repl.addTest('restart', [
-  /terminated/,
-].concat(initialLines));
-
-repl.addTest('list(5)', linesWithBreakpoint);
-repl.addTest('quit', []);
+process.on('exit', function() {
+  assert(closed);
+});

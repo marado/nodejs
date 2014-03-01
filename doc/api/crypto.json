@@ -684,7 +684,7 @@
               "textRaw": "diffieHellman.getGenerator([encoding])",
               "type": "method",
               "name": "getGenerator",
-              "desc": "<p>Returns the Diffie-Hellman prime in the specified encoding, which can\nbe <code>&#39;binary&#39;</code>, <code>&#39;hex&#39;</code>, or <code>&#39;base64&#39;</code>. If no encoding is provided,\nthen a buffer is returned.\n\n</p>\n",
+              "desc": "<p>Returns the Diffie-Hellman generator in the specified encoding, which can\nbe <code>&#39;binary&#39;</code>, <code>&#39;hex&#39;</code>, or <code>&#39;base64&#39;</code>. If no encoding is provided,\nthen a buffer is returned.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
