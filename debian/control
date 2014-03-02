@@ -20,8 +20,9 @@ Build-Depends: cdbs,
  python,
  libv8-3.14-dev (>= 3.7),
  libssl-dev (>= 1.0.0g),
- libc-ares-dev (>= 1.7.5)
-Standards-Version: 3.9.4
+ libc-ares-dev (>= 1.7.5),
+ ca-certificates
+Standards-Version: 3.9.5
 Homepage: http://nodejs.org/
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=collab-maint/nodejs.git
 Vcs-Git: git://anonscm.debian.org/collab-maint/nodejs.git
@@ -42,6 +43,7 @@ Description: evented I/O for V8 javascript (development files)
  This package is needed to build plugins.
 
 Package: nodejs
+Priority: optional
 Architecture: any
 Depends: ${shlibs:Depends},
  ${misc:Depends}
