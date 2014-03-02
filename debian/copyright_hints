@@ -77,7 +77,6 @@ Files: benchmark/buffers/buffer-base64-encode.js
  src/node_os.cc
  src/node_os.h
  src/node_provider.d
- src/node_root_certs.h
  src/node_script.cc
  src/node_script.h
  src/node_stat_watcher.cc
@@ -158,6 +157,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/fixtures/create-file.js
  test/fixtures/cycles/folder/foo.js
  test/fixtures/cycles/root.js
+ test/fixtures/echo-close-check.js
  test/fixtures/echo.js
  test/fixtures/exit.js
  test/fixtures/global/plain.js
@@ -608,6 +608,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-net-during-close.js
  test/simple/test-net-eaddrinuse.js
  test/simple/test-net-end-without-connect.js
+ test/simple/test-net-error-twice.js
  test/simple/test-net-isip.js
  test/simple/test-net-keepalive.js
  test/simple/test-net-large-string.js
@@ -840,6 +841,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-writeint.js
  test/simple/test-writeuint.js
  test/simple/test-zerolengthbufferbug.js
+ test/simple/test-zlib-close-after-write.js
  test/simple/test-zlib-dictionary-fail.js
  test/simple/test-zlib-dictionary.js
  test/simple/test-zlib-from-gzip.js
@@ -853,596 +855,6 @@ Files: benchmark/buffers/buffer-base64-encode.js
  tools/doc/json.js
 Copyright: Joyent, Inc. and other Node contributors
 License: Expat
- FIXME
-
-Files: AUTHORS
- BSDmakefile
- CONTRIBUTING.md
- ChangeLog
- Makefile
- README.md
- benchmark/arrays/var-int.js
- benchmark/arrays/zero-float.js
- benchmark/arrays/zero-int.js
- benchmark/buffers/buffer-creation.js
- benchmark/buffers/buffer-read.js
- benchmark/buffers/buffer-write.js
- benchmark/buffers/dataview-set.js
- benchmark/common.js
- benchmark/crypto/hash-stream-creation.js
- benchmark/crypto/hash-stream-throughput.js
- benchmark/fs-write-stream-throughput.js
- benchmark/fs/read-stream-throughput.js
- benchmark/fs/readfile.js
- benchmark/fs/write-stream-throughput.js
- benchmark/http-flamegraph.sh
- benchmark/http.sh
- benchmark/http/client-request-body.js
- benchmark/http/cluster.js
- benchmark/http/end-vs-write-end.js
- benchmark/http/simple.js
- benchmark/http_server_lag.js
- benchmark/http_simple.js
- benchmark/http_simple.rb
- benchmark/http_simple_auto.js
- benchmark/http_simple_bench.sh
- benchmark/http_simple_cluster.js
- benchmark/idle_clients.js
- benchmark/idle_server.js
- benchmark/io.c
- benchmark/misc/child-process-read.js
- benchmark/misc/function_call/.gitignore
- benchmark/misc/function_call/Makefile
- benchmark/misc/function_call/binding.cc
- benchmark/misc/function_call/binding.gyp
- benchmark/misc/function_call/index.js
- benchmark/misc/next-tick-breadth.js
- benchmark/misc/spawn-echo.js
- benchmark/misc/startup.js
- benchmark/misc/string-creation.js
- benchmark/misc/timers.js
- benchmark/misc/url.js
- benchmark/misc/v8-bench.js
- benchmark/net/dgram.js
- benchmark/net/net-c2s.js
- benchmark/net/net-pipe.js
- benchmark/net/net-s2c.js
- benchmark/net/tcp-raw-c2s.js
- benchmark/net/tcp-raw-pipe.js
- benchmark/net/tcp-raw-s2c.js
- benchmark/plot.R
- benchmark/report-startup-memory.js
- benchmark/static_http_server.js
- benchmark/tls/throughput.js
- benchmark/tls/tls-connect.js
- common.gypi
- configure
- debian/README.source
- debian/TODO
- debian/compat
- debian/control
- debian/control.in
- debian/gbp.conf
- debian/nodejs-dev.dirs
- debian/nodejs-dev.install
- debian/nodejs-dev.links
- debian/nodejs-legacy.links
- debian/nodejs.README.Debian
- debian/nodejs.dirs
- debian/nodejs.doc-base
- debian/nodejs.docs
- debian/nodejs.install
- debian/nodejs.lintian-overrides
- debian/nodejs.manpages
- debian/nodejs.postinst
- debian/nodejs.prerm
- debian/patches/1001_readfile_eisdir.patch
- debian/patches/1002_increase_timeout_in_test.patch
- debian/patches/1003_test_disable_chunked_response.patch
- debian/patches/1004_test_writeNaN.patch
- debian/patches/2001_FHS_and_rename_to_nodejs.patch
- debian/patches/2004_relax_failing_test.patch
- debian/patches/2005_expected_failing_tests.patch
- debian/patches/2010_fix_makefile_missing_zlib.patch
- debian/patches/2011_enable_mipsel_build.patch
- debian/patches/2011_mipsel.patch
- debian/patches/2012_kfreebsd.patch
- debian/patches/2013_gyp_noparallel_compat.patch
- debian/patches/series
- debian/source/format
- debian/watch
- deps/http_parser/.gitignore
- deps/http_parser/.mailmap
- deps/http_parser/AUTHORS
- deps/http_parser/CONTRIBUTIONS
- deps/http_parser/Makefile
- deps/http_parser/README.md
- deps/http_parser/http_parser.gyp
- deps/http_parser/url_parser.c
- deps/uv/.gitignore
- deps/uv/ChangeLog
- deps/uv/README.md
- deps/uv/common.gypi
- deps/uv/gyp_uv.py
- deps/uv/test/fixtures/load_error.node
- deps/uv/uv.gyp
- deps/uv/vcbuild.bat
- deps/v8/.gitignore
- deps/v8/AUTHORS
- deps/v8/ChangeLog
- deps/v8/DEPS
- deps/v8/OWNERS
- deps/v8/benchmarks/README.txt
- deps/v8/benchmarks/revisions.html
- deps/v8/benchmarks/run.html
- deps/v8/benchmarks/spinning-balls/index.html
- deps/v8/benchmarks/style.css
- deps/v8/build/README.txt
- deps/v8/tools/freebsd-tick-processor
- deps/v8/tools/gcmole/README
- deps/v8/tools/linux-tick-processor
- deps/v8/tools/mac-nm
- deps/v8/tools/mac-tick-processor
- deps/v8/tools/oom_dump/README
- deps/v8/tools/testrunner/README
- deps/v8/tools/testrunner/server/daemon.py
- deps/v8/tools/visual_studio/README.txt
- deps/v8/tools/windows-tick-processor.bat
- doc/api/_toc.json
- doc/api/_toc.markdown
- doc/api/addons.json
- doc/api/addons.markdown
- doc/api/all.markdown
- doc/api/assert.json
- doc/api/assert.markdown
- doc/api/assets/sh.css
- doc/api/assets/style.css
- doc/api/buffer.json
- doc/api/buffer.markdown
- doc/api/child_process.json
- doc/api/child_process.markdown
- doc/api/cluster.json
- doc/api/cluster.markdown
- doc/api/console.json
- doc/api/console.markdown
- doc/api/crypto.json
- doc/api/crypto.markdown
- doc/api/debugger.json
- doc/api/debugger.markdown
- doc/api/dgram.json
- doc/api/dgram.markdown
- doc/api/dns.json
- doc/api/dns.markdown
- doc/api/documentation.json
- doc/api/documentation.markdown
- doc/api/domain.json
- doc/api/domain.markdown
- doc/api/events.json
- doc/api/events.markdown
- doc/api/fs.json
- doc/api/fs.markdown
- doc/api/globals.json
- doc/api/globals.markdown
- doc/api/http.json
- doc/api/http.markdown
- doc/api/https.json
- doc/api/https.markdown
- doc/api/index.json
- doc/api/index.markdown
- doc/api/modules.json
- doc/api/modules.markdown
- doc/api/os.json
- doc/api/os.markdown
- doc/api/path.json
- doc/api/path.markdown
- doc/api/process.json
- doc/api/process.markdown
- doc/api/punycode.json
- doc/api/punycode.markdown
- doc/api/querystring.json
- doc/api/querystring.markdown
- doc/api/repl.json
- doc/api/repl.markdown
- doc/api/stream.json
- doc/api/stream.markdown
- doc/api/string_decoder.json
- doc/api/string_decoder.markdown
- doc/api/synopsis.json
- doc/api/synopsis.markdown
- doc/api/timers.json
- doc/api/timers.markdown
- doc/api/tls.json
- doc/api/tls.markdown
- doc/api/tty.json
- doc/api/tty.markdown
- doc/api/url.json
- doc/api/url.markdown
- doc/api/util.json
- doc/api/util.markdown
- doc/api/vm.json
- doc/api/vm.markdown
- doc/api/zlib.json
- doc/api/zlib.markdown
- doc/api_assets/sh.css
- doc/api_assets/style.css
- doc/blog/README.md
- doc/blog/Uncategorized/an-easy-way-to-build-scalable-network-programs.md
- doc/blog/Uncategorized/bnoordhuis-departure.md
- doc/blog/Uncategorized/development-environment.md
- doc/blog/Uncategorized/evolving-the-node-js-brand.md
- doc/blog/Uncategorized/growing-up.md
- doc/blog/Uncategorized/jobs-nodejs-org.md
- doc/blog/Uncategorized/ldapjs-a-reprise-of-ldap.md
- doc/blog/Uncategorized/libuv-status-report.md
- doc/blog/Uncategorized/node-meetup-this-thursday.md
- doc/blog/Uncategorized/node-office-hours-cut-short.md
- doc/blog/Uncategorized/office-hours.md
- doc/blog/Uncategorized/porting-node-to-windows-with-microsoft%e2%80%99s-help.md
- doc/blog/Uncategorized/profiling-node-js.md
- doc/blog/Uncategorized/some-new-node-projects.md
- doc/blog/Uncategorized/the-videos-from-node-meetup.md
- doc/blog/Uncategorized/tj-fontaine-new-node-lead.md
- doc/blog/Uncategorized/trademark.md
- doc/blog/Uncategorized/version-0-6.md
- doc/blog/favicon.ico
- doc/blog/feature/streams2.md
- doc/blog/module/multi-server-continuous-deployment-with-fleet.md
- doc/blog/module/service-logging-in-json-with-bunyan.md
- doc/blog/nodejs-road-ahead.md
- doc/blog/npm/2013-outage-postmortem.md
- doc/blog/npm/managing-node-js-dependencies-with-shrinkwrap.md
- doc/blog/npm/npm-1-0-global-vs-local-installation.md
- doc/blog/npm/npm-1-0-link.md
- doc/blog/npm/npm-1-0-released.md
- doc/blog/npm/npm-1-0-the-new-ls.md
- doc/blog/npm/peer-dependencies.md
- doc/blog/release/0.6.21.md
- doc/blog/release/node-v0-4-10.md
- doc/blog/release/node-v0-4-11.md
- doc/blog/release/node-v0-4-12.md
- doc/blog/release/node-v0-4-3.md
- doc/blog/release/node-v0-4-4.md
- doc/blog/release/node-v0-4-5.md
- doc/blog/release/node-v0-4-6.md
- doc/blog/release/node-v0-4-7.md
- doc/blog/release/node-v0-4-8.md
- doc/blog/release/node-v0-4-9.md
- doc/blog/release/node-v0-5-0-unstable.md
- doc/blog/release/node-v0-5-1.md
- doc/blog/release/node-v0-5-10.md
- doc/blog/release/node-v0-5-2.md
- doc/blog/release/node-v0-5-3.md
- doc/blog/release/node-v0-5-4.md
- doc/blog/release/node-v0-5-5.md
- doc/blog/release/node-v0-5-6.md
- doc/blog/release/node-v0-5-7-unstable.md
- doc/blog/release/node-v0-5-8.md
- doc/blog/release/node-v0-5-9.md
- doc/blog/release/node-v0-6-0.md
- doc/blog/release/node-v0-6-1.md
- doc/blog/release/node-v0-6-10.md
- doc/blog/release/node-v0-6-2.md
- doc/blog/release/node-v0-6-3.md
- doc/blog/release/node-v0-6-4.md
- doc/blog/release/node-v0-6-5.md
- doc/blog/release/node-v0-6-6.md
- doc/blog/release/node-v0-6-7.md
- doc/blog/release/node-v0-6-8.md
- doc/blog/release/node-v0-6-9.md
- doc/blog/release/node-v0-7-0-unstable.md
- doc/blog/release/node-v0-7-1.md
- doc/blog/release/node-v0-7-2-unstable.md
- doc/blog/release/node-v0-7-3.md
- doc/blog/release/node-v0.8.0.md
- doc/blog/release/node-version-0-6-19-stable.md
- doc/blog/release/node-version-0-7-9-unstable.md
- doc/blog/release/v0.10.0.md
- doc/blog/release/v0.10.1.md
- doc/blog/release/v0.10.10.md
- doc/blog/release/v0.10.11.md
- doc/blog/release/v0.10.12.md
- doc/blog/release/v0.10.13.md
- doc/blog/release/v0.10.14.md
- doc/blog/release/v0.10.15.md
- doc/blog/release/v0.10.16.md
- doc/blog/release/v0.10.17.md
- doc/blog/release/v0.10.18.md
- doc/blog/release/v0.10.19.md
- doc/blog/release/v0.10.2.md
- doc/blog/release/v0.10.20.md
- doc/blog/release/v0.10.21.md
- doc/blog/release/v0.10.22.md
- doc/blog/release/v0.10.23.md
- doc/blog/release/v0.10.24.md
- doc/blog/release/v0.10.3.md
- doc/blog/release/v0.10.4.md
- doc/blog/release/v0.10.5.md
- doc/blog/release/v0.10.6.md
- doc/blog/release/v0.10.7.md
- doc/blog/release/v0.10.8.md
- doc/blog/release/v0.10.9.md
- doc/blog/release/v0.11.0.md
- doc/blog/release/v0.11.1.md
- doc/blog/release/v0.11.10.md
- doc/blog/release/v0.11.2.md
- doc/blog/release/v0.11.3.md
- doc/blog/release/v0.11.4.md
- doc/blog/release/v0.11.5.md
- doc/blog/release/v0.11.6.md
- doc/blog/release/v0.11.7.md
- doc/blog/release/v0.11.8.md
- doc/blog/release/v0.11.9.md
- doc/blog/release/v0.6.20.md
- doc/blog/release/v0.8.1.md
- doc/blog/release/v0.8.10.md
- doc/blog/release/v0.8.11.md
- doc/blog/release/v0.8.12.md
- doc/blog/release/v0.8.13.md
- doc/blog/release/v0.8.14.md
- doc/blog/release/v0.8.15.md
- doc/blog/release/v0.8.16.md
- doc/blog/release/v0.8.17.md
- doc/blog/release/v0.8.18.md
- doc/blog/release/v0.8.19.md
- doc/blog/release/v0.8.2.md
- doc/blog/release/v0.8.20.md
- doc/blog/release/v0.8.21.md
- doc/blog/release/v0.8.22.md
- doc/blog/release/v0.8.23.md
- doc/blog/release/v0.8.24.md
- doc/blog/release/v0.8.25.md
- doc/blog/release/v0.8.26.md
- doc/blog/release/v0.8.3.md
- doc/blog/release/v0.8.4.md
- doc/blog/release/v0.8.5.md
- doc/blog/release/v0.8.6.md
- doc/blog/release/v0.8.7.md
- doc/blog/release/v0.8.8.md
- doc/blog/release/v0.8.9.md
- doc/blog/release/v0.9.0.md
- doc/blog/release/v0.9.1.md
- doc/blog/release/v0.9.10.md
- doc/blog/release/v0.9.11.md
- doc/blog/release/v0.9.12.md
- doc/blog/release/v0.9.2.md
- doc/blog/release/v0.9.3.md
- doc/blog/release/v0.9.4.md
- doc/blog/release/v0.9.5.md
- doc/blog/release/v0.9.6.md
- doc/blog/release/v0.9.7.md
- doc/blog/release/v0.9.8.md
- doc/blog/release/version-0-6-11-stable.md
- doc/blog/release/version-0-6-12-stable.md
- doc/blog/release/version-0-6-13-stable.md
- doc/blog/release/version-0-6-14-stable.md
- doc/blog/release/version-0-6-15-stable.md
- doc/blog/release/version-0-6-16-stable.md
- doc/blog/release/version-0-6-17-stable.md
- doc/blog/release/version-0-6-18-stable.md
- doc/blog/release/version-0-7-10-unstable.md
- doc/blog/release/version-0-7-11-unstable.md
- doc/blog/release/version-0-7-12.md
- doc/blog/release/version-0-7-4-unstable.md
- doc/blog/release/version-0-7-5-unstable.md
- doc/blog/release/version-0-7-6-unstable.md
- doc/blog/release/version-0-7-7-unstable.md
- doc/blog/release/version-0-7-8-unstable.md
- doc/blog/v0.9.9.md
- doc/blog/video/bert-belder-libuv-lxjs-2012.md
- doc/blog/video/bryan-cantrill-instrumenting-the-real-time-web.md
- doc/blog/video/welcome-to-the-node-blog.md
- doc/blog/vulnerability/http-server-pipeline-flood-dos.md
- doc/blog/vulnerability/http-server-security-vulnerability-please-upgrade-to-0-6-17.md
- doc/changelog-head.html
- doc/cla.html
- doc/favicon.ico
- doc/node.1
- doc/pipe.css
- doc/robots.txt
- doc/rss.xml
- doc/sh.css
- doc/sh_javascript.min.js
- doc/sh_vim-dark.css
- doc/v0.4_announcement.html
- lib/punycode.js
- node.gyp
- src/macros.py
- src/node_crypto_groups.h
- src/perfctr_macros.py
- src/res/node_etw_provider.man
- src/res/node_perfctr_provider.man
- src/udp_wrap.h
- src/v8abbr.h
- src/v8ustack.d
- test/addons/.gitignore
- test/addons/async-hello-world/binding.cc
- test/addons/async-hello-world/binding.gyp
- test/addons/async-hello-world/test.js
- test/addons/at-exit/binding.cc
- test/addons/at-exit/binding.gyp
- test/addons/at-exit/test.js
- test/addons/hello-world-function-export/binding.cc
- test/addons/hello-world-function-export/binding.gyp
- test/addons/hello-world-function-export/test.js
- test/addons/hello-world/binding.cc
- test/addons/hello-world/binding.gyp
- test/addons/hello-world/test.js
- test/fixtures/agent.crt
- test/fixtures/agent.key
- test/fixtures/alice.crt
- test/fixtures/break-in-module/main.js
- test/fixtures/breakpoints.js
- test/fixtures/breakpoints_utf8.js
- test/fixtures/cert.pem
- test/fixtures/child-process-message-and-exit.js
- test/fixtures/child-process-persistent.js
- test/fixtures/child-process-spawn-node.js
- test/fixtures/debug-target.js
- test/fixtures/deprecated.js
- test/fixtures/destroy-stdin.js
- test/fixtures/elipses.txt
- test/fixtures/fixture.ini
- test/fixtures/foafssl.crt
- test/fixtures/foafssl.key
- test/fixtures/foo
- test/fixtures/invalid.json
- test/fixtures/keys/Makefile
- test/fixtures/keys/agent1-cert.pem
- test/fixtures/keys/agent1-csr.pem
- test/fixtures/keys/agent1-key.pem
- test/fixtures/keys/agent1.cnf
- test/fixtures/keys/agent2-cert.pem
- test/fixtures/keys/agent2-csr.pem
- test/fixtures/keys/agent2-key.pem
- test/fixtures/keys/agent2.cnf
- test/fixtures/keys/agent3-cert.pem
- test/fixtures/keys/agent3-csr.pem
- test/fixtures/keys/agent3-key.pem
- test/fixtures/keys/agent3.cnf
- test/fixtures/keys/agent4-cert.pem
- test/fixtures/keys/agent4-csr.pem
- test/fixtures/keys/agent4-key.pem
- test/fixtures/keys/agent4.cnf
- test/fixtures/keys/ca1-cert.pem
- test/fixtures/keys/ca1-cert.srl
- test/fixtures/keys/ca1-key.pem
- test/fixtures/keys/ca1.cnf
- test/fixtures/keys/ca2-cert.pem
- test/fixtures/keys/ca2-cert.srl
- test/fixtures/keys/ca2-crl.pem
- test/fixtures/keys/ca2-database.txt
- test/fixtures/keys/ca2-key.pem
- test/fixtures/keys/ca2-serial
- test/fixtures/keys/ca2.cnf
- test/fixtures/module-load-order/file1
- test/fixtures/module-load-order/file1.node
- test/fixtures/module-load-order/file1.reg
- test/fixtures/module-load-order/file1.reg2
- test/fixtures/module-load-order/file2.node
- test/fixtures/module-load-order/file2.reg
- test/fixtures/module-load-order/file2.reg2
- test/fixtures/module-load-order/file2/index.node
- test/fixtures/module-load-order/file2/index.reg
- test/fixtures/module-load-order/file2/index.reg2
- test/fixtures/module-load-order/file3.node
- test/fixtures/module-load-order/file3.reg
- test/fixtures/module-load-order/file3.reg2
- test/fixtures/module-load-order/file3/index.node
- test/fixtures/module-load-order/file3/index.reg
- test/fixtures/module-load-order/file3/index.reg2
- test/fixtures/module-load-order/file4.reg
- test/fixtures/module-load-order/file4.reg2
- test/fixtures/module-load-order/file4/index.node
- test/fixtures/module-load-order/file4/index.reg
- test/fixtures/module-load-order/file4/index.reg2
- test/fixtures/module-load-order/file5.reg2
- test/fixtures/module-load-order/file5/index.node
- test/fixtures/module-load-order/file5/index.reg
- test/fixtures/module-load-order/file5/index.reg2
- test/fixtures/module-load-order/file6/index.node
- test/fixtures/module-load-order/file6/index.reg
- test/fixtures/module-load-order/file6/index.reg2
- test/fixtures/module-load-order/file7/index.node
- test/fixtures/module-load-order/file7/index.reg
- test/fixtures/module-load-order/file7/index.reg2
- test/fixtures/module-load-order/file8/index.reg
- test/fixtures/module-load-order/file8/index.reg2
- test/fixtures/module-load-order/file9/index.reg2
- test/fixtures/module-loading-error.node
- test/fixtures/module-require/child/index.js
- test/fixtures/module-require/child/node_modules/target.js
- test/fixtures/module-require/parent/index.js
- test/fixtures/module-require/parent/node_modules/target.js
- test/fixtures/msca.pem
- test/fixtures/multi-alice.crt
- test/fixtures/packages/main-index/package.json
- test/fixtures/packages/main/package.json
- test/fixtures/parent-process-nonpersistent.js
- test/fixtures/pass-cert.pem
- test/fixtures/pass-csr.pem
- test/fixtures/pass-key.pem
- test/fixtures/registerExt.hello.world
- test/fixtures/registerExt.test
- test/fixtures/registerExt2.test
- test/fixtures/test-regress-GH-4015.js
- test/fixtures/test_ca.pem
- test/fixtures/test_cert.pem
- test/fixtures/test_cert.pfx
- test/fixtures/test_dsa_params.pem
- test/fixtures/test_dsa_privkey.pem
- test/fixtures/test_dsa_pubkey.pem
- test/fixtures/test_key.pem
- test/fixtures/test_rsa_privkey.pem
- test/fixtures/test_rsa_privkey_2.pem
- test/fixtures/test_rsa_pubkey.pem
- test/fixtures/test_rsa_pubkey_2.pem
- test/fixtures/utf8-bom.js
- test/fixtures/utf8-bom.json
- test/fixtures/x.txt
- test/fixtures/x1024.txt
- test/gc/test-http-client-connaborted.js
- test/gc/test-http-client-onerror.js
- test/gc/test-http-client-timeout.js
- test/gc/test-http-client.js
- test/gc/test-net-timeout.js
- test/internet/internet.status
- test/message/2100bytes.out
- test/message/error_exit.out
- test/message/eval_messages.out
- test/message/hello_world.out
- test/message/max_tick_depth.out
- test/message/max_tick_depth_trace.out
- test/message/nexttick_throw.out
- test/message/stack_overflow.out
- test/message/stdin_messages.out
- test/message/throw_custom_error.out
- test/message/throw_in_line_with_tabs.out
- test/message/throw_non_error.out
- test/message/timeout_throw.out
- test/message/undefined_reference_in_new_context.out
- test/pummel/pummel.status
- test/simple/simple.status
- test/simple/test-fs-non-number-arguments-throw.js
- test/simple/test-http-parser-bad-ref.js
- tools/build-changelog.sh
- tools/changelog-head.sh
- tools/doc/README.md
- tools/doc/node_modules/marked/.npmignore
- tools/doc/node_modules/marked/Makefile
- tools/doc/node_modules/marked/index.js
- tools/doc/node_modules/marked/package.json
- tools/doc/package.json
- tools/email-footer.md
- tools/genv8constants.py
- tools/getnextnodeversion.py
- tools/getnodeisrelease.py
- tools/getnodeversion.py
- tools/getprevnodeversion.py
- tools/getstability.py
- tools/gyp_node.py
- tools/install.py
- tools/license2rtf.js
- tools/msvs/msi/WixUI_en-us.wxl
- tools/msvs/msi/nodemsi.sln
- tools/msvs/msi/nodemsi.wixproj
- tools/msvs/msi/product.wxs
- tools/msvs/nodevars.bat
- tools/msvs/npm/npmrc
- tools/node-release-post-build.sh
- tools/osx-codesign.sh
- tools/osx-pkg-postinstall.sh
- tools/osx-pkg.pmdoc/01local-contents.xml
- tools/osx-pkg.pmdoc/01local.xml
- tools/osx-pkg.pmdoc/02npm-contents.xml
- tools/osx-pkg.pmdoc/02npm.xml
- tools/osx-pkg.pmdoc/index.xml
- tools/osx-productsign.sh
- tools/pkgsrc/comment
- tools/pkgsrc/description
- tools/updateAuthors.awk
- vcbuild.bat
-Copyright: *No copyright*
-License: UNKNOWN
  FIXME
 
 Files: deps/v8/LICENSE
@@ -1987,7 +1399,6 @@ Files: deps/v8/LICENSE
  test/pummel/testcfg.py
  test/simple/testcfg.py
  tools/js2c.py
- tools/test.py
 Copyright: 2006-2008, the V8 project authors.
   2006-2009, the V8 project authors.
   2006-2011, the V8 project authors.
@@ -2002,6 +1413,425 @@ Copyright: 2006-2008, the V8 project authors.
   2011, the V8 project authors.
   2012, the V8 project authors.
 License: BSD-3-clause
+ FIXME
+
+Files: AUTHORS
+ BSDmakefile
+ CONTRIBUTING.md
+ ChangeLog
+ Makefile
+ README.md
+ benchmark/arrays/var-int.js
+ benchmark/arrays/zero-float.js
+ benchmark/arrays/zero-int.js
+ benchmark/buffers/buffer-creation.js
+ benchmark/buffers/buffer-read.js
+ benchmark/buffers/buffer-write.js
+ benchmark/buffers/dataview-set.js
+ benchmark/common.js
+ benchmark/crypto/hash-stream-creation.js
+ benchmark/crypto/hash-stream-throughput.js
+ benchmark/fs-write-stream-throughput.js
+ benchmark/fs/read-stream-throughput.js
+ benchmark/fs/readfile.js
+ benchmark/fs/write-stream-throughput.js
+ benchmark/http-flamegraph.sh
+ benchmark/http.sh
+ benchmark/http/client-request-body.js
+ benchmark/http/cluster.js
+ benchmark/http/end-vs-write-end.js
+ benchmark/http/simple.js
+ benchmark/http_server_lag.js
+ benchmark/http_simple.js
+ benchmark/http_simple.rb
+ benchmark/http_simple_auto.js
+ benchmark/http_simple_bench.sh
+ benchmark/http_simple_cluster.js
+ benchmark/idle_clients.js
+ benchmark/idle_server.js
+ benchmark/io.c
+ benchmark/misc/child-process-read.js
+ benchmark/misc/function_call/.gitignore
+ benchmark/misc/function_call/Makefile
+ benchmark/misc/function_call/binding.cc
+ benchmark/misc/function_call/binding.gyp
+ benchmark/misc/function_call/index.js
+ benchmark/misc/next-tick-breadth.js
+ benchmark/misc/spawn-echo.js
+ benchmark/misc/startup.js
+ benchmark/misc/string-creation.js
+ benchmark/misc/timers.js
+ benchmark/misc/url.js
+ benchmark/misc/v8-bench.js
+ benchmark/net/dgram.js
+ benchmark/net/net-c2s.js
+ benchmark/net/net-pipe.js
+ benchmark/net/net-s2c.js
+ benchmark/net/tcp-raw-c2s.js
+ benchmark/net/tcp-raw-pipe.js
+ benchmark/net/tcp-raw-s2c.js
+ benchmark/plot.R
+ benchmark/report-startup-memory.js
+ benchmark/static_http_server.js
+ benchmark/tls/throughput.js
+ benchmark/tls/tls-connect.js
+ common.gypi
+ configure
+ debian/README.source
+ debian/TODO
+ debian/compat
+ debian/control
+ debian/control.in
+ debian/gbp.conf
+ debian/nodejs-dev.dirs
+ debian/nodejs-dev.install
+ debian/nodejs-dev.links
+ debian/nodejs-legacy.links
+ debian/nodejs.README.Debian
+ debian/nodejs.dirs
+ debian/nodejs.doc-base
+ debian/nodejs.docs
+ debian/nodejs.install
+ debian/nodejs.lintian-overrides
+ debian/nodejs.manpages
+ debian/nodejs.postinst
+ debian/nodejs.prerm
+ debian/patches/1001_readfile_eisdir.patch
+ debian/patches/1002_increase_timeout_in_test.patch
+ debian/patches/1003_test_disable_chunked_response.patch
+ debian/patches/1004_test_writeNaN.patch
+ debian/patches/1005_restore_sh_javascript_nonminified.patch
+ debian/patches/2001_FHS_and_rename_to_nodejs.patch
+ debian/patches/2004_relax_failing_test.patch
+ debian/patches/2005_expected_failing_tests.patch
+ debian/patches/2010_fix_makefile_missing_zlib.patch
+ debian/patches/2011_enable_mipsel_build.patch
+ debian/patches/2011_mipsel.patch
+ debian/patches/2012_kfreebsd.patch
+ debian/patches/2013_gyp_noparallel_compat.patch
+ debian/patches/2014_donotinclude_root_certs.patch
+ debian/patches/series
+ debian/rules
+ debian/source/format
+ debian/watch
+ deps/http_parser/.gitignore
+ deps/http_parser/.mailmap
+ deps/http_parser/AUTHORS
+ deps/http_parser/CONTRIBUTIONS
+ deps/http_parser/Makefile
+ deps/http_parser/README.md
+ deps/http_parser/http_parser.gyp
+ deps/http_parser/url_parser.c
+ deps/uv/.gitignore
+ deps/uv/ChangeLog
+ deps/uv/README.md
+ deps/uv/common.gypi
+ deps/uv/gyp_uv.py
+ deps/uv/test/fixtures/load_error.node
+ deps/uv/uv.gyp
+ deps/uv/vcbuild.bat
+ deps/v8/.gitignore
+ deps/v8/AUTHORS
+ deps/v8/ChangeLog
+ deps/v8/DEPS
+ deps/v8/OWNERS
+ deps/v8/benchmarks/README.txt
+ deps/v8/benchmarks/revisions.html
+ deps/v8/benchmarks/run.html
+ deps/v8/benchmarks/spinning-balls/index.html
+ deps/v8/benchmarks/style.css
+ deps/v8/build/README.txt
+ deps/v8/tools/freebsd-tick-processor
+ deps/v8/tools/gcmole/README
+ deps/v8/tools/linux-tick-processor
+ deps/v8/tools/mac-nm
+ deps/v8/tools/mac-tick-processor
+ deps/v8/tools/oom_dump/README
+ deps/v8/tools/testrunner/README
+ deps/v8/tools/testrunner/server/daemon.py
+ deps/v8/tools/visual_studio/README.txt
+ deps/v8/tools/windows-tick-processor.bat
+ doc/api/_toc.json
+ doc/api/_toc.markdown
+ doc/api/addons.json
+ doc/api/addons.markdown
+ doc/api/all.markdown
+ doc/api/assert.json
+ doc/api/assert.markdown
+ doc/api/assets/sh.css
+ doc/api/assets/style.css
+ doc/api/buffer.json
+ doc/api/buffer.markdown
+ doc/api/child_process.json
+ doc/api/child_process.markdown
+ doc/api/cluster.json
+ doc/api/cluster.markdown
+ doc/api/console.json
+ doc/api/console.markdown
+ doc/api/crypto.json
+ doc/api/crypto.markdown
+ doc/api/debugger.json
+ doc/api/debugger.markdown
+ doc/api/dgram.json
+ doc/api/dgram.markdown
+ doc/api/dns.json
+ doc/api/dns.markdown
+ doc/api/documentation.json
+ doc/api/documentation.markdown
+ doc/api/domain.json
+ doc/api/domain.markdown
+ doc/api/events.json
+ doc/api/events.markdown
+ doc/api/fs.json
+ doc/api/fs.markdown
+ doc/api/globals.json
+ doc/api/globals.markdown
+ doc/api/http.json
+ doc/api/http.markdown
+ doc/api/https.json
+ doc/api/https.markdown
+ doc/api/index.json
+ doc/api/index.markdown
+ doc/api/modules.json
+ doc/api/modules.markdown
+ doc/api/os.json
+ doc/api/os.markdown
+ doc/api/path.json
+ doc/api/path.markdown
+ doc/api/process.json
+ doc/api/process.markdown
+ doc/api/punycode.json
+ doc/api/punycode.markdown
+ doc/api/querystring.json
+ doc/api/querystring.markdown
+ doc/api/repl.json
+ doc/api/repl.markdown
+ doc/api/stream.json
+ doc/api/stream.markdown
+ doc/api/string_decoder.json
+ doc/api/string_decoder.markdown
+ doc/api/synopsis.json
+ doc/api/synopsis.markdown
+ doc/api/timers.json
+ doc/api/timers.markdown
+ doc/api/tls.json
+ doc/api/tls.markdown
+ doc/api/tty.json
+ doc/api/tty.markdown
+ doc/api/url.json
+ doc/api/url.markdown
+ doc/api/util.json
+ doc/api/util.markdown
+ doc/api/vm.json
+ doc/api/vm.markdown
+ doc/api/zlib.json
+ doc/api/zlib.markdown
+ doc/api_assets/sh.css
+ doc/api_assets/style.css
+ doc/changelog-head.html
+ doc/node.1
+ doc/sh.css
+ doc/sh_javascript.min.js
+ doc/sh_vim-dark.css
+ lib/punycode.js
+ node.gyp
+ src/macros.py
+ src/node_crypto_groups.h
+ src/perfctr_macros.py
+ src/res/node_etw_provider.man
+ src/res/node_perfctr_provider.man
+ src/udp_wrap.h
+ src/v8abbr.h
+ src/v8ustack.d
+ test/addons/.gitignore
+ test/addons/async-hello-world/binding.cc
+ test/addons/async-hello-world/binding.gyp
+ test/addons/async-hello-world/test.js
+ test/addons/at-exit/binding.cc
+ test/addons/at-exit/binding.gyp
+ test/addons/at-exit/test.js
+ test/addons/hello-world-function-export/binding.cc
+ test/addons/hello-world-function-export/binding.gyp
+ test/addons/hello-world-function-export/test.js
+ test/addons/hello-world/binding.cc
+ test/addons/hello-world/binding.gyp
+ test/addons/hello-world/test.js
+ test/fixtures/agent.crt
+ test/fixtures/agent.key
+ test/fixtures/alice.crt
+ test/fixtures/break-in-module/main.js
+ test/fixtures/breakpoints.js
+ test/fixtures/breakpoints_utf8.js
+ test/fixtures/cert.pem
+ test/fixtures/child-process-message-and-exit.js
+ test/fixtures/child-process-persistent.js
+ test/fixtures/child-process-spawn-node.js
+ test/fixtures/debug-target.js
+ test/fixtures/deprecated.js
+ test/fixtures/destroy-stdin.js
+ test/fixtures/elipses.txt
+ test/fixtures/fixture.ini
+ test/fixtures/foafssl.crt
+ test/fixtures/foafssl.key
+ test/fixtures/foo
+ test/fixtures/invalid.json
+ test/fixtures/keys/Makefile
+ test/fixtures/keys/agent1-cert.pem
+ test/fixtures/keys/agent1-csr.pem
+ test/fixtures/keys/agent1-key.pem
+ test/fixtures/keys/agent1.cnf
+ test/fixtures/keys/agent2-cert.pem
+ test/fixtures/keys/agent2-csr.pem
+ test/fixtures/keys/agent2-key.pem
+ test/fixtures/keys/agent2.cnf
+ test/fixtures/keys/agent3-cert.pem
+ test/fixtures/keys/agent3-csr.pem
+ test/fixtures/keys/agent3-key.pem
+ test/fixtures/keys/agent3.cnf
+ test/fixtures/keys/agent4-cert.pem
+ test/fixtures/keys/agent4-csr.pem
+ test/fixtures/keys/agent4-key.pem
+ test/fixtures/keys/agent4.cnf
+ test/fixtures/keys/ca1-cert.pem
+ test/fixtures/keys/ca1-cert.srl
+ test/fixtures/keys/ca1-key.pem
+ test/fixtures/keys/ca1.cnf
+ test/fixtures/keys/ca2-cert.pem
+ test/fixtures/keys/ca2-cert.srl
+ test/fixtures/keys/ca2-crl.pem
+ test/fixtures/keys/ca2-database.txt
+ test/fixtures/keys/ca2-key.pem
+ test/fixtures/keys/ca2-serial
+ test/fixtures/keys/ca2.cnf
+ test/fixtures/module-load-order/file1
+ test/fixtures/module-load-order/file1.node
+ test/fixtures/module-load-order/file1.reg
+ test/fixtures/module-load-order/file1.reg2
+ test/fixtures/module-load-order/file2.node
+ test/fixtures/module-load-order/file2.reg
+ test/fixtures/module-load-order/file2.reg2
+ test/fixtures/module-load-order/file2/index.node
+ test/fixtures/module-load-order/file2/index.reg
+ test/fixtures/module-load-order/file2/index.reg2
+ test/fixtures/module-load-order/file3.node
+ test/fixtures/module-load-order/file3.reg
+ test/fixtures/module-load-order/file3.reg2
+ test/fixtures/module-load-order/file3/index.node
+ test/fixtures/module-load-order/file3/index.reg
+ test/fixtures/module-load-order/file3/index.reg2
+ test/fixtures/module-load-order/file4.reg
+ test/fixtures/module-load-order/file4.reg2
+ test/fixtures/module-load-order/file4/index.node
+ test/fixtures/module-load-order/file4/index.reg
+ test/fixtures/module-load-order/file4/index.reg2
+ test/fixtures/module-load-order/file5.reg2
+ test/fixtures/module-load-order/file5/index.node
+ test/fixtures/module-load-order/file5/index.reg
+ test/fixtures/module-load-order/file5/index.reg2
+ test/fixtures/module-load-order/file6/index.node
+ test/fixtures/module-load-order/file6/index.reg
+ test/fixtures/module-load-order/file6/index.reg2
+ test/fixtures/module-load-order/file7/index.node
+ test/fixtures/module-load-order/file7/index.reg
+ test/fixtures/module-load-order/file7/index.reg2
+ test/fixtures/module-load-order/file8/index.reg
+ test/fixtures/module-load-order/file8/index.reg2
+ test/fixtures/module-load-order/file9/index.reg2
+ test/fixtures/module-loading-error.node
+ test/fixtures/module-require/child/index.js
+ test/fixtures/module-require/child/node_modules/target.js
+ test/fixtures/module-require/parent/index.js
+ test/fixtures/module-require/parent/node_modules/target.js
+ test/fixtures/msca.pem
+ test/fixtures/multi-alice.crt
+ test/fixtures/packages/main-index/package.json
+ test/fixtures/packages/main/package.json
+ test/fixtures/parent-process-nonpersistent.js
+ test/fixtures/pass-cert.pem
+ test/fixtures/pass-csr.pem
+ test/fixtures/pass-key.pem
+ test/fixtures/registerExt.hello.world
+ test/fixtures/registerExt.test
+ test/fixtures/registerExt2.test
+ test/fixtures/test-regress-GH-4015.js
+ test/fixtures/test_ca.pem
+ test/fixtures/test_cert.pem
+ test/fixtures/test_cert.pfx
+ test/fixtures/test_dsa_params.pem
+ test/fixtures/test_dsa_privkey.pem
+ test/fixtures/test_dsa_pubkey.pem
+ test/fixtures/test_key.pem
+ test/fixtures/test_rsa_privkey.pem
+ test/fixtures/test_rsa_privkey_2.pem
+ test/fixtures/test_rsa_pubkey.pem
+ test/fixtures/test_rsa_pubkey_2.pem
+ test/fixtures/utf8-bom.js
+ test/fixtures/utf8-bom.json
+ test/fixtures/x.txt
+ test/fixtures/x1024.txt
+ test/gc/test-http-client-connaborted.js
+ test/gc/test-http-client-onerror.js
+ test/gc/test-http-client-timeout.js
+ test/gc/test-http-client.js
+ test/gc/test-net-timeout.js
+ test/internet/internet.status
+ test/message/2100bytes.out
+ test/message/error_exit.out
+ test/message/eval_messages.out
+ test/message/hello_world.out
+ test/message/max_tick_depth.out
+ test/message/max_tick_depth_trace.out
+ test/message/nexttick_throw.out
+ test/message/stack_overflow.out
+ test/message/stdin_messages.out
+ test/message/throw_custom_error.out
+ test/message/throw_in_line_with_tabs.out
+ test/message/throw_non_error.out
+ test/message/timeout_throw.out
+ test/message/undefined_reference_in_new_context.out
+ test/pummel/pummel.status
+ test/simple/simple.status
+ test/simple/test-fs-non-number-arguments-throw.js
+ test/simple/test-http-parser-bad-ref.js
+ tools/build-changelog.sh
+ tools/changelog-head.sh
+ tools/doc/README.md
+ tools/doc/node_modules/marked/.npmignore
+ tools/doc/node_modules/marked/Makefile
+ tools/doc/node_modules/marked/index.js
+ tools/doc/node_modules/marked/package.json
+ tools/doc/package.json
+ tools/email-footer.md
+ tools/genv8constants.py
+ tools/getnextnodeversion.py
+ tools/getnodeisrelease.py
+ tools/getnodeversion.py
+ tools/getprevnodeversion.py
+ tools/getstability.py
+ tools/gyp_node.py
+ tools/install.py
+ tools/license2rtf.js
+ tools/msvs/msi/WixUI_en-us.wxl
+ tools/msvs/msi/nodemsi.sln
+ tools/msvs/msi/nodemsi.wixproj
+ tools/msvs/msi/product.wxs
+ tools/msvs/nodevars.bat
+ tools/msvs/npm/npmrc
+ tools/node-release-post-build.sh
+ tools/osx-codesign.sh
+ tools/osx-pkg-postinstall.sh
+ tools/osx-pkg.pmdoc/01local-contents.xml
+ tools/osx-pkg.pmdoc/01local.xml
+ tools/osx-pkg.pmdoc/02npm-contents.xml
+ tools/osx-pkg.pmdoc/02npm.xml
+ tools/osx-pkg.pmdoc/index.xml
+ tools/osx-productsign.sh
+ tools/pkgsrc/comment
+ tools/pkgsrc/description
+ tools/updateAuthors.awk
+ vcbuild.bat
+Copyright: *No copyright*
+License: UNKNOWN
  FIXME
 
 Files: deps/http_parser/LICENSE-MIT
@@ -2165,6 +1995,7 @@ Files: deps/http_parser/LICENSE-MIT
  deps/uv/test/test-semaphore.c
  deps/uv/test/test-shutdown-close.c
  deps/uv/test/test-shutdown-eof.c
+ deps/uv/test/test-shutdown-twice.c
  deps/uv/test/test-signal-multiple-loops.c
  deps/uv/test/test-signal.c
  deps/uv/test/test-spawn.c
@@ -2243,7 +2074,7 @@ Files: doc/api/_toc.html
  doc/api/util.html
  doc/api/vm.html
  doc/api/zlib.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.25/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.26/LICENSE">license</a>.</p>
 License: UNKNOWN
  FIXME
 
@@ -2263,15 +2094,6 @@ Copyright: 1994-2006, Sun Microsystems Inc
   2011, the V8 project authors.
   2012, the V8 project authors.
 License: BSD-2-clause
- FIXME
-
-Files: doc/about/index.html
- doc/changelog-foot.html
- doc/download/index.html
- doc/index.html
- doc/template.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/__VERSION__/LICENSE">license</a>.</p>
-License: UNKNOWN
  FIXME
 
 Files: benchmark/compare.js
@@ -2307,6 +2129,12 @@ Copyright: Joyent, Inc. and other Node contributors
 License: Expat
  FIXME
 
+Files: doc/changelog-foot.html
+ doc/template.html
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/__VERSION__/LICENSE">license</a>.</p>
+License: UNKNOWN
+ FIXME
+
 Files: deps/uv/.mailmap
  deps/uv/AUTHORS
 Copyright: <saghul@gmail.com>
@@ -2335,6 +2163,11 @@ Copyright: 1994-2006, Sun Microsystems Inc
 License: BSD-2-clause
  FIXME
 
+Files: deps/v8/tools/presubmit.py
+Copyright: 
+License: BSD-3-clause
+ FIXME
+
 Files: deps/v8/src/scanner.cc
 Copyright: && IsCarriageReturn(c0_)) Advance();
   && IsLineFeed(c0_)) Advance();
@@ -2357,14 +2190,6 @@ Copyright: 2011, the V8 project authors.
 License: BSD-3-clause
  FIXME
 
-Files: tools/cpplint.py
-Copyright: 2009, Google Inc.
-  [year
-  line was found
-  message appears at the top of the file."""
-License: BSD-3-clause
- FIXME
-
 Files: deps/v8/tools/js2c.py
 Copyright: 2011, Google Inc.
   2012, the V8 project authors.
@@ -2377,15 +2202,14 @@ Copyright: 2012, the V8 project authors.
 License: BSD-3-clause
  FIXME
 
-Files: deps/v8/PRESUBMIT.py
-Copyright: 2012, the V8 project authors.
-  header and trailing whitespaces check failed"))
+Files: tools/cpplint.py
+Copyright: [year
 License: BSD-3-clause
  FIXME
 
-Files: deps/v8/tools/presubmit.py
-Copyright: header and trailing whitespaces check..."
-  header." % name
+Files: deps/v8/PRESUBMIT.py
+Copyright: 2012, the V8 project authors.
+  header and trailing whitespaces check failed"))
 License: BSD-3-clause
  FIXME
 
@@ -2398,6 +2222,11 @@ License: BSD-3-clause
 Files: deps/v8/src/char-predicates-inl.h
 Copyright: 2011, the V8 project authors.
   || IsInRange(AsciiAlphaToLower, 'a', 'f');
+License: BSD-3-clause
+ FIXME
+
+Files: tools/test.py
+Copyright: 2008, the V8 project authors. /
 License: BSD-3-clause
  FIXME
 
@@ -2525,37 +2354,22 @@ Copyright: != -1 || // ID-char
 License: UNKNOWN
  FIXME
 
-Files: doc/community/index.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a
-License: UNKNOWN
- FIXME
-
-Files: doc/blog.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/master/LICENSE">license</a>.</p>
-License: UNKNOWN
- FIXME
-
 Files: doc/api/net.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.25/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.26/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
 License: UNKNOWN
  FIXME
 
 Files: doc/api/all.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.25/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.26/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
   { return c.indexOf(line) == 0 })
 License: UNKNOWN
  FIXME
 
 Files: doc/api/readline.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.25/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.26/LICENSE">license</a>.</p>
   { return c.indexOf(line) == 0 })
-License: UNKNOWN
- FIXME
-
-Files: doc/logos/index.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>., Node.js is a <a href="/trademark-policy.pdf">trademark of Joyent, Inc</a>., <a href="https://raw.github.com/joyent/node/__VERSION__/LICENSE">View License</a></p>
 License: UNKNOWN
  FIXME
 
@@ -2569,6 +2383,11 @@ Copyright: 2011-2012, Christopher Jeffrey. (MIT Licensed)
 License: UNKNOWN
  FIXME
 
+Files: src/node_root_certs.h
+Copyright: Racine */
+License: UNKNOWN
+ FIXME
+
 Files: deps/v8/benchmarks/raytrace.js
 Copyright: 2005-2007, Sam Stephenson
 License: UNKNOWN
@@ -2576,11 +2395,6 @@ License: UNKNOWN
 
 Files: doc/sh_main.js
 Copyright: 2007-2008, gnombat@users.sourceforge.net
-License: UNKNOWN
- FIXME
-
-Files: debian/rules
-Copyright: maintenance
 License: UNKNOWN
  FIXME
 
