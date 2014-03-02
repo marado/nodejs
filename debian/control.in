@@ -5,7 +5,7 @@ Maintainer: Debian Javascript Maintainers <pkg-javascript-devel@lists.alioth.deb
 Uploaders: Jérémy Lal <kapouer@melix.org>,
  Jonas Smedegaard <dr@jones.dk>
 Build-Depends: @cdbs@
-Standards-Version: 3.9.4
+Standards-Version: 3.9.5
 Homepage: http://nodejs.org/
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=collab-maint/nodejs.git
 Vcs-Git: git://anonscm.debian.org/collab-maint/nodejs.git
