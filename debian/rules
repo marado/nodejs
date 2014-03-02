@@ -17,7 +17,7 @@ bdeps +=, libkvm-dev [kfreebsd-any], gyp (>= 0.1~svn1654)
 #  * recent libv8 because... FIXME (git commit eb490ef)
 #  * recent libc-ares because... FIXME (git commit ccad613)
 deps = python, libv8-3.14-dev (>= 3.7), libssl-dev (>= $(ssl-minver))
-deps +=, libc-ares-dev (>= 1.7.5)
+deps +=, libc-ares-dev (>= 1.7.5), ca-certificates
 
 CDBS_BUILD_DEPENDS +=, $(bdeps), $(deps)
 CDBS_DEPENDS_nodejs-dev = $(deps)
