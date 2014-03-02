@@ -1,10 +1,15 @@
-nodejs (0.10.26~dfsg1-1) UNRELEASED; urgency=medium
+nodejs (0.10.26~dfsg1-1) unstable; urgency=medium
 
   * Upstream update.
-  * copyright: use Files-Excluded section, update list of files.
+  * Add 2014 patch: load /etc/ssl/certs/ca-certificates.crt at
+    runtime, if present, instead of bundling node_root_certs.h.
+  * copyright:
+    + use Files-Excluded section, update list of files.
+    + add section for node_root_certs.h (MPL-2.0)
   * rules: drop upstream-tarball.mk in favor of uscan.
+  * Standards-Version 3.9.5
 
- -- Jérémy Lal <kapouer@melix.org>  Sat, 01 Mar 2014 10:31:30 +0100
+ -- Jérémy Lal <kapouer@melix.org>  Sun, 02 Mar 2014 01:57:14 +0100
 
 nodejs (0.10.25~dfsg2-2) unstable; urgency=medium
 
