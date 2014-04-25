@@ -2,7 +2,7 @@
 2004_relax_failing_test.patch
 2005_expected_failing_tests.patch
 2010_fix_makefile_missing_zlib.patch
-2011_mipsel.patch
+2011_mips_mipsel.patch
 2012_kfreebsd.patch
 2013_gyp_noparallel_compat.patch
 1001_readfile_eisdir.patch
