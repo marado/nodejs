@@ -1,8 +1,9 @@
-nodejs (0.10.28~dfsg-1) UNRELEASED; urgency=medium
+nodejs (0.10.28~dfsg-1) unstable; urgency=medium
 
-  * Upstream update 
+  * Upstream update.
+  * Copyright: add wildcards to folders in Files-Excluded field.
 
- -- Jérémy Lal <kapouer@melix.org>  Thu, 22 May 2014 23:05:37 +0200
+ -- Jérémy Lal <kapouer@melix.org>  Thu, 22 May 2014 23:18:13 +0200
 
 nodejs (0.10.26~dfsg1-2) unstable; urgency=medium
 
