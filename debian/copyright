@@ -7,15 +7,15 @@ Source: http://nodejs.org/
  other files being excluded to ease copyright maintenance.
 Files-Excluded:
  doc/sh_javascript.min.js
- deps/npm/
- deps/openssl/
- deps/zlib/
- deps/cares/
- test/gc/node_modules/
- tools/gyp/
- tools/closure_linter/
- tools/msvs/genfiles/
- tools/wrk/
+ deps/npm/*
+ deps/openssl/*
+ deps/zlib/*
+ deps/cares/*
+ test/gc/node_modules/*
+ tools/gyp/*
+ tools/closure_linter/*
+ tools/msvs/genfiles/*
+ tools/wrk/*
 
 
 Files: *
