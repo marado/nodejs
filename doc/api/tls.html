@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>TLS (SSL) Node.js v0.10.26 Manual &amp; Documentation</title>
+  <title>TLS (SSL) Node.js v0.10.28 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/tls.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.26 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.28 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -102,11 +102,11 @@ Secure Socket Layer: encrypted stream communication.
 
 </p>
 <p>TLS/SSL is a public/private key infrastructure. Each client and each
-server must have a private key. A private key is created like this
+server must have a private key. A private key is created like this:
 
 </p>
 <pre><code>openssl genrsa -out ryans-key.pem 1024</code></pre>
-<p>All severs and some clients need to have a certificate. Certificates are public
+<p>All servers and some clients need to have a certificate. Certificates are public
 keys signed by a Certificate Authority or self-signed. The first step to
 getting a certificate is to create a &quot;Certificate Signing Request&quot; (CSR)
 file. This is done with:
@@ -351,7 +351,7 @@ creating a new socket. If this option is specified, <code>host</code> and <code>
 are ignored.</p>
 </li>
 <li><p><code>pfx</code>: A string or <code>Buffer</code> containing the private key, certificate and
-CA certs of the server in PFX or PKCS12 format.</p>
+CA certs of the client in PFX or PKCS12 format.</p>
 </li>
 <li><p><code>key</code>: A string or <code>Buffer</code> containing the private key of the client in
 PEM format.</p>
@@ -699,7 +699,7 @@ object with three properties, e.g.
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.26/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.28/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>
