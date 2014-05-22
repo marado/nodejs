@@ -918,7 +918,7 @@ Handle<Value> UsingDomains(const Arguments& args) {
   Local<Function> tdc = tdc_v.As<Function>();
   Local<Function> ndt = ndt_v.As<Function>();
   process->Set(String::New("_tickCallback"), tdc);
-  process->Set(String::New("nextTick"), ndt);
+  process->Set(String::New("_currentTickHandler"), ndt);
   process_tickCallback.Dispose();  // Possibly already set by MakeCallback().
   process_tickCallback = Persistent<Function>::New(tdc);
   return Undefined();
@@ -1714,13 +1714,10 @@ static Handle<Value> Uptime(const Arguments& args) {
   HandleScope scope;
   double uptime;
 
-  uv_err_t err = uv_uptime(&uptime);
+  uv_update_time(uv_default_loop());
+  uptime = uv_now(uv_default_loop()) - prog_start_time;
 
-  if (err.code != UV_OK) {
-    return Undefined();
-  }
-
-  return scope.Close(Number::New(uptime - prog_start_time));
+  return scope.Close(Integer::New(uptime / 1000));
 }
 
 
@@ -2893,7 +2890,7 @@ static Handle<Value> DebugEnd(const Arguments& args) {
 
 char** Init(int argc, char *argv[]) {
   // Initialize prog_start_time to get relative uptime.
-  uv_uptime(&prog_start_time);
+  prog_start_time = uv_now(uv_default_loop());
 
   // Make inherited handles noninheritable.
   uv_disable_stdio_inheritance();
@@ -3057,6 +3054,12 @@ int Start(int argc, char *argv[]) {
   Init(argc, argv_copy);
 
   V8::Initialize();
+#if HAVE_OPENSSL
+  // V8 on Windows doesn't have a good source of entropy. Seed it from
+  // OpenSSL's pool.
+  V8::SetEntropySource(crypto::EntropySource);
+#endif
+
   {
     Locker locker;
     HandleScope handle_scope;

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>About this Documentation Node.js v0.10.26 Manual &amp; Documentation</title>
+  <title>About this Documentation Node.js v0.10.28 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/all.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.26 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.28 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -2850,7 +2850,7 @@ descriptors.</li>
 </p>
 <pre><code>process.stdin.setEncoding(&#39;utf8&#39;);
 
-process.stdin.on(&#39;readable&#39;, function(chunk) {
+process.stdin.on(&#39;readable&#39;, function() {
   var chunk = process.stdin.read();
   if (chunk !== null) {
     process.stdout.write(&#39;data: &#39; + chunk);
@@ -3616,7 +3616,9 @@ server.removeListener(&#39;connection&#39;, callback);</code></pre>
 
 </p>
 <h3>emitter.removeAllListeners([event])<span><a class="mark" href="#all_emitter_removealllisteners_event" id="all_emitter_removealllisteners_event">#</a></span></h3>
-<p>Removes all listeners, or those of the specified event.
+<p>Removes all listeners, or those of the specified event. It&#39;s not a good idea to
+remove listeners that were added elsewhere in the code, especially when it&#39;s on
+an emitter that you didn&#39;t create (e.g. sockets or file streams).
 
 </p>
 <p>Returns emitter, so calls can be chained.
@@ -6955,11 +6957,11 @@ Secure Socket Layer: encrypted stream communication.
 
 </p>
 <p>TLS/SSL is a public/private key infrastructure. Each client and each
-server must have a private key. A private key is created like this
+server must have a private key. A private key is created like this:
 
 </p>
 <pre><code>openssl genrsa -out ryans-key.pem 1024</code></pre>
-<p>All severs and some clients need to have a certificate. Certificates are public
+<p>All servers and some clients need to have a certificate. Certificates are public
 keys signed by a Certificate Authority or self-signed. The first step to
 getting a certificate is to create a &quot;Certificate Signing Request&quot; (CSR)
 file. This is done with:
@@ -7204,7 +7206,7 @@ creating a new socket. If this option is specified, <code>host</code> and <code>
 are ignored.</p>
 </li>
 <li><p><code>pfx</code>: A string or <code>Buffer</code> containing the private key, certificate and
-CA certs of the server in PFX or PKCS12 format.</p>
+CA certs of the client in PFX or PKCS12 format.</p>
 </li>
 <li><p><code>key</code>: A string or <code>Buffer</code> containing the private key of the client in
 PEM format.</p>
@@ -8774,7 +8776,7 @@ with <code>child_process.fork()</code>.
 
 </p>
 <h3>server.connections<span><a class="mark" href="#all_server_connections_1" id="all_server_connections_1">#</a></span></h3>
-<p>This function is <strong>deprecated</strong>; please use [server.getConnections()][] instead.
+<p>This function is <strong>deprecated</strong>; please use <a href="#net_server_getconnections_callback">server.getConnections()</a> instead.
 The number of concurrent connections on the server.
 
 </p>
@@ -8783,15 +8785,15 @@ The number of concurrent connections on the server.
 connections use asynchronous <code>server.getConnections</code> instead.
 
 </p>
-<p><code>net.Server</code> is an <a href="events.html#events_class_events_eventemitter">EventEmitter</a> with the following events:
-
-</p>
 <h3>server.getConnections(callback)<span><a class="mark" href="#all_server_getconnections_callback" id="all_server_getconnections_callback">#</a></span></h3>
 <p>Asynchronously get the number of concurrent connections on the server. Works
 when sockets were sent to forks.
 
 </p>
 <p>Callback should take two arguments <code>err</code> and <code>count</code>.
+
+</p>
+<p><code>net.Server</code> is an <a href="events.html#events_class_events_eventemitter">EventEmitter</a> with the following events:
 
 </p>
 <h3>Event: &#39;listening&#39;<span><a class="mark" href="#all_event_listening" id="all_event_listening">#</a></span></h3>
@@ -9028,7 +9030,7 @@ See <code>connect()</code>.
 </div></ul>
 <p>Emitted when data is received.  The argument <code>data</code> will be a <code>Buffer</code> or
 <code>String</code>.  Encoding of data is set by <code>socket.setEncoding()</code>.
-(See the <a href="stream.html#stream_readable_stream">Readable Stream</a> section for more information.)
+(See the <a href="stream.html#stream_class_stream_readable">Readable Stream</a> section for more information.)
 
 </p>
 <p>Note that the <strong>data will be lost</strong> if there is no listener when a <code>Socket</code>
@@ -9786,7 +9788,7 @@ connections.
 passed as the second parameter to the <code>&#39;request&#39;</code> event.
 
 </p>
-<p>The response implements the <a href="stream.html#stream_writable_stream">Writable Stream</a> interface. This is an
+<p>The response implements the <a href="stream.html#stream_class_stream_writable">Writable Stream</a> interface. This is an
 <a href="events.html#events_class_events_eventemitter">EventEmitter</a> with the following events:
 
 </p>
@@ -10182,7 +10184,7 @@ the data is read it will consume memory that can eventually lead to a
 which has been transmitted are equal or not.
 
 </p>
-<p>The request implements the <a href="stream.html#stream_writable_stream">Writable Stream</a> interface. This is an
+<p>The request implements the <a href="stream.html#stream_class_stream_writable">Writable Stream</a> interface. This is an
 <a href="events.html#events_class_events_eventemitter">EventEmitter</a> with the following events:
 
 </p>
@@ -10385,7 +10387,7 @@ and <code>&#39;response&#39;</code> event respectively. It may be used to access
 headers and data.
 
 </p>
-<p>It implements the <a href="stream.html#stream_readable_stream">Readable Stream</a> interface, as well as the
+<p>It implements the <a href="stream.html#stream_class_stream_readable">Readable Stream</a> interface, as well as the
 following additional events, methods, and properties.
 
 </p>
@@ -10776,7 +10778,7 @@ Defaults to <code>false</code>.
 </p>
 <ul>
 <li><code>href</code> will be ignored.</li>
-<li><code>protocol</code>is treated the same with or without the trailing <code>:</code> (colon).<ul>
+<li><code>protocol</code> is treated the same with or without the trailing <code>:</code> (colon).<ul>
 <li>The protocols <code>http</code>, <code>https</code>, <code>ftp</code>, <code>gopher</code>, <code>file</code> will be
 postfixed with <code>://</code> (colon-slash-slash).</li>
 <li>All other protocols <code>mailto</code>, <code>xmpp</code>, <code>aim</code>, <code>sftp</code>, <code>foo</code>, etc will
@@ -12355,7 +12357,7 @@ access it with <code>require(&#39;assert&#39;)</code>.
 
 </p>
 <h2>assert.throws(block, [error], [message])<span><a class="mark" href="#all_assert_throws_block_error_message" id="all_assert_throws_block_error_message">#</a></span></h2>
-<p>Expects <code>block</code> to throw an error. <code>error</code> can be constructor, regexp or 
+<p>Expects <code>block</code> to throw an error. <code>error</code> can be constructor, <code>RegExp</code> or
 validation function.
 
 </p>
@@ -12392,7 +12394,7 @@ validation function.
   &quot;unexpected error&quot;
 );</code></pre>
 <h2>assert.doesNotThrow(block, [message])<span><a class="mark" href="#all_assert_doesnotthrow_block_message" id="all_assert_doesnotthrow_block_message">#</a></span></h2>
-<p>Expects <code>block</code> not to throw an error, see assert.throws for details.
+<p>Expects <code>block</code> not to throw an error, see <code>assert.throws</code> for details.
 
 </p>
 <h2>assert.ifError(value)<span><a class="mark" href="#all_assert_iferror_value" id="all_assert_iferror_value">#</a></span></h2>
@@ -13817,7 +13819,7 @@ worker.on(&#39;exit&#39;, function(code, signal) {
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.26/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.28/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>
