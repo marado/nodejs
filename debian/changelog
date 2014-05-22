@@ -1,3 +1,9 @@
+nodejs (0.10.28~dfsg-1) UNRELEASED; urgency=medium
+
+  * Upstream update 
+
+ -- Jérémy Lal <kapouer@melix.org>  Thu, 22 May 2014 23:05:37 +0200
+
 nodejs (0.10.26~dfsg1-2) unstable; urgency=medium
 
   * Update 2011 mipsel patch: add mips (big endian) support.
