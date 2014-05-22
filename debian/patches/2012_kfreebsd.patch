@@ -91,9 +91,9 @@ Last-Update: 2013-07-23
  #  define HAVE_KQUEUE 1
 --- a/tools/install.py
 +++ b/tools/install.py
-@@ -134,7 +134,7 @@
-   # with dtrace support now (oracle's "unbreakable" linux)
-   action(['src/node.d'], 'lib/dtrace/')
+@@ -132,7 +132,7 @@
+   if 'true' == variables.get('node_use_dtrace'):
+     action(['out/Release/node.d'], 'lib/dtrace/node.d')
  
 -  if 'freebsd' in sys.platform or 'openbsd' in sys.platform:
 +  if ('freebsd' in sys.platform and not 'kfreebsd' in sys.platform)  or 'openbsd' in sys.platform:
@@ -138,7 +138,7 @@ Last-Update: 2013-07-23
          ['library=="shared_library"', {
 --- a/node.gyp
 +++ b/node.gyp
-@@ -276,6 +276,11 @@
+@@ -277,6 +277,11 @@
              '-lkvm',
            ],
          }],
@@ -152,7 +152,7 @@ Last-Update: 2013-07-23
              '-lkstat',
 --- a/common.gypi
 +++ b/common.gypi
-@@ -168,7 +168,7 @@
+@@ -169,7 +169,7 @@
            'BUILDING_UV_SHARED=1',
          ],
        }],
@@ -161,7 +161,7 @@ Last-Update: 2013-07-23
          'cflags': [ '-Wall', '-Wextra', '-Wno-unused-parameter', '-pthread', ],
          'cflags_cc': [ '-fno-rtti', '-fno-exceptions' ],
          'ldflags': [ '-pthread', '-rdynamic' ],
-@@ -232,7 +232,7 @@
+@@ -233,7 +233,7 @@
            }],
          ],
        }],

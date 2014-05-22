@@ -13,7 +13,7 @@ Last-Update: 2014-03-02
    NULL
  };
  
-@@ -561,32 +560,16 @@
+@@ -603,32 +602,16 @@
    assert(sc->ca_store_ == NULL);
  
    if (!root_cert_store) {
