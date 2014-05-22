@@ -325,6 +325,8 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-cluster-message.js
  test/simple/test-cluster-net-listen.js
  test/simple/test-cluster-net-send.js
+ test/simple/test-cluster-send-deadlock.js
+ test/simple/test-cluster-send-handle-twice.js
  test/simple/test-cluster-setup-master.js
  test/simple/test-cluster-uncaught-exception.js
  test/simple/test-cluster-worker-death.js
@@ -368,6 +370,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-dgram-unref.js
  test/simple/test-dh-padding.js
  test/simple/test-domain-crypto.js
+ test/simple/test-domain-exit-dispose-again.js
  test/simple/test-domain-exit-dispose.js
  test/simple/test-domain-from-timer.js
  test/simple/test-domain-http-server.js
@@ -460,6 +463,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-http-abort-stream-end.js
  test/simple/test-http-after-connect.js
  test/simple/test-http-agent-destroyed-socket.js
+ test/simple/test-http-agent-null.js
  test/simple/test-http-agent.js
  test/simple/test-http-allow-req-after-204-res.js
  test/simple/test-http-bind-twice.js
@@ -475,6 +479,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-http-client-pipe-end.js
  test/simple/test-http-client-race-2.js
  test/simple/test-http-client-race.js
+ test/simple/test-http-client-readable.js
  test/simple/test-http-client-response-domain.js
  test/simple/test-http-client-timeout-agent.js
  test/simple/test-http-client-timeout-event.js
@@ -485,6 +490,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-http-conn-reset.js
  test/simple/test-http-connect.js
  test/simple/test-http-contentLength0.js
+ test/simple/test-http-createConnection.js
  test/simple/test-http-curl-chunk-problem.js
  test/simple/test-http-date-header.js
  test/simple/test-http-default-encoding.js
@@ -635,6 +641,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-net-write-connect-write.js
  test/simple/test-net-write-slow.js
  test/simple/test-next-tick-doesnt-hang.js
+ test/simple/test-next-tick-domain.js
  test/simple/test-next-tick-error-spin.js
  test/simple/test-next-tick-errors.js
  test/simple/test-next-tick-intentional-starvation.js
@@ -1359,7 +1366,6 @@ Files: deps/v8/LICENSE
  deps/v8/tools/status-file-converter.py
  deps/v8/tools/test-server.py
  deps/v8/tools/test-wrapper-gypbuild.py
- deps/v8/tools/test.py
  deps/v8/tools/testrunner/__init__.py
  deps/v8/tools/testrunner/local/__init__.py
  deps/v8/tools/testrunner/local/commands.py
@@ -1505,8 +1511,7 @@ Files: AUTHORS
  debian/patches/2004_relax_failing_test.patch
  debian/patches/2005_expected_failing_tests.patch
  debian/patches/2010_fix_makefile_missing_zlib.patch
- debian/patches/2011_enable_mipsel_build.patch
- debian/patches/2011_mipsel.patch
+ debian/patches/2011_mips_mipsel.patch
  debian/patches/2012_kfreebsd.patch
  debian/patches/2013_gyp_noparallel_compat.patch
  debian/patches/2014_donotinclude_root_certs.patch
@@ -1828,6 +1833,7 @@ Files: AUTHORS
  tools/osx-productsign.sh
  tools/pkgsrc/comment
  tools/pkgsrc/description
+ tools/specialize_node_d.py
  tools/updateAuthors.awk
  vcbuild.bat
 Copyright: *No copyright*
@@ -2074,7 +2080,7 @@ Files: doc/api/_toc.html
  doc/api/util.html
  doc/api/vm.html
  doc/api/zlib.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.26/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.28/LICENSE">license</a>.</p>
 License: UNKNOWN
  FIXME
 
@@ -2113,6 +2119,13 @@ Files: deps/v8/LICENSE.valgrind
  deps/v8/src/third_party/valgrind/valgrind.h
 Copyright: 2000-2007, Julian Seward.
   2000-2010, Julian Seward.
+License: BSD-3-clause
+ FIXME
+
+Files: deps/v8/tools/test.py
+ tools/test.py
+Copyright: 2008, the V8 project authors. /
+  2012, the V8 project authors. /
 License: BSD-3-clause
  FIXME
 
@@ -2163,11 +2176,6 @@ Copyright: 1994-2006, Sun Microsystems Inc
 License: BSD-2-clause
  FIXME
 
-Files: deps/v8/tools/presubmit.py
-Copyright: 
-License: BSD-3-clause
- FIXME
-
 Files: deps/v8/src/scanner.cc
 Copyright: && IsCarriageReturn(c0_)) Advance();
   && IsLineFeed(c0_)) Advance();
@@ -2190,6 +2198,15 @@ Copyright: 2011, the V8 project authors.
 License: BSD-3-clause
  FIXME
 
+Files: tools/cpplint.py
+Copyright: 2009, Google Inc.
+  [year
+  line was found
+  message appears at the top of the file."""
+  message found. '
+License: BSD-3-clause
+ FIXME
+
 Files: deps/v8/tools/js2c.py
 Copyright: 2011, Google Inc.
   2012, the V8 project authors.
@@ -2202,14 +2219,14 @@ Copyright: 2012, the V8 project authors.
 License: BSD-3-clause
  FIXME
 
-Files: tools/cpplint.py
-Copyright: [year
-License: BSD-3-clause
- FIXME
-
 Files: deps/v8/PRESUBMIT.py
 Copyright: 2012, the V8 project authors.
   header and trailing whitespaces check failed"))
+License: BSD-3-clause
+ FIXME
+
+Files: deps/v8/tools/presubmit.py
+Copyright: header and trailing whitespaces check..."
 License: BSD-3-clause
  FIXME
 
@@ -2222,11 +2239,6 @@ License: BSD-3-clause
 Files: deps/v8/src/char-predicates-inl.h
 Copyright: 2011, the V8 project authors.
   || IsInRange(AsciiAlphaToLower, 'a', 'f');
-License: BSD-3-clause
- FIXME
-
-Files: tools/test.py
-Copyright: 2008, the V8 project authors. /
 License: BSD-3-clause
  FIXME
 
@@ -2355,20 +2367,20 @@ License: UNKNOWN
  FIXME
 
 Files: doc/api/net.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.26/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.28/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
 License: UNKNOWN
  FIXME
 
 Files: doc/api/all.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.26/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.28/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
   { return c.indexOf(line) == 0 })
 License: UNKNOWN
  FIXME
 
 Files: doc/api/readline.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.26/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.28/LICENSE">license</a>.</p>
   { return c.indexOf(line) == 0 })
 License: UNKNOWN
  FIXME
