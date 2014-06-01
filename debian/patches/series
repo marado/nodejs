@@ -11,3 +11,4 @@
 1004_test_writeNaN.patch
 1005_restore_sh_javascript_nonminified.patch
 2014_donotinclude_root_certs.patch
+1006_relax_timeouts_in_tests.patch
