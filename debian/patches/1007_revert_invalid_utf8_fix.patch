@@ -4,16 +4,7 @@ Forwarded: not-needed
 
 --- a/src/node.cc
 +++ b/src/node.cc
-@@ -178,8 +178,6 @@
- // Declared in node_internals.h
- Isolate* node_isolate = NULL;
- 
--int WRITE_UTF8_FLAGS = v8::String::HINT_MANY_WRITES_EXPECTED |
--                       v8::String::NO_NULL_TERMINATION;
- 
- static void Spin(uv_idle_t* handle, int status) {
-   assert((uv_idle_t*) handle == &tick_spinner);
-@@ -3046,11 +3044,6 @@
+@@ -3046,11 +3046,6 @@
  }
  
  int Start(int argc, char *argv[]) {
@@ -25,28 +16,6 @@ Forwarded: not-needed
    // Hack aroung with the argv pointer. Used for process.title = "blah".
    argv = uv_setup_args(argc, argv);
  
---- a/src/string_bytes.cc
-+++ b/src/string_bytes.cc
-@@ -199,7 +199,7 @@
-       break;
- 
-     case UTF8:
--      len = str->WriteUtf8(buf, buflen, chars_written, WRITE_UTF8_FLAGS);
-+      len = str->WriteUtf8(buf, buflen, chars_written, flags);
-       break;
- 
-     case UCS2:
---- a/src/string_bytes.h
-+++ b/src/string_bytes.h
-@@ -29,8 +29,6 @@
- 
- namespace node {
- 
--extern int WRITE_UTF8_FLAGS;
--
- using v8::Handle;
- using v8::Local;
- using v8::String;
 --- a/test/simple/test-buffer.js
 +++ b/test/simple/test-buffer.js
 @@ -791,18 +791,6 @@
