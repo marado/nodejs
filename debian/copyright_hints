@@ -108,6 +108,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  src/tty_wrap.cc
  src/tty_wrap.h
  src/udp_wrap.cc
+ src/util.h
  test/common.js
  test/disabled/GH-670.js
  test/disabled/test-cat.js
@@ -303,6 +304,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-child-process-send-utf8.js
  test/simple/test-child-process-set-blocking.js
  test/simple/test-child-process-silent.js
+ test/simple/test-child-process-spawn-typeerror.js
  test/simple/test-child-process-stdin.js
  test/simple/test-child-process-stdio-big-write-end.js
  test/simple/test-child-process-stdio-inherit.js
@@ -391,6 +393,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-event-emitter-listeners.js
  test/simple/test-event-emitter-max-listeners.js
  test/simple/test-event-emitter-memory-leak.js
+ test/simple/test-event-emitter-method-names.js
  test/simple/test-event-emitter-modify-in-emit.js
  test/simple/test-event-emitter-no-error-provided-to-error-event.js
  test/simple/test-event-emitter-num-args.js
@@ -746,6 +749,7 @@ Files: benchmark/buffers/buffer-base64-encode.js
  test/simple/test-stream-pipe-multi.js
  test/simple/test-stream-push-order.js
  test/simple/test-stream-push-strings.js
+ test/simple/test-stream-readable-data-sync-race.js
  test/simple/test-stream-readable-event.js
  test/simple/test-stream-readable-flow-recursion.js
  test/simple/test-stream-transform-objectmode-falsey-value.js
@@ -1405,6 +1409,7 @@ Files: deps/v8/LICENSE
  test/pummel/testcfg.py
  test/simple/testcfg.py
  tools/js2c.py
+ tools/test.py
 Copyright: 2006-2008, the V8 project authors.
   2006-2009, the V8 project authors.
   2006-2011, the V8 project authors.
@@ -1507,6 +1512,7 @@ Files: AUTHORS
  debian/patches/1003_test_disable_chunked_response.patch
  debian/patches/1004_test_writeNaN.patch
  debian/patches/1005_restore_sh_javascript_nonminified.patch
+ debian/patches/1006_relax_timeouts_in_tests.patch
  debian/patches/2001_FHS_and_rename_to_nodejs.patch
  debian/patches/2004_relax_failing_test.patch
  debian/patches/2005_expected_failing_tests.patch
@@ -1518,6 +1524,7 @@ Files: AUTHORS
  debian/patches/series
  debian/rules
  debian/source/format
+ debian/source/lintian-overrides
  debian/watch
  deps/http_parser/.gitignore
  deps/http_parser/.mailmap
@@ -2080,7 +2087,7 @@ Files: doc/api/_toc.html
  doc/api/util.html
  doc/api/vm.html
  doc/api/zlib.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.28/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.29/LICENSE">license</a>.</p>
 License: UNKNOWN
  FIXME
 
@@ -2119,13 +2126,6 @@ Files: deps/v8/LICENSE.valgrind
  deps/v8/src/third_party/valgrind/valgrind.h
 Copyright: 2000-2007, Julian Seward.
   2000-2010, Julian Seward.
-License: BSD-3-clause
- FIXME
-
-Files: deps/v8/tools/test.py
- tools/test.py
-Copyright: 2008, the V8 project authors. /
-  2012, the V8 project authors. /
 License: BSD-3-clause
  FIXME
 
@@ -2174,6 +2174,11 @@ License: BSD-2-clause
 Files: deps/v8/LICENSE.strongtalk
 Copyright: 1994-2006, Sun Microsystems Inc
 License: BSD-2-clause
+ FIXME
+
+Files: deps/v8/tools/presubmit.py
+Copyright: 
+License: BSD-3-clause
  FIXME
 
 Files: deps/v8/src/scanner.cc
@@ -2225,11 +2230,6 @@ Copyright: 2012, the V8 project authors.
 License: BSD-3-clause
  FIXME
 
-Files: deps/v8/tools/presubmit.py
-Copyright: header and trailing whitespaces check..."
-License: BSD-3-clause
- FIXME
-
 Files: deps/v8/tools/generate-ten-powers.scm
 Copyright: 2010, the V8 project authors.
   2010, the V8 project authors.")
@@ -2239,6 +2239,11 @@ License: BSD-3-clause
 Files: deps/v8/src/char-predicates-inl.h
 Copyright: 2011, the V8 project authors.
   || IsInRange(AsciiAlphaToLower, 'a', 'f');
+License: BSD-3-clause
+ FIXME
+
+Files: deps/v8/tools/test.py
+Copyright: 2012, the V8 project authors. /
 License: BSD-3-clause
  FIXME
 
@@ -2367,20 +2372,20 @@ License: UNKNOWN
  FIXME
 
 Files: doc/api/net.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.28/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.29/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
 License: UNKNOWN
  FIXME
 
 Files: doc/api/all.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.28/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.29/LICENSE">license</a>.</p>
   { //&#39;connection&#39; listener
   { return c.indexOf(line) == 0 })
 License: UNKNOWN
  FIXME
 
 Files: doc/api/readline.html
-Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.28/LICENSE">license</a>.</p>
+Copyright: <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.29/LICENSE">license</a>.</p>
   { return c.indexOf(line) == 0 })
 License: UNKNOWN
  FIXME
