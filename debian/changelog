@@ -1,3 +1,16 @@
+nodejs (0.10.29~dfsg-1) unstable; urgency=medium
+
+  * Upstream update.
+  [ Upstream ]
+  * Prevent Node from sending invalid UTF-8
+    This introduces a breaking change, previously you could construct
+    invalid UTF-8 and invoke an error in a client that was expecting valid
+    UTF-8, now unmatched surrogate pairs are replaced with the unknown UTF-8
+    character. To restore the old functionality simply have NODE_INVALID_UTF8
+    environment variable set.
+
+ -- Jérémy Lal <kapouer@melix.org>  Fri, 13 Jun 2014 22:27:18 +0200
+
 nodejs (0.10.28~dfsg-2) unstable; urgency=medium
 
   * Add 1006_relax_timeouts_in_tests.patch, fixing some tests to
