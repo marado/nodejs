@@ -4,16 +4,17 @@ Author: Jérémy Lal <kapouer@melix.org>
 Last-Update: 2013-07-28
 --- a/lib/fs.js
 +++ b/lib/fs.js
-@@ -209,6 +209,8 @@
- 
-     fs.fstat(fd, function(er, st) {
-       if (er) return callback(er);
+@@ -213,7 +213,8 @@
+           callback(er);
+         });
+       }
+-
 +      // some platforms do not throw EISDIR.
 +      if (st.isDirectory()) return callback(errnoException('EISDIR', 'read'));
        size = st.size;
        if (size === 0) {
          // the kernel lies about many files.
-@@ -286,7 +288,10 @@
+@@ -291,7 +292,10 @@
    var size;
    var threw = true;
    try {

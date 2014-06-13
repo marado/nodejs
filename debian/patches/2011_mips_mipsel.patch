@@ -28,7 +28,7 @@ Last-Update: 2014-04-26
  
  parser.add_option("--dest-os",
      action="store",
-@@ -691,6 +691,7 @@
+@@ -694,6 +694,7 @@
    'USE_NINJA': str(int(options.use_ninja or 0)),
    'USE_XCODE': str(int(options.use_xcode or 0)),
    'PYTHON': sys.executable,
