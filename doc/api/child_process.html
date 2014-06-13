@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Child Process Node.js v0.10.28 Manual &amp; Documentation</title>
+  <title>Child Process Node.js v0.10.29 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/child_process.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.28 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.29 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -400,7 +400,8 @@ child, and it is no longer possible to send messages.
 of being received, most likely immediately.
 
 </p>
-<p>Note that you can also call <code>process.disconnect()</code> in the child process.
+<p>Note that you can also call <code>process.disconnect()</code> in the child process when the
+child process has any open IPC channels with the parent (i.e <code>fork()</code>).
 
 </p>
 <h2>child_process.spawn(command, [args], [options])<span><a class="mark" href="#child_process_child_process_spawn_command_args_options" id="child_process_child_process_spawn_command_args_options">#</a></span></h2>
@@ -743,7 +744,7 @@ output on this fd is expected to be line delimited JSON objects.
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.28/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.29/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

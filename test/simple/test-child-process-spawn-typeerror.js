@@ -19,34 +19,24 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+var spawn = require('child_process').spawn,
+  assert = require('assert'),
+  windows = (process.platform === 'win32'),
+  cmd = (windows) ? 'ls' : 'dir',
+  errors = 0;
 
-var common = require('../common.js');
-var R = require('_stream_readable');
-var assert = require('assert');
+try {
+  // Ensure this throws a TypeError
+  var child = spawn(cmd, 'this is not an array');
 
-var util = require('util');
-var EE = require('events').EventEmitter;
-
-var ondataCalled = 0;
-
-function TestReader() {
-  R.apply(this);
-  this._buffer = new Buffer(100);
-  this._buffer.fill('x');
-
-  this.on('data', function() {
-    ondataCalled++;
+  child.on('error', function (err) {
+    errors++;
   });
+
+} catch (e) {
+  assert.equal(e instanceof TypeError, true);
 }
 
-util.inherits(TestReader, R);
-
-TestReader.prototype._read = function(n) {
-  this.push(this._buffer);
-  this._buffer = new Buffer(0);
-};
-
-var reader = new TestReader();
-process.nextTick(function() {
-  assert.equal(ondataCalled, 1);
+process.on('exit', function() {
+  assert.equal(errors, 0);
 });

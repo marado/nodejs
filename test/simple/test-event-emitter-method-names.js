@@ -19,34 +19,14 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
-var common = require('../common.js');
-var R = require('_stream_readable');
+var common = require('../common');
 var assert = require('assert');
+var events = require('events');
 
-var util = require('util');
-var EE = require('events').EventEmitter;
-
-var ondataCalled = 0;
-
-function TestReader() {
-  R.apply(this);
-  this._buffer = new Buffer(100);
-  this._buffer.fill('x');
-
-  this.on('data', function() {
-    ondataCalled++;
-  });
-}
-
-util.inherits(TestReader, R);
-
-TestReader.prototype._read = function(n) {
-  this.push(this._buffer);
-  this._buffer = new Buffer(0);
-};
-
-var reader = new TestReader();
-process.nextTick(function() {
-  assert.equal(ondataCalled, 1);
+var E = events.EventEmitter.prototype;
+assert.equal(E.constructor.name, 'EventEmitter');
+assert.equal(E.on, E.addListener);  // Same method.
+Object.getOwnPropertyNames(E).forEach(function(name) {
+  if (name === 'constructor' || name === 'on') return;
+  assert.equal(E[name].name, name);
 });
