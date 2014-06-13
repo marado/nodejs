@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>URL Node.js v0.10.28 Manual &amp; Documentation</title>
+  <title>URL Node.js v0.10.29 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/url.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.28 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.10.29 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -75,6 +75,9 @@ string will not be in the parsed object. Examples are shown for the URL
 </li>
 <li><p><code>protocol</code>: The request protocol, lowercased.</p>
 <p>  Example: <code>&#39;http:&#39;</code></p>
+</li>
+<li><p><code>slashes</code>: The protocol requires slashes after the colon</p>
+<p>  Example: true or false</p>
 </li>
 <li><p><code>host</code>: The full lowercased host portion of the URL, including port
 information.</p>
@@ -138,6 +141,11 @@ postfixed with <code>://</code> (colon-slash-slash).</li>
 be postfixed with <code>:</code> (colon)</li>
 </ul>
 </li>
+<li><code>slashes</code> set to <code>true</code> if the protocol requires <code>://</code> (colon-slash-slash)<ul>
+<li>Only needs to be set for protocols not previously listed as requiring
+slashes, such as <code>mongodb://localhost:8000/</code></li>
+</ul>
+</li>
 <li><code>auth</code> will be used if present.</li>
 <li><code>hostname</code> will only be used if <code>host</code> is absent.</li>
 <li><code>port</code> will only be used if <code>host</code> is absent.</li>
@@ -175,7 +183,7 @@ url.resolve(&#39;http://example.com/one&#39;, &#39;/two&#39;) // &#39;http://exa
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.28/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.29/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>
