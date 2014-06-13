@@ -1,4 +1,4 @@
-nodejs (0.10.29~dfsg-1) UNRELEASED; urgency=medium
+nodejs (0.10.29~dfsg-1) unstable; urgency=medium
 
   * Upstream update.
   * 1007 patch: revert upstream commit that relies on a patch to
@@ -6,7 +6,7 @@ nodejs (0.10.29~dfsg-1) UNRELEASED; urgency=medium
     This means nodejs is stuck in NODE_INVALID_UTF8 mode, see
     upstream ChangeLog to understand what this means.
 
- -- Jérémy Lal <kapouer@melix.org>  Fri, 13 Jun 2014 22:27:18 +0200
+ -- Jérémy Lal <kapouer@melix.org>  Fri, 13 Jun 2014 23:58:22 +0200
 
 nodejs (0.10.28~dfsg-2) unstable; urgency=medium
 
