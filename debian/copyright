@@ -4,9 +4,20 @@ Upstream-Contact: https://github.com/joyent/node/issues
 Source: http://nodejs.org/
  Repackaged to exclude non-DFSG files:
   doc/sh_javascript.min.js
+  doc/api_assets/*.svg
+  doc/api/assets/*.svg
+  doc/*.jpg
+  doc/*.png
+  src/res/node.ico
+  deps/npm/html/favicon.ico
  other files being excluded to ease copyright maintenance.
 Files-Excluded:
  doc/sh_javascript.min.js
+ doc/api_assets/*.svg
+ doc/api/assets/*.svg
+ doc/*.jpg
+ doc/*.png
+ src/res/node.ico
  deps/npm/*
  deps/openssl/*
  deps/zlib/*
