@@ -63,7 +63,7 @@
         {
           "textRaw": "process.env",
           "name": "env",
-          "desc": "<p>An object containing the user environment. See environ(7).\n\n\n</p>\n"
+          "desc": "<p>An object containing the user environment. See environ(7).\n\n</p>\n<p>An example of this object looks like:\n\n</p>\n<pre><code>{ TERM: &#39;xterm-256color&#39;,\n  SHELL: &#39;/usr/local/bin/bash&#39;,\n  USER: &#39;maciej&#39;,\n  PATH: &#39;~/.bin/:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin&#39;,\n  PWD: &#39;/Users/maciej&#39;,\n  EDITOR: &#39;vim&#39;,\n  SHLVL: &#39;1&#39;,\n  HOME: &#39;/Users/maciej&#39;,\n  LOGNAME: &#39;maciej&#39;,\n  _: &#39;/usr/local/bin/node&#39; }</code></pre>\n<p>You can write to this object, but changes won&#39;t be reflected outside of your\nprocess. That means that the following won&#39;t work:\n\n</p>\n<pre><code>node -e &#39;process.env.foo = &quot;bar&quot;&#39; &amp;&amp; echo $foo</code></pre>\n<p>But this will:\n\n</p>\n<pre><code>process.env.foo = &#39;bar&#39;;\nconsole.log(process.env.foo);</code></pre>\n"
         },
         {
           "textRaw": "process.version",
