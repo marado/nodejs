@@ -74,6 +74,7 @@ Files: deps/v8/*
  test/pummel/testcfg.py
  test/message/testcfg.py
  test/internet/testcfg.py
+ test/timers/testcfg.py
  test/gc/testcfg.py
 Copyright: 2006-2013, the V8 Project Authors <v8-dev@googlegroups.com>
 License: BSD-3-clause~Google
