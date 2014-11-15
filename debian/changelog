@@ -1,3 +1,14 @@
+nodejs (0.10.33~dfsg-1) UNRELEASED; urgency=medium
+
+  * Imported Upstream version 0.10.33~dfsg
+    This is an important release that mostly deals with SSL issues.
+  * Refresh patches
+  * Copyright: fix some paths, add a new file, DFSG-exclude
+    trademarked icons (node, joyent, npm).
+  * Standards-Version 3.9.6
+
+ -- Jérémy Lal <kapouer@melix.org>  Sat, 15 Nov 2014 10:36:41 +0100
+
 nodejs (0.10.29~dfsg-1) unstable; urgency=medium
 
   * Upstream update.
