@@ -19,7 +19,7 @@ Last-Update: 2014-04-26
  	$(PYTHON) tools/test.py pummel
 --- a/configure
 +++ b/configure
-@@ -231,7 +231,7 @@
+@@ -241,7 +241,7 @@
  parser.add_option("--dest-cpu",
      action="store",
      dest="dest_cpu",
@@ -28,7 +28,7 @@ Last-Update: 2014-04-26
  
  parser.add_option("--dest-os",
      action="store",
-@@ -694,6 +694,7 @@
+@@ -711,6 +711,7 @@
    'USE_NINJA': str(int(options.use_ninja or 0)),
    'USE_XCODE': str(int(options.use_xcode or 0)),
    'PYTHON': sys.executable,

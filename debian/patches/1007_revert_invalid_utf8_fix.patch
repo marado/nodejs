@@ -4,8 +4,8 @@ Forwarded: not-needed
 
 --- a/src/node.cc
 +++ b/src/node.cc
-@@ -3046,11 +3046,6 @@
- }
+@@ -3056,11 +3056,6 @@
+ 
  
  int Start(int argc, char *argv[]) {
 -  const char* replaceInvalid = getenv("NODE_INVALID_UTF8");

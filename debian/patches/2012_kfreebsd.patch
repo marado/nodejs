@@ -113,7 +113,7 @@ Last-Update: 2013-07-23
          'target_conditions': [
 --- a/deps/uv/uv.gyp
 +++ b/deps/uv/uv.gyp
-@@ -240,7 +240,7 @@
+@@ -241,7 +241,7 @@
              ],
            },
          }],
@@ -122,7 +122,7 @@ Last-Update: 2013-07-23
            'sources': [ 'src/unix/freebsd.c' ],
          }],
          [ 'OS=="openbsd"', {
-@@ -254,7 +254,12 @@
+@@ -255,7 +255,12 @@
              'libraries': [ '-lkvm' ],
            },
          }],
@@ -138,7 +138,7 @@ Last-Update: 2013-07-23
          ['library=="shared_library"', {
 --- a/node.gyp
 +++ b/node.gyp
-@@ -277,6 +277,11 @@
+@@ -303,6 +303,11 @@
              '-lkvm',
            ],
          }],
@@ -168,11 +168,11 @@ Last-Update: 2013-07-23
 -      ['OS=="freebsd" and node_use_dtrace=="true"', {
 +      ['(OS=="freebsd" or OS=="kfreebsd") and node_use_dtrace=="true"', {
          'libraries': [ '-lelf' ],
-       }]
-     ],
+       }],
+       ['OS=="freebsd"', {
 --- a/deps/uv/config-unix.mk
 +++ b/deps/uv/config-unix.mk
-@@ -115,6 +115,15 @@
+@@ -116,6 +116,15 @@
  OBJS += src/unix/kqueue.o
  endif
  
