@@ -58,3 +58,6 @@ deps/openssl/openssl.xml
 /SHASUMS*.txt*
 
 /tools/wrk/wrk
+
+# test artifacts
+tools/faketime

@@ -19,23 +19,18 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-var common = require('../common');
 var assert = require('assert');
+var cluster = require('cluster');
 
-var Readable = require('stream').Readable;
-
-var r = new Readable();
-var errors = 0;
-
-// Setting `data` listener should not trigger `_read()` calls before we will
-// set the `error` listener below
-r.on('data', function() {
-});
-
-r.on('error', function() {
-  errors++;
-});
+var disconnected;
 
 process.on('exit', function() {
-  assert.equal(errors, 1);
+  assert(disconnected);
 });
+
+cluster.disconnect(function() {
+  disconnected = true;
+});
+
+// Assert that callback is not sometimes synchronous
+assert(!disconnected);

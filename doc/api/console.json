@@ -135,33 +135,41 @@
           ]
         },
         {
-          "textRaw": "console.trace(label)",
+          "textRaw": "console.trace(message, [...])",
           "type": "method",
           "name": "trace",
-          "desc": "<p>Print a stack trace to stderr of the current position.\n\n</p>\n",
+          "desc": "<p>Print to stderr <code>&#39;Trace :&#39;</code>, followed by the formatted message and stack trace\nto the current position.\n\n</p>\n",
           "signatures": [
             {
               "params": [
                 {
-                  "name": "label"
+                  "name": "message"
+                },
+                {
+                  "name": "...",
+                  "optional": true
                 }
               ]
             }
           ]
         },
         {
-          "textRaw": "console.assert(expression, [message])",
+          "textRaw": "console.assert(value, [message], [...])",
           "type": "method",
           "name": "assert",
-          "desc": "<p>Same as [assert.ok()][] where if the <code>expression</code> evaluates as <code>false</code> throw an\nAssertionError with <code>message</code>.\n\n</p>\n",
+          "desc": "<p>Similar to [assert.ok()][], but the error message is formatted as\n<code>util.format(message...)</code>.\n\n</p>\n",
           "signatures": [
             {
               "params": [
                 {
-                  "name": "expression"
+                  "name": "value"
                 },
                 {
                   "name": "message",
+                  "optional": true
+                },
+                {
+                  "name": "...",
                   "optional": true
                 }
               ]
