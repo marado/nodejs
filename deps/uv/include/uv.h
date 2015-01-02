@@ -130,6 +130,12 @@ extern "C" {
   XX( 57, ENODEV, "no such device")                                           \
   XX( 58, ESPIPE, "invalid seek")                                             \
   XX( 59, ECANCELED, "operation canceled")                                    \
+  XX( 60, EFBIG, "file too large")                                            \
+  XX( 61, ENOPROTOOPT, "protocol not available")                              \
+  XX( 62, ETXTBSY, "text file is busy")                                       \
+  XX( 63, ERANGE, "result too large")                                         \
+  XX( 64, ENXIO, "no such device or address")                                 \
+  XX( 65, EMLINK, "too many links")                                           \
 
 
 #define UV_ERRNO_GEN(val, name, s) UV_##name = val,
@@ -1642,10 +1648,10 @@ UV_EXTERN int uv_fs_fchmod(uv_loop_t* loop, uv_fs_t* req, uv_file file,
     int mode, uv_fs_cb cb);
 
 UV_EXTERN int uv_fs_chown(uv_loop_t* loop, uv_fs_t* req, const char* path,
-    int uid, int gid, uv_fs_cb cb);
+    uv_uid_t uid, uv_gid_t gid, uv_fs_cb cb);
 
 UV_EXTERN int uv_fs_fchown(uv_loop_t* loop, uv_fs_t* req, uv_file file,
-    int uid, int gid, uv_fs_cb cb);
+    uv_uid_t uid, uv_gid_t gid, uv_fs_cb cb);
 
 
 enum uv_fs_event {

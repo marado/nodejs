@@ -80,7 +80,7 @@
           "textRaw": "crypto.createCipher(algorithm, password)",
           "type": "method",
           "name": "createCipher",
-          "desc": "<p>Creates and returns a cipher object, with the given algorithm and\npassword.\n\n</p>\n<p><code>algorithm</code> is dependent on OpenSSL, examples are <code>&#39;aes192&#39;</code>, etc.  On\nrecent releases, <code>openssl list-cipher-algorithms</code> will display the\navailable cipher algorithms.  <code>password</code> is used to derive key and IV,\nwhich must be a <code>&#39;binary&#39;</code> encoded string or a <a href=\"buffer.html\">buffer</a>.\n\n</p>\n<p>It is a <a href=\"stream.html\">stream</a> that is both readable and writable.  The\nwritten data is used to compute the hash.  Once the writable side of\nthe stream is ended, use the <code>read()</code> method to get the computed hash\ndigest.  The legacy <code>update</code> and <code>digest</code> methods are also supported.\n\n</p>\n",
+          "desc": "<p>Creates and returns a cipher object, with the given algorithm and\npassword.\n\n</p>\n<p><code>algorithm</code> is dependent on OpenSSL, examples are <code>&#39;aes192&#39;</code>, etc.  On\nrecent releases, <code>openssl list-cipher-algorithms</code> will display the\navailable cipher algorithms.  <code>password</code> is used to derive key and IV,\nwhich must be a <code>&#39;binary&#39;</code> encoded string or a <a href=\"buffer.html\">buffer</a>.\n\n</p>\n<p>It is a <a href=\"stream.html\">stream</a> that is both readable and writable.  The\nwritten data is used to compute the hash.  Once the writable side of\nthe stream is ended, use the <code>read()</code> method to get the enciphered\ncontents.  The legacy <code>update</code> and <code>final</code> methods are also supported.\n\n</p>\n",
           "signatures": [
             {
               "params": [
@@ -288,7 +288,7 @@
           "textRaw": "crypto.randomBytes(size, [callback])",
           "type": "method",
           "name": "randomBytes",
-          "desc": "<p>Generates cryptographically strong pseudo-random data. Usage:\n\n</p>\n<pre><code>// async\ncrypto.randomBytes(256, function(ex, buf) {\n  if (ex) throw ex;\n  console.log(&#39;Have %d bytes of random data: %s&#39;, buf.length, buf);\n});\n\n// sync\ntry {\n  var buf = crypto.randomBytes(256);\n  console.log(&#39;Have %d bytes of random data: %s&#39;, buf.length, buf);\n} catch (ex) {\n  // handle error\n}</code></pre>\n",
+          "desc": "<p>Generates cryptographically strong pseudo-random data. Usage:\n\n</p>\n<pre><code>// async\ncrypto.randomBytes(256, function(ex, buf) {\n  if (ex) throw ex;\n  console.log(&#39;Have %d bytes of random data: %s&#39;, buf.length, buf);\n});\n\n// sync\ntry {\n  var buf = crypto.randomBytes(256);\n  console.log(&#39;Have %d bytes of random data: %s&#39;, buf.length, buf);\n} catch (ex) {\n  // handle error\n  // most likely, entropy sources are drained\n}</code></pre>\n<p>NOTE: Will throw error or invoke callback with error, if there is not enough\naccumulated entropy to generate cryptographically strong data. In other words,\n<code>crypto.randomBytes</code> without callback will not block even if all entropy sources\nare drained.\n\n</p>\n",
           "signatures": [
             {
               "params": [
@@ -334,7 +334,7 @@
               "textRaw": "hash.update(data, [input_encoding])",
               "type": "method",
               "name": "update",
-              "desc": "<p>Updates the hash content with the given <code>data</code>, the encoding of which\nis given in <code>input_encoding</code> and can be <code>&#39;utf8&#39;</code>, <code>&#39;ascii&#39;</code> or\n<code>&#39;binary&#39;</code>.  If no encoding is provided, then a buffer is expected.\n\n</p>\n<p>This can be called many times with new data as it is streamed.\n\n</p>\n",
+              "desc": "<p>Updates the hash content with the given <code>data</code>, the encoding of which\nis given in <code>input_encoding</code> and can be <code>&#39;utf8&#39;</code>, <code>&#39;ascii&#39;</code> or\n<code>&#39;binary&#39;</code>.  If no encoding is provided and the input is a string an\nencoding of <code>&#39;binary&#39;</code> is enforced. If <code>data</code> is a <code>Buffer</code> then\n<code>input_encoding</code> is ignored.\n\n</p>\n<p>This can be called many times with new data as it is streamed.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -416,7 +416,7 @@
               "textRaw": "cipher.update(data, [input_encoding], [output_encoding])",
               "type": "method",
               "name": "update",
-              "desc": "<p>Updates the cipher with <code>data</code>, the encoding of which is given in\n<code>input_encoding</code> and can be <code>&#39;utf8&#39;</code>, <code>&#39;ascii&#39;</code> or <code>&#39;binary&#39;</code>.  If no\nencoding is provided, then a buffer is expected.\n\n</p>\n<p>The <code>output_encoding</code> specifies the output format of the enciphered\ndata, and can be <code>&#39;binary&#39;</code>, <code>&#39;base64&#39;</code> or <code>&#39;hex&#39;</code>.  If no encoding is\nprovided, then a buffer is returned.\n\n</p>\n<p>Returns the enciphered contents, and can be called many times with new\ndata as it is streamed.\n\n</p>\n",
+              "desc": "<p>Updates the cipher with <code>data</code>, the encoding of which is given in\n<code>input_encoding</code> and can be <code>&#39;utf8&#39;</code>, <code>&#39;ascii&#39;</code> or <code>&#39;binary&#39;</code>.  If no\nencoding is provided, then a buffer is expected.\nIf <code>data</code> is a <code>Buffer</code> then <code>input_encoding</code> is ignored.\n\n</p>\n<p>The <code>output_encoding</code> specifies the output format of the enciphered\ndata, and can be <code>&#39;binary&#39;</code>, <code>&#39;base64&#39;</code> or <code>&#39;hex&#39;</code>.  If no encoding is\nprovided, then a buffer is returned.\n\n</p>\n<p>Returns the enciphered contents, and can be called many times with new\ndata as it is streamed.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -479,7 +479,7 @@
               "textRaw": "decipher.update(data, [input_encoding], [output_encoding])",
               "type": "method",
               "name": "update",
-              "desc": "<p>Updates the decipher with <code>data</code>, which is encoded in <code>&#39;binary&#39;</code>,\n<code>&#39;base64&#39;</code> or <code>&#39;hex&#39;</code>.  If no encoding is provided, then a buffer is\nexpected.\n\n</p>\n<p>The <code>output_decoding</code> specifies in what format to return the\ndeciphered plaintext: <code>&#39;binary&#39;</code>, <code>&#39;ascii&#39;</code> or <code>&#39;utf8&#39;</code>.  If no\nencoding is provided, then a buffer is returned.\n\n</p>\n",
+              "desc": "<p>Updates the decipher with <code>data</code>, which is encoded in <code>&#39;binary&#39;</code>,\n<code>&#39;base64&#39;</code> or <code>&#39;hex&#39;</code>.  If no encoding is provided, then a buffer is\nexpected.\nIf <code>data</code> is a <code>Buffer</code> then <code>input_encoding</code> is ignored.\n\n</p>\n<p>The <code>output_decoding</code> specifies in what format to return the\ndeciphered plaintext: <code>&#39;binary&#39;</code>, <code>&#39;ascii&#39;</code> or <code>&#39;utf8&#39;</code>.  If no\nencoding is provided, then a buffer is returned.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -684,7 +684,7 @@
               "textRaw": "diffieHellman.getGenerator([encoding])",
               "type": "method",
               "name": "getGenerator",
-              "desc": "<p>Returns the Diffie-Hellman prime in the specified encoding, which can\nbe <code>&#39;binary&#39;</code>, <code>&#39;hex&#39;</code>, or <code>&#39;base64&#39;</code>. If no encoding is provided,\nthen a buffer is returned.\n\n</p>\n",
+              "desc": "<p>Returns the Diffie-Hellman generator in the specified encoding, which can\nbe <code>&#39;binary&#39;</code>, <code>&#39;hex&#39;</code>, or <code>&#39;base64&#39;</code>. If no encoding is provided,\nthen a buffer is returned.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [

@@ -46,9 +46,9 @@ endif
 out/Makefile: common.gypi deps/uv/uv.gyp deps/http_parser/http_parser.gyp deps/zlib/zlib.gyp deps/v8/build/common.gypi deps/v8/tools/gyp/v8.gyp node.gyp config.gypi
 ifeq ($(USE_NINJA),1)
 	touch out/Makefile
-	$(PYTHON) tools/gyp_node -f ninja
+	$(PYTHON) tools/gyp_node.py -f ninja
 else
-	$(PYTHON) tools/gyp_node -f make
+	$(PYTHON) tools/gyp_node.py -f make
 endif
 
 config.gypi: configure
@@ -82,16 +82,16 @@ test-http1: all
 test-valgrind: all
 	$(PYTHON) tools/test.py --mode=release --valgrind simple message
 
-test/gc/node_modules/weak/build:
+test/gc/node_modules/weak/build/Release/weakref.node:
 	@if [ ! -f node ]; then make all; fi
 	./node deps/npm/node_modules/node-gyp/bin/node-gyp rebuild \
 		--directory="$(shell pwd)/test/gc/node_modules/weak" \
 		--nodedir="$(shell pwd)"
 
-test-gc: all test/gc/node_modules/weak/build
+test-gc: all test/gc/node_modules/weak/build/Release/weakref.node
 	$(PYTHON) tools/test.py --mode=release gc
 
-test-all: all test/gc/node_modules/weak/build
+test-all: all test/gc/node_modules/weak/build/Release/weakref.node
 	$(PYTHON) tools/test.py --mode=debug,release
 	make test-npm
 
@@ -125,40 +125,29 @@ test-npm: node
 test-npm-publish: node
 	npm_package_config_publishtest=true ./node deps/npm/test/run.js
 
+test-timers:
+	$(MAKE) --directory=tools faketime
+	$(PYTHON) tools/test.py --mode=release timers
+
+test-timers-clean:
+	$(MAKE) --directory=tools clean
+
 apidoc_sources = $(wildcard doc/api/*.markdown)
 apidocs = $(addprefix out/,$(apidoc_sources:.markdown=.html)) \
           $(addprefix out/,$(apidoc_sources:.markdown=.json))
 
-apidoc_dirs = out/doc out/doc/api/ out/doc/api/assets out/doc/about out/doc/community out/doc/download out/doc/logos out/doc/images
+apidoc_dirs = out/doc out/doc/api/ out/doc/api/assets
 
 apiassets = $(subst api_assets,api/assets,$(addprefix out/,$(wildcard doc/api_assets/*)))
 
-doc_images = $(addprefix out/,$(wildcard doc/images/* doc/*.jpg doc/*.png))
-
 website_files = \
-	out/doc/index.html    \
-	out/doc/v0.4_announcement.html   \
-	out/doc/cla.html      \
 	out/doc/sh_main.js    \
-	out/doc/sh_javascript.min.js \
-	out/doc/sh_vim-dark.css \
-	out/doc/sh.css \
-	out/doc/favicon.ico   \
-	out/doc/pipe.css \
-	out/doc/about/index.html \
-	out/doc/community/index.html \
-	out/doc/download/index.html \
-	out/doc/logos/index.html \
-	out/doc/changelog.html \
-	$(doc_images)
+	out/doc/sh_javascript.min.js
 
-doc: $(apidoc_dirs) $(website_files) $(apiassets) $(apidocs) tools/doc/ blog node
+doc: $(apidoc_dirs) $(website_files) $(apiassets) $(apidocs) tools/doc/ out/doc/changelog.html node
 
-blogclean:
-	rm -rf out/blog
-
-blog: doc/blog out/Release/node tools/blog
-	out/Release/node tools/blog/generate.js doc/blog/ out/blog/ doc/blog.html doc/rss.xml
+doc-branch: NODE_DOC_VERSION = v$(shell $(PYTHON) tools/getnodeversion.py | cut -f1,2 -d.)
+doc-branch: doc
 
 $(apidoc_dirs):
 	mkdir -p $@
@@ -169,17 +158,14 @@ out/doc/api/assets/%: doc/api_assets/% out/doc/api/assets/
 out/doc/changelog.html: ChangeLog doc/changelog-head.html doc/changelog-foot.html tools/build-changelog.sh node
 	bash tools/build-changelog.sh
 
-out/doc/%.html: doc/%.html node
-	cat $< | sed -e 's|__VERSION__|'$(VERSION)'|g' > $@
-
 out/doc/%: doc/%
 	cp -r $< $@
 
 out/doc/api/%.json: doc/api/%.markdown node
-	out/Release/node tools/doc/generate.js --format=json $< > $@
+	NODE_DOC_VERSION=$(NODE_DOC_VERSION) out/Release/node tools/doc/generate.js --format=json $< > $@
 
 out/doc/api/%.html: doc/api/%.markdown node
-	out/Release/node tools/doc/generate.js --format=html --template=doc/template.html $< > $@
+	NODE_DOC_VERSION=$(NODE_DOC_VERSION) out/Release/node tools/doc/generate.js --format=html --template=doc/template.html $< > $@
 
 email.md: ChangeLog tools/email-footer.md
 	bash tools/changelog-head.sh | sed 's|^\* #|* \\#|g' > $@
@@ -187,9 +173,6 @@ email.md: ChangeLog tools/email-footer.md
 
 blog.html: email.md
 	cat $< | ./node tools/doc/node_modules/.bin/marked > $@
-
-blog-upload: blog
-	rsync -r out/blog/ node@nodejs.org:~/web/nodejs.org/blog/
 
 website-upload: doc
 	rsync -r out/doc/ node@nodejs.org:~/web/nodejs.org/
@@ -201,6 +184,11 @@ website-upload: doc
     rm -f ~/web/nodejs.org/dist/node-latest.tar.gz &&\
     ln -s $(VERSION)/node-$(VERSION).tar.gz ~/web/nodejs.org/dist/node-latest.tar.gz'
 
+doc-branch-upload: NODE_DOC_VERSION = v$(shell $(PYTHON) tools/getnodeversion.py | cut -f1,2 -d.)
+doc-branch-upload: doc-branch
+	echo $(NODE_DOC_VERSION)
+	rsync -r out/doc/api/ node@nodejs.org:~/web/nodejs.org/$(NODE_DOC_VERSION)
+
 docopen: out/doc/api/all.html
 	-google-chrome out/doc/api/all.html
 
@@ -209,6 +197,7 @@ docclean:
 
 RAWVER=$(shell $(PYTHON) tools/getnodeversion.py)
 VERSION=v$(RAWVER)
+NODE_DOC_VERSION=$(VERSION)
 RELEASE=$(shell $(PYTHON) tools/getnodeisrelease.py)
 PLATFORM=$(shell uname | tr '[:upper:]' '[:lower:]')
 ifeq ($(findstring x86_64,$(shell uname -m)),x86_64)
@@ -277,7 +266,7 @@ $(PKG): release-only
 	rm -rf out/deps out/Release
 	$(PYTHON) ./configure --without-snapshot --dest-cpu=x64 --tag=$(TAG)
 	$(MAKE) install V=$(V) DESTDIR=$(PKGDIR)
-	SIGN="$(SIGN)" PKGDIR="$(PKGDIR)" bash tools/osx-codesign.sh
+	SIGN="$(APP_SIGN)" PKGDIR="$(PKGDIR)" bash tools/osx-codesign.sh
 	lipo $(PKGDIR)/32/usr/local/bin/node \
 		$(PKGDIR)/usr/local/bin/node \
 		-output $(PKGDIR)/usr/local/bin/node-universal \
@@ -288,7 +277,7 @@ $(PKG): release-only
 		--id "org.nodejs.Node" \
 		--doc tools/osx-pkg.pmdoc \
 		--out $(PKG)
-	SIGN="$(SIGN)" PKG="$(PKG)" bash tools/osx-productsign.sh
+	SIGN="$(INT_SIGN)" PKG="$(PKG)" bash tools/osx-productsign.sh
 
 $(TARBALL): release-only node doc
 	git archive --format=tar --prefix=$(TARNAME)/ HEAD | tar xf -

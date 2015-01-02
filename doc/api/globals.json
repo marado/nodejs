@@ -82,13 +82,13 @@
       "textRaw": "module",
       "name": "module",
       "type": "var",
-      "desc": "<p>A reference to the current module. In particular\n<code>module.exports</code> is the same as the <code>exports</code> object.\n<code>module</code> isn&#39;t actually a global but rather local to each module.\n\n</p>\n<p>See the [module system documentation][] for more information.\n\n</p>\n"
+      "desc": "<p>A reference to the current module. In particular\n<code>module.exports</code> is used for defining what a module exports and makes\navailable through <code>require()</code>.\n\n</p>\n<p><code>module</code> isn&#39;t actually a global but rather local to each module.\n\n</p>\n<p>See the [module system documentation][] for more information.\n\n</p>\n"
     },
     {
       "textRaw": "exports",
       "name": "exports",
       "type": "var",
-      "desc": "<p>A reference to the <code>module.exports</code> object which is shared between all\ninstances of the current module and made accessible through <code>require()</code>.\nSee [module system documentation][] for details on when to use <code>exports</code> and\nwhen to use <code>module.exports</code>.\n<code>exports</code> isn&#39;t actually a global but rather local to each module.\n\n</p>\n<p>See the [module system documentation][] for more information.\n\n</p>\n<p>See the [module section][] for more information.\n\n</p>\n"
+      "desc": "<p>A reference to the <code>module.exports</code> that is shorter to type.\nSee [module system documentation][] for details on when to use <code>exports</code> and\nwhen to use <code>module.exports</code>.\n\n</p>\n<p><code>exports</code> isn&#39;t actually a global but rather local to each module.\n\n</p>\n<p>See the [module system documentation][] for more information.\n\n</p>\n<p>See the [module section][] for more information.\n\n</p>\n"
     }
   ],
   "methods": [
@@ -232,13 +232,13 @@
           "textRaw": "module",
           "name": "module",
           "type": "var",
-          "desc": "<p>A reference to the current module. In particular\n<code>module.exports</code> is the same as the <code>exports</code> object.\n<code>module</code> isn&#39;t actually a global but rather local to each module.\n\n</p>\n<p>See the [module system documentation][] for more information.\n\n</p>\n"
+          "desc": "<p>A reference to the current module. In particular\n<code>module.exports</code> is used for defining what a module exports and makes\navailable through <code>require()</code>.\n\n</p>\n<p><code>module</code> isn&#39;t actually a global but rather local to each module.\n\n</p>\n<p>See the [module system documentation][] for more information.\n\n</p>\n"
         },
         {
           "textRaw": "exports",
           "name": "exports",
           "type": "var",
-          "desc": "<p>A reference to the <code>module.exports</code> object which is shared between all\ninstances of the current module and made accessible through <code>require()</code>.\nSee [module system documentation][] for details on when to use <code>exports</code> and\nwhen to use <code>module.exports</code>.\n<code>exports</code> isn&#39;t actually a global but rather local to each module.\n\n</p>\n<p>See the [module system documentation][] for more information.\n\n</p>\n<p>See the [module section][] for more information.\n\n</p>\n"
+          "desc": "<p>A reference to the <code>module.exports</code> that is shorter to type.\nSee [module system documentation][] for details on when to use <code>exports</code> and\nwhen to use <code>module.exports</code>.\n\n</p>\n<p><code>exports</code> isn&#39;t actually a global but rather local to each module.\n\n</p>\n<p>See the [module system documentation][] for more information.\n\n</p>\n<p>See the [module section][] for more information.\n\n</p>\n"
         }
       ],
       "methods": [
