@@ -67,6 +67,21 @@
           ]
         },
         {
+          "textRaw": "path.isAbsolute(path)",
+          "type": "method",
+          "name": "isAbsolute",
+          "desc": "<p>Determines whether <code>path</code> is an absolute path. An absolute path will always\nresolve to the same location, regardless of the working directory.\n\n</p>\n<p>Posix examples:\n\n</p>\n<pre><code>path.isAbsolute(&#39;/foo/bar&#39;) // true\npath.isAbsolute(&#39;/baz/..&#39;)  // true\npath.isAbsolute(&#39;qux/&#39;)     // false\npath.isAbsolute(&#39;.&#39;)        // false</code></pre>\n<p>Windows examples:\n\n</p>\n<pre><code>path.isAbsolute(&#39;//server&#39;)  // true\npath.isAbsolute(&#39;C:/foo/..&#39;) // true\npath.isAbsolute(&#39;bar\\\\baz&#39;)   // false\npath.isAbsolute(&#39;.&#39;)         // false</code></pre>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "path"
+                }
+              ]
+            }
+          ]
+        },
+        {
           "textRaw": "path.relative(from, to)",
           "type": "method",
           "name": "relative",

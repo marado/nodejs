@@ -101,7 +101,7 @@
               "textRaw": "emitter.removeAllListeners([event])",
               "type": "method",
               "name": "removeAllListeners",
-              "desc": "<p>Removes all listeners, or those of the specified event.\n\n</p>\n<p>Returns emitter, so calls can be chained.\n\n</p>\n",
+              "desc": "<p>Removes all listeners, or those of the specified event. It&#39;s not a good idea to\nremove listeners that were added elsewhere in the code, especially when it&#39;s on\nan emitter that you didn&#39;t create (e.g. sockets or file streams).\n\n</p>\n<p>Returns emitter, so calls can be chained.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -117,7 +117,7 @@
               "textRaw": "emitter.setMaxListeners(n)",
               "type": "method",
               "name": "setMaxListeners",
-              "desc": "<p>By default EventEmitters will print a warning if more than 10 listeners are\nadded for a particular event. This is a useful default which helps finding memory leaks.\nObviously not all Emitters should be limited to 10. This function allows\nthat to be increased. Set to zero for unlimited.\n\n\n</p>\n",
+              "desc": "<p>By default EventEmitters will print a warning if more than 10 listeners are\nadded for a particular event. This is a useful default which helps finding\nmemory leaks. Obviously not all Emitters should be limited to 10. This function\nallows that to be increased. Set to zero for unlimited.\n\n</p>\n<p>Returns emitter, so calls can be chained.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -169,6 +169,13 @@
                   ]
                 }
               ]
+            }
+          ],
+          "properties": [
+            {
+              "textRaw": "EventEmitter.defaultMaxListeners",
+              "name": "defaultMaxListeners",
+              "desc": "<p><code>emitter.setMaxListeners(n)</code> sets the maximum on a per-instance basis.\nThis class property lets you set it for <em>all</em> <code>EventEmitter</code> instances,\ncurrent and future, effective immediately. Use with care.\n\n</p>\n<p>Note that <code>emitter.setMaxListeners(n)</code> still has precedence over\n<code>EventEmitter.defaultMaxListeners</code>.\n\n\n</p>\n"
             }
           ],
           "classMethods": [

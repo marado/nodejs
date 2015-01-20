@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>HTTP Node.js v0.10.26 Manual &amp; Documentation</title>
+  <title>HTTP Node.js v0.11.13 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/http.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.26 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.11.13 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -46,6 +46,7 @@
             <h2>Table of Contents</h2>
             <ul>
 <li><a href="#http_http">HTTP</a><ul>
+<li><a href="#http_http_methods">http.METHODS</a></li>
 <li><a href="#http_http_status_codes">http.STATUS_CODES</a></li>
 <li><a href="#http_http_createserver_requestlistener">http.createServer([requestListener])</a></li>
 <li><a href="#http_http_createclient_port_host">http.createClient([port], [host])</a></li>
@@ -70,9 +71,10 @@
 <li><a href="#http_event_close_1">Event: &#39;close&#39;</a></li>
 <li><a href="#http_event_finish">Event: &#39;finish&#39;</a></li>
 <li><a href="#http_response_writecontinue">response.writeContinue()</a></li>
-<li><a href="#http_response_writehead_statuscode_reasonphrase_headers">response.writeHead(statusCode, [reasonPhrase], [headers])</a></li>
+<li><a href="#http_response_writehead_statuscode_statusmessage_headers">response.writeHead(statusCode, [statusMessage], [headers])</a></li>
 <li><a href="#http_response_settimeout_msecs_callback">response.setTimeout(msecs, callback)</a></li>
 <li><a href="#http_response_statuscode">response.statusCode</a></li>
+<li><a href="#http_response_statusmessage">response.statusMessage</a></li>
 <li><a href="#http_response_setheader_name_value">response.setHeader(name, value)</a></li>
 <li><a href="#http_response_headerssent">response.headersSent</a></li>
 <li><a href="#http_response_senddate">response.sendDate</a></li>
@@ -86,18 +88,24 @@
 <li><a href="#http_http_request_options_callback">http.request(options, [callback])</a></li>
 <li><a href="#http_http_get_options_callback">http.get(options, [callback])</a></li>
 <li><a href="#http_class_http_agent">Class: http.Agent</a><ul>
+<li><a href="#http_new_agent_options">new Agent([options])</a></li>
 <li><a href="#http_agent_maxsockets">agent.maxSockets</a></li>
+<li><a href="#http_agent_maxfreesockets">agent.maxFreeSockets</a></li>
 <li><a href="#http_agent_sockets">agent.sockets</a></li>
+<li><a href="#http_agent_freesockets">agent.freeSockets</a></li>
 <li><a href="#http_agent_requests">agent.requests</a></li>
+<li><a href="#http_agent_destroy">agent.destroy()</a></li>
+<li><a href="#http_agent_getname_options">agent.getName(options)</a></li>
 </ul>
 </li>
 <li><a href="#http_http_globalagent">http.globalAgent</a></li>
 <li><a href="#http_class_http_clientrequest">Class: http.ClientRequest</a><ul>
-<li><a href="#http_event_response">Event &#39;response&#39;</a></li>
+<li><a href="#http_event_response">Event: &#39;response&#39;</a></li>
 <li><a href="#http_event_socket">Event: &#39;socket&#39;</a></li>
 <li><a href="#http_event_connect_1">Event: &#39;connect&#39;</a></li>
 <li><a href="#http_event_upgrade_1">Event: &#39;upgrade&#39;</a></li>
 <li><a href="#http_event_continue">Event: &#39;continue&#39;</a></li>
+<li><a href="#http_request_flush">request.flush()</a></li>
 <li><a href="#http_request_write_chunk_encoding">request.write(chunk, [encoding])</a></li>
 <li><a href="#http_request_end_data_encoding">request.end([data], [encoding])</a></li>
 <li><a href="#http_request_abort">request.abort()</a></li>
@@ -110,11 +118,14 @@
 <li><a href="#http_event_close_2">Event: &#39;close&#39;</a></li>
 <li><a href="#http_message_httpversion">message.httpVersion</a></li>
 <li><a href="#http_message_headers">message.headers</a></li>
+<li><a href="#http_message_rawheaders">message.rawHeaders</a></li>
 <li><a href="#http_message_trailers">message.trailers</a></li>
+<li><a href="#http_message_rawtrailers">message.rawTrailers</a></li>
 <li><a href="#http_message_settimeout_msecs_callback">message.setTimeout(msecs, callback)</a></li>
 <li><a href="#http_message_method">message.method</a></li>
 <li><a href="#http_message_url">message.url</a></li>
 <li><a href="#http_message_statuscode">message.statusCode</a></li>
+<li><a href="#http_message_statusmessage">message.statusMessage</a></li>
 <li><a href="#http_message_socket">message.socket</a></li>
 </ul>
 </li>
@@ -142,6 +153,7 @@ user is able to stream data.
 <pre><code>{ &#39;content-length&#39;: &#39;123&#39;,
   &#39;content-type&#39;: &#39;text/plain&#39;,
   &#39;connection&#39;: &#39;keep-alive&#39;,
+  &#39;host&#39;: &#39;mysite.com&#39;,
   &#39;accept&#39;: &#39;*/*&#39; }</code></pre>
 <p>Keys are lowercased. Values are not modified.
 
@@ -151,6 +163,31 @@ HTTP API is very low-level. It deals with stream handling and message
 parsing only. It parses a message into headers and body but it does not
 parse the actual headers or the body.
 
+</p>
+<p>Defined headers that allow multiple values are concatenated with a <code>,</code>
+character, except for the <code>set-cookie</code> and <code>cookie</code> headers which are
+represented as an array of values.  Headers such as <code>content-length</code>
+which can only have a single value are parsed accordingly, and only a
+single value is represented on the parsed object.
+
+</p>
+<p>The raw headers as they were received are retained in the <code>rawHeaders</code>
+property, which is an array of <code>[key, value, key2, value2, ...]</code>.  For
+example, the previous message header object might have a <code>rawHeaders</code>
+list like the following:
+
+</p>
+<pre><code>[ &#39;ConTent-Length&#39;, &#39;123456&#39;,
+  &#39;content-LENGTH&#39;, &#39;123&#39;,
+  &#39;content-type&#39;, &#39;text/plain&#39;,
+  &#39;CONNECTION&#39;, &#39;keep-alive&#39;,
+  &#39;Host&#39;, &#39;mysite.com&#39;,
+  &#39;accepT&#39;, &#39;*/*&#39; ]</code></pre>
+<h2>http.METHODS<span><a class="mark" href="#http_http_methods" id="http_http_methods">#</a></span></h2>
+<div class="signature"><ul>
+<li><span class="type">Array</span></li>
+</div></ul>
+<p>A list of the HTTP methods that are supported by the parser.
 
 </p>
 <h2>http.STATUS_CODES<span><a class="mark" href="#http_http_status_codes" id="http_http_status_codes">#</a></span></h2>
@@ -194,18 +231,18 @@ an instance of <a href="#http_class_http_serverresponse">http.ServerResponse</a>
 <p><code>function (socket) { }</code>
 
 </p>
-<p> When a new TCP stream is established. <code>socket</code> is an object of type
- <code>net.Socket</code>. Usually users will not want to access this event. In
- particular, the socket will not emit <code>readable</code> events because of how
- the protocol parser attaches to the socket. The <code>socket</code> can also be
- accessed at <code>request.connection</code>.
+<p>When a new TCP stream is established. <code>socket</code> is an object of type
+<code>net.Socket</code>. Usually users will not want to access this event. In
+particular, the socket will not emit <code>readable</code> events because of how
+the protocol parser attaches to the socket. The <code>socket</code> can also be
+accessed at <code>request.connection</code>.
 
 </p>
 <h3>Event: &#39;close&#39;<span><a class="mark" href="#http_event_close" id="http_event_close">#</a></span></h3>
 <p><code>function () { }</code>
 
 </p>
-<p> Emitted when the server closes.
+<p>Emitted when the server closes.
 
 </p>
 <h3>Event: &#39;checkContinue&#39;<span><a class="mark" href="#http_event_checkcontinue" id="http_event_checkcontinue">#</a></span></h3>
@@ -383,7 +420,7 @@ connections.
 passed as the second parameter to the <code>&#39;request&#39;</code> event.
 
 </p>
-<p>The response implements the <a href="stream.html#stream_writable_stream">Writable Stream</a> interface. This is an
+<p>The response implements the <a href="stream.html#stream_class_stream_writable">Writable Stream</a> interface. This is an
 <a href="events.html#events_class_events_eventemitter">EventEmitter</a> with the following events:
 
 </p>
@@ -413,10 +450,10 @@ does not imply that the client has received anything yet.
 the request body should be sent. See the <a href="#http_event_checkcontinue">&#39;checkContinue&#39;</a> event on <code>Server</code>.
 
 </p>
-<h3>response.writeHead(statusCode, [reasonPhrase], [headers])<span><a class="mark" href="#http_response_writehead_statuscode_reasonphrase_headers" id="http_response_writehead_statuscode_reasonphrase_headers">#</a></span></h3>
+<h3>response.writeHead(statusCode, [statusMessage], [headers])<span><a class="mark" href="#http_response_writehead_statuscode_statusmessage_headers" id="http_response_writehead_statuscode_statusmessage_headers">#</a></span></h3>
 <p>Sends a response header to the request. The status code is a 3-digit HTTP
 status code, like <code>404</code>. The last argument, <code>headers</code>, are the response headers.
-Optionally one can give a human-readable <code>reasonPhrase</code> as the second
+Optionally one can give a human-readable <code>statusMessage</code> as the second
 argument.
 
 </p>
@@ -472,6 +509,21 @@ the headers get flushed.
 <pre><code>response.statusCode = 404;</code></pre>
 <p>After response header was sent to the client, this property indicates the
 status code which was sent out.
+
+</p>
+<h3>response.statusMessage<span><a class="mark" href="#http_response_statusmessage" id="http_response_statusmessage">#</a></span></h3>
+<p>When using implicit headers (not calling <code>response.writeHead()</code> explicitly), this property
+controls the status message that will be sent to the client when the headers get
+flushed. If this is left as <code>undefined</code> then the standard message for the status
+code will be used.
+
+</p>
+<p>Example:
+
+</p>
+<pre><code>response.statusMessage = &#39;Not found&#39;;</code></pre>
+<p>After response header was sent to the client, this property indicates the
+status message which was sent out.
 
 </p>
 <h3>response.setHeader(name, value)<span><a class="mark" href="#http_response_setheader_name_value" id="http_response_setheader_name_value">#</a></span></h3>
@@ -601,7 +653,9 @@ Defaults to <code>&#39;localhost&#39;</code>.</li>
 <li><code>socketPath</code>: Unix Domain Socket (use one of host:port or socketPath)</li>
 <li><code>method</code>: A string specifying the HTTP request method. Defaults to <code>&#39;GET&#39;</code>.</li>
 <li><code>path</code>: Request path. Defaults to <code>&#39;/&#39;</code>. Should include query string if any.
-E.G. <code>&#39;/index.html?page=12&#39;</code></li>
+E.G. <code>&#39;/index.html?page=12&#39;</code>. An exception is thrown when the request path
+contains illegal characters. Currently, only spaces are rejected but that
+may change in the future.</li>
 <li><code>headers</code>: An object containing request headers.</li>
 <li><code>auth</code>: Basic authentication i.e. <code>&#39;user:password&#39;</code> to compute an
 Authorization header.</li>
@@ -613,6 +667,11 @@ default to <code>Connection: keep-alive</code>. Possible values:<ul>
 <code>Connection: close</code>.</li>
 </ul>
 </li>
+<li><code>keepAlive</code>: {Boolean} Keep sockets around in a pool to be used
+by other requests in the future. Default = <code>false</code></li>
+<li><code>keepAliveMsecs</code>: {Integer} When using HTTP KeepAlive, how often to
+send TCP KeepAlive packets over sockets being kept alive.  Default =
+<code>1000</code>.  Only relevant if <code>keepAlive</code> is set to <code>true</code>.</li>
 </ul>
 <p>The optional <code>callback</code> parameter will be added as a one time listener for
 the <a href="#http_event_response">&#39;response&#39;</a> event.
@@ -693,25 +752,32 @@ is that it sets the method to GET and calls <code>req.end()</code> automatically
   console.log(&quot;Got error: &quot; + e.message);
 });</code></pre>
 <h2>Class: http.Agent<span><a class="mark" href="#http_class_http_agent" id="http_class_http_agent">#</a></span></h2>
-<p>In node 0.5.3+ there is a new implementation of the HTTP Agent which is used
-for pooling sockets used in HTTP client requests.
+<p>The HTTP Agent is used for pooling sockets used in HTTP client
+requests.
 
 </p>
-<p>Previously, a single agent instance helped pool for a single host+port. The
-current implementation now holds sockets for any number of hosts.
+<p>The HTTP Agent also defaults client requests to using
+Connection:keep-alive. If no pending HTTP requests are waiting on a
+socket to become free the socket is closed. This means that Node&#39;s
+pool has the benefit of keep-alive when under load but still does not
+require developers to manually close the HTTP clients using
+KeepAlive.
 
 </p>
-<p>The current HTTP Agent also defaults client requests to using
-Connection:keep-alive. If no pending HTTP requests are waiting on a socket
-to become free the socket is closed. This means that node&#39;s pool has the
-benefit of keep-alive when under load but still does not require developers
-to manually close the HTTP clients using keep-alive.
+<p>If you opt into using HTTP KeepAlive, you can create an Agent object
+with that flag set to <code>true</code>.  (See the <a href="#http_new_agent_options">constructor
+options</a> below.)  Then, the Agent will keep
+unused sockets in a pool for later use.  They will be explicitly
+marked so as to not keep the Node process running.  However, it is
+still a good idea to explicitly <a href="#http_agent_destroy"><code>destroy()</code></a>
+KeepAlive agents when they are no longer in use, so that the Sockets
+will be shut down.
 
 </p>
-<p>Sockets are removed from the agent&#39;s pool when the socket emits either a
-&quot;close&quot; event or a special &quot;agentRemove&quot; event. This means that if you intend
-to keep one HTTP request open for a long time and don&#39;t want it to stay in the
-pool you can do something along the lines of:
+<p>Sockets are removed from the agent&#39;s pool when the socket emits either
+a &quot;close&quot; event or a special &quot;agentRemove&quot; event. This means that if
+you intend to keep one HTTP request open for a long time and don&#39;t
+want it to stay in the pool you can do something along the lines of:
 
 </p>
 <pre><code>http.get(options, function(res) {
@@ -719,26 +785,91 @@ pool you can do something along the lines of:
 }).on(&quot;socket&quot;, function (socket) {
   socket.emit(&quot;agentRemove&quot;);
 });</code></pre>
-<p>Alternatively, you could just opt out of pooling entirely using <code>agent:false</code>:
+<p>Alternatively, you could just opt out of pooling entirely using
+<code>agent:false</code>:
 
 </p>
-<pre><code>http.get({hostname:&#39;localhost&#39;, port:80, path:&#39;/&#39;, agent:false}, function (res) {
-  // Do stuff
+<pre><code>http.get({
+  hostname: &#39;localhost&#39;,
+  port: 80,
+  path: &#39;/&#39;,
+  agent: false  // create a new agent just for this one request
+}, function (res) {
+  // Do stuff with response
 })</code></pre>
+<h3>new Agent([options])<span><a class="mark" href="#http_new_agent_options" id="http_new_agent_options">#</a></span></h3>
+<div class="signature"><ul>
+<li><code>options</code> <span class="type">Object</span> Set of configurable options to set on the agent.
+Can have the following fields:<ul>
+<li><code>keepAlive</code> <span class="type">Boolean</span> Keep sockets around in a pool to be used by
+other requests in the future. Default = <code>false</code></li>
+<li><code>keepAliveMsecs</code> <span class="type">Integer</span> When using HTTP KeepAlive, how often
+to send TCP KeepAlive packets over sockets being kept alive.
+Default = <code>1000</code>.  Only relevant if <code>keepAlive</code> is set to <code>true</code>.</li>
+<li><code>maxSockets</code> <span class="type">Number</span> Maximum number of sockets to allow per
+host.  Default = <code>Infinity</code>.</li>
+<li><code>maxFreeSockets</code> <span class="type">Number</span> Maximum number of sockets to leave open
+in a free state.  Only relevant if <code>keepAlive</code> is set to <code>true</code>.
+Default = <code>256</code>.</li>
+</ul>
+</li>
+</div></ul>
+<p>The default <code>http.globalAgent</code> that is used by <code>http.request</code> has all
+of these values set to their respective defaults.
+
+</p>
+<p>To configure any of them, you must create your own <code>Agent</code> object.
+
+</p>
+<pre><code class="javascript">var http = require(&#39;http&#39;);
+var keepAliveAgent = new http.Agent({ keepAlive: true });
+options.agent = keepAliveAgent;
+http.request(options, onResponseCallback);</code></pre>
 <h3>agent.maxSockets<span><a class="mark" href="#http_agent_maxsockets" id="http_agent_maxsockets">#</a></span></h3>
-<p>By default set to 5. Determines how many concurrent sockets the agent can have
-open per origin. Origin is either a &#39;host:port&#39; or &#39;host:port:localAddress&#39;
-combination.
+<p>By default set to Infinity. Determines how many concurrent sockets the agent
+can have open per origin. Origin is either a &#39;host:port&#39; or
+&#39;host:port:localAddress&#39; combination.
+
+</p>
+<h3>agent.maxFreeSockets<span><a class="mark" href="#http_agent_maxfreesockets" id="http_agent_maxfreesockets">#</a></span></h3>
+<p>By default set to 256.  For Agents supporting HTTP KeepAlive, this
+sets the maximum number of sockets that will be left open in the free
+state.
 
 </p>
 <h3>agent.sockets<span><a class="mark" href="#http_agent_sockets" id="http_agent_sockets">#</a></span></h3>
-<p>An object which contains arrays of sockets currently in use by the Agent. Do not
-modify.
+<p>An object which contains arrays of sockets currently in use by the
+Agent.  Do not modify.
+
+</p>
+<h3>agent.freeSockets<span><a class="mark" href="#http_agent_freesockets" id="http_agent_freesockets">#</a></span></h3>
+<p>An object which contains arrays of sockets currently awaiting use by
+the Agent when HTTP KeepAlive is used.  Do not modify.
 
 </p>
 <h3>agent.requests<span><a class="mark" href="#http_agent_requests" id="http_agent_requests">#</a></span></h3>
 <p>An object which contains queues of requests that have not yet been assigned to
 sockets. Do not modify.
+
+</p>
+<h3>agent.destroy()<span><a class="mark" href="#http_agent_destroy" id="http_agent_destroy">#</a></span></h3>
+<p>Destroy any sockets that are currently in use by the agent.
+
+</p>
+<p>It is usually not necessary to do this.  However, if you are using an
+agent with KeepAlive enabled, then it is best to explicitly shut down
+the agent when you know that it will no longer be used.  Otherwise,
+sockets may hang open for quite a long time before the server
+terminates them.
+
+</p>
+<h3>agent.getName(options)<span><a class="mark" href="#http_agent_getname_options" id="http_agent_getname_options">#</a></span></h3>
+<p>Get a unique name for a set of request options, to determine whether a
+connection can be reused.  In the http agent, this returns
+<code>host:port:localAddress</code>.  In the https agent, the name includes the
+CA, cert, ciphers, and other HTTPS/TLS-specific options that determine
+socket reusability.
+
 
 </p>
 <h2>http.globalAgent<span><a class="mark" href="#http_http_globalagent" id="http_http_globalagent">#</a></span></h2>
@@ -779,11 +910,11 @@ the data is read it will consume memory that can eventually lead to a
 which has been transmitted are equal or not.
 
 </p>
-<p>The request implements the <a href="stream.html#stream_writable_stream">Writable Stream</a> interface. This is an
+<p>The request implements the <a href="stream.html#stream_class_stream_writable">Writable Stream</a> interface. This is an
 <a href="events.html#events_class_events_eventemitter">EventEmitter</a> with the following events:
 
 </p>
-<h3>Event &#39;response&#39;<span><a class="mark" href="#http_event_response" id="http_event_response">#</a></span></h3>
+<h3>Event: &#39;response&#39;<span><a class="mark" href="#http_event_response" id="http_event_response">#</a></span></h3>
 <p><code>function (response) { }</code>
 
 </p>
@@ -929,6 +1060,20 @@ the request contained &#39;Expect: 100-continue&#39;. This is an instruction tha
 the client should send the request body.
 
 </p>
+<h3>request.flush()<span><a class="mark" href="#http_request_flush" id="http_request_flush">#</a></span></h3>
+<p>Flush the request headers.
+
+</p>
+<p>For effiency reasons, node.js normally buffers the request headers until you
+call <code>request.end()</code> or write the first chunk of request data.  It then tries
+hard to pack the request headers and data into a single TCP packet.
+
+</p>
+<p>That&#39;s usually what you want (it saves a TCP round-trip) but not when the first
+data isn&#39;t sent until possibly much later.  <code>request.flush()</code> lets you bypass
+the optimization and kickstart the request.
+
+</p>
 <h3>request.write(chunk, [encoding])<span><a class="mark" href="#http_request_write_chunk_encoding" id="http_request_write_chunk_encoding">#</a></span></h3>
 <p>Sends a chunk of the body.  By calling this method
 many times, the user can stream a request body to a
@@ -982,7 +1127,7 @@ and <code>&#39;response&#39;</code> event respectively. It may be used to access
 headers and data.
 
 </p>
-<p>It implements the <a href="stream.html#stream_readable_stream">Readable Stream</a> interface, as well as the
+<p>It implements the <a href="stream.html#stream_class_stream_readable">Readable Stream</a> interface, as well as the
 following additional events, methods, and properties.
 
 </p>
@@ -1018,8 +1163,36 @@ Example:
 //   host: &#39;127.0.0.1:8000&#39;,
 //   accept: &#39;*/*&#39; }
 console.log(request.headers);</code></pre>
+<h3>message.rawHeaders<span><a class="mark" href="#http_message_rawheaders" id="http_message_rawheaders">#</a></span></h3>
+<p>The raw request/response headers list exactly as they were received.
+
+</p>
+<p>Note that the keys and values are in the same list.  It is <em>not</em> a
+list of tuples.  So, the even-numbered offsets are key values, and the
+odd-numbered offsets are the associated values.
+
+</p>
+<p>Header names are not lowercased, and duplicates are not merged.
+
+</p>
+<pre><code>// Prints something like:
+//
+// [ &#39;user-agent&#39;,
+//   &#39;this is invalid because there can be only one&#39;,
+//   &#39;User-Agent&#39;,
+//   &#39;curl/7.22.0&#39;,
+//   &#39;Host&#39;,
+//   &#39;127.0.0.1:8000&#39;,
+//   &#39;ACCEPT&#39;,
+//   &#39;*/*&#39; ]
+console.log(request.rawHeaders);</code></pre>
 <h3>message.trailers<span><a class="mark" href="#http_message_trailers" id="http_message_trailers">#</a></span></h3>
-<p>The request/response trailers object. Only populated after the &#39;end&#39; event.
+<p>The request/response trailers object. Only populated at the &#39;end&#39; event.
+
+</p>
+<h3>message.rawTrailers<span><a class="mark" href="#http_message_rawtrailers" id="http_message_rawtrailers">#</a></span></h3>
+<p>The raw request/response trailer keys and values exactly as they were
+received.  Only populated at the &#39;end&#39; event.
 
 </p>
 <h3>message.setTimeout(msecs, callback)<span><a class="mark" href="#http_message_settimeout_msecs_callback" id="http_message_settimeout_msecs_callback">#</a></span></h3>
@@ -1079,6 +1252,13 @@ you can use the <code>require(&#39;querystring&#39;).parse</code> function, or p
 <p>The 3-digit HTTP response status code. E.G. <code>404</code>.
 
 </p>
+<h3>message.statusMessage<span><a class="mark" href="#http_message_statusmessage" id="http_message_statusmessage">#</a></span></h3>
+<p><strong>Only valid for response obtained from <code>http.ClientRequest</code>.</strong>
+
+</p>
+<p>The HTTP response status message (reason phrase). E.G. <code>OK</code> or <code>Internal Server Error</code>.
+
+</p>
 <h3>message.socket<span><a class="mark" href="#http_message_socket" id="http_message_socket">#</a></span></h3>
 <p>The <code>net.Socket</code> object associated with the connection.
 
@@ -1108,7 +1288,7 @@ authentication details.
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.26/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.11.13/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

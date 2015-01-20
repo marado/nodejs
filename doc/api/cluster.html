@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Cluster Node.js v0.10.26 Manual &amp; Documentation</title>
+  <title>Cluster Node.js v0.11.13 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/cluster.html">
@@ -31,7 +31,7 @@
 
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.26 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.11.13 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -47,6 +47,7 @@
             <ul>
 <li><a href="#cluster_cluster">Cluster</a><ul>
 <li><a href="#cluster_how_it_works">How It Works</a></li>
+<li><a href="#cluster_cluster_schedulingpolicy">cluster.schedulingPolicy</a></li>
 <li><a href="#cluster_cluster_settings">cluster.settings</a></li>
 <li><a href="#cluster_cluster_ismaster">cluster.isMaster</a></li>
 <li><a href="#cluster_cluster_isworker">cluster.isWorker</a></li>
@@ -84,7 +85,7 @@
 
           <div id="apicontent">
             <h1>Cluster<span><a class="mark" href="#cluster_cluster" id="cluster_cluster">#</a></span></h1>
-<pre class="api_stability_1">Stability: 1 - Experimental</pre><p>A single instance of Node runs in a single thread. To take advantage of
+<pre class="api_stability_2">Stability: 2 - Unstable</pre><p>A single instance of Node runs in a single thread. To take advantage of
 multi-core systems the user will sometimes want to launch a cluster of Node
 processes to handle the load.
 
@@ -138,15 +139,32 @@ so that they can communicate with the parent via IPC and pass server
 handles back and forth.
 
 </p>
-<p>When you call <code>server.listen(...)</code> in a worker, it serializes the
-arguments and passes the request to the master process.  If the master
-process already has a listening server matching the worker&#39;s
-requirements, then it passes the handle to the worker.  If it does not
-already have a listening server matching that requirement, then it will
-create one, and pass the handle to the worker.
+<p>The cluster module supports two methods of distributing incoming
+connections.
 
 </p>
-<p>This causes potentially surprising behavior in three edge cases:
+<p>The first one (and the default one on all platforms except Windows),
+is the round-robin approach, where the master process listens on a
+port, accepts new connections and distributes them across the workers
+in a round-robin fashion, with some built-in smarts to avoid
+overloading a worker process.
+
+</p>
+<p>The second approach is where the master process creates the listen
+socket and sends it to interested workers. The workers then accept
+incoming connections directly.
+
+</p>
+<p>The second approach should, in theory, give the best performance.
+In practice however, distribution tends to be very unbalanced due
+to operating system scheduler vagaries. Loads have been observed
+where over 70% of all connections ended up in just two processes,
+out of a total of eight.
+
+</p>
+<p>Because <code>server.listen()</code> hands off most of the work to the master
+process, there are three cases where the behavior between a normal
+node.js process and a cluster worker differs:
 
 </p>
 <ol>
@@ -165,12 +183,10 @@ port is random the first time, but predictable thereafter.  If you
 want to listen on a unique port, generate a port number based on the
 cluster worker ID.</li>
 </ol>
-<p>When multiple processes are all <code>accept()</code>ing on the same underlying
-resource, the operating system load-balances across them very
-efficiently.  There is no routing logic in Node.js, or in your program,
-and no shared state between the workers.  Therefore, it is important to
-design your program such that it does not rely too heavily on in-memory
-data objects for things like sessions and login.
+<p>There is no routing logic in Node.js, or in your program, and no shared
+state between the workers.  Therefore, it is important to design your
+program such that it does not rely too heavily on in-memory data objects
+for things like sessions and login.
 
 </p>
 <p>Because workers are all separate processes, they can be killed or
@@ -179,6 +195,23 @@ workers.  As long as there are some workers still alive, the server will
 continue to accept connections.  Node does not automatically manage the
 number of workers for you, however.  It is your responsibility to manage
 the worker pool for your application&#39;s needs.
+
+</p>
+<h2>cluster.schedulingPolicy<span><a class="mark" href="#cluster_cluster_schedulingpolicy" id="cluster_cluster_schedulingpolicy">#</a></span></h2>
+<p>The scheduling policy, either <code>cluster.SCHED_RR</code> for round-robin or
+<code>cluster.SCHED_NONE</code> to leave it to the operating system. This is a
+global setting and effectively frozen once you spawn the first worker
+or call <code>cluster.setupMaster()</code>, whatever comes first.
+
+</p>
+<p><code>SCHED_RR</code> is the default on all operating systems except Windows.
+Windows will change to <code>SCHED_RR</code> once libuv is able to effectively
+distribute IOCP handles without incurring a large performance hit.
+
+</p>
+<p><code>cluster.schedulingPolicy</code> can also be set through the
+<code>NODE_CLUSTER_SCHED_POLICY</code> environment variable. Valid
+values are <code>&quot;rr&quot;</code> and <code>&quot;none&quot;</code>.
 
 </p>
 <h2>cluster.settings<span><a class="mark" href="#cluster_cluster_settings" id="cluster_cluster_settings">#</a></span></h2>
@@ -730,7 +763,7 @@ worker.on(&#39;exit&#39;, function(code, signal) {
             <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
         </ul>
 
-        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.10.26/LICENSE">license</a>.</p>
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.11.13/LICENSE">license</a>.</p>
     </div>
 
   <script src="../sh_main.js"></script>

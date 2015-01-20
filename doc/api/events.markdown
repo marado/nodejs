@@ -69,16 +69,29 @@ Returns emitter, so calls can be chained.
 
 ### emitter.removeAllListeners([event])
 
-Removes all listeners, or those of the specified event.
+Removes all listeners, or those of the specified event. It's not a good idea to
+remove listeners that were added elsewhere in the code, especially when it's on
+an emitter that you didn't create (e.g. sockets or file streams).
 
 Returns emitter, so calls can be chained.
 
 ### emitter.setMaxListeners(n)
 
 By default EventEmitters will print a warning if more than 10 listeners are
-added for a particular event. This is a useful default which helps finding memory leaks.
-Obviously not all Emitters should be limited to 10. This function allows
-that to be increased. Set to zero for unlimited.
+added for a particular event. This is a useful default which helps finding
+memory leaks. Obviously not all Emitters should be limited to 10. This function
+allows that to be increased. Set to zero for unlimited.
+
+Returns emitter, so calls can be chained.
+
+### EventEmitter.defaultMaxListeners
+
+`emitter.setMaxListeners(n)` sets the maximum on a per-instance basis.
+This class property lets you set it for *all* `EventEmitter` instances,
+current and future, effective immediately. Use with care.
+
+Note that `emitter.setMaxListeners(n)` still has precedence over
+`EventEmitter.defaultMaxListeners`.
 
 
 ### emitter.listeners(event)

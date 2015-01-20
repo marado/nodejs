@@ -64,7 +64,12 @@ For TCP sockets, `options` argument should be an object which specifies:
 
   - `localAddress`: Local interface to bind to for network connections.
 
-For UNIX domain sockets, `options` argument should be an object which specifies:
+  - `localPort`: Local port to bind to for network connections.
+
+  - `family` : Version of IP stack. Defaults to `4`.
+
+For local domain sockets, `options` argument should be an object which
+specifies:
 
   - `path`: Path the client should connect to (Required).
 
@@ -115,7 +120,7 @@ The `connectListener` parameter will be added as an listener for the
 
 ## Class: net.Server
 
-This class is used to create a TCP or UNIX server.
+This class is used to create a TCP or local server.
 
 ### server.listen(port, [host], [backlog], [callback])
 
@@ -151,11 +156,30 @@ would be to wait a second and then try again. This can be done with
 
 ### server.listen(path, [callback])
 
-Start a UNIX socket server listening for connections on the given `path`.
+* `path` {String}
+* `callback` {Function}
+
+Start a local socket server listening for connections on the given `path`.
 
 This function is asynchronous.  When the server has been bound,
 ['listening'][] event will be emitted.  The last parameter `callback`
 will be added as an listener for the ['listening'][] event.
+
+On UNIX, the local domain is usually known as the UNIX domain. The path is a
+filesystem path name. It is subject to the same naming conventions and
+permissions checks as would be done on file creation, will be visible in the
+filesystem, and will *persist until unlinked*.
+
+On Windows, the local domain is implemented using a named pipe. The path *must*
+refer to an entry in `\\?\pipe\` or `\\.\pipe\`. Any characters are permitted,
+but the latter may do some processing of pipe names, such as resolving `..`
+sequences. Despite appearances, the pipe name space is flat.  Pipes will *not
+persist*, they are removed when the last reference to them is closed. Do not
+forget javascript string escaping requires paths to be specified with
+double-backslashes, such as:
+
+    net.createServer().listen(
+        path.join('\\\\?\\pipe', process.cwd(), 'myctl'))
 
 ### server.listen(handle, [callback])
 
@@ -172,9 +196,9 @@ already been bound to a port or domain socket.
 Listening on a file descriptor is not supported on Windows.
 
 This function is asynchronous.  When the server has been bound,
-['listening'](#event_listening_) event will be emitted.
+['listening'][] event will be emitted.
 the last parameter `callback` will be added as an listener for the
-['listening'](#event_listening_) event.
+['listening'][] event.
 
 ### server.close([callback])
 
@@ -235,14 +259,14 @@ This becomes `null` when sending a socket to a child with
 `child_process.fork()`. To poll forks and get current number of active
 connections use asynchronous `server.getConnections` instead.
 
-`net.Server` is an [EventEmitter][] with the following events:
-
 ### server.getConnections(callback)
 
 Asynchronously get the number of concurrent connections on the server. Works
 when sockets were sent to forks.
 
 Callback should take two arguments `err` and `count`.
+
+`net.Server` is an [EventEmitter][] with the following events:
 
 ### Event: 'listening'
 
@@ -269,7 +293,7 @@ following this event.  See example in discussion of `server.listen`.
 
 ## Class: net.Socket
 
-This object is an abstraction of a TCP or UNIX socket.  `net.Socket`
+This object is an abstraction of a TCP or local socket.  `net.Socket`
 instances implement a duplex Stream interface.  They can be created by the
 user and used as a client (with `connect()`) or they can be created by Node
 and passed to the user through the `'connection'` event of a server.
@@ -451,6 +475,15 @@ The amount of bytes sent.
 
 `net.Socket` instances are [EventEmitter][] with the following events:
 
+### Event: 'lookup'
+
+Emitted after resolving the hostname but before connecting.
+Not applicable to UNIX sockets.
+
+* `err` {Error | Null} The error object.  See [dns.lookup()][].
+* `address` {String} The IP address.
+* `family` {String | Null} The address type.  See [dns.lookup()][].
+
 ### Event: 'connect'
 
 Emitted when a socket connection is successfully established.
@@ -526,5 +559,6 @@ Returns true if input is a version 6 IP address, otherwise returns false.
 ['end']: #net_event_end
 [EventEmitter]: events.html#events_class_events_eventemitter
 ['listening']: #net_event_listening
+[server.getConnections()]: #net_server_getconnections_callback
 [Readable Stream]: stream.html#stream_readable_stream
 [stream.setEncoding()]: stream.html#stream_stream_setencoding_encoding

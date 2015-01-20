@@ -7,6 +7,25 @@
       "desc": "<pre><code>Stability: 2 - Unstable; API changes are being discussed for\nfuture versions.  Breaking changes will be minimized.  See below.</code></pre>\n<p>Use <code>require(&#39;crypto&#39;)</code> to access this module.\n\n</p>\n<p>The crypto module offers a way of encapsulating secure credentials to be\nused as part of a secure HTTPS net or http connection.\n\n</p>\n<p>It also offers a set of wrappers for OpenSSL&#39;s hash, hmac, cipher,\ndecipher, sign and verify methods.\n\n\n</p>\n",
       "methods": [
         {
+          "textRaw": "crypto.setEngine(engine, [flags])",
+          "type": "method",
+          "name": "setEngine",
+          "desc": "<p>Load and set engine for some/all OpenSSL functions (selected by flags).\n\n</p>\n<p><code>engine</code> could be either an id or a path to the to the engine&#39;s shared library.\n\n</p>\n<p><code>flags</code> is optional and has <code>ENGINE_METHOD_ALL</code> value by default. It could take\none of or mix of following flags (defined in <code>constants</code> module):\n\n</p>\n<ul>\n<li><code>ENGINE_METHOD_RSA</code></li>\n<li><code>ENGINE_METHOD_DSA</code></li>\n<li><code>ENGINE_METHOD_DH</code></li>\n<li><code>ENGINE_METHOD_RAND</code></li>\n<li><code>ENGINE_METHOD_ECDH</code></li>\n<li><code>ENGINE_METHOD_ECDSA</code></li>\n<li><code>ENGINE_METHOD_CIPHERS</code></li>\n<li><code>ENGINE_METHOD_DIGESTS</code></li>\n<li><code>ENGINE_METHOD_STORE</code></li>\n<li><code>ENGINE_METHOD_PKEY_METH</code></li>\n<li><code>ENGINE_METHOD_PKEY_ASN1_METH</code></li>\n<li><code>ENGINE_METHOD_ALL</code></li>\n<li><code>ENGINE_METHOD_NONE</code></li>\n</ul>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "engine"
+                },
+                {
+                  "name": "flags",
+                  "optional": true
+                }
+              ]
+            }
+          ]
+        },
+        {
           "textRaw": "crypto.getCiphers()",
           "type": "method",
           "name": "getCiphers",
@@ -185,25 +204,29 @@
           ]
         },
         {
-          "textRaw": "crypto.createDiffieHellman(prime_length)",
+          "textRaw": "crypto.createDiffieHellman(prime_length, [generator])",
           "type": "method",
           "name": "createDiffieHellman",
-          "desc": "<p>Creates a Diffie-Hellman key exchange object and generates a prime of\nthe given bit length. The generator used is <code>2</code>.\n\n</p>\n",
+          "desc": "<p>Creates a Diffie-Hellman key exchange object and generates a prime of\n<code>prime_length</code> bits and using an optional specific numeric <code>generator</code>.\nIf no <code>generator</code> is specified, then <code>2</code> is used.\n\n</p>\n",
           "signatures": [
             {
               "params": [
                 {
                   "name": "prime_length"
+                },
+                {
+                  "name": "generator",
+                  "optional": true
                 }
               ]
             }
           ]
         },
         {
-          "textRaw": "crypto.createDiffieHellman(prime, [encoding])",
+          "textRaw": "crypto.createDiffieHellman(prime, [prime_encoding], [generator], [generator_encoding])",
           "type": "method",
           "name": "createDiffieHellman",
-          "desc": "<p>Creates a Diffie-Hellman key exchange object using the supplied prime.\nThe generator used is <code>2</code>. Encoding can be <code>&#39;binary&#39;</code>, <code>&#39;hex&#39;</code>, or\n<code>&#39;base64&#39;</code>.  If no encoding is specified, then a buffer is expected.\n\n</p>\n",
+          "desc": "<p>Creates a Diffie-Hellman key exchange object using the supplied <code>prime</code> and an\noptional specific <code>generator</code>.\n<code>generator</code> can be a number, string, or Buffer.\nIf no <code>generator</code> is specified, then <code>2</code> is used.\n<code>prime_encoding</code> and <code>generator_encoding</code> can be <code>&#39;binary&#39;</code>, <code>&#39;hex&#39;</code>, or <code>&#39;base64&#39;</code>.\nIf no <code>prime_encoding</code> is specified, then a Buffer is expected for <code>prime</code>.\nIf no <code>generator_encoding</code> is specified, then a Buffer is expected for <code>generator</code>.\n\n</p>\n",
           "signatures": [
             {
               "params": [
@@ -211,7 +234,15 @@
                   "name": "prime"
                 },
                 {
-                  "name": "encoding",
+                  "name": "prime_encoding",
+                  "optional": true
+                },
+                {
+                  "name": "generator",
+                  "optional": true
+                },
+                {
+                  "name": "generator_encoding",
                   "optional": true
                 }
               ]
@@ -234,10 +265,10 @@
           ]
         },
         {
-          "textRaw": "crypto.pbkdf2(password, salt, iterations, keylen, callback)",
+          "textRaw": "crypto.pbkdf2(password, salt, iterations, keylen, [digest], callback)",
           "type": "method",
           "name": "pbkdf2",
-          "desc": "<p>Asynchronous PBKDF2 applies pseudorandom function HMAC-SHA1 to derive\na key of given length from the given password, salt and iterations.\nThe callback gets two arguments <code>(err, derivedKey)</code>.\n\n</p>\n",
+          "desc": "<p>Asynchronous PBKDF2 function.  Applies the selected HMAC digest function\n(default: SHA1) to derive a key of the requested length from the password,\nsalt and number of iterations.  The callback gets two arguments:\n<code>(err, derivedKey)</code>.\n\n</p>\n<p>Example:\n\n</p>\n<pre><code>crypto.pbkdf2(&#39;secret&#39;, &#39;salt&#39;, 4096, 512, &#39;sha256&#39;, function(err, key) {\n  if (err)\n    throw err;\n  console.log(key.toString(&#39;hex&#39;));  // &#39;c5e478d...1469e50&#39;\n});</code></pre>\n<p>You can get a list of supported digest functions with\n<a href=\"#crypto_crypto_gethashes\">crypto.getHashes()</a>.\n\n</p>\n",
           "signatures": [
             {
               "params": [
@@ -254,6 +285,10 @@
                   "name": "keylen"
                 },
                 {
+                  "name": "digest",
+                  "optional": true
+                },
+                {
                   "name": "callback"
                 }
               ]
@@ -261,7 +296,7 @@
           ]
         },
         {
-          "textRaw": "crypto.pbkdf2Sync(password, salt, iterations, keylen)",
+          "textRaw": "crypto.pbkdf2Sync(password, salt, iterations, keylen, [digest])",
           "type": "method",
           "name": "pbkdf2Sync",
           "desc": "<p>Synchronous PBKDF2 function.  Returns derivedKey or throws error.\n\n</p>\n",
@@ -279,6 +314,10 @@
                 },
                 {
                   "name": "keylen"
+                },
+                {
+                  "name": "digest",
+                  "optional": true
                 }
               ]
             }
@@ -455,13 +494,39 @@
               "textRaw": "cipher.setAutoPadding(auto_padding=true)",
               "type": "method",
               "name": "setAutoPadding",
-              "desc": "<p>You can disable automatic padding of the input data to block size. If\n<code>auto_padding</code> is false, the length of the entire input data must be a\nmultiple of the cipher&#39;s block size or <code>final</code> will fail.  Useful for\nnon-standard padding, e.g. using <code>0x0</code> instead of PKCS padding. You\nmust call this before <code>cipher.final</code>.\n\n\n</p>\n",
+              "desc": "<p>You can disable automatic padding of the input data to block size. If\n<code>auto_padding</code> is false, the length of the entire input data must be a\nmultiple of the cipher&#39;s block size or <code>final</code> will fail.  Useful for\nnon-standard padding, e.g. using <code>0x0</code> instead of PKCS padding. You\nmust call this before <code>cipher.final</code>.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
                     {
                       "name": "auto_padding",
                       "default": "true"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "textRaw": "cipher.getAuthTag()",
+              "type": "method",
+              "name": "getAuthTag",
+              "desc": "<p>For authenticated encryption modes (currently supported: GCM), this\nmethod returns a <code>Buffer</code> that represents the <em>authentication tag</em> that\nhas been computed from the given data. Should be called after\nencryption has been completed using the <code>final</code> method!\n\n</p>\n",
+              "signatures": [
+                {
+                  "params": []
+                }
+              ]
+            },
+            {
+              "textRaw": "cipher.setAAD(buffer)",
+              "type": "method",
+              "name": "setAAD",
+              "desc": "<p>For authenticated encryption modes (currently supported: GCM), this\nmethod sets the value used for the additional authenticated data (AAD) input\nparameter.\n\n\n</p>\n",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "name": "buffer"
                     }
                   ]
                 }
@@ -529,6 +594,36 @@
                   ]
                 }
               ]
+            },
+            {
+              "textRaw": "decipher.setAuthTag(buffer)",
+              "type": "method",
+              "name": "setAuthTag",
+              "desc": "<p>For authenticated encryption modes (currently supported: GCM), this\nmethod must be used to pass in the received <em>authentication tag</em>.\nIf no tag is provided or if the ciphertext has been tampered with,\n<code>final</code> will throw, thus indicating that the ciphertext should\nbe discarded due to failed authentication.\n\n</p>\n",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "name": "buffer"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "textRaw": "decipher.setAAD(buffer)",
+              "type": "method",
+              "name": "setAAD",
+              "desc": "<p>For authenticated encryption modes (currently supported: GCM), this\nmethod sets the value used for the additional authenticated data (AAD) input\nparameter.\n\n\n</p>\n",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "name": "buffer"
+                    }
+                  ]
+                }
+              ]
             }
           ]
         },
@@ -557,7 +652,7 @@
               "textRaw": "sign.sign(private_key, [output_format])",
               "type": "method",
               "name": "sign",
-              "desc": "<p>Calculates the signature on all the updated data passed through the\nsign.  <code>private_key</code> is a string containing the PEM encoded private\nkey for signing.\n\n</p>\n<p>Returns the signature in <code>output_format</code> which can be <code>&#39;binary&#39;</code>,\n<code>&#39;hex&#39;</code> or <code>&#39;base64&#39;</code>. If no encoding is provided, then a buffer is\nreturned.\n\n</p>\n<p>Note: <code>sign</code> object can not be used after <code>sign()</code> method has been\ncalled.\n\n</p>\n",
+              "desc": "<p>Calculates the signature on all the updated data passed through the\nsign.\n\n</p>\n<p><code>private_key</code> can be an object or a string. If <code>private_key</code> is a string, it is\ntreated as the key with no passphrase.\n\n</p>\n<p><code>private_key</code>:\n\n</p>\n<ul>\n<li><code>key</code> : A string holding the PEM encoded private key</li>\n<li><code>passphrase</code> : A string of passphrase for the private key</li>\n</ul>\n<p>Returns the signature in <code>output_format</code> which can be <code>&#39;binary&#39;</code>,\n<code>&#39;hex&#39;</code> or <code>&#39;base64&#39;</code>. If no encoding is provided, then a buffer is\nreturned.\n\n</p>\n<p>Note: <code>sign</code> object can not be used after <code>sign()</code> method has been\ncalled.\n\n</p>\n",
               "signatures": [
                 {
                   "params": [
@@ -624,6 +719,13 @@
           "type": "class",
           "name": "DiffieHellman",
           "desc": "<p>The class for creating Diffie-Hellman key exchanges.\n\n</p>\n<p>Returned by <code>crypto.createDiffieHellman</code>.\n\n</p>\n",
+          "properties": [
+            {
+              "textRaw": "diffieHellman.verifyError",
+              "name": "verifyError",
+              "desc": "<p>A bit field containing any warnings and/or errors as a result of a check performed\nduring initialization. The following values are valid for this property\n(defined in <code>constants</code> module):\n\n</p>\n<ul>\n<li><code>DH_CHECK_P_NOT_SAFE_PRIME</code></li>\n<li><code>DH_CHECK_P_NOT_PRIME</code></li>\n<li><code>DH_UNABLE_TO_CHECK_GENERATOR</code></li>\n<li><code>DH_NOT_SUITABLE_GENERATOR</code></li>\n</ul>\n"
+            }
+          ],
           "methods": [
             {
               "textRaw": "diffieHellman.generateKeys([encoding])",
@@ -761,6 +863,59 @@
                     {
                       "name": "encoding",
                       "optional": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "Class: Certificate",
+          "type": "class",
+          "name": "Certificate",
+          "desc": "<p>The class used for working with signed public key &amp; challenges. The most\ncommon usage for this series of functions is when dealing with the <code>&lt;keygen&gt;</code>\nelement. <a href=\"http://www.openssl.org/docs/apps/spkac.html\">http://www.openssl.org/docs/apps/spkac.html</a>\n\n</p>\n<p>Returned by <code>crypto.Certificate</code>.\n\n</p>\n",
+          "methods": [
+            {
+              "textRaw": "Certificate.verifySpkac(spkac)",
+              "type": "method",
+              "name": "verifySpkac",
+              "desc": "<p>Returns true of false based on the validity of the SPKAC.\n\n</p>\n",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "name": "spkac"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "textRaw": "Certificate.exportChallenge(spkac)",
+              "type": "method",
+              "name": "exportChallenge",
+              "desc": "<p>Exports the encoded public key from the supplied SPKAC.\n\n</p>\n",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "name": "spkac"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "textRaw": "Certificate.exportPublicKey(spkac)",
+              "type": "method",
+              "name": "exportPublicKey",
+              "desc": "<p>Exports the encoded challenge associated with the SPKAC.\n\n</p>\n",
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "name": "spkac"
                     }
                   ]
                 }

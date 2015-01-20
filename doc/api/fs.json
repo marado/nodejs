@@ -6,7 +6,7 @@
       "name": "fs",
       "stability": 3,
       "stabilityText": "Stable",
-      "desc": "<p>File I/O is provided by simple wrappers around standard POSIX functions.  To\nuse this module do <code>require(&#39;fs&#39;)</code>. All the methods have asynchronous and\nsynchronous forms.\n\n</p>\n<p>The asynchronous form always take a completion callback as its last argument.\nThe arguments passed to the completion callback depend on the method, but the\nfirst argument is always reserved for an exception. If the operation was\ncompleted successfully, then the first argument will be <code>null</code> or <code>undefined</code>.\n\n</p>\n<p>When using the synchronous form any exceptions are immediately thrown.\nYou can use try/catch to handle exceptions or allow them to bubble up.\n\n</p>\n<p>Here is an example of the asynchronous version:\n\n</p>\n<pre><code>var fs = require(&#39;fs&#39;);\n\nfs.unlink(&#39;/tmp/hello&#39;, function (err) {\n  if (err) throw err;\n  console.log(&#39;successfully deleted /tmp/hello&#39;);\n});</code></pre>\n<p>Here is the synchronous version:\n\n</p>\n<pre><code>var fs = require(&#39;fs&#39;);\n\nfs.unlinkSync(&#39;/tmp/hello&#39;)\nconsole.log(&#39;successfully deleted /tmp/hello&#39;);</code></pre>\n<p>With the asynchronous methods there is no guaranteed ordering. So the\nfollowing is prone to error:\n\n</p>\n<pre><code>fs.rename(&#39;/tmp/hello&#39;, &#39;/tmp/world&#39;, function (err) {\n  if (err) throw err;\n  console.log(&#39;renamed complete&#39;);\n});\nfs.stat(&#39;/tmp/world&#39;, function (err, stats) {\n  if (err) throw err;\n  console.log(&#39;stats: &#39; + JSON.stringify(stats));\n});</code></pre>\n<p>It could be that <code>fs.stat</code> is executed before <code>fs.rename</code>.\nThe correct way to do this is to chain the callbacks.\n\n</p>\n<pre><code>fs.rename(&#39;/tmp/hello&#39;, &#39;/tmp/world&#39;, function (err) {\n  if (err) throw err;\n  fs.stat(&#39;/tmp/world&#39;, function (err, stats) {\n    if (err) throw err;\n    console.log(&#39;stats: &#39; + JSON.stringify(stats));\n  });\n});</code></pre>\n<p>In busy processes, the programmer is <em>strongly encouraged</em> to use the\nasynchronous versions of these calls. The synchronous versions will block\nthe entire process until they complete--halting all connections.\n\n</p>\n<p>Relative path to filename can be used, remember however that this path will be\nrelative to <code>process.cwd()</code>.\n\n</p>\n<p>Most fs functions let you omit the callback argument. If you do, a default\ncallback is used that ignores errors, but prints a deprecation\nwarning.\n\n</p>\n<p><strong>IMPORTANT</strong>: Omitting the callback is deprecated.  v0.12 will throw the\nerrors as exceptions.\n\n\n</p>\n",
+      "desc": "<p>File I/O is provided by simple wrappers around standard POSIX functions.  To\nuse this module do <code>require(&#39;fs&#39;)</code>. All the methods have asynchronous and\nsynchronous forms.\n\n</p>\n<p>The asynchronous form always take a completion callback as its last argument.\nThe arguments passed to the completion callback depend on the method, but the\nfirst argument is always reserved for an exception. If the operation was\ncompleted successfully, then the first argument will be <code>null</code> or <code>undefined</code>.\n\n</p>\n<p>When using the synchronous form any exceptions are immediately thrown.\nYou can use try/catch to handle exceptions or allow them to bubble up.\n\n</p>\n<p>Here is an example of the asynchronous version:\n\n</p>\n<pre><code>var fs = require(&#39;fs&#39;);\n\nfs.unlink(&#39;/tmp/hello&#39;, function (err) {\n  if (err) throw err;\n  console.log(&#39;successfully deleted /tmp/hello&#39;);\n});</code></pre>\n<p>Here is the synchronous version:\n\n</p>\n<pre><code>var fs = require(&#39;fs&#39;);\n\nfs.unlinkSync(&#39;/tmp/hello&#39;)\nconsole.log(&#39;successfully deleted /tmp/hello&#39;);</code></pre>\n<p>With the asynchronous methods there is no guaranteed ordering. So the\nfollowing is prone to error:\n\n</p>\n<pre><code>fs.rename(&#39;/tmp/hello&#39;, &#39;/tmp/world&#39;, function (err) {\n  if (err) throw err;\n  console.log(&#39;renamed complete&#39;);\n});\nfs.stat(&#39;/tmp/world&#39;, function (err, stats) {\n  if (err) throw err;\n  console.log(&#39;stats: &#39; + JSON.stringify(stats));\n});</code></pre>\n<p>It could be that <code>fs.stat</code> is executed before <code>fs.rename</code>.\nThe correct way to do this is to chain the callbacks.\n\n</p>\n<pre><code>fs.rename(&#39;/tmp/hello&#39;, &#39;/tmp/world&#39;, function (err) {\n  if (err) throw err;\n  fs.stat(&#39;/tmp/world&#39;, function (err, stats) {\n    if (err) throw err;\n    console.log(&#39;stats: &#39; + JSON.stringify(stats));\n  });\n});</code></pre>\n<p>In busy processes, the programmer is <em>strongly encouraged</em> to use the\nasynchronous versions of these calls. The synchronous versions will block\nthe entire process until they complete--halting all connections.\n\n</p>\n<p>Relative path to filename can be used, remember however that this path will be\nrelative to <code>process.cwd()</code>.\n\n</p>\n<p>Most fs functions let you omit the callback argument. If you do, a default\ncallback is used that rethrows errors. To get a trace to the original call\nsite, set the NODE_DEBUG environment variable:\n\n</p>\n<pre><code>$ cat script.js\nfunction bad() {\n  require(&#39;fs&#39;).readFile(&#39;/&#39;);\n}\nbad();\n\n$ env NODE_DEBUG=fs node script.js\nfs.js:66\n        throw err;\n              ^\nError: EISDIR, read\n    at rethrow (fs.js:61:21)\n    at maybeCallback (fs.js:79:42)\n    at Object.fs.readFile (fs.js:153:18)\n    at bad (/path/to/script.js:2:17)\n    at Object.&lt;anonymous&gt; (/path/to/script.js:5:1)\n    &lt;etc.&gt;</code></pre>\n",
       "methods": [
         {
           "textRaw": "fs.rename(oldPath, newPath, callback)",
@@ -1006,10 +1006,10 @@
           ]
         },
         {
-          "textRaw": "fs.write(fd, buffer, offset, length, position, callback)",
+          "textRaw": "fs.write(fd, buffer, offset, length[, position], callback)",
           "type": "method",
           "name": "write",
-          "desc": "<p>Write <code>buffer</code> to the file specified by <code>fd</code>.\n\n</p>\n<p><code>offset</code> and <code>length</code> determine the part of the buffer to be written.\n\n</p>\n<p><code>position</code> refers to the offset from the beginning of the file where this data\nshould be written. If <code>position</code> is <code>null</code>, the data will be written at the\ncurrent position.\nSee pwrite(2).\n\n</p>\n<p>The callback will be given three arguments <code>(err, written, buffer)</code> where <code>written</code>\nspecifies how many <em>bytes</em> were written from <code>buffer</code>.\n\n</p>\n<p>Note that it is unsafe to use <code>fs.write</code> multiple times on the same file\nwithout waiting for the callback. For this scenario,\n<code>fs.createWriteStream</code> is strongly recommended.\n\n</p>\n<p>On Linux, positional writes don&#39;t work when the file is opened in append mode.\nThe kernel ignores the position argument and always appends the data to\nthe end of the file.\n\n</p>\n",
+          "desc": "<p>Write <code>buffer</code> to the file specified by <code>fd</code>.\n\n</p>\n<p><code>offset</code> and <code>length</code> determine the part of the buffer to be written.\n\n</p>\n<p><code>position</code> refers to the offset from the beginning of the file where this data\nshould be written. If <code>typeof position !== &#39;number&#39;</code>, the data will be written\nat the current position. See pwrite(2).\n\n</p>\n<p>The callback will be given three arguments <code>(err, written, buffer)</code> where\n<code>written</code> specifies how many <em>bytes</em> were written from <code>buffer</code>.\n\n</p>\n<p>Note that it is unsafe to use <code>fs.write</code> multiple times on the same file\nwithout waiting for the callback. For this scenario,\n<code>fs.createWriteStream</code> is strongly recommended.\n\n</p>\n<p>On Linux, positional writes don&#39;t work when the file is opened in append mode.\nThe kernel ignores the position argument and always appends the data to\nthe end of the file.\n\n</p>\n",
           "signatures": [
             {
               "params": [
@@ -1023,7 +1023,7 @@
                   "name": "offset"
                 },
                 {
-                  "name": "length"
+                  "name": "length["
                 },
                 {
                   "name": "position"
@@ -1036,11 +1036,54 @@
           ]
         },
         {
-          "textRaw": "fs.writeSync(fd, buffer, offset, length, position)",
+          "textRaw": "fs.write(fd, data[, position[, encoding]], callback)",
+          "type": "method",
+          "name": "write",
+          "desc": "<p>Write <code>data</code> to the file specified by <code>fd</code>.  If <code>data</code> is not a Buffer instance\nthen the value will be coerced to a string.\n\n</p>\n<p><code>position</code> refers to the offset from the beginning of the file where this data\nshould be written. If <code>typeof position !== &#39;number&#39;</code> the data will be written at\nthe current position. See pwrite(2).\n\n</p>\n<p><code>encoding</code> is the expected string encoding.\n\n</p>\n<p>The callback will receive the arguments <code>(err, written, string)</code> where <code>written</code>\nspecifies how many <em>bytes</em> the passed string required to be written. Note that\nbytes written is not the same as string characters. See\n<a href=\"buffer.html#buffer_class_method_buffer_bytelength_string_encoding\">Buffer.byteLength</a>.\n\n</p>\n<p>Unlike when writing <code>buffer</code>, the entire string must be written. No substring\nmay be specified. This is because the byte offset of the resulting data may not\nbe the same as the string offset.\n\n</p>\n<p>Note that it is unsafe to use <code>fs.write</code> multiple times on the same file\nwithout waiting for the callback. For this scenario,\n<code>fs.createWriteStream</code> is strongly recommended.\n\n</p>\n<p>On Linux, positional writes don&#39;t work when the file is opened in append mode.\nThe kernel ignores the position argument and always appends the data to\nthe end of the file.\n\n</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "fd"
+                },
+                {
+                  "name": "data["
+                },
+                {
+                  "name": "position["
+                },
+                {
+                  "name": "encoding"
+                },
+                {
+                  "name": "callback"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "fs.writeSync(fd, buffer, offset, length[, position])",
           "type": "method",
           "name": "writeSync",
-          "desc": "<p>Synchronous version of <code>fs.write()</code>. Returns the number of bytes written.\n\n</p>\n",
+          "desc": "<p>Synchronous versions of <code>fs.write()</code>. Returns the number of bytes written.\n\n</p>\n",
           "signatures": [
+            {
+              "params": [
+                {
+                  "name": "fd"
+                },
+                {
+                  "name": "data["
+                },
+                {
+                  "name": "position["
+                },
+                {
+                  "name": "encoding"
+                }
+              ]
+            },
             {
               "params": [
                 {
@@ -1053,10 +1096,34 @@
                   "name": "offset"
                 },
                 {
-                  "name": "length"
+                  "name": "length["
                 },
                 {
                   "name": "position"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "textRaw": "fs.writeSync(fd, data[, position[, encoding]])",
+          "type": "method",
+          "name": "writeSync",
+          "desc": "<p>Synchronous versions of <code>fs.write()</code>. Returns the number of bytes written.\n\n</p>\n",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "name": "fd"
+                },
+                {
+                  "name": "data["
+                },
+                {
+                  "name": "position["
+                },
+                {
+                  "name": "encoding"
                 }
               ]
             }
@@ -1429,19 +1496,19 @@
           "name": "watch",
           "stability": 2,
           "stabilityText": "Unstable.",
-          "desc": "<p>Watch for changes on <code>filename</code>, where <code>filename</code> is either a file or a\ndirectory.  The returned object is a <a href=\"#fs_class_fs_fswatcher\">fs.FSWatcher</a>.\n\n</p>\n<p>The second argument is optional. The <code>options</code> if provided should be an object\ncontaining a boolean member <code>persistent</code>, which indicates whether the process\nshould continue to run as long as files are being watched. The default is\n<code>{ persistent: true }</code>.\n\n</p>\n<p>The listener callback gets two arguments <code>(event, filename)</code>.  <code>event</code> is either\n&#39;rename&#39; or &#39;change&#39;, and <code>filename</code> is the name of the file which triggered\nthe event.\n\n</p>\n",
+          "desc": "<p>Watch for changes on <code>filename</code>, where <code>filename</code> is either a file or a\ndirectory.  The returned object is a <a href=\"#fs_class_fs_fswatcher\">fs.FSWatcher</a>.\n\n</p>\n<p>The second argument is optional. The <code>options</code> if provided should be an object.\nThe supported boolean members are <code>persistent</code> and <code>recursive</code>. <code>persistent</code>\nindicates whether the process should continue to run as long as files are being\nwatched. <code>recursive</code> indicates whether all subdirectories should be watched, or\nonly the current directory. This applies when a directory is specified, and only\non supported platforms (See Caveats below).\n\n</p>\n<p>The default is <code>{ persistent: true, recursive: false }</code>.\n\n</p>\n<p>The listener callback gets two arguments <code>(event, filename)</code>.  <code>event</code> is either\n&#39;rename&#39; or &#39;change&#39;, and <code>filename</code> is the name of the file which triggered\nthe event.\n\n</p>\n",
           "miscs": [
             {
               "textRaw": "Caveats",
               "name": "Caveats",
               "type": "misc",
-              "desc": "<p>The <code>fs.watch</code> API is not 100% consistent across platforms, and is\nunavailable in some situations.\n\n</p>\n",
+              "desc": "<p>The <code>fs.watch</code> API is not 100% consistent across platforms, and is\nunavailable in some situations.\n\n</p>\n<p>The recursive option is currently supported on OS X. Only FSEvents supports this\ntype of file watching so it is unlikely any additional platforms will be added\nsoon.\n\n</p>\n",
               "miscs": [
                 {
                   "textRaw": "Availability",
                   "name": "Availability",
                   "type": "misc",
-                  "desc": "<p>This feature depends on the underlying operating system providing a way\nto be notified of filesystem changes.\n\n</p>\n<ul>\n<li>On Linux systems, this uses <code>inotify</code>.</li>\n<li>On BSD systems (including OS X), this uses <code>kqueue</code>.</li>\n<li>On SunOS systems (including Solaris and SmartOS), this uses <code>event ports</code>.</li>\n<li>On Windows systems, this feature depends on <code>ReadDirectoryChangesW</code>.</li>\n</ul>\n<p>If the underlying functionality is not available for some reason, then\n<code>fs.watch</code> will not be able to function.  For example, watching files or\ndirectories on network file systems (NFS, SMB, etc.) often doesn&#39;t work\nreliably or at all.\n\n</p>\n<p>You can still use <code>fs.watchFile</code>, which uses stat polling, but it is slower and\nless reliable.\n\n</p>\n"
+                  "desc": "<p>This feature depends on the underlying operating system providing a way\nto be notified of filesystem changes.\n\n</p>\n<ul>\n<li>On Linux systems, this uses <code>inotify</code>.</li>\n<li>On BSD systems, this uses <code>kqueue</code>.</li>\n<li>On OS X, this uses <code>kqueue</code> for files and &#39;FSEvents&#39; for directories.</li>\n<li>On SunOS systems (including Solaris and SmartOS), this uses <code>event ports</code>.</li>\n<li>On Windows systems, this feature depends on <code>ReadDirectoryChangesW</code>.</li>\n</ul>\n<p>If the underlying functionality is not available for some reason, then\n<code>fs.watch</code> will not be able to function.  For example, watching files or\ndirectories on network file systems (NFS, SMB, etc.) often doesn&#39;t work\nreliably or at all.\n\n</p>\n<p>You can still use <code>fs.watchFile</code>, which uses stat polling, but it is slower and\nless reliable.\n\n</p>\n"
                 },
                 {
                   "textRaw": "Filename Argument",
@@ -1507,7 +1574,7 @@
           "textRaw": "fs.createReadStream(path, [options])",
           "type": "method",
           "name": "createReadStream",
-          "desc": "<p>Returns a new ReadStream object (See <code>Readable Stream</code>).\n\n</p>\n<p><code>options</code> is an object with the following defaults:\n\n</p>\n<pre><code>{ flags: &#39;r&#39;,\n  encoding: null,\n  fd: null,\n  mode: 0666,\n  autoClose: true\n}</code></pre>\n<p><code>options</code> can include <code>start</code> and <code>end</code> values to read a range of bytes from\nthe file instead of the entire file.  Both <code>start</code> and <code>end</code> are inclusive and\nstart at 0. The <code>encoding</code> can be <code>&#39;utf8&#39;</code>, <code>&#39;ascii&#39;</code>, or <code>&#39;base64&#39;</code>.\n\n</p>\n<p>If <code>autoClose</code> is false, then the file descriptor won&#39;t be closed, even if\nthere&#39;s an error.  It is your responsiblity to close it and make sure\nthere&#39;s no file descriptor leak.  If <code>autoClose</code> is set to true (default\nbehavior), on <code>error</code> or <code>end</code> the file descriptor will be closed\nautomatically.\n\n</p>\n<p>An example to read the last 10 bytes of a file which is 100 bytes long:\n\n</p>\n<pre><code>fs.createReadStream(&#39;sample.txt&#39;, {start: 90, end: 99});</code></pre>\n",
+          "desc": "<p>Returns a new ReadStream object (See <code>Readable Stream</code>).\n\n</p>\n<p><code>options</code> is an object with the following defaults:\n\n</p>\n<pre><code>{ flags: &#39;r&#39;,\n  encoding: null,\n  fd: null,\n  mode: 0666,\n  autoClose: true\n}</code></pre>\n<p><code>options</code> can include <code>start</code> and <code>end</code> values to read a range of bytes from\nthe file instead of the entire file.  Both <code>start</code> and <code>end</code> are inclusive and\nstart at 0. The <code>encoding</code> can be <code>&#39;utf8&#39;</code>, <code>&#39;ascii&#39;</code>, or <code>&#39;base64&#39;</code>.\n\n</p>\n<p>If <code>autoClose</code> is false, then the file descriptor won&#39;t be closed, even if\nthere&#39;s an error.  It is your responsibility to close it and make sure\nthere&#39;s no file descriptor leak.  If <code>autoClose</code> is set to true (default\nbehavior), on <code>error</code> or <code>end</code> the file descriptor will be closed\nautomatically.\n\n</p>\n<p>An example to read the last 10 bytes of a file which is 100 bytes long:\n\n</p>\n<pre><code>fs.createReadStream(&#39;sample.txt&#39;, {start: 90, end: 99});</code></pre>\n",
           "signatures": [
             {
               "params": [
@@ -1547,7 +1614,16 @@
           "textRaw": "Class: fs.Stats",
           "type": "class",
           "name": "fs.Stats",
-          "desc": "<p>Objects returned from <code>fs.stat()</code>, <code>fs.lstat()</code> and <code>fs.fstat()</code> and their\nsynchronous counterparts are of this type.\n\n</p>\n<ul>\n<li><code>stats.isFile()</code></li>\n<li><code>stats.isDirectory()</code></li>\n<li><code>stats.isBlockDevice()</code></li>\n<li><code>stats.isCharacterDevice()</code></li>\n<li><code>stats.isSymbolicLink()</code> (only valid with  <code>fs.lstat()</code>)</li>\n<li><code>stats.isFIFO()</code></li>\n<li><code>stats.isSocket()</code></li>\n</ul>\n<p>For a regular file <code>util.inspect(stats)</code> would return a string very\nsimilar to this:\n\n</p>\n<pre><code>{ dev: 2114,\n  ino: 48064969,\n  mode: 33188,\n  nlink: 1,\n  uid: 85,\n  gid: 100,\n  rdev: 0,\n  size: 527,\n  blksize: 4096,\n  blocks: 8,\n  atime: Mon, 10 Oct 2011 23:24:11 GMT,\n  mtime: Mon, 10 Oct 2011 23:24:11 GMT,\n  ctime: Mon, 10 Oct 2011 23:24:11 GMT }</code></pre>\n<p>Please note that <code>atime</code>, <code>mtime</code> and <code>ctime</code> are instances\nof [Date][MDN-Date] object and to compare the values of\nthese objects you should use appropriate methods. For most\ngeneral uses [getTime()][MDN-Date-getTime] will return\nthe number of milliseconds elapsed since <em>1 January 1970\n00:00:00 UTC</em> and this integer should be sufficient for\nany comparison, however there additional methods which can\nbe used for displaying fuzzy information. More details can\nbe found in the [MDN JavaScript Reference][MDN-Date] page.\n\n</p>\n"
+          "desc": "<p>Objects returned from <code>fs.stat()</code>, <code>fs.lstat()</code> and <code>fs.fstat()</code> and their\nsynchronous counterparts are of this type.\n\n</p>\n<ul>\n<li><code>stats.isFile()</code></li>\n<li><code>stats.isDirectory()</code></li>\n<li><code>stats.isBlockDevice()</code></li>\n<li><code>stats.isCharacterDevice()</code></li>\n<li><code>stats.isSymbolicLink()</code> (only valid with  <code>fs.lstat()</code>)</li>\n<li><code>stats.isFIFO()</code></li>\n<li><code>stats.isSocket()</code></li>\n</ul>\n<p>For a regular file <code>util.inspect(stats)</code> would return a string very\nsimilar to this:\n\n</p>\n<pre><code>{ dev: 2114,\n  ino: 48064969,\n  mode: 33188,\n  nlink: 1,\n  uid: 85,\n  gid: 100,\n  rdev: 0,\n  size: 527,\n  blksize: 4096,\n  blocks: 8,\n  atime: Mon, 10 Oct 2011 23:24:11 GMT,\n  mtime: Mon, 10 Oct 2011 23:24:11 GMT,\n  ctime: Mon, 10 Oct 2011 23:24:11 GMT,\n  birthtime: Mon, 10 Oct 2011 23:24:11 GMT }</code></pre>\n<p>Please note that <code>atime</code>, <code>mtime</code>, <code>birthtime</code>, and <code>ctime</code> are\ninstances of [Date][MDN-Date] object and to compare the values of\nthese objects you should use appropriate methods. For most general\nuses [getTime()][MDN-Date-getTime] will return the number of\nmilliseconds elapsed since <em>1 January 1970 00:00:00 UTC</em> and this\ninteger should be sufficient for any comparison, however there are\nadditional methods which can be used for displaying fuzzy information.\nMore details can be found in the [MDN JavaScript Reference][MDN-Date]\npage.\n\n</p>\n",
+          "modules": [
+            {
+              "textRaw": "Stat Time Values",
+              "name": "stat_time_values",
+              "desc": "<p>The times in the stat object have the following semantics:\n\n</p>\n<ul>\n<li><code>atime</code> &quot;Access Time&quot; - Time when file data last accessed.  Changed\nby the <code>mknod(2)</code>, <code>utimes(2)</code>, and <code>read(2)</code> system calls.</li>\n<li><code>mtime</code> &quot;Modified Time&quot; - Time when file data last modified.\nChanged by the <code>mknod(2)</code>, <code>utimes(2)</code>, and <code>write(2)</code> system calls.</li>\n<li><code>ctime</code> &quot;Change Time&quot; - Time when file status was last changed\n(inode data modification).  Changed by the <code>chmod(2)</code>, <code>chown(2)</code>,\n<code>link(2)</code>, <code>mknod(2)</code>, <code>rename(2)</code>, <code>unlink(2)</code>, <code>utimes(2)</code>,\n<code>read(2)</code>, and <code>write(2)</code> system calls.</li>\n<li><code>birthtime</code> &quot;Birth Time&quot; -  Time of file creation. Set once when the\nfile is created.  On filesystems where birthtime is not available,\nthis field may instead hold either the <code>ctime</code> or\n<code>1970-01-01T00:00Z</code> (ie, unix epoch timestamp <code>0</code>).  On Darwin and\nother FreeBSD variants, also set if the <code>atime</code> is explicitly set to\nan earlier value than the current <code>birthtime</code> using the <code>utimes(2)</code>\nsystem call.</li>\n</ul>\n<p>Prior to Node v0.12, the <code>ctime</code> held the <code>birthtime</code> on Windows\nsystems.  Note that as of v0.12, <code>ctime</code> is not &quot;creation time&quot;, and\non Unix systems, it never was.\n\n</p>\n",
+              "type": "module",
+              "displayName": "Stat Time Values"
+            }
+          ]
         },
         {
           "textRaw": "Class: fs.ReadStream",

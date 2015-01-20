@@ -26,6 +26,7 @@ var assert = require('assert'),
     isIP = net.isIP,
     isIPv4 = net.isIPv4,
     isIPv6 = net.isIPv6;
+var util = require('util');
 
 var expected = 0,
     completed = 0,
@@ -145,7 +146,7 @@ TEST(function test_reverse_bogus(done) {
   }
 
   assert.ok(error instanceof Error);
-  assert.strictEqual(error.errno, 'ENOTIMP');
+  assert.strictEqual(error.errno, 'EINVAL');
 
   done();
 });
@@ -244,6 +245,40 @@ TEST(function test_resolveNaptr(done) {
   checkWrap(req);
 });
 
+TEST(function test_resolveSoa(done) {
+  var req = dns.resolveSoa('nodejs.org', function(err, result) {
+    if (err) throw err;
+    
+    assert.ok(result);
+    assert.ok(typeof result === 'object');
+    
+    assert.ok(typeof result.nsname === 'string');
+    assert.ok(result.nsname.length > 0);
+    
+    assert.ok(typeof result.hostmaster === 'string');
+    assert.ok(result.hostmaster.length > 0);
+    
+    assert.ok(typeof result.serial === 'number');
+    assert.ok((result.serial > 0) && (result.serial < 4294967295));
+    
+    assert.ok(typeof result.refresh === 'number');
+    assert.ok((result.refresh > 0) && (result.refresh < 2147483647)); 
+    
+    assert.ok(typeof result.retry === 'number');
+    assert.ok((result.retry > 0) && (result.retry < 2147483647));
+    
+    assert.ok(typeof result.expire === 'number');
+    assert.ok((result.expire > 0) && (result.expire < 2147483647));
+    
+    assert.ok(typeof result.minttl === 'number');
+    assert.ok((result.minttl >= 0) && (result.minttl < 2147483647));
+
+    done();
+  });
+  
+  checkWrap(req);
+});
+
 TEST(function test_resolveCname(done) {
   var req = dns.resolveCname('www.microsoft.com', function(err, names) {
     if (err) throw err;
@@ -267,7 +302,8 @@ TEST(function test_resolveTxt(done) {
   var req = dns.resolveTxt('google.com', function(err, records) {
     if (err) throw err;
     assert.equal(records.length, 1);
-    assert.equal(records[0].indexOf('v=spf1'), 0);
+    assert.ok(util.isArray(records[0]));
+    assert.equal(records[0][0].indexOf('v=spf1'), 0);
     done();
   });
 
@@ -314,6 +350,7 @@ TEST(function test_lookup_ipv6_explicit(done) {
 });
 
 
+/* This ends up just being too problematic to test
 TEST(function test_lookup_ipv6_implicit(done) {
   var req = dns.lookup('ipv6.google.com', function(err, ip, family) {
     if (err) throw err;
@@ -325,6 +362,7 @@ TEST(function test_lookup_ipv6_implicit(done) {
 
   checkWrap(req);
 });
+*/
 
 
 TEST(function test_lookup_failure(done) {
@@ -393,6 +431,54 @@ TEST(function test_lookup_localhost_ipv4(done) {
 });
 
 
+TEST(function test_reverse_failure(done) {
+  var req = dns.reverse('0.0.0.0', function(err) {
+    assert(err instanceof Error);
+    assert.strictEqual(err.code, 'ENOTFOUND');  // Silly error code...
+    assert.strictEqual(err.hostname, '0.0.0.0');
+
+    done();
+  });
+
+  checkWrap(req);
+});
+
+
+TEST(function test_lookup_failure(done) {
+  var req = dns.lookup('nosuchhostimsure', function(err) {
+    assert(err instanceof Error);
+    assert.strictEqual(err.code, 'ENOTFOUND');  // Silly error code...
+    assert.strictEqual(err.hostname, 'nosuchhostimsure');
+
+    done();
+  });
+
+  checkWrap(req);
+});
+
+
+TEST(function test_resolve_failure(done) {
+  var req = dns.resolve4('nosuchhostimsure', function(err) {
+    assert(err instanceof Error);
+
+    switch(err.code) {
+      case 'ENOTFOUND':
+      case 'ESERVFAIL':
+        break;
+      default:
+        assert.strictEqual(err.code, 'ENOTFOUND');  // Silly error code...
+        break;
+    }
+
+    assert.strictEqual(err.hostname, 'nosuchhostimsure');
+
+    done();
+  });
+
+  checkWrap(req);
+});
+
+
 /* Disabled because it appears to be not working on linux. */
 /* TEST(function test_lookup_localhost_ipv6(done) {
   var req = dns.lookup('localhost', 6, function(err, ip, family) {
@@ -410,17 +496,18 @@ TEST(function test_lookup_localhost_ipv4(done) {
 var getaddrinfoCallbackCalled = false;
 
 console.log('looking up nodejs.org...');
-var req = process.binding('cares_wrap').getaddrinfo('nodejs.org');
 
-req.oncomplete = function(domains) {
+var req = {};
+var err = process.binding('cares_wrap').getaddrinfo(req, 'nodejs.org', 4);
+
+req.oncomplete = function(err, domains) {
+  assert.strictEqual(err, 0);
   console.log('nodejs.org = ', domains);
   assert.ok(Array.isArray(domains));
   assert.ok(domains.length >= 1);
   assert.ok(typeof domains[0] == 'string');
   getaddrinfoCallbackCalled = true;
 };
-
-
 
 process.on('exit', function() {
   console.log(completed + ' tests completed');

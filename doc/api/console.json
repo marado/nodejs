@@ -93,7 +93,7 @@
           "textRaw": "console.dir(obj)",
           "type": "method",
           "name": "dir",
-          "desc": "<p>Uses <code>util.inspect</code> on <code>obj</code> and prints resulting string to stdout.\n\n</p>\n",
+          "desc": "<p>Uses <code>util.inspect</code> on <code>obj</code> and prints resulting string to stdout. This function\nbypasses any custom <code>inspect()</code> function on <code>obj</code>.\n\n</p>\n",
           "signatures": [
             {
               "params": [
