@@ -2,41 +2,36 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>File System Node.js v0.10.33 Manual &amp; Documentation</title>
+  <title>File System Node.js v0.11.13 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/fs.html">
-  <script type="text/javascript" src="//use.typekit.net/mse5tqx.js"></script>
-  <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 </head>
-<body class="alt apidoc int docs" id="docs">
-    <div id="nav">
-      <img id="logo" src="assets/logo.svg" alt="node.js">
-      <ul>
-        <li><a href="http://nodejs.org">Home</a></li>
-        <li><a href="http://nodejs.org/download/">Downloads</a></li>
-        <li class="active"><a href="http://nodejs.org/documentation/">Docs</a></li>
-        <li><a href="http://nodejs.org/community/">Community</a></li>
-        <li><a href="http://nodejs.org/about/">About</a></li>
-        <li><a href="http://jobs.nodejs.org">Jobs</a></li>
-        <li><a href="http://blog.nodejs.org">Blog</a></li>
-      </ul>
+<body class="alt apidoc" id="api-section-fs">
+    <div id="intro" class="interior">
+        <a href="/" title="Go back to the home page">
+            <img id="logo" src="http://nodejs.org/images/logo-light.png" alt="node.js">
+        </a>
     </div>
-    <div id="content-wrap">
     <div id="content" class="clearfix">
-      <div id="column2" class="interior">
-        <!--<img src="/images/logo-light.svg" alt="node.js" width="170">-->
-        <ul class="docs-nav">
-          <li><a href="http://nodejs.org/documentation/">About Docs</a></li>
-          <li><a href="http://nodejs.org/documentation/tutorials/">Tutorials</a></li>
-          <li><a href="http://nodejs.org/documentation/contributing/">Contributing</a></li>
-          <li><a href="http://nodejs.org/documentation/localization/">Localization</a></li>
-          <li class="active"><a href="http://nodejs.org/api/">API Docs</a></li>
-        </ul>
-      </div>
+        <div id="column2" class="interior">
+            <ul>
+                <li><a href="/" class="home">Home</a></li>
+                <li><a href="/download/" class="download">Download</a></li>
+                <li><a href="/about/" class="about">About</a></li>
+                <li><a href="http://npmjs.org/" class="npm">npm Registry</a></li>
+                <li><a href="http://nodejs.org/api/" class="docs current">Docs</a></li>
+                <li><a href="http://blog.nodejs.org" class="blog">Blog</a></li>
+                <li><a href="/community/" class="community">Community</a></li>
+                <li><a href="/logos/" class="logos">Logos</a></li>
+                <li><a href="http://jobs.nodejs.org/" class="jobs">Jobs</a></li>
+            </ul>
+            <p class="twitter"><a href="http://twitter.com/nodejs">@nodejs</a></p>
+        </div>
+
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.33 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.11.13 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -101,8 +96,10 @@
 <li><a href="#fs_fs_futimessync_fd_atime_mtime">fs.futimesSync(fd, atime, mtime)</a></li>
 <li><a href="#fs_fs_fsync_fd_callback">fs.fsync(fd, callback)</a></li>
 <li><a href="#fs_fs_fsyncsync_fd">fs.fsyncSync(fd)</a></li>
-<li><a href="#fs_fs_write_fd_buffer_offset_length_position_callback">fs.write(fd, buffer, offset, length, position, callback)</a></li>
-<li><a href="#fs_fs_writesync_fd_buffer_offset_length_position">fs.writeSync(fd, buffer, offset, length, position)</a></li>
+<li><a href="#fs_fs_write_fd_buffer_offset_length_position_callback">fs.write(fd, buffer, offset, length[, position], callback)</a></li>
+<li><a href="#fs_fs_write_fd_data_position_encoding_callback">fs.write(fd, data[, position[, encoding]], callback)</a></li>
+<li><a href="#fs_fs_writesync_fd_buffer_offset_length_position">fs.writeSync(fd, buffer, offset, length[, position])</a></li>
+<li><a href="#fs_fs_writesync_fd_data_position_encoding">fs.writeSync(fd, data[, position[, encoding]])</a></li>
 <li><a href="#fs_fs_read_fd_buffer_offset_length_position_callback">fs.read(fd, buffer, offset, length, position, callback)</a></li>
 <li><a href="#fs_fs_readsync_fd_buffer_offset_length_position">fs.readSync(fd, buffer, offset, length, position)</a></li>
 <li><a href="#fs_fs_readfile_filename_options_callback">fs.readFile(filename, [options], callback)</a></li>
@@ -123,7 +120,10 @@
 </li>
 <li><a href="#fs_fs_exists_path_callback">fs.exists(path, callback)</a></li>
 <li><a href="#fs_fs_existssync_path">fs.existsSync(path)</a></li>
-<li><a href="#fs_class_fs_stats">Class: fs.Stats</a></li>
+<li><a href="#fs_class_fs_stats">Class: fs.Stats</a><ul>
+<li><a href="#fs_stat_time_values">Stat Time Values</a></li>
+</ul>
+</li>
 <li><a href="#fs_fs_createreadstream_path_options">fs.createReadStream(path, [options])</a></li>
 <li><a href="#fs_class_fs_readstream">Class: fs.ReadStream</a><ul>
 <li><a href="#fs_event_open">Event: &#39;open&#39;</a></li>
@@ -215,15 +215,27 @@ relative to <code>process.cwd()</code>.
 
 </p>
 <p>Most fs functions let you omit the callback argument. If you do, a default
-callback is used that ignores errors, but prints a deprecation
-warning.
+callback is used that rethrows errors. To get a trace to the original call
+site, set the NODE_DEBUG environment variable:
 
 </p>
-<p><strong>IMPORTANT</strong>: Omitting the callback is deprecated.  v0.12 will throw the
-errors as exceptions.
+<pre><code>$ cat script.js
+function bad() {
+  require(&#39;fs&#39;).readFile(&#39;/&#39;);
+}
+bad();
 
-
-</p>
+$ env NODE_DEBUG=fs node script.js
+fs.js:66
+        throw err;
+              ^
+Error: EISDIR, read
+    at rethrow (fs.js:61:21)
+    at maybeCallback (fs.js:79:42)
+    at Object.fs.readFile (fs.js:153:18)
+    at bad (/path/to/script.js:2:17)
+    at Object.&lt;anonymous&gt; (/path/to/script.js:5:1)
+    &lt;etc.&gt;</code></pre>
 <h2>fs.rename(oldPath, newPath, callback)<span><a class="mark" href="#fs_fs_rename_oldpath_newpath_callback" id="fs_fs_rename_oldpath_newpath_callback">#</a></span></h2>
 <p>Asynchronous rename(2). No arguments other than a possible exception are given
 to the completion callback.
@@ -521,7 +533,7 @@ to the completion callback.
 <p>Synchronous fsync(2).
 
 </p>
-<h2>fs.write(fd, buffer, offset, length, position, callback)<span><a class="mark" href="#fs_fs_write_fd_buffer_offset_length_position_callback" id="fs_fs_write_fd_buffer_offset_length_position_callback">#</a></span></h2>
+<h2>fs.write(fd, buffer, offset, length[, position], callback)<span><a class="mark" href="#fs_fs_write_fd_buffer_offset_length_position_callback" id="fs_fs_write_fd_buffer_offset_length_position_callback">#</a></span></h2>
 <p>Write <code>buffer</code> to the file specified by <code>fd</code>.
 
 </p>
@@ -529,13 +541,12 @@ to the completion callback.
 
 </p>
 <p><code>position</code> refers to the offset from the beginning of the file where this data
-should be written. If <code>position</code> is <code>null</code>, the data will be written at the
-current position.
-See pwrite(2).
+should be written. If <code>typeof position !== &#39;number&#39;</code>, the data will be written
+at the current position. See pwrite(2).
 
 </p>
-<p>The callback will be given three arguments <code>(err, written, buffer)</code> where <code>written</code>
-specifies how many <em>bytes</em> were written from <code>buffer</code>.
+<p>The callback will be given three arguments <code>(err, written, buffer)</code> where
+<code>written</code> specifies how many <em>bytes</em> were written from <code>buffer</code>.
 
 </p>
 <p>Note that it is unsafe to use <code>fs.write</code> multiple times on the same file
@@ -548,8 +559,43 @@ The kernel ignores the position argument and always appends the data to
 the end of the file.
 
 </p>
-<h2>fs.writeSync(fd, buffer, offset, length, position)<span><a class="mark" href="#fs_fs_writesync_fd_buffer_offset_length_position" id="fs_fs_writesync_fd_buffer_offset_length_position">#</a></span></h2>
-<p>Synchronous version of <code>fs.write()</code>. Returns the number of bytes written.
+<h2>fs.write(fd, data[, position[, encoding]], callback)<span><a class="mark" href="#fs_fs_write_fd_data_position_encoding_callback" id="fs_fs_write_fd_data_position_encoding_callback">#</a></span></h2>
+<p>Write <code>data</code> to the file specified by <code>fd</code>.  If <code>data</code> is not a Buffer instance
+then the value will be coerced to a string.
+
+</p>
+<p><code>position</code> refers to the offset from the beginning of the file where this data
+should be written. If <code>typeof position !== &#39;number&#39;</code> the data will be written at
+the current position. See pwrite(2).
+
+</p>
+<p><code>encoding</code> is the expected string encoding.
+
+</p>
+<p>The callback will receive the arguments <code>(err, written, string)</code> where <code>written</code>
+specifies how many <em>bytes</em> the passed string required to be written. Note that
+bytes written is not the same as string characters. See
+<a href="buffer.html#buffer_class_method_buffer_bytelength_string_encoding">Buffer.byteLength</a>.
+
+</p>
+<p>Unlike when writing <code>buffer</code>, the entire string must be written. No substring
+may be specified. This is because the byte offset of the resulting data may not
+be the same as the string offset.
+
+</p>
+<p>Note that it is unsafe to use <code>fs.write</code> multiple times on the same file
+without waiting for the callback. For this scenario,
+<code>fs.createWriteStream</code> is strongly recommended.
+
+</p>
+<p>On Linux, positional writes don&#39;t work when the file is opened in append mode.
+The kernel ignores the position argument and always appends the data to
+the end of the file.
+
+</p>
+<h2>fs.writeSync(fd, buffer, offset, length[, position])<span><a class="mark" href="#fs_fs_writesync_fd_buffer_offset_length_position" id="fs_fs_writesync_fd_buffer_offset_length_position">#</a></span></h2>
+<h2>fs.writeSync(fd, data[, position[, encoding]])<span><a class="mark" href="#fs_fs_writesync_fd_data_position_encoding" id="fs_fs_writesync_fd_data_position_encoding">#</a></span></h2>
+<p>Synchronous versions of <code>fs.write()</code>. Returns the number of bytes written.
 
 </p>
 <h2>fs.read(fd, buffer, offset, length, position, callback)<span><a class="mark" href="#fs_fs_read_fd_buffer_offset_length_position_callback" id="fs_fs_read_fd_buffer_offset_length_position_callback">#</a></span></h2>
@@ -710,10 +756,15 @@ no-op, not an error.
 directory.  The returned object is a <a href="#fs_class_fs_fswatcher">fs.FSWatcher</a>.
 
 </p>
-<p>The second argument is optional. The <code>options</code> if provided should be an object
-containing a boolean member <code>persistent</code>, which indicates whether the process
-should continue to run as long as files are being watched. The default is
-<code>{ persistent: true }</code>.
+<p>The second argument is optional. The <code>options</code> if provided should be an object.
+The supported boolean members are <code>persistent</code> and <code>recursive</code>. <code>persistent</code>
+indicates whether the process should continue to run as long as files are being
+watched. <code>recursive</code> indicates whether all subdirectories should be watched, or
+only the current directory. This applies when a directory is specified, and only
+on supported platforms (See Caveats below).
+
+</p>
+<p>The default is <code>{ persistent: true, recursive: false }</code>.
 
 </p>
 <p>The listener callback gets two arguments <code>(event, filename)</code>.  <code>event</code> is either
@@ -728,6 +779,11 @@ the event.
 unavailable in some situations.
 
 </p>
+<p>The recursive option is currently supported on OS X. Only FSEvents supports this
+type of file watching so it is unlikely any additional platforms will be added
+soon.
+
+</p>
 <h4>Availability<span><a class="mark" href="#fs_availability" id="fs_availability">#</a></span></h4>
 <!--type=misc-->
 
@@ -737,7 +793,8 @@ to be notified of filesystem changes.
 </p>
 <ul>
 <li>On Linux systems, this uses <code>inotify</code>.</li>
-<li>On BSD systems (including OS X), this uses <code>kqueue</code>.</li>
+<li>On BSD systems, this uses <code>kqueue</code>.</li>
+<li>On OS X, this uses <code>kqueue</code> for files and &#39;FSEvents&#39; for directories.</li>
 <li>On SunOS systems (including Solaris and SmartOS), this uses <code>event ports</code>.</li>
 <li>On Windows systems, this feature depends on <code>ReadDirectoryChangesW</code>.</li>
 </ul>
@@ -821,16 +878,43 @@ similar to this:
   blocks: 8,
   atime: Mon, 10 Oct 2011 23:24:11 GMT,
   mtime: Mon, 10 Oct 2011 23:24:11 GMT,
-  ctime: Mon, 10 Oct 2011 23:24:11 GMT }</code></pre>
-<p>Please note that <code>atime</code>, <code>mtime</code> and <code>ctime</code> are instances
-of <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date">Date</a> object and to compare the values of
-these objects you should use appropriate methods. For most
-general uses <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date/getTime">getTime()</a> will return
-the number of milliseconds elapsed since <em>1 January 1970
-00:00:00 UTC</em> and this integer should be sufficient for
-any comparison, however there additional methods which can
-be used for displaying fuzzy information. More details can
-be found in the <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date">MDN JavaScript Reference</a> page.
+  ctime: Mon, 10 Oct 2011 23:24:11 GMT,
+  birthtime: Mon, 10 Oct 2011 23:24:11 GMT }</code></pre>
+<p>Please note that <code>atime</code>, <code>mtime</code>, <code>birthtime</code>, and <code>ctime</code> are
+instances of <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date">Date</a> object and to compare the values of
+these objects you should use appropriate methods. For most general
+uses <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date/getTime">getTime()</a> will return the number of
+milliseconds elapsed since <em>1 January 1970 00:00:00 UTC</em> and this
+integer should be sufficient for any comparison, however there are
+additional methods which can be used for displaying fuzzy information.
+More details can be found in the <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date">MDN JavaScript Reference</a>
+page.
+
+</p>
+<h3>Stat Time Values<span><a class="mark" href="#fs_stat_time_values" id="fs_stat_time_values">#</a></span></h3>
+<p>The times in the stat object have the following semantics:
+
+</p>
+<ul>
+<li><code>atime</code> &quot;Access Time&quot; - Time when file data last accessed.  Changed
+by the <code>mknod(2)</code>, <code>utimes(2)</code>, and <code>read(2)</code> system calls.</li>
+<li><code>mtime</code> &quot;Modified Time&quot; - Time when file data last modified.
+Changed by the <code>mknod(2)</code>, <code>utimes(2)</code>, and <code>write(2)</code> system calls.</li>
+<li><code>ctime</code> &quot;Change Time&quot; - Time when file status was last changed
+(inode data modification).  Changed by the <code>chmod(2)</code>, <code>chown(2)</code>,
+<code>link(2)</code>, <code>mknod(2)</code>, <code>rename(2)</code>, <code>unlink(2)</code>, <code>utimes(2)</code>,
+<code>read(2)</code>, and <code>write(2)</code> system calls.</li>
+<li><code>birthtime</code> &quot;Birth Time&quot; -  Time of file creation. Set once when the
+file is created.  On filesystems where birthtime is not available,
+this field may instead hold either the <code>ctime</code> or
+<code>1970-01-01T00:00Z</code> (ie, unix epoch timestamp <code>0</code>).  On Darwin and
+other FreeBSD variants, also set if the <code>atime</code> is explicitly set to
+an earlier value than the current <code>birthtime</code> using the <code>utimes(2)</code>
+system call.</li>
+</ul>
+<p>Prior to Node v0.12, the <code>ctime</code> held the <code>birthtime</code> on Windows
+systems.  Note that as of v0.12, <code>ctime</code> is not &quot;creation time&quot;, and
+on Unix systems, it never was.
 
 </p>
 <h2>fs.createReadStream(path, [options])<span><a class="mark" href="#fs_fs_createreadstream_path_options" id="fs_fs_createreadstream_path_options">#</a></span></h2>
@@ -852,7 +936,7 @@ start at 0. The <code>encoding</code> can be <code>&#39;utf8&#39;</code>, <code>
 
 </p>
 <p>If <code>autoClose</code> is false, then the file descriptor won&#39;t be closed, even if
-there&#39;s an error.  It is your responsiblity to close it and make sure
+there&#39;s an error.  It is your responsibility to close it and make sure
 there&#39;s no file descriptor leak.  If <code>autoClose</code> is set to true (default
 behavior), on <code>error</code> or <code>end</code> the file descriptor will be closed
 automatically.
@@ -933,48 +1017,26 @@ See more details in <a href="#fs_fs_watch_filename_options_listener">fs.watch</a
           </div>
         </div>
     </div>
-    </div>
     <div id="footer">
-      <div class="foot-1">
-        <a href="http://www.joyent.com"><h5>The Node.js Project is Sponsored by</h5>
-        <img src="assets/joyent-footer.svg" width="200">
-        <p class="tag">Production Node +<br>High Performance Infrastructure</p></a>
-        <a href="https://my.joyent.com/landing/signup/701800000015696" class="button getstarted">Get Started</a>
-      </div>
-      <div class="foot-2">
-        <div class="foot-nav">
-          <ul>
-            <li><a href="http://nodejs.org/download/">Downloads</a></li>
-          </ul>
-          <ul>
-            <li><a href="http://nodejs.org/documentation/">Documentation</a></li>
-            <li><a href="http://nodejs.org/api/">API Docs</a></li>
-            <li><a href="http://nodejs.org/documentation/tutorials/">Tutorials</a></li>
-            <li><a href="http://nodejs.org/documentation/localization/">Localization</a></li>
-          </ul>
-          <ul>
-            <li><a href="http://nodejs.org/community/">Community</a></li>
-            <li><a href="https://github.com/joyent/node/issues">Github Issues</a></li>
-            <li><a href="http://groups.google.com/group/nodejs">Mailing List</a></li>
-            <li><a href="http://webchat.freenode.net/?channels=node.js">IRC</a></li>
-            <li><a href="https://twitter.com/nodejs">Twitter</a></li>
-          </ul>
-          <ul>
-            <li><a href="http://nodejs.org/about/">About</a></li>
-            <li><a href="http://nodejs.org/about/organization/">Organization</a></li>
-            <li><a href="http://nodejs.org/about/core-team/">Core Team</a></li>
-            <li><a href="http://nodejs.org/about/resources/">Resources</a></li>
-          </ul>
-          <ul>
+        <a href="http://joyent.com" class="joyent-logo">Joyent</a>
+        <ul class="clearfix">
+            <li><a href="/">Node.js</a></li>
+            <li><a href="/download/">Download</a></li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="http://npmjs.org/">npm Registry</a></li>
+            <li><a href="http://nodejs.org/api/">Docs</a></li>
             <li><a href="http://blog.nodejs.org">Blog</a></li>
-          </ul>
-        </div>
-        <p class="copyright">Copyright 2014 <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="https://nodejs.org/images/trademark-policy.pdf">trademark</a> of Joyent, Inc. <a href="https://raw.github.com/joyent/node/v0.10.33/LICENSE">View license</a>.</p>
-      </div>
+            <li><a href="/community/">Community</a></li>
+            <li><a href="/logos/">Logos</a></li>
+            <li><a href="http://jobs.nodejs.org/">Jobs</a></li>
+            <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
+        </ul>
+
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.11.13/LICENSE">license</a>.</p>
     </div>
 
-  <script src="/sh_main.js"></script>
-  <script src="/sh_javascript.min.js"></script>
+  <script src="../sh_main.js"></script>
+  <script src="../sh_javascript.min.js"></script>
   <script>highlight(undefined, undefined, 'pre');</script>
   <script>
     window._gaq = [['_setAccount', 'UA-10874194-2'], ['_trackPageview']];

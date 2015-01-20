@@ -32,7 +32,7 @@
           "textRaw": "net.connect(options, [connectionListener])",
           "type": "method",
           "name": "connect",
-          "desc": "<p>A factory method, which returns a new <a href=\"#net_class_net_socket\">&#39;net.Socket&#39;</a>\nand connects to the supplied address and port.\n\n</p>\n<p>When the socket is established, the [&#39;connect&#39;][] event will be emitted.\n\n</p>\n<p>Has the same events as <a href=\"#net_class_net_socket\">&#39;net.Socket&#39;</a>.\n\n</p>\n<p>For TCP sockets, <code>options</code> argument should be an object which specifies:\n\n</p>\n<ul>\n<li><p><code>port</code>: Port the client should connect to (Required).</p>\n</li>\n<li><p><code>host</code>: Host the client should connect to. Defaults to <code>&#39;localhost&#39;</code>.</p>\n</li>\n<li><p><code>localAddress</code>: Local interface to bind to for network connections.</p>\n</li>\n</ul>\n<p>For UNIX domain sockets, <code>options</code> argument should be an object which specifies:\n\n</p>\n<ul>\n<li><code>path</code>: Path the client should connect to (Required).</li>\n</ul>\n<p>Common options are:\n\n</p>\n<ul>\n<li><code>allowHalfOpen</code>: if <code>true</code>, the socket won&#39;t automatically send\na FIN packet when the other end of the socket sends a FIN packet.\nDefaults to <code>false</code>.  See [&#39;end&#39;][] event for more information.</li>\n</ul>\n<p>The <code>connectListener</code> parameter will be added as an listener for the\n[&#39;connect&#39;][] event.\n\n</p>\n<p>Here is an example of a client of echo server as described previously:\n\n</p>\n<pre><code>var net = require(&#39;net&#39;);\nvar client = net.connect({port: 8124},\n    function() { //&#39;connect&#39; listener\n  console.log(&#39;client connected&#39;);\n  client.write(&#39;world!\\r\\n&#39;);\n});\nclient.on(&#39;data&#39;, function(data) {\n  console.log(data.toString());\n  client.end();\n});\nclient.on(&#39;end&#39;, function() {\n  console.log(&#39;client disconnected&#39;);\n});</code></pre>\n<p>To connect on the socket <code>/tmp/echo.sock</code> the second line would just be\nchanged to\n\n</p>\n<pre><code>var client = net.connect({path: &#39;/tmp/echo.sock&#39;});</code></pre>\n",
+          "desc": "<p>Constructs a new socket object and opens the socket to the given location.\nWhen the socket is established, the [&#39;connect&#39;][] event will be emitted.\n\n</p>\n<p>For TCP sockets, <code>options</code> argument should be an object which specifies:\n\n</p>\n<ul>\n<li><p><code>port</code>: Port the client should connect to (Required).</p>\n</li>\n<li><p><code>host</code>: Host the client should connect to. Defaults to <code>&#39;localhost&#39;</code>.</p>\n</li>\n<li><p><code>localAddress</code>: Local interface to bind to for network connections.</p>\n</li>\n<li><p><code>localPort</code>: Local port to bind to for network connections.</p>\n</li>\n<li><p><code>family</code> : Version of IP stack. Defaults to <code>4</code>.</p>\n</li>\n</ul>\n<p>For local domain sockets, <code>options</code> argument should be an object which\nspecifies:\n\n</p>\n<ul>\n<li><code>path</code>: Path the client should connect to (Required).</li>\n</ul>\n<p>Common options are:\n\n</p>\n<ul>\n<li><code>allowHalfOpen</code>: if <code>true</code>, the socket won&#39;t automatically send\na FIN packet when the other end of the socket sends a FIN packet.\nDefaults to <code>false</code>.  See [&#39;end&#39;][] event for more information.</li>\n</ul>\n<p>The <code>connectListener</code> parameter will be added as an listener for the\n[&#39;connect&#39;][] event.\n\n</p>\n<p>Here is an example of a client of echo server as described previously:\n\n</p>\n<pre><code>var net = require(&#39;net&#39;);\nvar client = net.connect({port: 8124},\n    function() { //&#39;connect&#39; listener\n  console.log(&#39;client connected&#39;);\n  client.write(&#39;world!\\r\\n&#39;);\n});\nclient.on(&#39;data&#39;, function(data) {\n  console.log(data.toString());\n  client.end();\n});\nclient.on(&#39;end&#39;, function() {\n  console.log(&#39;client disconnected&#39;);\n});</code></pre>\n<p>To connect on the socket <code>/tmp/echo.sock</code> the second line would just be\nchanged to\n\n</p>\n<pre><code>var client = net.connect({path: &#39;/tmp/echo.sock&#39;});</code></pre>\n",
           "signatures": [
             {
               "params": [
@@ -62,7 +62,7 @@
           "textRaw": "net.createConnection(options, [connectionListener])",
           "type": "method",
           "name": "createConnection",
-          "desc": "<p>A factory method, which returns a new <a href=\"#net_class_net_socket\">&#39;net.Socket&#39;</a>\nand connects to the supplied address and port.\n\n</p>\n<p>When the socket is established, the [&#39;connect&#39;][] event will be emitted.\n\n</p>\n<p>Has the same events as <a href=\"#net_class_net_socket\">&#39;net.Socket&#39;</a>.\n\n</p>\n<p>For TCP sockets, <code>options</code> argument should be an object which specifies:\n\n</p>\n<ul>\n<li><p><code>port</code>: Port the client should connect to (Required).</p>\n</li>\n<li><p><code>host</code>: Host the client should connect to. Defaults to <code>&#39;localhost&#39;</code>.</p>\n</li>\n<li><p><code>localAddress</code>: Local interface to bind to for network connections.</p>\n</li>\n</ul>\n<p>For UNIX domain sockets, <code>options</code> argument should be an object which specifies:\n\n</p>\n<ul>\n<li><code>path</code>: Path the client should connect to (Required).</li>\n</ul>\n<p>Common options are:\n\n</p>\n<ul>\n<li><code>allowHalfOpen</code>: if <code>true</code>, the socket won&#39;t automatically send\na FIN packet when the other end of the socket sends a FIN packet.\nDefaults to <code>false</code>.  See [&#39;end&#39;][] event for more information.</li>\n</ul>\n<p>The <code>connectListener</code> parameter will be added as an listener for the\n[&#39;connect&#39;][] event.\n\n</p>\n<p>Here is an example of a client of echo server as described previously:\n\n</p>\n<pre><code>var net = require(&#39;net&#39;);\nvar client = net.connect({port: 8124},\n    function() { //&#39;connect&#39; listener\n  console.log(&#39;client connected&#39;);\n  client.write(&#39;world!\\r\\n&#39;);\n});\nclient.on(&#39;data&#39;, function(data) {\n  console.log(data.toString());\n  client.end();\n});\nclient.on(&#39;end&#39;, function() {\n  console.log(&#39;client disconnected&#39;);\n});</code></pre>\n<p>To connect on the socket <code>/tmp/echo.sock</code> the second line would just be\nchanged to\n\n</p>\n<pre><code>var client = net.connect({path: &#39;/tmp/echo.sock&#39;});</code></pre>\n",
+          "desc": "<p>Constructs a new socket object and opens the socket to the given location.\nWhen the socket is established, the [&#39;connect&#39;][] event will be emitted.\n\n</p>\n<p>For TCP sockets, <code>options</code> argument should be an object which specifies:\n\n</p>\n<ul>\n<li><p><code>port</code>: Port the client should connect to (Required).</p>\n</li>\n<li><p><code>host</code>: Host the client should connect to. Defaults to <code>&#39;localhost&#39;</code>.</p>\n</li>\n<li><p><code>localAddress</code>: Local interface to bind to for network connections.</p>\n</li>\n<li><p><code>localPort</code>: Local port to bind to for network connections.</p>\n</li>\n<li><p><code>family</code> : Version of IP stack. Defaults to <code>4</code>.</p>\n</li>\n</ul>\n<p>For local domain sockets, <code>options</code> argument should be an object which\nspecifies:\n\n</p>\n<ul>\n<li><code>path</code>: Path the client should connect to (Required).</li>\n</ul>\n<p>Common options are:\n\n</p>\n<ul>\n<li><code>allowHalfOpen</code>: if <code>true</code>, the socket won&#39;t automatically send\na FIN packet when the other end of the socket sends a FIN packet.\nDefaults to <code>false</code>.  See [&#39;end&#39;][] event for more information.</li>\n</ul>\n<p>The <code>connectListener</code> parameter will be added as an listener for the\n[&#39;connect&#39;][] event.\n\n</p>\n<p>Here is an example of a client of echo server as described previously:\n\n</p>\n<pre><code>var net = require(&#39;net&#39;);\nvar client = net.connect({port: 8124},\n    function() { //&#39;connect&#39; listener\n  console.log(&#39;client connected&#39;);\n  client.write(&#39;world!\\r\\n&#39;);\n});\nclient.on(&#39;data&#39;, function(data) {\n  console.log(data.toString());\n  client.end();\n});\nclient.on(&#39;end&#39;, function() {\n  console.log(&#39;client disconnected&#39;);\n});</code></pre>\n<p>To connect on the socket <code>/tmp/echo.sock</code> the second line would just be\nchanged to\n\n</p>\n<pre><code>var client = net.connect({path: &#39;/tmp/echo.sock&#39;});</code></pre>\n",
           "signatures": [
             {
               "params": [
@@ -81,7 +81,7 @@
           "textRaw": "net.connect(port, [host], [connectListener])",
           "type": "method",
           "name": "connect",
-          "desc": "<p>Creates a TCP connection to <code>port</code> on <code>host</code>. If <code>host</code> is omitted,\n<code>&#39;localhost&#39;</code> will be assumed.\nThe <code>connectListener</code> parameter will be added as an listener for the\n[&#39;connect&#39;][] event.\n\n</p>\n<p>Is a factory method which returns a new <a href=\"#net_class_net_socket\">&#39;net.Socket&#39;</a>.\n\n</p>\n",
+          "desc": "<p>Creates a TCP connection to <code>port</code> on <code>host</code>. If <code>host</code> is omitted,\n<code>&#39;localhost&#39;</code> will be assumed.\nThe <code>connectListener</code> parameter will be added as an listener for the\n[&#39;connect&#39;][] event.\n\n</p>\n",
           "signatures": [
             {
               "params": [
@@ -119,7 +119,7 @@
           "textRaw": "net.createConnection(port, [host], [connectListener])",
           "type": "method",
           "name": "createConnection",
-          "desc": "<p>Creates a TCP connection to <code>port</code> on <code>host</code>. If <code>host</code> is omitted,\n<code>&#39;localhost&#39;</code> will be assumed.\nThe <code>connectListener</code> parameter will be added as an listener for the\n[&#39;connect&#39;][] event.\n\n</p>\n<p>Is a factory method which returns a new <a href=\"#net_class_net_socket\">&#39;net.Socket&#39;</a>.\n\n</p>\n",
+          "desc": "<p>Creates a TCP connection to <code>port</code> on <code>host</code>. If <code>host</code> is omitted,\n<code>&#39;localhost&#39;</code> will be assumed.\nThe <code>connectListener</code> parameter will be added as an listener for the\n[&#39;connect&#39;][] event.\n\n</p>\n",
           "signatures": [
             {
               "params": [
@@ -142,7 +142,7 @@
           "textRaw": "net.connect(path, [connectListener])",
           "type": "method",
           "name": "connect",
-          "desc": "<p>Creates unix socket connection to <code>path</code>.\nThe <code>connectListener</code> parameter will be added as an listener for the\n[&#39;connect&#39;][] event.\n\n</p>\n<p>A factory method which returns a new <a href=\"#net_class_net_socket\">&#39;net.Socket&#39;</a>.\n\n</p>\n",
+          "desc": "<p>Creates unix socket connection to <code>path</code>.\nThe <code>connectListener</code> parameter will be added as an listener for the\n[&#39;connect&#39;][] event.\n\n</p>\n",
           "signatures": [
             {
               "params": [
@@ -172,7 +172,7 @@
           "textRaw": "net.createConnection(path, [connectListener])",
           "type": "method",
           "name": "createConnection",
-          "desc": "<p>Creates unix socket connection to <code>path</code>.\nThe <code>connectListener</code> parameter will be added as an listener for the\n[&#39;connect&#39;][] event.\n\n</p>\n<p>A factory method which returns a new <a href=\"#net_class_net_socket\">&#39;net.Socket&#39;</a>.\n\n</p>\n",
+          "desc": "<p>Creates unix socket connection to <code>path</code>.\nThe <code>connectListener</code> parameter will be added as an listener for the\n[&#39;connect&#39;][] event.\n\n</p>\n",
           "signatures": [
             {
               "params": [
@@ -238,7 +238,7 @@
           "textRaw": "Class: net.Server",
           "type": "class",
           "name": "net.Server",
-          "desc": "<p>This class is used to create a TCP or UNIX server.\n\n</p>\n",
+          "desc": "<p>This class is used to create a TCP or local server.\n\n</p>\n",
           "methods": [
             {
               "textRaw": "server.listen(port, [host], [backlog], [callback])",
@@ -271,8 +271,22 @@
               "textRaw": "server.listen(path, [callback])",
               "type": "method",
               "name": "listen",
-              "desc": "<p>Start a UNIX socket server listening for connections on the given <code>path</code>.\n\n</p>\n<p>This function is asynchronous.  When the server has been bound,\n[&#39;listening&#39;][] event will be emitted.  The last parameter <code>callback</code>\nwill be added as an listener for the [&#39;listening&#39;][] event.\n\n</p>\n",
               "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`path` {String} ",
+                      "name": "path",
+                      "type": "String"
+                    },
+                    {
+                      "textRaw": "`callback` {Function} ",
+                      "name": "callback",
+                      "type": "Function",
+                      "optional": true
+                    }
+                  ]
+                },
                 {
                   "params": [
                     {
@@ -284,7 +298,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "desc": "<p>Start a local socket server listening for connections on the given <code>path</code>.\n\n</p>\n<p>This function is asynchronous.  When the server has been bound,\n[&#39;listening&#39;][] event will be emitted.  The last parameter <code>callback</code>\nwill be added as an listener for the [&#39;listening&#39;][] event.\n\n</p>\n<p>On UNIX, the local domain is usually known as the UNIX domain. The path is a\nfilesystem path name. It is subject to the same naming conventions and\npermissions checks as would be done on file creation, will be visible in the\nfilesystem, and will <em>persist until unlinked</em>.\n\n</p>\n<p>On Windows, the local domain is implemented using a named pipe. The path <em>must</em>\nrefer to an entry in <code>\\\\?\\pipe\\</code> or <code>\\\\.\\pipe\\</code>. Any characters are permitted,\nbut the latter may do some processing of pipe names, such as resolving <code>..</code>\nsequences. Despite appearances, the pipe name space is flat.  Pipes will <em>not\npersist</em>, they are removed when the last reference to them is closed. Do not\nforget javascript string escaping requires paths to be specified with\ndouble-backslashes, such as:\n\n</p>\n<pre><code>net.createServer().listen(\n    path.join(&#39;\\\\\\\\?\\\\pipe&#39;, process.cwd(), &#39;myctl&#39;))</code></pre>\n"
             },
             {
               "textRaw": "server.listen(handle, [callback])",
@@ -318,7 +333,7 @@
                   ]
                 }
               ],
-              "desc": "<p>The <code>handle</code> object can be set to either a server or socket (anything\nwith an underlying <code>_handle</code> member), or a <code>{fd: &lt;n&gt;}</code> object.\n\n</p>\n<p>This will cause the server to accept connections on the specified\nhandle, but it is presumed that the file descriptor or handle has\nalready been bound to a port or domain socket.\n\n</p>\n<p>Listening on a file descriptor is not supported on Windows.\n\n</p>\n<p>This function is asynchronous.  When the server has been bound,\n<a href=\"#event_listening_\">&#39;listening&#39;</a> event will be emitted.\nthe last parameter <code>callback</code> will be added as an listener for the\n<a href=\"#event_listening_\">&#39;listening&#39;</a> event.\n\n</p>\n"
+              "desc": "<p>The <code>handle</code> object can be set to either a server or socket (anything\nwith an underlying <code>_handle</code> member), or a <code>{fd: &lt;n&gt;}</code> object.\n\n</p>\n<p>This will cause the server to accept connections on the specified\nhandle, but it is presumed that the file descriptor or handle has\nalready been bound to a port or domain socket.\n\n</p>\n<p>Listening on a file descriptor is not supported on Windows.\n\n</p>\n<p>This function is asynchronous.  When the server has been bound,\n[&#39;listening&#39;][] event will be emitted.\nthe last parameter <code>callback</code> will be added as an listener for the\n[&#39;listening&#39;][] event.\n\n</p>\n"
             },
             {
               "textRaw": "server.close([callback])",
@@ -432,7 +447,7 @@
           "textRaw": "Class: net.Socket",
           "type": "class",
           "name": "net.Socket",
-          "desc": "<p>This object is an abstraction of a TCP or UNIX socket.  <code>net.Socket</code>\ninstances implement a duplex Stream interface.  They can be created by the\nuser and used as a client (with <code>connect()</code>) or they can be created by Node\nand passed to the user through the <code>&#39;connection&#39;</code> event of a server.\n\n</p>\n",
+          "desc": "<p>This object is an abstraction of a TCP or local socket.  <code>net.Socket</code>\ninstances implement a duplex Stream interface.  They can be created by the\nuser and used as a client (with <code>connect()</code>) or they can be created by Node\nand passed to the user through the <code>&#39;connection&#39;</code> event of a server.\n\n</p>\n",
           "methods": [
             {
               "textRaw": "new net.Socket([options])",
@@ -722,6 +737,13 @@
             }
           ],
           "events": [
+            {
+              "textRaw": "Event: 'lookup'",
+              "type": "event",
+              "name": "lookup",
+              "desc": "<p>Emitted after resolving the hostname but before connecting.\nNot applicable to UNIX sockets.\n\n</p>\n<ul>\n<li><code>err</code> {Error | Null} The error object.  See [dns.lookup()][].</li>\n<li><code>address</code> {String} The IP address.</li>\n<li><code>family</code> {String | Null} The address type.  See [dns.lookup()][].</li>\n</ul>\n",
+              "params": []
+            },
             {
               "textRaw": "Event: 'connect'",
               "type": "event",

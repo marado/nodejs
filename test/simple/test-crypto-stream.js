@@ -70,7 +70,8 @@ var key = new Buffer('48fb56eb10ffeb13fc0ef551bbca3b1b', 'hex'),
 
 cipher.pipe(decipher)
   .on('error', common.mustCall(function end(err) {
-    assert(/:00000000:/.test(err));
+    // TypeError: error:06065064:digital envelope routines:EVP_DecryptFinal_ex:bad decrypt
+    assert(/:06065064:/.test(err));
   }));
 
 cipher.end('Papaya!');  // Should not cause an unhandled exception.

@@ -2,41 +2,36 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Child Process Node.js v0.10.33 Manual &amp; Documentation</title>
+  <title>Child Process Node.js v0.11.13 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/child_process.html">
-  <script type="text/javascript" src="//use.typekit.net/mse5tqx.js"></script>
-  <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 </head>
-<body class="alt apidoc int docs" id="docs">
-    <div id="nav">
-      <img id="logo" src="assets/logo.svg" alt="node.js">
-      <ul>
-        <li><a href="http://nodejs.org">Home</a></li>
-        <li><a href="http://nodejs.org/download/">Downloads</a></li>
-        <li class="active"><a href="http://nodejs.org/documentation/">Docs</a></li>
-        <li><a href="http://nodejs.org/community/">Community</a></li>
-        <li><a href="http://nodejs.org/about/">About</a></li>
-        <li><a href="http://jobs.nodejs.org">Jobs</a></li>
-        <li><a href="http://blog.nodejs.org">Blog</a></li>
-      </ul>
+<body class="alt apidoc" id="api-section-child_process">
+    <div id="intro" class="interior">
+        <a href="/" title="Go back to the home page">
+            <img id="logo" src="http://nodejs.org/images/logo-light.png" alt="node.js">
+        </a>
     </div>
-    <div id="content-wrap">
     <div id="content" class="clearfix">
-      <div id="column2" class="interior">
-        <!--<img src="/images/logo-light.svg" alt="node.js" width="170">-->
-        <ul class="docs-nav">
-          <li><a href="http://nodejs.org/documentation/">About Docs</a></li>
-          <li><a href="http://nodejs.org/documentation/tutorials/">Tutorials</a></li>
-          <li><a href="http://nodejs.org/documentation/contributing/">Contributing</a></li>
-          <li><a href="http://nodejs.org/documentation/localization/">Localization</a></li>
-          <li class="active"><a href="http://nodejs.org/api/">API Docs</a></li>
-        </ul>
-      </div>
+        <div id="column2" class="interior">
+            <ul>
+                <li><a href="/" class="home">Home</a></li>
+                <li><a href="/download/" class="download">Download</a></li>
+                <li><a href="/about/" class="about">About</a></li>
+                <li><a href="http://npmjs.org/" class="npm">npm Registry</a></li>
+                <li><a href="http://nodejs.org/api/" class="docs current">Docs</a></li>
+                <li><a href="http://blog.nodejs.org" class="blog">Blog</a></li>
+                <li><a href="/community/" class="community">Community</a></li>
+                <li><a href="/logos/" class="logos">Logos</a></li>
+                <li><a href="http://jobs.nodejs.org/" class="jobs">Jobs</a></li>
+            </ul>
+            <p class="twitter"><a href="http://twitter.com/nodejs">@nodejs</a></p>
+        </div>
+
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.33 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.11.13 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -75,6 +70,9 @@
 <li><a href="#child_process_child_process_exec_command_options_callback">child_process.exec(command, [options], callback)</a></li>
 <li><a href="#child_process_child_process_execfile_file_args_options_callback">child_process.execFile(file, [args], [options], [callback])</a></li>
 <li><a href="#child_process_child_process_fork_modulepath_args_options">child_process.fork(modulePath, [args], [options])</a></li>
+<li><a href="#child_process_child_process_spawnsync_command_args_options">child_process.spawnSync(command, [args], [options])</a></li>
+<li><a href="#child_process_child_process_execfilesync_command_args_options">child_process.execFileSync(command, [args], [options])</a></li>
+<li><a href="#child_process_child_process_execsync_command_options">child_process.execSync(command, [options])</a></li>
 </ul>
 </li>
 </ul>
@@ -405,8 +403,7 @@ child, and it is no longer possible to send messages.
 of being received, most likely immediately.
 
 </p>
-<p>Note that you can also call <code>process.disconnect()</code> in the child process when the
-child process has any open IPC channels with the parent (i.e <code>fork()</code>).
+<p>Note that you can also call <code>process.disconnect()</code> in the child process.
 
 </p>
 <h2>child_process.spawn(command, [args], [options])<span><a class="mark" href="#child_process_child_process_spawn_command_args_options" id="child_process_child_process_spawn_command_args_options">#</a></span></h2>
@@ -615,6 +612,10 @@ Use at your own risk.
 <li><code>cwd</code> <span class="type">String</span> Current working directory of the child process</li>
 <li><code>env</code> <span class="type">Object</span> Environment key-value pairs</li>
 <li><code>encoding</code> <span class="type">String</span> (Default: &#39;utf8&#39;)</li>
+<li><code>shell</code> <span class="type">String</span> Shell to execute the command with
+(Default: &#39;/bin/sh&#39; on UNIX, &#39;cmd.exe&#39; on Windows,  The shell should
+ understand the <code>-c</code> switch on UNIX or <code>/s /c</code> on Windows. On Windows,
+ command line parsing should be compatible with <code>cmd.exe</code>.)</li>
 <li><code>timeout</code> <span class="type">Number</span> (Default: 0)</li>
 <li><code>maxBuffer</code> <span class="type">Number</span> (Default: <code>200*1024</code>)</li>
 <li><code>killSignal</code> <span class="type">String</span> (Default: &#39;SIGTERM&#39;)</li>
@@ -730,52 +731,144 @@ environmental variable <code>NODE_CHANNEL_FD</code> on the child process. The in
 output on this fd is expected to be line delimited JSON objects.
 
 </p>
+<h2>child_process.spawnSync(command, [args], [options])<span><a class="mark" href="#child_process_child_process_spawnsync_command_args_options" id="child_process_child_process_spawnsync_command_args_options">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>command</code> <span class="type">String</span> The command to run</li>
+<li><code>args</code> <span class="type">Array</span> List of string arguments</li>
+<li><code>options</code> <span class="type">Object</span><ul>
+<li><code>cwd</code> <span class="type">String</span> Current working directory of the child process</li>
+<li><code>input</code> <span class="type">String|Buffer</span> The value which will be passed as stdin to the spawned process<ul>
+<li>supplying this value will override <code>stdio[0]</code></li>
+</ul>
+</li>
+<li><code>stdio</code> <span class="type">Array</span> Child&#39;s stdio configuration.</li>
+<li><code>env</code> <span class="type">Object</span> Environment key-value pairs</li>
+<li><code>uid</code> <span class="type">Number</span> Sets the user identity of the process. (See setuid(2).)</li>
+<li><code>gid</code> <span class="type">Number</span> Sets the group identity of the process. (See setgid(2).)</li>
+<li><code>timeout</code> <span class="type">Number</span> In milliseconds the maximum amount of time the process is allowed to run. (Default: undefined)</li>
+<li><code>killSignal</code> <span class="type">String</span> The signal value to be used when the spawned process will be killed. (Default: &#39;SIGTERM&#39;)</li>
+<li><code>maxBuffer</code> <span class="type">Number</span></li>
+<li><code>encoding</code> <span class="type">String</span> The encoding used for all stdio inputs and outputs. (Default: &#39;buffer&#39;)</li>
+</ul>
+</li>
+<li>return: <span class="type">Object</span><ul>
+<li><code>pid</code> <span class="type">Number</span> Pid of the child process</li>
+<li><code>output</code> <span class="type">Array</span> Array of results from stdio output</li>
+<li><code>stdout</code> <span class="type">Buffer|String</span> The contents of <code>output[1]</code></li>
+<li><code>stderr</code> <span class="type">Buffer|String</span> The contents of <code>output[2]</code></li>
+<li><code>status</code> <span class="type">Number</span> The exit code of the child process</li>
+<li><code>signal</code> <span class="type">String</span> The signal used to kill the child process</li>
+<li><code>error</code> <span class="type">Error</span> The error object if the child process failed or timedout</li>
+</ul>
+</li>
+</div></ul>
+<p><code>spawnSync</code> will not return until the child process has fully closed. When a
+timeout has been encountered and <code>killSignal</code> is sent, the method won&#39;t return
+until the process has completely exited. That is to say, if the process handles
+the <code>SIGTERM</code> signal and doesn&#39;t exit, your process will wait until the child
+process has exited.
+
+</p>
+<h2>child_process.execFileSync(command, [args], [options])<span><a class="mark" href="#child_process_child_process_execfilesync_command_args_options" id="child_process_child_process_execfilesync_command_args_options">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>command</code> <span class="type">String</span> The command to run</li>
+<li><code>args</code> <span class="type">Array</span> List of string arguments</li>
+<li><code>options</code> <span class="type">Object</span><ul>
+<li><code>cwd</code> <span class="type">String</span> Current working directory of the child process</li>
+<li><code>input</code> <span class="type">String|Buffer</span> The value which will be passed as stdin to the spawned process<ul>
+<li>supplying this value will override <code>stdio[0]</code></li>
+</ul>
+</li>
+<li><code>stdio</code> <span class="type">Array</span> Child&#39;s stdio configuration. (Default: &#39;pipe&#39;)<ul>
+<li><code>stderr</code> by default will be output to the parent process&#39; stderr unless
+<code>stdio</code> is specified</li>
+</ul>
+</li>
+<li><code>env</code> <span class="type">Object</span> Environment key-value pairs</li>
+<li><code>uid</code> <span class="type">Number</span> Sets the user identity of the process. (See setuid(2).)</li>
+<li><code>gid</code> <span class="type">Number</span> Sets the group identity of the process. (See setgid(2).)</li>
+<li><code>timeout</code> <span class="type">Number</span> In milliseconds the maximum amount of time the process is allowed to run. (Default: undefined)</li>
+<li><code>killSignal</code> <span class="type">String</span> The signal value to be used when the spawned process will be killed. (Default: &#39;SIGTERM&#39;)</li>
+<li><code>maxBuffer</code> <span class="type">Number</span></li>
+<li><code>encoding</code> <span class="type">String</span> The encoding used for all stdio inputs and outputs. (Default: &#39;buffer&#39;)</li>
+</ul>
+</li>
+<li>return: <span class="type">Buffer|String</span> The stdout from the command</li>
+</div></ul>
+<p><code>execFileSync</code> will not return until the child process has fully closed. When a
+timeout has been encountered and <code>killSignal</code> is sent, the method won&#39;t return
+until the process has completely exited. That is to say, if the process handles
+the <code>SIGTERM</code> signal and doesn&#39;t exit, your process will wait until the child
+process has exited.
+
+</p>
+<p>If the process times out, or has a non-zero exit code, this method <strong><em>will</em></strong>
+throw.  The <code>Error</code> object will contain the entire result from
+<a href="#child_process_child_process_spawnsync_command_args_options"><code>child_process.spawnSync</code></a>
+
+
+</p>
+<h2>child_process.execSync(command, [options])<span><a class="mark" href="#child_process_child_process_execsync_command_options" id="child_process_child_process_execsync_command_options">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>command</code> <span class="type">String</span> The command to run</li>
+<li><code>options</code> <span class="type">Object</span><ul>
+<li><code>cwd</code> <span class="type">String</span> Current working directory of the child process</li>
+<li><code>input</code> <span class="type">String|Buffer</span> The value which will be passed as stdin to the spawned process<ul>
+<li>supplying this value will override <code>stdio[0]</code></li>
+</ul>
+</li>
+<li><code>stdio</code> <span class="type">Array</span> Child&#39;s stdio configuration. (Default: &#39;pipe&#39;)<ul>
+<li><code>stderr</code> by default will be output to the parent process&#39; stderr unless
+<code>stdio</code> is specified</li>
+</ul>
+</li>
+<li><code>env</code> <span class="type">Object</span> Environment key-value pairs</li>
+<li><code>uid</code> <span class="type">Number</span> Sets the user identity of the process. (See setuid(2).)</li>
+<li><code>gid</code> <span class="type">Number</span> Sets the group identity of the process. (See setgid(2).)</li>
+<li><code>timeout</code> <span class="type">Number</span> In milliseconds the maximum amount of time the process is allowed to run. (Default: undefined)</li>
+<li><code>killSignal</code> <span class="type">String</span> The signal value to be used when the spawned process will be killed. (Default: &#39;SIGTERM&#39;)</li>
+<li><code>maxBuffer</code> <span class="type">Number</span></li>
+<li><code>encoding</code> <span class="type">String</span> The encoding used for all stdio inputs and outputs. (Default: &#39;buffer&#39;)</li>
+</ul>
+</li>
+<li>return: <span class="type">Buffer|String</span> The stdout from the command</li>
+</div></ul>
+<p><code>execSync</code> will not return until the child process has fully closed. When a
+timeout has been encountered and <code>killSignal</code> is sent, the method won&#39;t return
+until the process has completely exited. That is to say, if the process handles
+the <code>SIGTERM</code> signal and doesn&#39;t exit, your process will wait until the child
+process has exited.
+
+</p>
+<p>If the process times out, or has a non-zero exit code, this method <strong><em>will</em></strong>
+throw.  The <code>Error</code> object will contain the entire result from
+<a href="#child_process_child_process_spawnsync_command_args_options"><code>child_process.spawnSync</code></a>
+
+</p>
 
           </div>
         </div>
     </div>
-    </div>
     <div id="footer">
-      <div class="foot-1">
-        <a href="http://www.joyent.com"><h5>The Node.js Project is Sponsored by</h5>
-        <img src="assets/joyent-footer.svg" width="200">
-        <p class="tag">Production Node +<br>High Performance Infrastructure</p></a>
-        <a href="https://my.joyent.com/landing/signup/701800000015696" class="button getstarted">Get Started</a>
-      </div>
-      <div class="foot-2">
-        <div class="foot-nav">
-          <ul>
-            <li><a href="http://nodejs.org/download/">Downloads</a></li>
-          </ul>
-          <ul>
-            <li><a href="http://nodejs.org/documentation/">Documentation</a></li>
-            <li><a href="http://nodejs.org/api/">API Docs</a></li>
-            <li><a href="http://nodejs.org/documentation/tutorials/">Tutorials</a></li>
-            <li><a href="http://nodejs.org/documentation/localization/">Localization</a></li>
-          </ul>
-          <ul>
-            <li><a href="http://nodejs.org/community/">Community</a></li>
-            <li><a href="https://github.com/joyent/node/issues">Github Issues</a></li>
-            <li><a href="http://groups.google.com/group/nodejs">Mailing List</a></li>
-            <li><a href="http://webchat.freenode.net/?channels=node.js">IRC</a></li>
-            <li><a href="https://twitter.com/nodejs">Twitter</a></li>
-          </ul>
-          <ul>
-            <li><a href="http://nodejs.org/about/">About</a></li>
-            <li><a href="http://nodejs.org/about/organization/">Organization</a></li>
-            <li><a href="http://nodejs.org/about/core-team/">Core Team</a></li>
-            <li><a href="http://nodejs.org/about/resources/">Resources</a></li>
-          </ul>
-          <ul>
+        <a href="http://joyent.com" class="joyent-logo">Joyent</a>
+        <ul class="clearfix">
+            <li><a href="/">Node.js</a></li>
+            <li><a href="/download/">Download</a></li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="http://npmjs.org/">npm Registry</a></li>
+            <li><a href="http://nodejs.org/api/">Docs</a></li>
             <li><a href="http://blog.nodejs.org">Blog</a></li>
-          </ul>
-        </div>
-        <p class="copyright">Copyright 2014 <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="https://nodejs.org/images/trademark-policy.pdf">trademark</a> of Joyent, Inc. <a href="https://raw.github.com/joyent/node/v0.10.33/LICENSE">View license</a>.</p>
-      </div>
+            <li><a href="/community/">Community</a></li>
+            <li><a href="/logos/">Logos</a></li>
+            <li><a href="http://jobs.nodejs.org/">Jobs</a></li>
+            <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
+        </ul>
+
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.11.13/LICENSE">license</a>.</p>
     </div>
 
-  <script src="/sh_main.js"></script>
-  <script src="/sh_javascript.min.js"></script>
+  <script src="../sh_main.js"></script>
+  <script src="../sh_javascript.min.js"></script>
   <script>highlight(undefined, undefined, 'pre');</script>
   <script>
     window._gaq = [['_setAccount', 'UA-10874194-2'], ['_trackPageview']];

@@ -51,8 +51,8 @@ call "%VS120COMNTOOLS%\..\..\vc\vcvarsall.bat" %vs_toolset%
 set GYP_MSVS_VERSION=2013
 goto select-target
 
-:vc-set-2012
 @rem Look for Visual Studio 2012
+:vc-set-2012
 if not defined VS110COMNTOOLS goto vc-set-2010
 if not exist "%VS110COMNTOOLS%\..\..\vc\vcvarsall.bat" goto vc-set-2010
 call "%VS110COMNTOOLS%\..\..\vc\vcvarsall.bat" %vs_toolset%
@@ -102,7 +102,7 @@ exit /b 1
 
 :have_gyp
 if not defined PYTHON set PYTHON="python"
-%PYTHON% gyp_uv.py -Dtarget_arch=%target_arch% -Dlibrary=%library%
+%PYTHON% gyp_uv.py -Dtarget_arch=%target_arch% -Duv_library=%library%
 if errorlevel 1 goto create-msvs-files-failed
 if not exist uv.sln goto create-msvs-files-failed
 echo Project files generated.

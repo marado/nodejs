@@ -23,69 +23,86 @@
 #define SRC_UTIL_H_
 
 #include "v8.h"
-#include "string_bytes.h"
+#include <assert.h>
+#include <stddef.h>
+#include <stdlib.h>
 
 namespace node {
-// defined in node.cc
-extern v8::Persistent<v8::String> process_symbol;
-extern v8::Persistent<v8::String> domain_symbol;
 
-inline void SetActiveDomain(v8::Persistent<v8::Object> obj) {
-  assert(!process_symbol.IsEmpty());
-  assert(!domain_symbol.IsEmpty());
-  v8::Local<v8::Value> domain = v8::Context::GetCurrent()
-         ->Global()
-         ->Get(process_symbol)
-         ->ToObject()
-         ->Get(domain_symbol);
-  obj->Set(domain_symbol, domain);
-}
+#define OFFSET_OF(TypeName, Field)                                            \
+  (reinterpret_cast<uintptr_t>(&(reinterpret_cast<TypeName*>(8)->Field)) - 8)
 
-class Utf8Value {
-  public:
-    explicit Utf8Value(v8::Handle<v8::Value> value)
-      : length_(0), str_(NULL) {
-      if (value.IsEmpty())
-        return;
+#define CONTAINER_OF(Pointer, TypeName, Field)                                \
+  reinterpret_cast<TypeName*>(                                                \
+      reinterpret_cast<uintptr_t>(Pointer) - OFFSET_OF(TypeName, Field))
 
-      v8::Local<v8::String> val_ = value->ToString();
+#define FIXED_ONE_BYTE_STRING(isolate, string)                                \
+  (node::OneByteString((isolate), (string), sizeof(string) - 1))
 
-      // Allocate enough space to include the null terminator
-      size_t len = StringBytes::StorageSize(val_, UTF8) + 1;
+#define DISALLOW_COPY_AND_ASSIGN(TypeName)                                    \
+  void operator=(const TypeName&);                                            \
+  TypeName(const TypeName&)
 
-      char* str = static_cast<char*>(calloc(1, len));
+#if defined(NDEBUG)
+# define ASSERT(expression)
+# define CHECK(expression)                                                    \
+  do {                                                                        \
+    if (!(expression)) abort();                                               \
+  } while (0)
+#else
+# define ASSERT(expression)  assert(expression)
+# define CHECK(expression)   assert(expression)
+#endif
 
-      int flags = WRITE_UTF8_FLAGS;
-      flags |= ~v8::String::NO_NULL_TERMINATION;
+#define CHECK_EQ(a, b) CHECK((a) == (b))
+#define CHECK_GE(a, b) CHECK((a) >= (b))
+#define CHECK_GT(a, b) CHECK((a) > (b))
+#define CHECK_LE(a, b) CHECK((a) <= (b))
+#define CHECK_LT(a, b) CHECK((a) < (b))
+#define CHECK_NE(a, b) CHECK((a) != (b))
 
-      length_ = val_->WriteUtf8(str,
-                                len,
-                                0,
-                                flags);
+#define UNREACHABLE() abort()
 
-      str_ = reinterpret_cast<char*>(str);
-    }
+// If persistent.IsWeak() == false, then do not call persistent.Reset()
+// while the returned Local<T> is still in scope, it will destroy the
+// reference to the object.
+template <class TypeName>
+inline v8::Local<TypeName> PersistentToLocal(
+    v8::Isolate* isolate,
+    const v8::Persistent<TypeName>& persistent);
 
-    ~Utf8Value() {
-      free(str_);
-    }
+// Unchecked conversion from a non-weak Persistent<T> to Local<TLocal<T>,
+// use with care!
+//
+// Do not call persistent.Reset() while the returned Local<T> is still in
+// scope, it will destroy the reference to the object.
+template <class TypeName>
+inline v8::Local<TypeName> StrongPersistentToLocal(
+    const v8::Persistent<TypeName>& persistent);
 
-    char* operator*() {
-      return str_;
-    };
+template <class TypeName>
+inline v8::Local<TypeName> WeakPersistentToLocal(
+    v8::Isolate* isolate,
+    const v8::Persistent<TypeName>& persistent);
 
-    const char* operator*() const {
-      return str_;
-    };
+// Convenience wrapper around v8::String::NewFromOneByte().
+inline v8::Local<v8::String> OneByteString(v8::Isolate* isolate,
+                                           const char* data,
+                                           int length = -1);
 
-    size_t length() const {
-      return length_;
-    };
+// For the people that compile with -funsigned-char.
+inline v8::Local<v8::String> OneByteString(v8::Isolate* isolate,
+                                           const signed char* data,
+                                           int length = -1);
 
-  private:
-    size_t length_;
-    char* str_;
-};
+inline v8::Local<v8::String> OneByteString(v8::Isolate* isolate,
+                                           const unsigned char* data,
+                                           int length = -1);
+
+inline void Wrap(v8::Local<v8::Object> object, void* pointer);
+
+template <typename TypeName>
+inline TypeName* Unwrap(v8::Local<v8::Object> object);
 
 }  // namespace node
 

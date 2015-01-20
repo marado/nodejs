@@ -2,41 +2,36 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Cluster Node.js v0.10.33 Manual &amp; Documentation</title>
+  <title>Cluster Node.js v0.11.13 Manual &amp; Documentation</title>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="assets/sh.css">
   <link rel="canonical" href="http://nodejs.org/api/cluster.html">
-  <script type="text/javascript" src="//use.typekit.net/mse5tqx.js"></script>
-  <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 </head>
-<body class="alt apidoc int docs" id="docs">
-    <div id="nav">
-      <img id="logo" src="assets/logo.svg" alt="node.js">
-      <ul>
-        <li><a href="http://nodejs.org">Home</a></li>
-        <li><a href="http://nodejs.org/download/">Downloads</a></li>
-        <li class="active"><a href="http://nodejs.org/documentation/">Docs</a></li>
-        <li><a href="http://nodejs.org/community/">Community</a></li>
-        <li><a href="http://nodejs.org/about/">About</a></li>
-        <li><a href="http://jobs.nodejs.org">Jobs</a></li>
-        <li><a href="http://blog.nodejs.org">Blog</a></li>
-      </ul>
+<body class="alt apidoc" id="api-section-cluster">
+    <div id="intro" class="interior">
+        <a href="/" title="Go back to the home page">
+            <img id="logo" src="http://nodejs.org/images/logo-light.png" alt="node.js">
+        </a>
     </div>
-    <div id="content-wrap">
     <div id="content" class="clearfix">
-      <div id="column2" class="interior">
-        <!--<img src="/images/logo-light.svg" alt="node.js" width="170">-->
-        <ul class="docs-nav">
-          <li><a href="http://nodejs.org/documentation/">About Docs</a></li>
-          <li><a href="http://nodejs.org/documentation/tutorials/">Tutorials</a></li>
-          <li><a href="http://nodejs.org/documentation/contributing/">Contributing</a></li>
-          <li><a href="http://nodejs.org/documentation/localization/">Localization</a></li>
-          <li class="active"><a href="http://nodejs.org/api/">API Docs</a></li>
-        </ul>
-      </div>
+        <div id="column2" class="interior">
+            <ul>
+                <li><a href="/" class="home">Home</a></li>
+                <li><a href="/download/" class="download">Download</a></li>
+                <li><a href="/about/" class="about">About</a></li>
+                <li><a href="http://npmjs.org/" class="npm">npm Registry</a></li>
+                <li><a href="http://nodejs.org/api/" class="docs current">Docs</a></li>
+                <li><a href="http://blog.nodejs.org" class="blog">Blog</a></li>
+                <li><a href="/community/" class="community">Community</a></li>
+                <li><a href="/logos/" class="logos">Logos</a></li>
+                <li><a href="http://jobs.nodejs.org/" class="jobs">Jobs</a></li>
+            </ul>
+            <p class="twitter"><a href="http://twitter.com/nodejs">@nodejs</a></p>
+        </div>
+
         <div id="column1" class="interior">
           <header>
-            <h1>Node.js v0.10.33 Manual &amp; Documentation</h1>
+            <h1>Node.js v0.11.13 Manual &amp; Documentation</h1>
             <div id="gtoc">
               <p>
                 <a href="index.html" name="toc">Index</a> |
@@ -52,6 +47,7 @@
             <ul>
 <li><a href="#cluster_cluster">Cluster</a><ul>
 <li><a href="#cluster_how_it_works">How It Works</a></li>
+<li><a href="#cluster_cluster_schedulingpolicy">cluster.schedulingPolicy</a></li>
 <li><a href="#cluster_cluster_settings">cluster.settings</a></li>
 <li><a href="#cluster_cluster_ismaster">cluster.isMaster</a></li>
 <li><a href="#cluster_cluster_isworker">cluster.isWorker</a></li>
@@ -89,7 +85,7 @@
 
           <div id="apicontent">
             <h1>Cluster<span><a class="mark" href="#cluster_cluster" id="cluster_cluster">#</a></span></h1>
-<pre class="api_stability_1">Stability: 1 - Experimental</pre><p>A single instance of Node runs in a single thread. To take advantage of
+<pre class="api_stability_2">Stability: 2 - Unstable</pre><p>A single instance of Node runs in a single thread. To take advantage of
 multi-core systems the user will sometimes want to launch a cluster of Node
 processes to handle the load.
 
@@ -143,15 +139,32 @@ so that they can communicate with the parent via IPC and pass server
 handles back and forth.
 
 </p>
-<p>When you call <code>server.listen(...)</code> in a worker, it serializes the
-arguments and passes the request to the master process.  If the master
-process already has a listening server matching the worker&#39;s
-requirements, then it passes the handle to the worker.  If it does not
-already have a listening server matching that requirement, then it will
-create one, and pass the handle to the worker.
+<p>The cluster module supports two methods of distributing incoming
+connections.
 
 </p>
-<p>This causes potentially surprising behavior in three edge cases:
+<p>The first one (and the default one on all platforms except Windows),
+is the round-robin approach, where the master process listens on a
+port, accepts new connections and distributes them across the workers
+in a round-robin fashion, with some built-in smarts to avoid
+overloading a worker process.
+
+</p>
+<p>The second approach is where the master process creates the listen
+socket and sends it to interested workers. The workers then accept
+incoming connections directly.
+
+</p>
+<p>The second approach should, in theory, give the best performance.
+In practice however, distribution tends to be very unbalanced due
+to operating system scheduler vagaries. Loads have been observed
+where over 70% of all connections ended up in just two processes,
+out of a total of eight.
+
+</p>
+<p>Because <code>server.listen()</code> hands off most of the work to the master
+process, there are three cases where the behavior between a normal
+node.js process and a cluster worker differs:
 
 </p>
 <ol>
@@ -170,12 +183,10 @@ port is random the first time, but predictable thereafter.  If you
 want to listen on a unique port, generate a port number based on the
 cluster worker ID.</li>
 </ol>
-<p>When multiple processes are all <code>accept()</code>ing on the same underlying
-resource, the operating system load-balances across them very
-efficiently.  There is no routing logic in Node.js, or in your program,
-and no shared state between the workers.  Therefore, it is important to
-design your program such that it does not rely too heavily on in-memory
-data objects for things like sessions and login.
+<p>There is no routing logic in Node.js, or in your program, and no shared
+state between the workers.  Therefore, it is important to design your
+program such that it does not rely too heavily on in-memory data objects
+for things like sessions and login.
 
 </p>
 <p>Because workers are all separate processes, they can be killed or
@@ -184,6 +195,23 @@ workers.  As long as there are some workers still alive, the server will
 continue to accept connections.  Node does not automatically manage the
 number of workers for you, however.  It is your responsibility to manage
 the worker pool for your application&#39;s needs.
+
+</p>
+<h2>cluster.schedulingPolicy<span><a class="mark" href="#cluster_cluster_schedulingpolicy" id="cluster_cluster_schedulingpolicy">#</a></span></h2>
+<p>The scheduling policy, either <code>cluster.SCHED_RR</code> for round-robin or
+<code>cluster.SCHED_NONE</code> to leave it to the operating system. This is a
+global setting and effectively frozen once you spawn the first worker
+or call <code>cluster.setupMaster()</code>, whatever comes first.
+
+</p>
+<p><code>SCHED_RR</code> is the default on all operating systems except Windows.
+Windows will change to <code>SCHED_RR</code> once libuv is able to effectively
+distribute IOCP handles without incurring a large performance hit.
+
+</p>
+<p><code>cluster.schedulingPolicy</code> can also be set through the
+<code>NODE_CLUSTER_SCHED_POLICY</code> environment variable. Valid
+values are <code>&quot;rr&quot;</code> and <code>&quot;none&quot;</code>.
 
 </p>
 <h2>cluster.settings<span><a class="mark" href="#cluster_cluster_settings" id="cluster_cluster_settings">#</a></span></h2>
@@ -720,48 +748,26 @@ worker.on(&#39;exit&#39;, function(code, signal) {
           </div>
         </div>
     </div>
-    </div>
     <div id="footer">
-      <div class="foot-1">
-        <a href="http://www.joyent.com"><h5>The Node.js Project is Sponsored by</h5>
-        <img src="assets/joyent-footer.svg" width="200">
-        <p class="tag">Production Node +<br>High Performance Infrastructure</p></a>
-        <a href="https://my.joyent.com/landing/signup/701800000015696" class="button getstarted">Get Started</a>
-      </div>
-      <div class="foot-2">
-        <div class="foot-nav">
-          <ul>
-            <li><a href="http://nodejs.org/download/">Downloads</a></li>
-          </ul>
-          <ul>
-            <li><a href="http://nodejs.org/documentation/">Documentation</a></li>
-            <li><a href="http://nodejs.org/api/">API Docs</a></li>
-            <li><a href="http://nodejs.org/documentation/tutorials/">Tutorials</a></li>
-            <li><a href="http://nodejs.org/documentation/localization/">Localization</a></li>
-          </ul>
-          <ul>
-            <li><a href="http://nodejs.org/community/">Community</a></li>
-            <li><a href="https://github.com/joyent/node/issues">Github Issues</a></li>
-            <li><a href="http://groups.google.com/group/nodejs">Mailing List</a></li>
-            <li><a href="http://webchat.freenode.net/?channels=node.js">IRC</a></li>
-            <li><a href="https://twitter.com/nodejs">Twitter</a></li>
-          </ul>
-          <ul>
-            <li><a href="http://nodejs.org/about/">About</a></li>
-            <li><a href="http://nodejs.org/about/organization/">Organization</a></li>
-            <li><a href="http://nodejs.org/about/core-team/">Core Team</a></li>
-            <li><a href="http://nodejs.org/about/resources/">Resources</a></li>
-          </ul>
-          <ul>
+        <a href="http://joyent.com" class="joyent-logo">Joyent</a>
+        <ul class="clearfix">
+            <li><a href="/">Node.js</a></li>
+            <li><a href="/download/">Download</a></li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="http://npmjs.org/">npm Registry</a></li>
+            <li><a href="http://nodejs.org/api/">Docs</a></li>
             <li><a href="http://blog.nodejs.org">Blog</a></li>
-          </ul>
-        </div>
-        <p class="copyright">Copyright 2014 <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="https://nodejs.org/images/trademark-policy.pdf">trademark</a> of Joyent, Inc. <a href="https://raw.github.com/joyent/node/v0.10.33/LICENSE">View license</a>.</p>
-      </div>
+            <li><a href="/community/">Community</a></li>
+            <li><a href="/logos/">Logos</a></li>
+            <li><a href="http://jobs.nodejs.org/">Jobs</a></li>
+            <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
+        </ul>
+
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.11.13/LICENSE">license</a>.</p>
     </div>
 
-  <script src="/sh_main.js"></script>
-  <script src="/sh_javascript.min.js"></script>
+  <script src="../sh_main.js"></script>
+  <script src="../sh_javascript.min.js"></script>
   <script>highlight(undefined, undefined, 'pre');</script>
   <script>
     window._gaq = [['_setAccount', 'UA-10874194-2'], ['_trackPageview']];

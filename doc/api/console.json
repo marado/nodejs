@@ -93,7 +93,7 @@
           "textRaw": "console.dir(obj)",
           "type": "method",
           "name": "dir",
-          "desc": "<p>Uses <code>util.inspect</code> on <code>obj</code> and prints resulting string to stdout.\n\n</p>\n",
+          "desc": "<p>Uses <code>util.inspect</code> on <code>obj</code> and prints resulting string to stdout. This function\nbypasses any custom <code>inspect()</code> function on <code>obj</code>.\n\n</p>\n",
           "signatures": [
             {
               "params": [
@@ -135,41 +135,33 @@
           ]
         },
         {
-          "textRaw": "console.trace(message, [...])",
+          "textRaw": "console.trace(label)",
           "type": "method",
           "name": "trace",
-          "desc": "<p>Print to stderr <code>&#39;Trace :&#39;</code>, followed by the formatted message and stack trace\nto the current position.\n\n</p>\n",
+          "desc": "<p>Print a stack trace to stderr of the current position.\n\n</p>\n",
           "signatures": [
             {
               "params": [
                 {
-                  "name": "message"
-                },
-                {
-                  "name": "...",
-                  "optional": true
+                  "name": "label"
                 }
               ]
             }
           ]
         },
         {
-          "textRaw": "console.assert(value, [message], [...])",
+          "textRaw": "console.assert(expression, [message])",
           "type": "method",
           "name": "assert",
-          "desc": "<p>Similar to [assert.ok()][], but the error message is formatted as\n<code>util.format(message...)</code>.\n\n</p>\n",
+          "desc": "<p>Same as [assert.ok()][] where if the <code>expression</code> evaluates as <code>false</code> throw an\nAssertionError with <code>message</code>.\n\n</p>\n",
           "signatures": [
             {
               "params": [
                 {
-                  "name": "value"
+                  "name": "expression"
                 },
                 {
                   "name": "message",
-                  "optional": true
-                },
-                {
-                  "name": "...",
                   "optional": true
                 }
               ]

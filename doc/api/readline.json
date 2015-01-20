@@ -107,7 +107,7 @@
           "desc": "<p>The class that represents a readline interface with an input and output\nstream.\n\n</p>\n",
           "methods": [
             {
-              "textRaw": "rl.setPrompt(prompt, length)",
+              "textRaw": "rl.setPrompt(prompt)",
               "type": "method",
               "name": "setPrompt",
               "desc": "<p>Sets the prompt, for example when you run <code>node</code> on the command line, you see\n<code>&gt; </code>, which is node&#39;s prompt.\n\n</p>\n",
@@ -116,9 +116,6 @@
                   "params": [
                     {
                       "name": "prompt"
-                    },
-                    {
-                      "name": "length"
                     }
                   ]
                 }

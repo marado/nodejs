@@ -31,7 +31,6 @@ var join = require('path').join;
 
 var fs = require('fs');
 var spawn = require('child_process').spawn;
-
 var https = require('https');
 
 var options = {
@@ -61,7 +60,6 @@ var server = https.createServer(options, function(req, res) {
   res.writeHead(200, { 'content-type': 'text/plain' });
   res.end(body);
 });
-
 
 server.listen(common.PORT, function() {
   var args = ['s_client',

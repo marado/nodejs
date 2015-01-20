@@ -46,7 +46,8 @@ Same as `console.error`.
 
 ## console.dir(obj)
 
-Uses `util.inspect` on `obj` and prints resulting string to stdout.
+Uses `util.inspect` on `obj` and prints resulting string to stdout. This function
+bypasses any custom `inspect()` function on `obj`.
 
 ## console.time(label)
 
@@ -62,15 +63,14 @@ Finish timer, record output. Example:
     }
     console.timeEnd('100-elements');
 
-## console.trace(message, [...])
+## console.trace(label)
 
-Print to stderr `'Trace :'`, followed by the formatted message and stack trace
-to the current position.
+Print a stack trace to stderr of the current position.
 
-## console.assert(value, [message], [...])
+## console.assert(expression, [message])
 
-Similar to [assert.ok()][], but the error message is formatted as
-`util.format(message...)`.
+Same as [assert.ok()][] where if the `expression` evaluates as `false` throw an
+AssertionError with `message`.
 
 [assert.ok()]: assert.html#assert_assert_value_message_assert_ok_value_message
 [util.format()]: util.html#util_util_format_format

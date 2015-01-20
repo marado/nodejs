@@ -91,9 +91,8 @@ var qsWeirdObjects = [
 ];
 // }}}
 
-var Script = require('vm').Script;
-var foreignObject = Script.runInContext('({"foo": ["bar", "baz"]})',
-                                        Script.createContext());
+var vm = require('vm');
+var foreignObject = vm.runInNewContext('({"foo": ["bar", "baz"]})');
 
 var qsNoMungeTestCases = [
   ['', {}],
@@ -125,7 +124,7 @@ qsWeirdObjects.forEach(function(testCase) {
 });
 
 qsNoMungeTestCases.forEach(function(testCase) {
-  assert.deepEqual(testCase[0], qs.stringify(testCase[1], '&', '=', false));
+  assert.deepEqual(testCase[0], qs.stringify(testCase[1], '&', '='));
 });
 
 // test the nested qs-in-qs case
@@ -229,11 +228,3 @@ assert.equal(0xeb, b[16]);
 assert.equal(0xd8, b[17]);
 assert.equal(0xa2, b[18]);
 assert.equal(0xe6, b[19]);
-
-// test overriding .unescape
-var prevUnescape = qs.unescape;
-qs.unescape = function (str) {
-  return str.replace(/o/g, '_');
-};
-assert.deepEqual(qs.parse('foo=bor'), {f__: 'b_r'});
-qs.unescape = prevUnescape;

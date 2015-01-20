@@ -30,14 +30,14 @@
 static int read_count;
 
 
-static uv_buf_t alloc_cb(uv_handle_t* handle, size_t size) {
-  static char buf[1024];
-
-  return uv_buf_init(buf, ARRAY_SIZE(buf));
+static void alloc_cb(uv_handle_t* handle, size_t size, uv_buf_t* buf) {
+  static char slab[1024];
+  buf->base = slab;
+  buf->len = sizeof(slab);
 }
 
 
-static void read_cb(uv_stream_t* stream, ssize_t nread, uv_buf_t buf) {
+static void read_cb(uv_stream_t* stream, ssize_t nread, const uv_buf_t* buf) {
   fprintf(stdout, "got data %d\n", ++read_count);
 
   if (read_count == 3)
@@ -61,53 +61,6 @@ TEST_IMPL(osx_select) {
   ASSERT(r == 0);
 
   uv_read_start((uv_stream_t*) &tty, alloc_cb, read_cb);
-
-  /* Emulate user-input */
-  str = "got some input\n"
-        "with a couple of lines\n"
-        "feel pretty happy\n";
-  for (i = 0, len = strlen(str); i < len; i++) {
-    r = ioctl(fd, TIOCSTI, str + i);
-    ASSERT(r == 0);
-  }
-
-  uv_run(uv_default_loop(), UV_RUN_DEFAULT);
-
-  ASSERT(read_count == 3);
-
-  MAKE_VALGRIND_HAPPY();
-  return 0;
-}
-
-
-TEST_IMPL(osx_select_many_fds) {
-  int r;
-  int fd;
-  size_t i;
-  size_t len;
-  const char* str;
-  struct sockaddr_in addr;
-  uv_tty_t tty;
-  uv_tcp_t tcps[1500];
-
-  addr = uv_ip4_addr("127.0.0.1", 0);
-
-  for (i = 0; i < ARRAY_SIZE(tcps); i++) {
-    r = uv_tcp_init(uv_default_loop(), &tcps[i]);
-    ASSERT(r == 0);
-    r = uv_tcp_bind(&tcps[i], addr);
-    ASSERT(r == 0);
-    uv_unref((uv_handle_t*) &tcps[i]);
-  }
-
-  fd = open("/dev/tty", O_RDONLY);
-  ASSERT(fd >= 0);
-
-  r = uv_tty_init(uv_default_loop(), &tty, fd, 1);
-  ASSERT(r == 0);
-
-  r = uv_read_start((uv_stream_t*) &tty, alloc_cb, read_cb);
-  ASSERT(r == 0);
 
   /* Emulate user-input */
   str = "got some input\n"

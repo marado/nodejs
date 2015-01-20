@@ -22,8 +22,13 @@ You have to change it to this:
 
 
 ## dgram.createSocket(type, [callback])
+## dgram.createSocket(options, [callback])
 
 * `type` String. Either 'udp4' or 'udp6'
+* `options` Object. Should contain a `type` property and could contain
+  `reuseAddr` property. `false` by default.
+  When `reuseAddr` is `true` - `socket.bind()` will reuse address, even if the
+  other process has already bound a socket on it.
 * `callback` Function. Attached as a listener to `message` events.
   Optional
 * Returns: Socket object
@@ -41,15 +46,20 @@ with `socket.address().address` and `socket.address().port`.
 ## Class: dgram.Socket
 
 The dgram Socket class encapsulates the datagram functionality.  It
-should be created via `dgram.createSocket(type, [callback])`.
+should be created via `dgram.createSocket(...)`
 
 ### Event: 'message'
 
 * `msg` Buffer object. The message
 * `rinfo` Object. Remote address information
 
-Emitted when a new datagram is available on a socket.  `msg` is a `Buffer` and `rinfo` is
-an object with the sender's address information and the number of bytes in the datagram.
+Emitted when a new datagram is available on a socket.  `msg` is a `Buffer` and
+`rinfo` is an object with the sender's address information:
+
+    socket.on('message', function(msg, rinfo) {
+      console.log('Received %d bytes from %s:%d\n',
+                  msg.length, rinfo.address, rinfo.port);
+    });
 
 ### Event: 'listening'
 
@@ -69,7 +79,7 @@ Emitted when an error occurs.
 
 ### socket.send(buf, offset, length, port, address, [callback])
 
-* `buf` Buffer object.  Message to be sent
+* `buf` Buffer object or string.  Message to be sent
 * `offset` Integer. Offset in the buffer where the message starts.
 * `length` Integer. Number of bytes in the message.
 * `port` Integer. Destination port.
@@ -92,12 +102,17 @@ when it's safe to reuse the `buf` object.  Note that DNS lookups delay the time
 to send for at least one tick.  The only way to know for sure that the datagram
 has been sent is by using a callback.
 
+With consideration for multi-byte characters, `offset` and `length` will
+be calculated with respect to
+[byte length](buffer.html#buffer_class_method_buffer_bytelength_string_encoding)
+and not the character position.
+
 Example of sending a UDP packet to a random port on `localhost`;
 
     var dgram = require('dgram');
     var message = new Buffer("Some bytes");
     var client = dgram.createSocket("udp4");
-    client.send(message, 0, message.length, 41234, "localhost", function(err, bytes) {
+    client.send(message, 0, message.length, 41234, "localhost", function(err) {
       client.close();
     });
 

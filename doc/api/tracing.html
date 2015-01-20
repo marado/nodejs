@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Tracing Node.js v0.11.13 Manual &amp; Documentation</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="http://nodejs.org/api/tracing.html">
+</head>
+<body class="alt apidoc" id="api-section-tracing">
+    <div id="intro" class="interior">
+        <a href="/" title="Go back to the home page">
+            <img id="logo" src="http://nodejs.org/images/logo-light.png" alt="node.js">
+        </a>
+    </div>
+    <div id="content" class="clearfix">
+        <div id="column2" class="interior">
+            <ul>
+                <li><a href="/" class="home">Home</a></li>
+                <li><a href="/download/" class="download">Download</a></li>
+                <li><a href="/about/" class="about">About</a></li>
+                <li><a href="http://npmjs.org/" class="npm">npm Registry</a></li>
+                <li><a href="http://nodejs.org/api/" class="docs current">Docs</a></li>
+                <li><a href="http://blog.nodejs.org" class="blog">Blog</a></li>
+                <li><a href="/community/" class="community">Community</a></li>
+                <li><a href="/logos/" class="logos">Logos</a></li>
+                <li><a href="http://jobs.nodejs.org/" class="jobs">Jobs</a></li>
+            </ul>
+            <p class="twitter"><a href="http://twitter.com/nodejs">@nodejs</a></p>
+        </div>
+
+        <div id="column1" class="interior">
+          <header>
+            <h1>Node.js v0.11.13 Manual &amp; Documentation</h1>
+            <div id="gtoc">
+              <p>
+                <a href="index.html" name="toc">Index</a> |
+                <a href="all.html">View on single page</a> |
+                <a href="tracing.json">View as JSON</a>
+              </p>
+            </div>
+            <hr>
+          </header>
+
+          <div id="toc">
+            <h2>Table of Contents</h2>
+            <ul>
+<li><a href="#tracing_tracing">Tracing</a><ul>
+<li><a href="#tracing_v8">v8</a><ul>
+<li><a href="#tracing_event_gc">Event: &#39;gc&#39;</a></li>
+<li><a href="#tracing_getheapstatistics">getHeapStatistics()</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#tracing_async_listeners">Async Listeners</a><ul>
+<li><a href="#tracing_tracing_createasynclistener_callbacksobj_userdata">tracing.createAsyncListener(callbacksObj[, userData])</a></li>
+<li><a href="#tracing_tracing_addasynclistener_callbacksobj_userdata">tracing.addAsyncListener(callbacksObj[, userData])</a></li>
+<li><a href="#tracing_tracing_addasynclistener_asynclistener">tracing.addAsyncListener(asyncListener)</a></li>
+<li><a href="#tracing_tracing_removeasynclistener_asynclistener">tracing.removeAsyncListener(asyncListener)</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+
+          <div id="apicontent">
+            <h1>Tracing<span><a class="mark" href="#tracing_tracing" id="tracing_tracing">#</a></span></h1>
+<pre class="api_stability_1">Stability: 1 - Experimental</pre><p>The tracing module is designed for instrumenting your Node application. It is
+not meant for general purpose use.
+
+</p>
+<p><strong><em>Be very careful with callbacks used in conjunction with this module</em></strong>
+
+</p>
+<p>Many of these callbacks interact directly with asynchronous subsystems in a
+synchronous fashion. That is to say, you may be in a callback where a call to
+<code>console.log()</code> could result in an infinite recursive loop.  Also of note, many
+of these callbacks are in hot execution code paths. That is to say your
+callbacks are executed quite often in the normal operation of Node, so be wary
+of doing CPU bound or synchronous workloads in these functions. Consider a ring
+buffer and a timer to defer processing.
+
+</p>
+<p><code>require(&#39;tracing&#39;)</code> to use this module.
+
+</p>
+<h2>v8<span><a class="mark" href="#tracing_v8" id="tracing_v8">#</a></span></h2>
+<p>The <code>v8</code> property is an <a href="events.html#events_class_events_eventemitter">EventEmitter</a>, it exposes events and interfaces
+specific to the version of <code>v8</code> built with node. These interfaces are subject
+to change by upstream and are therefore not covered under the stability index.
+
+</p>
+<h3>Event: &#39;gc&#39;<span><a class="mark" href="#tracing_event_gc" id="tracing_event_gc">#</a></span></h3>
+<p><code>function (before, after) { }</code>
+
+</p>
+<p>Emitted each time a GC run is completed.
+
+</p>
+<p><code>before</code> and <code>after</code> are objects with the following properties:
+
+</p>
+<pre><code>{
+  type: &#39;mark-sweep-compact&#39;,
+  flags: 0,
+  timestamp: 905535650119053,
+  total_heap_size: 6295040,
+  total_heap_size_executable: 4194304,
+  total_physical_size: 6295040,
+  used_heap_size: 2855416,
+  heap_size_limit: 1535115264
+}</code></pre>
+<h3>getHeapStatistics()<span><a class="mark" href="#tracing_getheapstatistics" id="tracing_getheapstatistics">#</a></span></h3>
+<p>Returns an object with the following properties
+
+</p>
+<pre><code>{
+  total_heap_size: 7326976,
+  total_heap_size_executable: 4194304,
+  total_physical_size: 7326976,
+  used_heap_size: 3476208,
+  heap_size_limit: 1535115264
+}</code></pre>
+<h1>Async Listeners<span><a class="mark" href="#tracing_async_listeners" id="tracing_async_listeners">#</a></span></h1>
+<p>The <code>AsyncListener</code> API is the JavaScript interface for the <code>AsyncWrap</code>
+class which allows developers to be notified about key events in the
+lifetime of an asynchronous event. Node performs a lot of asynchronous
+events internally, and significant use of this API may have a
+<strong>significant performance impact</strong> on your application.
+
+
+</p>
+<h2>tracing.createAsyncListener(callbacksObj[, userData])<span><a class="mark" href="#tracing_tracing_createasynclistener_callbacksobj_userdata" id="tracing_tracing_createasynclistener_callbacksobj_userdata">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>callbacksObj</code> <span class="type">Object</span> Contains optional callbacks that will fire at
+specific times in the life cycle of the asynchronous event.</li>
+<li><code>userData</code> <span class="type">Value</span> a value that will be passed to all callbacks.</li>
+</div></ul>
+<p>Returns a constructed <code>AsyncListener</code> object.
+
+</p>
+<p>To begin capturing asynchronous events pass either the <code>callbacksObj</code> or
+pass an existing <code>AsyncListener</code> instance to <a href="#tracing_tracing_addasynclistener_asynclistener"><code>tracing.addAsyncListener()</code></a>.
+The same <code>AsyncListener</code> instance can only be added once to the active
+queue, and subsequent attempts to add the instance will be ignored.
+
+</p>
+<p>To stop capturing pass the <code>AsyncListener</code> instance to
+<a href="#tracing_tracing_removeasynclistener_asynclistener"><code>tracing.removeAsyncListener()</code></a>. This does <em>not</em> mean the
+<code>AsyncListener</code> previously added will stop triggering callbacks. Once
+attached to an asynchronous event it will persist with the lifetime of the
+asynchronous call stack.
+
+</p>
+<p>Explanation of function parameters:
+
+
+</p>
+<p><code>callbacksObj</code>: An <code>Object</code> which may contain several optional fields:
+
+</p>
+<ul>
+<li><p><code>create(userData)</code>: A <code>Function</code> called when an asynchronous
+event is instantiated. If a <code>Value</code> is returned then it will be attached
+to the event and overwrite any value that had been passed to
+<code>tracing.createAsyncListener()</code>&#39;s <code>userData</code> argument. If an initial
+<code>userData</code> was passed when created, then <code>create()</code> will
+receive that as a function argument.</p>
+</li>
+<li><p><code>before(context, userData)</code>: A <code>Function</code> that is called immediately
+before the asynchronous callback is about to run. It will be passed both
+the <code>context</code> (i.e. <code>this</code>) of the calling function and the <code>userData</code>
+either returned from <code>create()</code> or passed during construction (if
+either occurred).</p>
+</li>
+<li><p><code>after(context, userData)</code>: A <code>Function</code> called immediately after
+the asynchronous event&#39;s callback has run. Note this will not be called
+if the callback throws and the error is not handled.</p>
+</li>
+<li><p><code>error(userData, error)</code>: A <code>Function</code> called if the event&#39;s
+callback threw. If this registered callback returns <code>true</code> then Node will
+assume the error has been properly handled and resume execution normally.
+When multiple <code>error()</code> callbacks have been registered only <strong>one</strong> of
+those callbacks needs to return <code>true</code> for <code>AsyncListener</code> to accept that
+the error has been handled, but all <code>error()</code> callbacks will always be run.</p>
+</li>
+</ul>
+<p><code>userData</code>: A <code>Value</code> (i.e. anything) that will be, by default,
+attached to all new event instances. This will be overwritten if a <code>Value</code>
+is returned by <code>create()</code>.
+
+</p>
+<p>Here is an example of overwriting the <code>userData</code>:
+
+</p>
+<pre><code>tracing.createAsyncListener({
+  create: function listener(value) {
+    // value === true
+    return false;
+}, {
+  before: function before(context, value) {
+    // value === false
+  }
+}, true);</code></pre>
+<p><strong>Note:</strong> The <a href="events.html#events_class_events_eventemitter">EventEmitter</a>, while used to emit status of an asynchronous
+event, is not itself asynchronous. So <code>create()</code> will not fire when
+an event is added, and <code>before()</code>/<code>after()</code> will not fire when emitted
+callbacks are called.
+
+
+</p>
+<h2>tracing.addAsyncListener(callbacksObj[, userData])<span><a class="mark" href="#tracing_tracing_addasynclistener_callbacksobj_userdata" id="tracing_tracing_addasynclistener_callbacksobj_userdata">#</a></span></h2>
+<h2>tracing.addAsyncListener(asyncListener)<span><a class="mark" href="#tracing_tracing_addasynclistener_asynclistener" id="tracing_tracing_addasynclistener_asynclistener">#</a></span></h2>
+<p>Returns a constructed <code>AsyncListener</code> object and immediately adds it to
+the listening queue to begin capturing asynchronous events.
+
+</p>
+<p>Function parameters can either be the same as
+<a href="#tracing_tracing_createasynclistener_asynclistener_callbacksobj_storagevalue"><code>tracing.createAsyncListener()</code></a>, or a constructed <code>AsyncListener</code>
+object.
+
+</p>
+<p>Example usage for capturing errors:
+
+</p>
+<pre><code>var fs = require(&#39;fs&#39;);
+
+var cntr = 0;
+var key = tracing.addAsyncListener({
+  create: function onCreate() {
+    return { uid: cntr++ };
+  },
+  before: function onBefore(context, storage) {
+    // Write directly to stdout or we&#39;ll enter a recursive loop
+    fs.writeSync(1, &#39;uid: &#39; + storage.uid + &#39; is about to run\n&#39;);
+  },
+  after: function onAfter(context, storage) {
+    fs.writeSync(1, &#39;uid: &#39; + storage.uid + &#39; ran\n&#39;);
+  },
+  error: function onError(storage, err) {
+    // Handle known errors
+    if (err.message === &#39;everything is fine&#39;) {
+      // Writing to stderr this time.
+      fs.writeSync(2, &#39;handled error just threw:\n&#39;);
+      fs.writeSync(2, err.stack + &#39;\n&#39;);
+      return true;
+    }
+  }
+});
+
+process.nextTick(function() {
+  throw new Error(&#39;everything is fine&#39;);
+});
+
+// Output:
+// uid: 0 is about to run
+// handled error just threw:
+// Error: really, it&#39;s ok
+//     at /tmp/test2.js:27:9
+//     at process._tickCallback (node.js:583:11)
+//     at Function.Module.runMain (module.js:492:11)
+//     at startup (node.js:123:16)
+//     at node.js:1012:3</code></pre>
+<h2>tracing.removeAsyncListener(asyncListener)<span><a class="mark" href="#tracing_tracing_removeasynclistener_asynclistener" id="tracing_tracing_removeasynclistener_asynclistener">#</a></span></h2>
+<p>Removes the <code>AsyncListener</code> from the listening queue.
+
+</p>
+<p>Removing the <code>AsyncListener</code> from the active queue does <em>not</em> mean the
+<code>asyncListener</code> callbacks will cease to fire on the events they&#39;ve been
+registered. Subsequently, any asynchronous events fired during the
+execution of a callback will also have the same <code>asyncListener</code> callbacks
+attached for future execution. For example:
+
+</p>
+<pre><code>var fs = require(&#39;fs&#39;);
+
+var key = tracing.createAsyncListener({
+  create: function asyncListener() {
+    // Write directly to stdout or we&#39;ll enter a recursive loop
+    fs.writeSync(1, &#39;You summoned me?\n&#39;);
+  }
+});
+
+// We want to begin capturing async events some time in the future.
+setTimeout(function() {
+  tracing.addAsyncListener(key);
+
+  // Perform a few additional async events.
+  setTimeout(function() {
+    setImmediate(function() {
+      process.nextTick(function() { });
+    });
+  });
+
+  // Removing the listener doesn&#39;t mean to stop capturing events that
+  // have already been added.
+  tracing.removeAsyncListener(key);
+}, 100);
+
+// Output:
+// You summoned me?
+// You summoned me?
+// You summoned me?
+// You summoned me?</code></pre>
+<p>The fact that we logged 4 asynchronous events is an implementation detail
+of Node&#39;s <a href="timers.html">Timers</a>.
+
+</p>
+<p>To stop capturing from a specific asynchronous event stack
+<code>tracing.removeAsyncListener()</code> must be called from within the call
+stack itself. For example:
+
+</p>
+<pre><code>var fs = require(&#39;fs&#39;);
+
+var key = tracing.createAsyncListener({
+  create: function asyncListener() {
+    // Write directly to stdout or we&#39;ll enter a recursive loop
+    fs.writeSync(1, &#39;You summoned me?\n&#39;);
+  }
+});
+
+// We want to begin capturing async events some time in the future.
+setTimeout(function() {
+  tracing.addAsyncListener(key);
+
+  // Perform a few additional async events.
+  setImmediate(function() {
+    // Stop capturing from this call stack.
+    tracing.removeAsyncListener(key);
+
+    process.nextTick(function() { });
+  });
+}, 100);
+
+// Output:
+// You summoned me?</code></pre>
+<p>The user must be explicit and always pass the <code>AsyncListener</code> they wish
+to remove. It is not possible to simply remove all listeners at once.
+
+
+</p>
+
+          </div>
+        </div>
+    </div>
+    <div id="footer">
+        <a href="http://joyent.com" class="joyent-logo">Joyent</a>
+        <ul class="clearfix">
+            <li><a href="/">Node.js</a></li>
+            <li><a href="/download/">Download</a></li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="http://npmjs.org/">npm Registry</a></li>
+            <li><a href="http://nodejs.org/api/">Docs</a></li>
+            <li><a href="http://blog.nodejs.org">Blog</a></li>
+            <li><a href="/community/">Community</a></li>
+            <li><a href="/logos/">Logos</a></li>
+            <li><a href="http://jobs.nodejs.org/">Jobs</a></li>
+            <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
+        </ul>
+
+        <p>Copyright <a href="http://joyent.com/">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.11.13/LICENSE">license</a>.</p>
+    </div>
+
+  <script src="../sh_main.js"></script>
+  <script src="../sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+  <script>
+    window._gaq = [['_setAccount', 'UA-10874194-2'], ['_trackPageview']];
+    (function(d, t) {
+      var g = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      g.src = '//www.google-analytics.com/ga.js';
+      s.parentNode.insertBefore(g, s);
+    }(document, 'script'));
+  </script>
+</body>
+</html>
+

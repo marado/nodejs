@@ -143,7 +143,7 @@
               "textRaw": "child.disconnect()",
               "type": "method",
               "name": "disconnect",
-              "desc": "<p>Close the IPC channel between parent and child, allowing the child to exit\ngracefully once there are no other connections keeping it alive. After calling\nthis method the <code>.connected</code> flag will be set to <code>false</code> in both the parent and\nchild, and it is no longer possible to send messages.\n\n</p>\n<p>The &#39;disconnect&#39; event will be emitted when there are no messages in the process\nof being received, most likely immediately.\n\n</p>\n<p>Note that you can also call <code>process.disconnect()</code> in the child process when the\nchild process has any open IPC channels with the parent (i.e <code>fork()</code>).\n\n</p>\n",
+              "desc": "<p>Close the IPC channel between parent and child, allowing the child to exit\ngracefully once there are no other connections keeping it alive. After calling\nthis method the <code>.connected</code> flag will be set to <code>false</code> in both the parent and\nchild, and it is no longer possible to send messages.\n\n</p>\n<p>The &#39;disconnect&#39; event will be emitted when there are no messages in the process\nof being received, most likely immediately.\n\n</p>\n<p>Note that you can also call <code>process.disconnect()</code> in the child process.\n\n</p>\n",
               "signatures": [
                 {
                   "params": []
@@ -287,6 +287,12 @@
                       "name": "encoding",
                       "default": "utf8",
                       "type": "String"
+                    },
+                    {
+                      "textRaw": "`shell` {String} Shell to execute the command with (Default: '/bin/sh' on UNIX, 'cmd.exe' on Windows,  The shell should  understand the `-c` switch on UNIX or `/s /c` on Windows. On Windows,  command line parsing should be compatible with `cmd.exe`.) ",
+                      "name": "shell",
+                      "type": "String",
+                      "desc": "Shell to execute the command with (Default: '/bin/sh' on UNIX, 'cmd.exe' on Windows,  The shell should  understand the `-c` switch on UNIX or `/s /c` on Windows. On Windows,  command line parsing should be compatible with `cmd.exe`.)"
                     },
                     {
                       "textRaw": "`timeout` {Number} (Default: 0) ",
@@ -559,6 +565,423 @@
             }
           ],
           "desc": "<p>This is a special case of the <code>spawn()</code> functionality for spawning Node\nprocesses. In addition to having all the methods in a normal ChildProcess\ninstance, the returned object has a communication channel built-in. See\n<code>child.send(message, [sendHandle])</code> for details.\n\n</p>\n<p>These child Nodes are still whole new instances of V8. Assume at least 30ms\nstartup and 10mb memory for each new Node. That is, you cannot create many\nthousands of them.\n\n</p>\n<p>The <code>execPath</code> property in the <code>options</code> object allows for a process to be\ncreated for the child rather than the current <code>node</code> executable. This should be\ndone with care and by default will talk over the fd represented an\nenvironmental variable <code>NODE_CHANNEL_FD</code> on the child process. The input and\noutput on this fd is expected to be line delimited JSON objects.\n\n</p>\n"
+        },
+        {
+          "textRaw": "child_process.spawnSync(command, [args], [options])",
+          "type": "method",
+          "name": "spawnSync",
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "return: {Object} ",
+                "options": [
+                  {
+                    "textRaw": "`pid` {Number} Pid of the child process ",
+                    "name": "pid",
+                    "type": "Number",
+                    "desc": "Pid of the child process"
+                  },
+                  {
+                    "textRaw": "`output` {Array} Array of results from stdio output ",
+                    "name": "output",
+                    "type": "Array",
+                    "desc": "Array of results from stdio output"
+                  },
+                  {
+                    "textRaw": "`stdout` {Buffer|String} The contents of `output[1]` ",
+                    "name": "stdout",
+                    "type": "Buffer|String",
+                    "desc": "The contents of `output[1]`"
+                  },
+                  {
+                    "textRaw": "`stderr` {Buffer|String} The contents of `output[2]` ",
+                    "name": "stderr",
+                    "type": "Buffer|String",
+                    "desc": "The contents of `output[2]`"
+                  },
+                  {
+                    "textRaw": "`status` {Number} The exit code of the child process ",
+                    "name": "status",
+                    "type": "Number",
+                    "desc": "The exit code of the child process"
+                  },
+                  {
+                    "textRaw": "`signal` {String} The signal used to kill the child process ",
+                    "name": "signal",
+                    "type": "String",
+                    "desc": "The signal used to kill the child process"
+                  },
+                  {
+                    "textRaw": "`error` {Error} The error object if the child process failed or timedout ",
+                    "name": "error",
+                    "type": "Error",
+                    "desc": "The error object if the child process failed or timedout"
+                  }
+                ],
+                "name": "return",
+                "type": "Object"
+              },
+              "params": [
+                {
+                  "textRaw": "`command` {String} The command to run ",
+                  "name": "command",
+                  "type": "String",
+                  "desc": "The command to run"
+                },
+                {
+                  "textRaw": "`args` {Array} List of string arguments ",
+                  "name": "args",
+                  "type": "Array",
+                  "desc": "List of string arguments",
+                  "optional": true
+                },
+                {
+                  "textRaw": "`options` {Object} ",
+                  "options": [
+                    {
+                      "textRaw": "`cwd` {String} Current working directory of the child process ",
+                      "name": "cwd",
+                      "type": "String",
+                      "desc": "Current working directory of the child process"
+                    },
+                    {
+                      "textRaw": "`input` {String|Buffer} The value which will be passed as stdin to the spawned process ",
+                      "options": [
+                        {
+                          "textRaw": "supplying this value will override `stdio[0]` ",
+                          "name": "supplying",
+                          "desc": "this value will override `stdio[0]`"
+                        }
+                      ],
+                      "name": "input",
+                      "type": "String|Buffer",
+                      "desc": "The value which will be passed as stdin to the spawned process"
+                    },
+                    {
+                      "textRaw": "`stdio` {Array} Child's stdio configuration. ",
+                      "name": "stdio",
+                      "type": "Array",
+                      "desc": "Child's stdio configuration."
+                    },
+                    {
+                      "textRaw": "`env` {Object} Environment key-value pairs ",
+                      "name": "env",
+                      "type": "Object",
+                      "desc": "Environment key-value pairs"
+                    },
+                    {
+                      "textRaw": "`uid` {Number} Sets the user identity of the process. (See setuid(2).) ",
+                      "name": "uid",
+                      "type": "Number",
+                      "desc": "Sets the user identity of the process. (See setuid(2).)"
+                    },
+                    {
+                      "textRaw": "`gid` {Number} Sets the group identity of the process. (See setgid(2).) ",
+                      "name": "gid",
+                      "type": "Number",
+                      "desc": "Sets the group identity of the process. (See setgid(2).)"
+                    },
+                    {
+                      "textRaw": "`timeout` {Number} In milliseconds the maximum amount of time the process is allowed to run. (Default: undefined) ",
+                      "name": "timeout",
+                      "default": "undefined",
+                      "type": "Number",
+                      "desc": "In milliseconds the maximum amount of time the process is allowed to run."
+                    },
+                    {
+                      "textRaw": "`killSignal` {String} The signal value to be used when the spawned process will be killed. (Default: 'SIGTERM') ",
+                      "name": "killSignal",
+                      "default": "SIGTERM",
+                      "type": "String",
+                      "desc": "The signal value to be used when the spawned process will be killed."
+                    },
+                    {
+                      "textRaw": "`maxBuffer` {Number} ",
+                      "name": "maxBuffer",
+                      "type": "Number"
+                    },
+                    {
+                      "textRaw": "`encoding` {String} The encoding used for all stdio inputs and outputs. (Default: 'buffer') ",
+                      "name": "encoding",
+                      "default": "buffer",
+                      "type": "String",
+                      "desc": "The encoding used for all stdio inputs and outputs."
+                    }
+                  ],
+                  "name": "options",
+                  "type": "Object",
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "command"
+                },
+                {
+                  "name": "args",
+                  "optional": true
+                },
+                {
+                  "name": "options",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p><code>spawnSync</code> will not return until the child process has fully closed. When a\ntimeout has been encountered and <code>killSignal</code> is sent, the method won&#39;t return\nuntil the process has completely exited. That is to say, if the process handles\nthe <code>SIGTERM</code> signal and doesn&#39;t exit, your process will wait until the child\nprocess has exited.\n\n</p>\n"
+        },
+        {
+          "textRaw": "child_process.execFileSync(command, [args], [options])",
+          "type": "method",
+          "name": "execFileSync",
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "return: {Buffer|String} The stdout from the command ",
+                "name": "return",
+                "type": "Buffer|String",
+                "desc": "The stdout from the command"
+              },
+              "params": [
+                {
+                  "textRaw": "`command` {String} The command to run ",
+                  "name": "command",
+                  "type": "String",
+                  "desc": "The command to run"
+                },
+                {
+                  "textRaw": "`args` {Array} List of string arguments ",
+                  "name": "args",
+                  "type": "Array",
+                  "desc": "List of string arguments",
+                  "optional": true
+                },
+                {
+                  "textRaw": "`options` {Object} ",
+                  "options": [
+                    {
+                      "textRaw": "`cwd` {String} Current working directory of the child process ",
+                      "name": "cwd",
+                      "type": "String",
+                      "desc": "Current working directory of the child process"
+                    },
+                    {
+                      "textRaw": "`input` {String|Buffer} The value which will be passed as stdin to the spawned process ",
+                      "options": [
+                        {
+                          "textRaw": "supplying this value will override `stdio[0]` ",
+                          "name": "supplying",
+                          "desc": "this value will override `stdio[0]`"
+                        }
+                      ],
+                      "name": "input",
+                      "type": "String|Buffer",
+                      "desc": "The value which will be passed as stdin to the spawned process"
+                    },
+                    {
+                      "textRaw": "`stdio` {Array} Child's stdio configuration. (Default: 'pipe') ",
+                      "options": [
+                        {
+                          "textRaw": "`stderr` by default will be output to the parent process' stderr unless `stdio` is specified ",
+                          "name": "stderr",
+                          "desc": "by default will be output to the parent process' stderr unless `stdio` is specified"
+                        }
+                      ],
+                      "name": "stdio",
+                      "default": "pipe",
+                      "type": "Array",
+                      "desc": "Child's stdio configuration."
+                    },
+                    {
+                      "textRaw": "`env` {Object} Environment key-value pairs ",
+                      "name": "env",
+                      "type": "Object",
+                      "desc": "Environment key-value pairs"
+                    },
+                    {
+                      "textRaw": "`uid` {Number} Sets the user identity of the process. (See setuid(2).) ",
+                      "name": "uid",
+                      "type": "Number",
+                      "desc": "Sets the user identity of the process. (See setuid(2).)"
+                    },
+                    {
+                      "textRaw": "`gid` {Number} Sets the group identity of the process. (See setgid(2).) ",
+                      "name": "gid",
+                      "type": "Number",
+                      "desc": "Sets the group identity of the process. (See setgid(2).)"
+                    },
+                    {
+                      "textRaw": "`timeout` {Number} In milliseconds the maximum amount of time the process is allowed to run. (Default: undefined) ",
+                      "name": "timeout",
+                      "default": "undefined",
+                      "type": "Number",
+                      "desc": "In milliseconds the maximum amount of time the process is allowed to run."
+                    },
+                    {
+                      "textRaw": "`killSignal` {String} The signal value to be used when the spawned process will be killed. (Default: 'SIGTERM') ",
+                      "name": "killSignal",
+                      "default": "SIGTERM",
+                      "type": "String",
+                      "desc": "The signal value to be used when the spawned process will be killed."
+                    },
+                    {
+                      "textRaw": "`maxBuffer` {Number} ",
+                      "name": "maxBuffer",
+                      "type": "Number"
+                    },
+                    {
+                      "textRaw": "`encoding` {String} The encoding used for all stdio inputs and outputs. (Default: 'buffer') ",
+                      "name": "encoding",
+                      "default": "buffer",
+                      "type": "String",
+                      "desc": "The encoding used for all stdio inputs and outputs."
+                    }
+                  ],
+                  "name": "options",
+                  "type": "Object",
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "command"
+                },
+                {
+                  "name": "args",
+                  "optional": true
+                },
+                {
+                  "name": "options",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p><code>execFileSync</code> will not return until the child process has fully closed. When a\ntimeout has been encountered and <code>killSignal</code> is sent, the method won&#39;t return\nuntil the process has completely exited. That is to say, if the process handles\nthe <code>SIGTERM</code> signal and doesn&#39;t exit, your process will wait until the child\nprocess has exited.\n\n</p>\n<p>If the process times out, or has a non-zero exit code, this method <strong><em>will</em></strong>\nthrow.  The <code>Error</code> object will contain the entire result from\n<a href=\"#child_process_child_process_spawnsync_command_args_options\"><code>child_process.spawnSync</code></a>\n\n\n</p>\n"
+        },
+        {
+          "textRaw": "child_process.execSync(command, [options])",
+          "type": "method",
+          "name": "execSync",
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "return: {Buffer|String} The stdout from the command ",
+                "name": "return",
+                "type": "Buffer|String",
+                "desc": "The stdout from the command"
+              },
+              "params": [
+                {
+                  "textRaw": "`command` {String} The command to run ",
+                  "name": "command",
+                  "type": "String",
+                  "desc": "The command to run"
+                },
+                {
+                  "textRaw": "`options` {Object} ",
+                  "options": [
+                    {
+                      "textRaw": "`cwd` {String} Current working directory of the child process ",
+                      "name": "cwd",
+                      "type": "String",
+                      "desc": "Current working directory of the child process"
+                    },
+                    {
+                      "textRaw": "`input` {String|Buffer} The value which will be passed as stdin to the spawned process ",
+                      "options": [
+                        {
+                          "textRaw": "supplying this value will override `stdio[0]` ",
+                          "name": "supplying",
+                          "desc": "this value will override `stdio[0]`"
+                        }
+                      ],
+                      "name": "input",
+                      "type": "String|Buffer",
+                      "desc": "The value which will be passed as stdin to the spawned process"
+                    },
+                    {
+                      "textRaw": "`stdio` {Array} Child's stdio configuration. (Default: 'pipe') ",
+                      "options": [
+                        {
+                          "textRaw": "`stderr` by default will be output to the parent process' stderr unless `stdio` is specified ",
+                          "name": "stderr",
+                          "desc": "by default will be output to the parent process' stderr unless `stdio` is specified"
+                        }
+                      ],
+                      "name": "stdio",
+                      "default": "pipe",
+                      "type": "Array",
+                      "desc": "Child's stdio configuration."
+                    },
+                    {
+                      "textRaw": "`env` {Object} Environment key-value pairs ",
+                      "name": "env",
+                      "type": "Object",
+                      "desc": "Environment key-value pairs"
+                    },
+                    {
+                      "textRaw": "`uid` {Number} Sets the user identity of the process. (See setuid(2).) ",
+                      "name": "uid",
+                      "type": "Number",
+                      "desc": "Sets the user identity of the process. (See setuid(2).)"
+                    },
+                    {
+                      "textRaw": "`gid` {Number} Sets the group identity of the process. (See setgid(2).) ",
+                      "name": "gid",
+                      "type": "Number",
+                      "desc": "Sets the group identity of the process. (See setgid(2).)"
+                    },
+                    {
+                      "textRaw": "`timeout` {Number} In milliseconds the maximum amount of time the process is allowed to run. (Default: undefined) ",
+                      "name": "timeout",
+                      "default": "undefined",
+                      "type": "Number",
+                      "desc": "In milliseconds the maximum amount of time the process is allowed to run."
+                    },
+                    {
+                      "textRaw": "`killSignal` {String} The signal value to be used when the spawned process will be killed. (Default: 'SIGTERM') ",
+                      "name": "killSignal",
+                      "default": "SIGTERM",
+                      "type": "String",
+                      "desc": "The signal value to be used when the spawned process will be killed."
+                    },
+                    {
+                      "textRaw": "`maxBuffer` {Number} ",
+                      "name": "maxBuffer",
+                      "type": "Number"
+                    },
+                    {
+                      "textRaw": "`encoding` {String} The encoding used for all stdio inputs and outputs. (Default: 'buffer') ",
+                      "name": "encoding",
+                      "default": "buffer",
+                      "type": "String",
+                      "desc": "The encoding used for all stdio inputs and outputs."
+                    }
+                  ],
+                  "name": "options",
+                  "type": "Object",
+                  "optional": true
+                }
+              ]
+            },
+            {
+              "params": [
+                {
+                  "name": "command"
+                },
+                {
+                  "name": "options",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p><code>execSync</code> will not return until the child process has fully closed. When a\ntimeout has been encountered and <code>killSignal</code> is sent, the method won&#39;t return\nuntil the process has completely exited. That is to say, if the process handles\nthe <code>SIGTERM</code> signal and doesn&#39;t exit, your process will wait until the child\nprocess has exited.\n\n</p>\n<p>If the process times out, or has a non-zero exit code, this method <strong><em>will</em></strong>\nthrow.  The <code>Error</code> object will contain the entire result from\n<a href=\"#child_process_child_process_spawnsync_command_args_options\"><code>child_process.spawnSync</code></a>\n\n</p>\n"
         }
       ],
       "type": "module",
