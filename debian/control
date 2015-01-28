@@ -18,7 +18,7 @@ Build-Depends: cdbs,
  libkvm-dev [kfreebsd-any],
  gyp (>= 0.1~svn1654),
  python,
- libv8-3.14-dev (>= 3.7),
+ libv8-3.24-dev (>= 3.7),
  libssl-dev (>= 1.0.0g),
  libc-ares-dev (>= 1.7.5)
 Standards-Version: 3.9.4
@@ -63,7 +63,7 @@ Section: debug
 Architecture: any
 Depends: ${misc:Depends},
  nodejs (= ${binary:Version})
-Recommends: libv8-3.14-dbg
+Recommends: libv8-3.24-dbg
 Description: evented I/O for V8 javascript (debug)
  Node.js is a platform built on Chrome's JavaScript runtime for easily
  building fast, scalable network applications. Node.js uses an

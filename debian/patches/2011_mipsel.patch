@@ -1,13 +1,15 @@
 Description: add support for mipsel arch
 Forwarded: not-needed, not yet tested enough
 Author: Jérémy Lal <kapouer@melix.org>
-Last-Update: 2013-07-29
---- a/Makefile
-+++ b/Makefile
-@@ -108,10 +108,10 @@
+Last-Update: 2015-01-21
+Index: nodejs/Makefile
+===================================================================
+--- nodejs.orig/Makefile
++++ nodejs/Makefile
+@@ -132,10 +132,10 @@ test-debug: test-build
  	$(PYTHON) tools/test.py --mode=debug
  
- test-message: all
+ test-message: test-build
 -	$(PYTHON) tools/test.py message
 +	$(PYTHON) tools/test.py --arch=$(DESTCPU) message
  
@@ -15,24 +17,26 @@ Last-Update: 2013-07-29
 -	$(PYTHON) tools/test.py simple
 +	$(PYTHON) tools/test.py --arch=$(DESTCPU) simple
  
- test-pummel: all
+ test-pummel: all wrk
  	$(PYTHON) tools/test.py pummel
---- a/configure
-+++ b/configure
-@@ -231,7 +231,7 @@
- parser.add_option("--dest-cpu",
-     action="store",
-     dest="dest_cpu",
--    help="CPU architecture to build for. Valid values are: arm, ia32, x64")
-+    help="CPU architecture to build for. Valid values are: arm, ia32, x64, mips")
+Index: nodejs/configure
+===================================================================
+--- nodejs.orig/configure
++++ nodejs/configure
+@@ -31,7 +31,7 @@ parser.add_option('--debug',
+ parser.add_option('--dest-cpu',
+     action='store',
+     dest='dest_cpu',
+-    help='CPU architecture to build for. Valid values are: arm, ia32, x64')
++    help='CPU architecture to build for. Valid values are: arm, ia32, x64, mips')
  
- parser.add_option("--dest-os",
-     action="store",
-@@ -689,6 +689,7 @@
+ parser.add_option('--dest-os',
+     action='store',
+@@ -702,6 +702,7 @@ config = {
    'USE_NINJA': str(int(options.use_ninja or 0)),
    'USE_XCODE': str(int(options.use_xcode or 0)),
    'PYTHON': sys.executable,
 +  'DESTCPU': output['variables']['target_arch'],
  }
- config = '\n'.join(map('='.join, config.iteritems())) + '\n'
  
+ if options.prefix:

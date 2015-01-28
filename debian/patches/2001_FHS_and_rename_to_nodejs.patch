@@ -4,9 +4,11 @@ Description: FHS path for nodejs, rename man page to nodejs.
 Forwarded: not-needed
 Author: Jérémy Lal <kapouer@melix.org>
 Last-Update: 2013-03-16
---- a/lib/module.js
-+++ b/lib/module.js
-@@ -508,7 +508,7 @@
+Index: nodejs/lib/module.js
+===================================================================
+--- nodejs.orig/lib/module.js
++++ nodejs/lib/module.js
+@@ -501,7 +501,7 @@ Module._initPaths = function() {
      var homeDir = process.env.HOME;
    }
  
@@ -15,8 +17,10 @@ Last-Update: 2013-03-16
  
    if (homeDir) {
      paths.unshift(path.resolve(homeDir, '.node_libraries'));
---- a/doc/node.1
-+++ b/doc/node.1
+Index: nodejs/doc/node.1
+===================================================================
+--- nodejs.orig/doc/node.1
++++ nodejs/doc/node.1
 @@ -2,12 +2,12 @@
  
  

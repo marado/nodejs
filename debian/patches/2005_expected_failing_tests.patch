@@ -9,8 +9,10 @@ Description: Expected failing tests
 Forwarded: not-needed
 Author: Jérémy Lal <kapouer@melix.org>
 Last-Update: 2014-01-27
---- a/test/simple/simple.status
-+++ b/test/simple/simple.status
+Index: nodejs/test/simple/simple.status
+===================================================================
+--- nodejs.orig/test/simple/simple.status
++++ nodejs/test/simple/simple.status
 @@ -1 +1,75 @@
  prefix simple
 +
